@@ -16,16 +16,16 @@
       font-weight: normal;
       font-style: normal;
     }
-    .announcement-bar {
-  background-color: #204ECF;
-  color: #FFF;
-  text-align: center;
-  font-size: 0.85rem;
-  font-weight: 500;
-  padding: 0.4rem 1rem;
-  letter-spacing: 0.5px;
-}
 
+    .announcement-bar {
+      background-color: #204ECF;
+      color: #FFF;
+      text-align: center;
+      font-size: 0.85rem;
+      font-weight: 500;
+      padding: 0.4rem 1rem;
+      letter-spacing: 0.5px;
+    }
 
     :root {
       --light-pink: #F8F3EA;
@@ -53,13 +53,12 @@
 
     header h1 {
       font-family: 'Raks', serif;
-      font-size: 2.3rem; /* was 3rem */
+      font-size: 2.3rem;
       color: var(--electric-blue);
       text-shadow: 1px 1px 0 #fff;
       margin: 0;
       letter-spacing: 1px;
     }
-
 
     .cart-icon {
       position: absolute;
@@ -79,7 +78,7 @@
     .hero {
       text-align: center;
       padding: 3rem 1rem;
-      background-color: var(--light pink);
+      background-color: var(--light-pink);
     }
 
     .hero h2 {
@@ -134,6 +133,17 @@
       object-fit: cover;
     }
 
+    .circle-card {
+      text-align: center;
+      min-width: 150px;
+    }
+
+    .circle-card p {
+      margin-top: 0.5rem;
+      font-weight: 600;
+      color: #444;
+    }
+
     .product-card {
       background-color: #fff;
       border-radius: 12px;
@@ -145,16 +155,15 @@
       max-width: 250px;
     }
 
-.product-card:hover {
-  transform: translateY(-5px);
-}
+    .product-card:hover {
+      transform: translateY(-5px);
+    }
 
-.product-card img {
-  max-width: 100%;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-}
-
+    .product-card img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
 
     /* Marquee section */
     .marquee-container {
@@ -207,61 +216,60 @@
       font-size: 0.9rem;
       color: #444;
     }
+
     @media (max-width: 600px) {
-  header h1 {
-    font-size: 1.8rem;
-  }
+      header h1 {
+        font-size: 1.8rem;
+      }
 
-  .cart-icon {
-    font-size: 1.2rem;
-    right: 0.75rem;
-  }
+      .cart-icon {
+        font-size: 1.2rem;
+        right: 0.75rem;
+      }
 
-  .hero h2 {
-    font-size: 1.5rem;
-  }
+      .hero h2 {
+        font-size: 1.5rem;
+      }
 
-  .hero p {
-    font-size: 0.95rem;
-  }
+      .hero p {
+        font-size: 0.95rem;
+      }
 
-  .btn {
-    font-size: 0.9rem;
-    padding: 0.6rem 1.2rem;
-  }
+      .btn {
+        font-size: 0.9rem;
+        padding: 0.6rem 1.2rem;
+      }
 
-  .circle-image {
-    width: 100px;
-    height: 100px;
-  }
+      .circle-image {
+        width: 100px;
+        height: 100px;
+      }
 
-  .product-card {
-    min-width: 120px;
-  }
+      .product-card {
+        min-width: 120px;
+      }
 
-  .announcement-bar {
-    font-size: 0.75rem;
-    padding: 0.3rem;
-  }
+      .announcement-bar {
+        font-size: 0.75rem;
+        padding: 0.3rem;
+      }
 
-  .section-title {
-    font-size: 1.4rem;
-  }
+      .section-title {
+        font-size: 1.4rem;
+      }
 
-  .products {
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    padding: 2rem 1rem;
-  }
-}
-
+      .products {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        padding: 2rem 1rem;
+      }
+    }
   </style>
 </head>
 <body>
 
   <div class="announcement-bar">
-  Free shipping on all orders over £25
+    Free shipping on all orders over £25
   </div>
-
 
   <header>
     <h1>Beads by Daisy</h1>
@@ -280,23 +288,23 @@
   <h2 class="section-title">New This Week</h2>
   <div class="marquee-container">
     <div class="marquee-track">
-      <div class="product-card">
+      <div class="circle-card">
         <div class="circle-image"><img src="https://via.placeholder.com/120x120.png?text=Blueberry" alt="Blueberry"></div>
         <p>Blueberry</p>
       </div>
-      <div class="product-card">
+      <div class="circle-card">
         <div class="circle-image"><img src="https://via.placeholder.com/120x120.png?text=Cranberry" alt="Cranberry"></div>
         <p>Cranberry</p>
       </div>
-      <div class="product-card">
+      <div class="circle-card">
         <div class="circle-image"><img src="https://via.placeholder.com/120x120.png?text=Rose+White" alt="Rose White"></div>
         <p>Rose White</p>
       </div>
-      <div class="product-card">
+      <div class="circle-card">
         <div class="circle-image"><img src="https://via.placeholder.com/120x120.png?text=Spice+Mango" alt="Spice Mango"></div>
         <p>Spice Mango</p>
       </div>
-      <div class="product-card">
+      <div class="circle-card">
         <div class="circle-image"><img src="https://via.placeholder.com/120x120.png?text=Changer" alt="Changer"></div>
         <p>Changer</p>
       </div>
