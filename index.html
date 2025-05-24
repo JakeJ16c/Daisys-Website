@@ -340,36 +340,44 @@
 
     @media (max-width: 600px)
     .site-header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display: grid;
+  grid-template-areas:
+    "social"
+    "title"
+    "cart";
+  grid-template-columns: 1fr;
   text-align: center;
-  gap: 0.5rem;
   padding: 1rem 0;
+  gap: 0.5rem;
 }
 
-.header-left,
-.header-right {
+.header-left {
+  grid-area: social;
   display: flex;
   justify-content: center;
-  gap: 0.8rem;
-  width: 100%;
+  gap: 0.7rem;
+  flex-wrap: wrap;
 }
 
 .header-title {
+  grid-area: title;
   font-size: 1.6rem;
   font-weight: bold;
   word-break: break-word;
-  max-width: 90%;
   line-height: 1.2;
 }
 
-.logo-link {
+.header-title a {
   text-decoration: none;
   color: inherit;
   font-family: 'Grand Paradiso', cursive;
 }
 
+.header-right {
+  grid-area: cart;
+  display: flex;
+  justify-content: center;
+}
 
   </style>
 </head>
@@ -377,7 +385,7 @@
 
   <div class="announcement-bar">Free shipping on all UK orders over £25</div>
 
-  <header class="site-header">
+<header class="site-header">
   <div class="header-left">
     <a href="#"><i class="fab fa-instagram"></i></a>
     <a href="#"><i class="fab fa-facebook-f"></i></a>
@@ -397,6 +405,7 @@
     <p><strong>Your basket is empty.</strong></p>
   </div>
 </header>
+
 
 
 
