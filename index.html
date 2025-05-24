@@ -9,6 +9,29 @@
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
+    .marquee-container {
+  overflow: hidden;
+  background-color: var(--light-pink);
+  padding: 2rem 0;
+  position: relative;
+}
+
+.marquee-track {
+  display: flex;
+  width: fit-content;
+  animation: scroll-horizontal 25s linear infinite;
+  gap: 2rem;
+}
+
+@keyframes scroll-horizontal {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
     @font-face {
       font-family: 'GrandParadiso';
       src: url('grand-paradiso-font/GrandParadiso-P7Az1.ttf') format('truetype');
@@ -150,40 +173,31 @@
     <a href="#shop" class="btn">Shop Now</a>
   </section>
 
-  <!-- Watch Product Section -->
-  <h2 class="section-title">Watch Product</h2>
-  <section class="products" id="flavors" style="background-color: var(--light-pink);">
+<h2 class="section-title">Watch Product</h2>
+<div class="marquee-container">
+  <div class="marquee-track">
     <div class="product-card">
-      <div class="circle-image">
-        <img src="https://via.placeholder.com/120x120.png?text=Blueberry" alt="Blueberry">
-      </div>
+      <div class="circle-image"><img src="https://via.placeholder.com/120x120.png?text=Blueberry" alt="Blueberry"></div>
       <p>Blueberry</p>
     </div>
     <div class="product-card">
-      <div class="circle-image">
-        <img src="https://via.placeholder.com/120x120.png?text=Cranberry" alt="Cranberry">
-      </div>
+      <div class="circle-image"><img src="https://via.placeholder.com/120x120.png?text=Cranberry" alt="Cranberry"></div>
       <p>Cranberry</p>
     </div>
     <div class="product-card">
-      <div class="circle-image">
-        <img src="https://via.placeholder.com/120x120.png?text=Rose+White" alt="Rose White">
-      </div>
+      <div class="circle-image"><img src="https://via.placeholder.com/120x120.png?text=Rose+White" alt="Rose White"></div>
       <p>Rose White</p>
     </div>
     <div class="product-card">
-      <div class="circle-image">
-        <img src="https://via.placeholder.com/120x120.png?text=Spice+Mango" alt="Spice Mango">
-      </div>
+      <div class="circle-image"><img src="https://via.placeholder.com/120x120.png?text=Spice+Mango" alt="Spice Mango"></div>
       <p>Spice Mango</p>
     </div>
     <div class="product-card">
-      <div class="circle-image">
-        <img src="https://via.placeholder.com/120x120.png?text=Changer" alt="Changer">
-      </div>
+      <div class="circle-image"><img src="https://via.placeholder.com/120x120.png?text=Changer" alt="Changer"></div>
       <p>Changer</p>
     </div>
-  </section>
+  </div>
+</div>
 
   <!-- Featured Product Section -->
   <h2 class="section-title">Fabulous Products</h2>
