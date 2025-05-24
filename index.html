@@ -9,29 +9,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
-    .marquee-container {
-  overflow: hidden;
-  background-color: var(--light-pink);
-  padding: 2rem 0;
-  position: relative;
-}
-
-.marquee-track {
-  display: flex;
-  width: fit-content;
-  animation: scroll-horizontal 25s linear infinite;
-  gap: 2rem;
-}
-
-@keyframes scroll-horizontal {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
-}
-
     @font-face {
       font-family: 'GrandParadiso';
       src: url('grand-paradiso-font/GrandParadiso-P7Az1.ttf') format('truetype');
@@ -101,28 +78,19 @@
       background-color: #183aa0;
     }
 
-    .products {
-      background: white;
-      padding: 3rem 2rem;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 2rem;
-      justify-items: center;
-    }
-
-    .product-card {
-      background-color: transparent;
-      box-shadow: none;
+    .section-title {
       text-align: center;
+      font-size: 1.75rem;
+      margin: 3rem 0 1rem;
     }
 
     .circle-image {
-      width: 150px;
-      height: 150px;
+      width: 120px;
+      height: 120px;
       border-radius: 50%;
       background-color: white;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      margin: 0 auto 1rem;
+      margin: 0 auto 0.5rem;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -133,6 +101,44 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+    }
+
+    .product-card {
+      text-align: center;
+      min-width: 150px;
+    }
+
+    /* Marquee section */
+    .marquee-container {
+      overflow: hidden;
+      background-color: var(--light-pink);
+      padding: 2rem 0;
+      position: relative;
+    }
+
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      gap: 3rem;
+      animation: scroll-horizontal 25s linear infinite;
+    }
+
+    @keyframes scroll-horizontal {
+      0% {
+        transform: translateX(-100%);
+      }
+      100% {
+        transform: translateX(100%);
+      }
+    }
+
+    .products {
+      background: white;
+      padding: 3rem 2rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      justify-items: center;
     }
 
     .product-card h3 {
@@ -153,12 +159,6 @@
       font-size: 0.9rem;
       color: #444;
     }
-
-    .section-title {
-      text-align: center;
-      font-size: 1.75rem;
-      margin: 3rem 0 1rem;
-    }
   </style>
 </head>
 <body>
@@ -173,33 +173,34 @@
     <a href="#shop" class="btn">Shop Now</a>
   </section>
 
-<h2 class="section-title">Watch Product</h2>
-<div class="marquee-container">
-  <div class="marquee-track">
-    <div class="product-card">
-      <div class="circle-image"><img src="https://via.placeholder.com/120x120.png?text=Blueberry" alt="Blueberry"></div>
-      <p>Blueberry</p>
-    </div>
-    <div class="product-card">
-      <div class="circle-image"><img src="https://via.placeholder.com/120x120.png?text=Cranberry" alt="Cranberry"></div>
-      <p>Cranberry</p>
-    </div>
-    <div class="product-card">
-      <div class="circle-image"><img src="https://via.placeholder.com/120x120.png?text=Rose+White" alt="Rose White"></div>
-      <p>Rose White</p>
-    </div>
-    <div class="product-card">
-      <div class="circle-image"><img src="https://via.placeholder.com/120x120.png?text=Spice+Mango" alt="Spice Mango"></div>
-      <p>Spice Mango</p>
-    </div>
-    <div class="product-card">
-      <div class="circle-image"><img src="https://via.placeholder.com/120x120.png?text=Changer" alt="Changer"></div>
-      <p>Changer</p>
+  <!-- Watch Product Marquee -->
+  <h2 class="section-title">Watch Product</h2>
+  <div class="marquee-container">
+    <div class="marquee-track">
+      <div class="product-card">
+        <div class="circle-image"><img src="https://via.placeholder.com/120x120.png?text=Blueberry" alt="Blueberry"></div>
+        <p>Blueberry</p>
+      </div>
+      <div class="product-card">
+        <div class="circle-image"><img src="https://via.placeholder.com/120x120.png?text=Cranberry" alt="Cranberry"></div>
+        <p>Cranberry</p>
+      </div>
+      <div class="product-card">
+        <div class="circle-image"><img src="https://via.placeholder.com/120x120.png?text=Rose+White" alt="Rose White"></div>
+        <p>Rose White</p>
+      </div>
+      <div class="product-card">
+        <div class="circle-image"><img src="https://via.placeholder.com/120x120.png?text=Spice+Mango" alt="Spice Mango"></div>
+        <p>Spice Mango</p>
+      </div>
+      <div class="product-card">
+        <div class="circle-image"><img src="https://via.placeholder.com/120x120.png?text=Changer" alt="Changer"></div>
+        <p>Changer</p>
+      </div>
     </div>
   </div>
-</div>
 
-  <!-- Featured Product Section -->
+  <!-- Fabulous Products Grid -->
   <h2 class="section-title">Fabulous Products</h2>
   <section class="products" id="collection">
     <div class="product-card">
