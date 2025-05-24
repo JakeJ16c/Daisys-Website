@@ -144,9 +144,29 @@
     }
 
     @media (max-width: 600px) {
-      header h1 {
-        font-size: 1.6rem;
-      }
+  .header-left {
+    display: none;
+  }
+
+  header {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+    padding: 1rem;
+  }
+
+  header h1 {
+    font-size: 1.8rem;
+  }
+
+  .cart-icon {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    transform: none;
+  }
+}
+
     }
   </style>
 </head>
