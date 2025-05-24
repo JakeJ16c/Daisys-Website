@@ -185,18 +185,19 @@
         transform: translateX(-100%);
       }
       100% {
-        transform: translateX(100%);
+        transform: translateX(110%);
       }
     }
 
-    .products {
-      background: white;
-      padding: 3rem 2rem;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 2rem;
-      justify-items: center;
-    }
+.products {
+  background: white;
+  padding: 3rem 2rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* force 3 columns */
+  gap: 2rem;
+  justify-items: center;
+}
+
 
     .product-card h3 {
       margin: 0.5rem 0 0.2rem;
