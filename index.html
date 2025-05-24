@@ -16,6 +16,16 @@
       font-weight: normal;
       font-style: normal;
     }
+    .announcement-bar {
+  background-color: #204ECF;
+  color: #FFF;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.4rem 1rem;
+  letter-spacing: 0.5px;
+}
+
 
     :root {
       --light-pink: #F8F3EA;
@@ -43,11 +53,13 @@
 
     header h1 {
       font-family: 'Raks', serif;
-      font-size: 3rem;
+      font-size: 2.4rem; /* was 3rem */
       color: var(--electric-blue);
       text-shadow: 1px 1px 0 #fff;
       margin: 0;
+      letter-spacing: 1px;
     }
+
 
     .cart-icon {
       position: absolute;
@@ -181,6 +193,11 @@
   </style>
 </head>
 <body>
+
+  <div class="announcement-bar">
+  Free shipping on all orders over £25
+  </div>
+
 
   <header>
     <h1>Beads by Daisy</h1>
