@@ -25,14 +25,22 @@
   margin: 0 auto;
   position: relative;
 }
-
+    
 .cart-icon {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
   font-size: 1.5rem;
   color: var(--electric-blue);
   text-decoration: none;
-  padding-right: 1rem;
   transition: color 0.3s ease;
 }
+
+.cart-icon:hover {
+  color: #183aa0;
+}
+
 
 .cart-icon:hover {
   color: #183aa0;
@@ -53,11 +61,14 @@
       color: #333;
     }
 
-    header {
-      background-color: #CCE0FF;
-      padding: 2rem 1rem;
-      text-align: center;
-    }
+header {
+  background-color: #CCE0FF;
+  padding: 2rem 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
 
     header h1 {
       font-family: 'Raks', serif;
