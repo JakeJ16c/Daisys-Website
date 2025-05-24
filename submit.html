@@ -2,22 +2,39 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Submit Your Ideas - You're So Golden</title>
+  <link rel="icon" type="image/x-icon" href="favicon_circle.ico" />
+
+  <!-- Fonts & Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  
   <style>
     @font-face {
       font-family: 'Raks';
       src: url('Raks.otf') format('opentype');
     }
-    
+
+    :root {
+      --light-pink: #F8F3EA;
+      --electric-blue: #204ECF;
+      --soft-pink: #FBB6C1;
+      --mint: #80CBC4;
+    }
+
     body {
       margin: 0;
       font-family: 'Fredoka', sans-serif;
-      background-color: #F8F3EA;
+      background-color: var(--light-pink);
       color: #333;
+    }
+
+    .announcement-bar {
+      background-color: var(--electric-blue);
+      color: white;
+      font-size: 0.9rem;
+      text-align: center;
+      padding: 0.5rem;
     }
 
     header {
@@ -29,65 +46,101 @@
       position: relative;
     }
 
-    .logo-link {
-      text-decoration: none;
-      color: inherit;
+    .header-left {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      gap: 0.75rem;
     }
 
-    h2 {
-      font-size: 2rem;
-      margin: 2rem 0 1rem;
+    .header-left a {
+      color: var(--electric-blue);
+      font-size: 1.2rem;
+      text-decoration: none;
+    }
+
+    header h1 {
+      font-family: 'Raks', serif;
+      font-size: 2.3rem;
+      margin: 0;
+      color: var(--electric-blue);
+    }
+
+    .cart-icon {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.5rem;
+      color: var(--electric-blue);
+    }
+
+    h2.page-title {
       text-align: center;
-      color: #204ECF;
+      font-size: 1.8rem;
+      color: var(--electric-blue);
+      margin: 2rem 0 1rem;
     }
 
     .form-container {
-      max-width: 600px;
-      margin: 2rem auto;
+      background-color: white;
       padding: 2rem;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      max-width: 500px;
+      margin: 0 auto 3rem;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
     }
 
-    .form-group {
-      margin-bottom: 1.5rem;
-    }
-
-    label {
+    form label {
       display: block;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.4rem;
       font-weight: 600;
     }
 
-    input, textarea {
+    form input,
+    form textarea {
       width: 100%;
-      padding: 0.75rem;
+      padding: 0.7rem;
       border: 1px solid #ccc;
-      border-radius: 6px;
+      border-radius: 8px;
+      margin-bottom: 1.2rem;
       font-size: 1rem;
+      font-family: inherit;
     }
 
-    .submit-btn {
-      background-color: #80CBC4;
+    form textarea {
+      height: 100px;
+      resize: vertical;
+    }
+
+    .btn-submit {
+      background-color: var(--mint);
       color: white;
-      padding: 0.75rem 1.5rem;
+      padding: 0.7rem 1.5rem;
+      font-size: 1rem;
       border: none;
       border-radius: 25px;
-      font-size: 1rem;
       cursor: pointer;
     }
 
-    .submit-btn:hover {
-      background-color: #204ECF;
+    .btn-submit:hover {
+      background-color: #183aa0;
     }
 
     footer {
-      background-color: #FBB6C1;
+      background-color: var(--soft-pink);
+      text-align: center;
+      padding: 1.5rem;
       font-size: 0.9rem;
       color: #444;
-      text-align: center;
-      padding: 1rem;
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 1.6rem;
+      }
     }
   </style>
 </head>
@@ -95,40 +148,31 @@
 
   <div class="announcement-bar">Free shipping on all UK orders over £25</div>
 
-<!-- Header -->
-<header>
-  <div class="header-left">
-    <a href="#"><i class="fab fa-instagram"></i></a>
-    <a href="#"><i class="fab fa-facebook-f"></i></a>
-    <a href="#"><i class="fas fa-phone"></i></a>
-    <a href="#"><i class="fas fa-envelope"></i></a>
-  </div>
-  <a href="index.html" style="text-decoration: none;"><h1>You're So Golden</h1></a>
-  <a href="#cart" class="cart-icon"><i class="fas fa-basket-shopping"></i></a>
-</header>
+  <header>
+    <div class="header-left">
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-facebook-f"></i></a>
+      <a href="#"><i class="fas fa-phone"></i></a>
+      <a href="#"><i class="fas fa-envelope"></i></a>
+    </div>
+    <a href="index.html" style="text-decoration: none;"><h1>You're So Golden</h1></a>
+    <a href="#" class="cart-icon"><i class="fas fa-basket-shopping"></i></a>
+  </header>
 
-<!-- Page Title -->
-<h2 style="text-align:center; margin-top: 2rem; color: #204ECF; font-size: 1.75rem;">Submit Your Custom Beadwork Idea</h2>
-
+  <h2 class="page-title">Submit Your Custom Beadwork Idea</h2>
 
   <div class="form-container">
-    <form action="https://formspree.io/f/yourformid" method="POST">
-      <div class="form-group">
-        <label for="name">Your Name</label>
-        <input type="text" name="name" id="name" required />
-      </div>
+    <form>
+      <label for="name">Your Name</label>
+      <input type="text" id="name" name="name" placeholder="Enter your name" required>
 
-      <div class="form-group">
-        <label for="email">Your Email</label>
-        <input type="email" name="_replyto" id="email" required />
-      </div>
+      <label for="email">Your Email</label>
+      <input type="email" id="email" name="email" placeholder="Enter your email" required>
 
-      <div class="form-group">
-        <label for="idea">Tell us about your design idea</label>
-        <textarea name="idea" id="idea" rows="5" required></textarea>
-      </div>
+      <label for="idea">Tell us about your design idea</label>
+      <textarea id="idea" name="idea" placeholder="Describe your custom design..." required></textarea>
 
-      <button type="submit" class="submit-btn">Submit Idea</button>
+      <button class="btn-submit" type="submit">Submit Idea</button>
     </form>
   </div>
 
