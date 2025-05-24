@@ -15,6 +15,28 @@
       font-weight: normal;
       font-style: normal;
     }
+    
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.cart-icon {
+  font-size: 1.5rem;
+  color: var(--electric-blue);
+  text-decoration: none;
+  padding-right: 1rem;
+  transition: color 0.3s ease;
+}
+
+.cart-icon:hover {
+  color: #183aa0;
+}
+
 
     :root {
       --light-pink: #F8F3EA;
@@ -162,9 +184,15 @@
 </head>
 <body>
 
-  <header>
+<header>
+  <div class="header-container">
     <h1>Beads by Daisy</h1>
-  </header>
+    <a href="#cart" class="cart-icon" title="View Cart">
+      <i class="fas fa-shopping-cart"></i>
+    </a>
+  </div>
+</header>
+
 
   <section class="hero">
     <h2>Handmade Beads, Full of Color</h2>
