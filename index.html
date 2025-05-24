@@ -148,14 +148,8 @@
     }
 
 .product-card {
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-  text-align: center;
-  padding: 1.5rem;
-  transition: transform 0.2s ease;
-  width: 100%;           /* Fill the grid column */
-  max-width: 280px;      /* Control actual card size */
+  width: 100%;
+  max-width: 280px;
 }
 
     .product-card:hover {
@@ -194,12 +188,12 @@
 
 .products {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Force 3 columns */
-  gap: 1.5rem; /* Space between rows and columns */
-  padding: 2rem;
-  justify-items: center; /* Center items inside each grid cell */
-  align-items: start;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem; /* equal vertical & horizontal gap */
+  justify-content: center; /* center the whole grid */
+  padding: 3rem 5rem; /* large side padding */
 }
+
     .product-card h3 {
       margin: 0.5rem 0 0.2rem;
       font-size: 1.1rem;
