@@ -338,13 +338,46 @@
       color: #444;
     }
 
+    @media (max-width: 600px)
+    .site-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.5rem;
+  padding: 1rem 0;
+}
+
+.header-left,
+.header-right {
+  display: flex;
+  justify-content: center;
+  gap: 0.8rem;
+  width: 100%;
+}
+
+.header-title {
+  font-size: 1.6rem;
+  font-weight: bold;
+  word-break: break-word;
+  max-width: 90%;
+  line-height: 1.2;
+}
+
+.logo-link {
+  text-decoration: none;
+  color: inherit;
+  font-family: 'Grand Paradiso', cursive;
+}
+
+
   </style>
 </head>
 <body>
 
   <div class="announcement-bar">Free shipping on all UK orders over £25</div>
 
-  <header>
+  <header class="site-header">
   <div class="header-left">
     <a href="#"><i class="fab fa-instagram"></i></a>
     <a href="#"><i class="fab fa-facebook-f"></i></a>
@@ -352,13 +385,19 @@
     <a href="#"><i class="fas fa-envelope"></i></a>
   </div>
 
-  <h1><a href="index.html" class="logo-link">You’re So Golden</a></h1>
+  <div class="header-title">
+    <a href="index.html" class="logo-link">You’re So Golden</a>
+  </div>
 
-  <a href="#cart" class="cart-icon"><i class="fas fa-basket-shopping"></i></a>
+  <div class="header-right">
+    <a href="#cart" class="cart-icon"><i class="fas fa-basket-shopping"></i></a>
+  </div>
+
   <div id="basket-preview" class="basket-preview hidden">
     <p><strong>Your basket is empty.</strong></p>
   </div>
 </header>
+
 
 
 
