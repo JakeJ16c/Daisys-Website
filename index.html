@@ -3,32 +3,40 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Beads by Bella</title>
+  <title>Beads by Daisy</title>
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --light-pink: #F8F3EA;
+      --tropical-breeze: #95C7C2;
+      --electric-blue: #204ECF;
+      --buttercup: #FFF3B0;
+      --soft-pink: #FBB6C1;
+    }
+
     body {
       margin: 0;
       font-family: 'Quicksand', sans-serif;
-      background-color: #F8F3EA;
+      background-color: var(--light-pink);
       color: #333;
     }
 
     header {
-      background-color: #95C7C2;
-      padding: 1.5rem;
+      background-color: var(--tropical-breeze);
+      padding: 2rem 1rem;
       text-align: center;
     }
 
     header h1 {
-      color: #204ECF;
-      font-size: 2.5rem;
+      color: var(--electric-blue);
+      font-size: 2.75rem;
       margin: 0;
     }
 
     .hero {
       text-align: center;
-      padding: 2rem 1rem;
-      background-color: #FFF3B0;
+      padding: 3rem 1rem;
+      background-color: var(--buttercup);
     }
 
     .hero h2 {
@@ -38,54 +46,70 @@
 
     .hero p {
       font-size: 1rem;
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
+      color: #555;
     }
 
     .btn {
-      background-color: #204ECF;
+      background-color: var(--electric-blue);
       color: white;
-      padding: 0.75rem 1.25rem;
+      padding: 0.75rem 1.5rem;
       border: none;
       border-radius: 25px;
       font-size: 1rem;
       cursor: pointer;
       text-decoration: none;
+      transition: background 0.2s ease;
+    }
+
+    .btn:hover {
+      background-color: #183aa0;
     }
 
     .products {
-      padding: 2rem;
+      background: white;
+      padding: 3rem 2rem;
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 2rem;
     }
 
     .product-card {
-      background-color: white;
-      border-radius: 12px;
+      background-color: #fff;
+      border-radius: 16px;
       padding: 1rem;
       text-align: center;
-      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
     }
 
     .product-card img {
       max-width: 100%;
       border-radius: 8px;
+      margin-bottom: 1rem;
     }
 
     .product-card h3 {
-      margin: 0.75rem 0 0.5rem;
+      margin: 0.5rem 0;
+      font-size: 1.2rem;
     }
 
     .product-card p {
       margin: 0.25rem 0 1rem;
       color: #666;
+      font-weight: bold;
     }
 
     footer {
       text-align: center;
-      padding: 1rem;
-      background-color: #FBB6C1;
+      padding: 1.5rem;
+      background-color: var(--soft-pink);
       font-size: 0.9rem;
+      color: #444;
     }
   </style>
 </head>
