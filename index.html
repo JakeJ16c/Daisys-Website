@@ -339,12 +339,42 @@
     }
 
     @media (max-width: 600px) {
-      header h1 { font-size: 1.8rem; }
-      .hero h2 { font-size: 1.5rem; }
-      .products {
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      }
-    }
+  header {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    text-align: center;
+  }
+
+  .header-left,
+  .header-title,
+  .header-right {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+
+  header h1 {
+    font-size: 1.5rem;
+    word-break: break-word;
+  }
+
+  .header-left,
+  .header-right {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .hero h2 {
+    font-size: 1.5rem;
+  }
+
+  .products {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  }
+}
+
   </style>
 </head>
 <body>
