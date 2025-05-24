@@ -10,6 +10,67 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
   <style>
+    .feature-section {
+  background-color: #fdfdfd;
+  padding: 4rem 2rem;
+}
+
+.feature-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  align-items: center;
+  justify-content: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.feature-image img {
+  width: 100%;
+  max-width: 500px;
+  border-radius: 1rem;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.feature-content {
+  flex: 1;
+  max-width: 550px;
+}
+
+.section-subtitle {
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  color: #c04c4c;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.feature-content h2 {
+  font-size: 2rem;
+  margin: 0.5rem 0;
+}
+
+.feature-description {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  color: #555;
+}
+
+.feature-list {
+  list-style: none;
+  padding-left: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem 1rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.feature-btn {
+  background-color: #d04b4b;
+  padding: 0.6rem 1.2rem;
+}
+
     @font-face {
       font-family: 'Raks';
       src: url('Raks.otf') format('truetype');
