@@ -281,8 +281,17 @@
       .header-title { font-size: 1.8rem; }
       .header-right {position: absolute;top: 1rem;right: 1rem;transform: none; }
       
-      .products {grid-template-columns: 1fr;padding: 2rem 1rem; }
-      .product-card img {height: 180px;object-fit: cover; }
+      .products {
+        grid-template-columns: repeat(2, 1fr); /* Two items per row */
+        padding: 2rem 1rem;
+        gap: 1rem;
+      }
+
+      .product-card img {
+        height: 180px;
+        object-fit: cover;
+      }
+}
 }
 
 
