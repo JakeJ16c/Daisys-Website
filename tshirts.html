@@ -207,14 +207,18 @@
     }
 
     @media (max-width: 600px) {
-  .header-left {
-    display: none;
+      .header-left {
+        display: none;
+      }  
       .products {
         grid-template-columns: repeat(2, 1fr); /* Two items per row */
         padding: 2rem 1rem;
         gap: 1rem;
       }
-  }
+      .product-card img {
+        height: 180px;
+        object-fit: cover;
+      }
 
   header {
     flex-direction: column;
