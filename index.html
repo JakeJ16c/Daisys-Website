@@ -3,54 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <title>Beads by Daisy</title>
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
   <style>
     @font-face {
-      font-family: 'Raks';
-      src: url('Raks.otf') format('truetype');
+      font-family: 'GrandParadiso';
+      src: url('grand-paradiso-font/GrandParadiso-P7Az1.ttf') format('truetype');
       font-weight: normal;
       font-style: normal;
     }
-    
-.header-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
-  position: relative;
-}
-    
-.cart-icon {
-  position: absolute;
-  right: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 1.5rem;
-  color: var(--electric-blue);
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-.cart-icon:hover {
-  color: #183aa0;
-}
-
-
-.cart-icon:hover {
-  color: #183aa0;
-}
-
 
     :root {
-      --light-pink: #F8F3EA;
+      --light-pink: #FFECEE;
       --tropical-breeze: #FFEBEE;
       --electric-blue: #204ECF;
+      --soft-yellow: #FFF9C4;
       --soft-pink: #FBB6C1;
     }
 
@@ -61,27 +32,43 @@
       color: #333;
     }
 
-header {
-  background-color: #CCE0FF;
-  padding: 2rem 1rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-}
+    header {
+      background-color: #CCE0FF;
+      padding: 2rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
 
     header h1 {
-      font-family: 'Raks', serif;
+      font-family: 'GrandParadiso', serif;
       font-size: 3rem;
       color: var(--electric-blue);
       text-shadow: 1px 1px 0 #fff;
       margin: 0;
+      letter-spacing: 2px;
+    }
+
+    .cart-icon {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.5rem;
+      color: var(--electric-blue);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .cart-icon:hover {
+      color: #183aa0;
     }
 
     .hero {
       text-align: center;
       padding: 3rem 1rem;
-      background-color: var(--light-pink);
+      background-color: var(--soft-yellow);
     }
 
     .hero h2 {
@@ -196,15 +183,12 @@ header {
 </head>
 <body>
 
-<header>
-  <div class="header-container">
+  <header>
     <h1>Beads by Daisy</h1>
-    <a href="#cart" class="cart-icon" title="View Cart">
-      <i class="fas fa-shopping-cart"></i>
+    <a href="#cart" class="cart-icon" title="View Basket">
+      <i class="fas fa-basket-shopping"></i>
     </a>
-  </div>
-</header>
-
+  </header>
 
   <section class="hero">
     <h2>Handmade Beads, Full of Color</h2>
