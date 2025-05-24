@@ -10,20 +10,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-
-  <!-- Styles -->
   <style>
     @font-face {
       font-family: 'Raks';
       src: url('Raks.otf') format('opentype');
-      font-weight: normal;
-      font-style: normal;
     }
+
     :root {
       --light-pink: #F8F3EA;
-      --tropical-breeze: #FFEBEE;
       --electric-blue: #204ECF;
-      --soft-yellow: #FFF9C4;
       --soft-pink: #FBB6C1;
     }
 
@@ -34,43 +29,16 @@
       color: #333;
     }
 
-    /* Announcement Bar */
-.announcement-bar {
-  background-color: #204ECF;
-  color: #FFF;
-  position: relative;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.85rem;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-}
+    .announcement-bar {
+      background-color: var(--electric-blue);
+      color: #fff;
+      text-align: center;
+      font-size: 0.85rem;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      letter-spacing: 0.5px;
+    }
 
-.announcement-center {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.announcement-right {
-  position: absolute;
-  right: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.85rem;
-  cursor: pointer;
-}
-
-.flag-icon {
-  height: 14px;
-  width: auto;
-  display: inline-block;
-}
-
-    /* Header */
     header {
       background-color: #CCE0FF;
       padding: 0.8rem;
@@ -106,7 +74,6 @@
       color: var(--electric-blue);
       text-shadow: 1px 1px 0 #fff;
       margin: 0;
-      letter-spacing: 1.2px;
     }
 
     .cart-icon {
@@ -116,18 +83,16 @@
       transform: translateY(-50%);
       font-size: 1.5rem;
       color: var(--electric-blue);
-      text-decoration: none;
     }
 
     .cart-icon:hover {
       color: #183aa0;
     }
 
-    /* Navigation */
     .nav-links {
       display: flex;
       gap: 0.5rem;
-      padding: 0.1rem 1rem;
+      padding: 0.3rem 1rem;
       background-color: #CCE0FF;
       justify-content: center;
       border-bottom: 1px solid #ddd;
@@ -138,7 +103,7 @@
       color: var(--electric-blue);
       font-weight: 500;
       font-size: 0.9rem;
-      padding: 0.1rem 0.1rem;
+      padding: 0.4rem 0.75rem;
       border-radius: 6px;
       transition: background 0.2s;
     }
@@ -147,11 +112,9 @@
       background-color: #dce2ff;
     }
 
-    /* Hero Section */
     .hero {
       text-align: center;
       padding: 3rem 1rem;
-      background-color: var(--light-pink);
     }
 
     .hero h2 {
@@ -163,6 +126,12 @@
       font-size: 1rem;
       margin-bottom: 1.5rem;
       color: #555;
+    }
+
+    .hero-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
     }
 
     .btn {
@@ -179,58 +148,29 @@
     .btn:hover {
       background-color: #183aa0;
     }
-    
-    .hero-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin-top: 1rem;
-}
 
-.secondary-btn {
-  background-color: #80CBC4;
-  color: white;
-}
+    .section-title {
+      text-align: center;
+      font-size: 1.75rem;
+      margin: 3rem 0 1rem;
+    }
 
-.secondary-btn:hover {
-  background-color: #183aa0;
-}
+    .marquee-container {
+      overflow: hidden;
+      padding: 2rem 0;
+    }
 
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      gap: 6rem;
+      animation: scroll-horizontal 45s linear infinite;
+    }
 
-    /* Section Titles */
-.section-title {
-  text-align: center;
-  font-size: 1.75rem;
-  margin: 3rem 0 1rem;
-  z-index: 2;
-  position: relative;
-  background-color: var(--light-pink);
-}
-
-
-    /* Marquee */
-.marquee-container {
-  overflow: hidden;
-  background-color: var(--light-pink);
-  padding: 2rem 0;
-  margin-top: 2rem; /* <-- this is key */
-}
-
-.marquee-track {
-  display: flex;
-  width: max-content;
-  gap: 6rem;
-  animation: scroll-horizontal 45s linear infinite;
-}
-
-@keyframes scroll-horizontal {
-  0% {
-    transform: translateX(0%);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
+    @keyframes scroll-horizontal {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
 
     .circle-card {
       text-align: center;
@@ -238,8 +178,8 @@
     }
 
     .circle-image {
-      width: 250px;
-      height: 250px;
+      width: 200px;
+      height: 200px;
       border-radius: 50%;
       background-color: white;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
@@ -261,12 +201,7 @@
       font-weight: 600;
       color: #444;
     }
-    
-    .circle-card:hover {
-      transform: translateY(-5px);
-    }
 
-    /* Product Grid */
     .products {
       background: var(--light-pink);
       padding: 3rem 2rem;
@@ -284,15 +219,11 @@
       border-radius: 12px;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
       text-align: center;
-      transition: transform 0.2s ease;
-    }
-
-    .product-card:hover {
-      transform: translateY(-5px);
     }
 
     .product-card img {
-      width: 100%;
+      max-width: 100%;
+      height: auto;
       border-radius: 8px;
       margin-bottom: 1rem;
     }
@@ -307,7 +238,6 @@
       font-weight: bold;
     }
 
-    /* Feature Section */
     .feature-section {
       background-color: #fdfdfd;
       padding: 4rem 2rem;
@@ -361,15 +291,16 @@
       grid-template-columns: repeat(2, 1fr);
       gap: 0.5rem 1rem;
       margin-bottom: 1.5rem;
-      color: #333;
     }
 
     .feature-btn {
       background-color: #d04b4b;
       padding: 0.6rem 1.2rem;
+      color: white;
+      text-decoration: none;
+      border-radius: 25px;
     }
 
-    /* Footer */
     footer {
       text-align: center;
       padding: 1.5rem;
@@ -378,151 +309,84 @@
       color: #444;
     }
 
-    /* Responsive */
     @media (max-width: 600px) {
       header h1 { font-size: 1.8rem; }
-      .cart-icon { font-size: 1.2rem; right: 0.75rem; }
-      .nav-links { flex-wrap: wrap; padding: 0.5rem; }
-      .nav-links a { font-size: 0.8rem; padding: 0.3rem 0.6rem; }
       .hero h2 { font-size: 1.5rem; }
-      .hero p { font-size: 0.95rem; }
-      .btn { font-size: 0.9rem; padding: 0.6rem 1.2rem; }
-      .circle-image { width: 100px; height: 100px; }
       .products {
         grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-        padding: 2rem 1rem;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- Announcement -->
-<div class="announcement-bar">
-  <div class="announcement-center">
-    Free shipping on all orders over £25
-<div class="announcement-right">
-  <img class="flag-icon" src="flags/uk.png" alt="UK Flag" />
-</div>
+  <div class="announcement-bar">Free shipping on all orders over £25</div>
 
-
-  <!-- Header -->
   <header>
     <div class="header-left">
-      <a href="https://instagram.com/yourpage"><i class="fab fa-instagram"></i></a>
-      <a href="https://facebook.com/yourpage"><i class="fab fa-facebook-f"></i></a>
-      <a href="tel:+441234567890"><i class="fas fa-phone"></i></a>
-      <a href="mailto:hello@beadsbydaisy.co.uk"><i class="fas fa-envelope"></i></a>
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-facebook-f"></i></a>
+      <a href="#"><i class="fas fa-phone"></i></a>
+      <a href="#"><i class="fas fa-envelope"></i></a>
     </div>
     <h1>You're So Golden</h1>
     <a href="#cart" class="cart-icon"><i class="fas fa-basket-shopping"></i></a>
   </header>
 
-  <!-- Nav Links -->
   <nav class="nav-links">
-    <a href="#blank1">Home</a>
-    <a href="#blank2">Shop</a>
-    <a href="#blank3">About</a>
-    <a href="#blank4">Contact</a>
+    <a href="#">Home</a>
+    <a href="#">Shop</a>
+    <a href="#">About</a>
+    <a href="#">Contact</a>
   </nav>
 
-  <!-- Hero -->
   <section class="hero">
-  <h2>Handmade Beads, Full of Color</h2>
-  <p>Fresh designs, soft tones, and joyful vibes.</p>
-  <div class="hero-buttons">
-    <a href="#shop" class="btn">Shop T-Shirts</a>
-    <a href="#custom" class="btn secondary-btn">Shop Bag Charms</a>
-  </div>
-</section>
+    <h2>Handmade Beads, Full of Color</h2>
+    <p>Fresh designs, soft tones, and joyful vibes.</p>
+    <div class="hero-buttons">
+      <a href="#" class="btn">Shop T-Shirts</a>
+      <a href="#" class="btn">Shop Bag Charms</a>
+    </div>
+  </section>
 
-
-  <!-- Marquee -->
   <h2 class="section-title">New This Week</h2>
   <div class="marquee-container">
     <div class="marquee-track">
+      <!-- Duplicate bead images here for seamless scroll -->
       <div class="circle-card"><div class="circle-image"><img src="image1.jpeg" /></div><p>Blueberry</p></div>
       <div class="circle-card"><div class="circle-image"><img src="image2.jpeg" /></div><p>Cranberry</p></div>
       <div class="circle-card"><div class="circle-image"><img src="image3.jpeg" /></div><p>Rose White</p></div>
       <div class="circle-card"><div class="circle-image"><img src="image4.jpeg" /></div><p>Spice Mango</p></div>
-      <div class="circle-card"><div class="circle-image"><img src="image5.jpeg" /></div><p>Changer</p></div>
-      <div class="circle-card"><div class="circle-image"><img src="image3.jpeg" /></div><p>Rose White</p></div>
-      
-  <!-- Duplicate for seamless loop -->
-      <div class="circle-card"><div class="circle-image"><img src="image1.jpeg" /></div><p>Blueberry</p></div>
-      <div class="circle-card"><div class="circle-image"><img src="image2.jpeg" /></div><p>Cranberry</p></div>
-      <div class="circle-card"><div class="circle-image"><img src="image3.jpeg" /></div><p>Rose White</p></div>
-      <div class="circle-card"><div class="circle-image"><img src="image4.jpeg" /></div><p>Spice Mango</p></div>
-      <div class="circle-card"><div class="circle-image"><img src="image5.jpeg" /></div><p>Changer</p></div>
-      <div class="circle-card"><div class="circle-image"><img src="image3.jpeg" /></div><p>Rose White</p></div>
     </div>
   </div>
 
-<!-- My Collection Section -->
-<h2 class="section-title">My Collection</h2>
-<section class="products" id="collection">
-  <div class="product-card">
-    <img src="image1.jpeg" alt="Scotch">
-    <h3>Scotch</h3>
-    <p>£10.00</p>
-    <a class="btn" href="#">Buy Now</a>
-  </div>
-  <div class="product-card">
-    <img src="image1.jpeg" alt="Spritz">
-    <h3>Spritz</h3>
-    <p><s>£15.00</s> £10.00</p>
-    <a class="btn" href="#">Buy Now</a>
-  </div>
-  <div class="product-card">
-    <img src="image1.jpeg" alt="Manhattan">
-    <h3>Manhattan</h3>
-    <p>£10.00</p>
-    <a class="btn" href="#">Buy Now</a>
-  </div>
-  <div class="product-card">
-    <img src="image1.jpeg" alt="French 75">
-    <h3>French 75</h3>
-    <p>£10.00</p>
-    <a class="btn" href="#">Buy Now</a>
-  </div>
-  <div class="product-card">
-    <img src="image1.jpeg" alt="Whiskey Sour">
-    <h3>Whiskey Sour</h3>
-    <p>£10.00</p>
-    <a class="btn" href="#">Buy Now</a>
-  </div>
-  <div class="product-card">
-    <img src="image1.jpeg" alt="Mojito">
-    <h3>Mojito</h3>
-    <p>£10.00</p>
-    <a class="btn" href="#">Buy Now</a>
-  </div>
-</section>
+  <h2 class="section-title">My Collection</h2>
+  <section class="products">
+    <div class="product-card"><img src="image1.jpeg" alt="Scotch"><h3>Scotch</h3><p>£10.00</p><a class="btn" href="#">Buy Now</a></div>
+    <div class="product-card"><img src="image2.jpeg" alt="Spritz"><h3>Spritz</h3><p><s>£15.00</s> £10.00</p><a class="btn" href="#">Buy Now</a></div>
+    <div class="product-card"><img src="image3.jpeg" alt="Manhattan"><h3>Manhattan</h3><p>£10.00</p><a class="btn" href="#">Buy Now</a></div>
+  </section>
 
-  <!-- Feature Section -->
   <section class="feature-section">
     <div class="feature-container">
       <div class="feature-image"><img src="IMG_5319.jpg" alt="Feature" /></div>
       <div class="feature-content">
         <p class="section-subtitle">THE PRODUCTS</p>
         <h2>All About Fabulous</h2>
-        <p class="feature-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor massa ut justo facilisis.</p>
+        <p class="feature-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
         <ul class="feature-list">
           <li>Fun and fresh makeup</li>
           <li>Hair Serum</li>
           <li>Glowing Brush</li>
           <li>Professional Powder</li>
-          <li>Sprinkle it with love</li>
           <li>Moisture Cream</li>
-          <li>Hair Shampoo</li>
           <li>Best oils</li>
         </ul>
-        <a href="#" class="btn feature-btn">See More</a>
+        <a href="#" class="feature-btn">See More</a>
       </div>
     </div>
   </section>
 
-  <!-- Footer -->
   <footer>© 2025 You're So Golden · All Rights Reserved</footer>
 
 </body>
