@@ -338,13 +338,51 @@
       color: #444;
     }
 
+    @media(max-width: 600px)
+    .site-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 0;
+  text-align: center;
+}
+
+.site-header .header-left {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  width: 100%;
+}
+
+.site-header .cart-icon {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.site-header h1 {
+  font-size: 1.6rem;
+  margin: 0;
+  line-height: 1.2;
+  word-break: break-word;
+  max-width: 90%;
+}
+
+.site-header .logo-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+    
   </style>
 </head>
 <body>
 
   <div class="announcement-bar">Free shipping on all UK orders over £25</div>
 
-  <header>
+  <header class="site-header">
   <div class="header-left">
     <a href="#"><i class="fab fa-instagram"></i></a>
     <a href="#"><i class="fab fa-facebook-f"></i></a>
