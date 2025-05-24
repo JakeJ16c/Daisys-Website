@@ -340,24 +340,31 @@
 
     @media (max-width: 600px) {
   header {
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-    text-align: center;
-  }
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1rem 0;
+}
 
-  .header-left,
-  .header-title,
-  .header-right {
-    width: 100%;
-    justify-content: center;
-    text-align: center;
-  }
+.header-left,
+.header-right {
+  width: 100%;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
 
-  header h1 {
-    font-size: 1.5rem;
-    word-break: break-word;
-  }
+.header-left i,
+.header-right i {
+  margin: 0 0.5rem;
+}
+
+header h1 {
+  font-size: 1.6rem;
+  line-height: 1.2;
+  word-break: break-word;
+  max-width: 90%;
+}
+
 
   .header-left,
   .header-right {
