@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
+
   <!-- Styles -->
   <style>
     @font-face {
@@ -68,6 +69,57 @@
   width: auto;
   display: inline-block;
 }
+    
+.language-selector {
+  position: relative;
+  display: inline-block;
+}
+
+.flag-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.flag-btn img {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
+.dropdown {
+  display: none;
+  position: absolute;
+  top: 110%;
+  right: 0;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  border-radius: 6px;
+  padding: 0.5rem;
+  z-index: 1000;
+}
+
+.dropdown a {
+  display: block;
+  padding: 0.3rem;
+}
+
+.dropdown a img {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+}
+
+.dropdown a:hover img {
+  transform: scale(1.1);
+}
+
+.language-selector:hover .dropdown {
+  display: block;
+}
+
 
 
     /* Header */
@@ -398,9 +450,17 @@
     Free shipping on all orders over £25
   </div>
   <div class="announcement-right">
-    <img src="https://flagcdn.com/w40/gb.png" alt="UK Flag" class="flag-icon" />
+<div class="language-selector">
+  <button class="flag-btn">
+    <img src="flags/uk.png" alt="English" />
+  </button>
+  <div class="dropdown">
+    <a href="#"><img src="flags/fr.png" alt="Français" /></a>
+    <a href="#"><img src="flags/es.png" alt="Español" /></a>
+    <a href="#"><img src="flags/de.png" alt="Deutsch" /></a>
   </div>
 </div>
+
 
 
 
