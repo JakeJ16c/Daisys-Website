@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Submit Your Ideas - You're So Golden</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Fredoka', sans-serif;
+      background-color: #F8F3EA;
+      color: #333;
+    }
+
+    header, footer {
+      background-color: #CCE0FF;
+      text-align: center;
+      padding: 1rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin: 2rem 0 1rem;
+      text-align: center;
+      color: #204ECF;
+    }
+
+    .form-container {
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    .submit-btn {
+      background-color: #80CBC4;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 25px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .submit-btn:hover {
+      background-color: #204ECF;
+    }
+
+    footer {
+      background-color: #FBB6C1;
+      font-size: 0.9rem;
+      color: #444;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h2>You're So Golden</h2>
+  </header>
+
+  <h1>Submit Your Custom Beadwork Idea</h1>
+
+  <div class="form-container">
+    <form action="https://formspree.io/f/yourformid" method="POST">
+      <div class="form-group">
+        <label for="name">Your Name</label>
+        <input type="text" name="name" id="name" required />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Your Email</label>
+        <input type="email" name="_replyto" id="email" required />
+      </div>
+
+      <div class="form-group">
+        <label for="idea">Tell us about your design idea</label>
+        <textarea name="idea" id="idea" rows="5" required></textarea>
+      </div>
+
+      <button type="submit" class="submit-btn">Submit Idea</button>
+    </form>
+  </div>
+
+  <footer>© 2025 You're So Golden · All Rights Reserved</footer>
+
+</body>
+</html>
