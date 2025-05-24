@@ -36,20 +36,25 @@
 .announcement-bar {
   background-color: #204ECF;
   color: #FFF;
+  position: relative;
+  height: 32px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: center;
   font-size: 0.85rem;
   font-weight: 500;
-  padding: 0.4rem 1rem;
   letter-spacing: 0.5px;
 }
 
 .announcement-center {
-  flex: 1;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .announcement-right {
+  position: absolute;
+  right: 1rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -62,6 +67,7 @@
   width: auto;
   display: inline-block;
 }
+
 
     /* Header */
     header {
