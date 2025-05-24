@@ -88,6 +88,24 @@
     .cart-icon:hover {
       color: #183aa0;
     }
+    .basket-preview {
+      position: absolute;
+      top: 100%;
+      right: 1rem;
+      margin-top: 0.5rem;
+      width: 220px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 1rem;
+      z-index: 999;
+    }
+
+    .hidden {
+      display: none;
+    }
+
 
     .nav-links {
       display: flex;
@@ -331,6 +349,10 @@
     </div>
     <h1>You're So Golden</h1>
     <a href="#cart" class="cart-icon"><i class="fas fa-basket-shopping"></i></a>
+    <div id="basket-preview" class="basket-preview hidden">
+      <p><strong>Your basket is empty.</strong></p>
+  </div>
+
   </header>
 
   <nav class="nav-links">
@@ -403,6 +425,23 @@
   </section>
 
   <footer>© 2025 You're So Golden · All Rights Reserved</footer>
+  
+<script>
+  const cartIcon = document.querySelector('.cart-icon');
+  const basketPreview = document.getElementById('basket-preview');
+
+  cartIcon.addEventListener('click', function(e) {
+    e.preventDefault(); // prevent jumping to #cart
+    basketPreview.classList.toggle('hidden');
+  });
+
+  // Optional: close if clicked outside
+  document.addEventListener('click', function(event) {
+    if (!cartIcon.contains(event.target) && !basketPreview.contains(event.target)) {
+      basketPreview.classList.add('hidden');
+    }
+  });
+</script>
 
 </body>
 </html>
