@@ -198,17 +198,22 @@
 
 
     /* Section Titles */
-    .section-title {
-      text-align: center;
-      font-size: 1.75rem;
-      margin: 3rem 0 1rem;
-    }
+.section-title {
+  text-align: center;
+  font-size: 1.75rem;
+  margin: 3rem 0 1rem;
+  z-index: 2;
+  position: relative;
+  background-color: var(--light-pink);
+}
+
 
     /* Marquee */
-    .marquee-container {
+.marquee-container {
   overflow: hidden;
   background-color: var(--light-pink);
   padding: 2rem 0;
+  margin-top: 2rem; /* <-- this is key */
 }
 
 .marquee-track {
