@@ -189,7 +189,7 @@
   <h2 class="page-title">Submit Your Custom Beadwork Idea</h2>
 
   <div class="form-container">
-    <form>
+    <form enctype="multipart/form-data">
       <label for="name">Your Name</label>
       <input type="text" id="name" name="name" placeholder="Enter your name" required>
 
@@ -198,6 +198,9 @@
 
       <label for="idea">Tell us about your design idea</label>
       <textarea id="idea" name="idea" placeholder="Describe your custom design..." required></textarea>
+      
+      <label for="file">Attach a reference image (optional)</label>
+      <input type="file" id="file" name="file">
 
       <button class="btn-submit" type="submit">Submit Idea</button>
     </form>
