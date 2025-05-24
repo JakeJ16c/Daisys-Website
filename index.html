@@ -34,14 +34,27 @@
 
     /* Announcement Bar */
     .announcement-bar {
-      background-color: var(--electric-blue);
+      background-color: #204ECF;
       color: #FFF;
-      text-align: center;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       font-size: 0.85rem;
       font-weight: 500;
       padding: 0.4rem 1rem;
       letter-spacing: 0.5px;
     }
+
+    .announcement-left {
+      flex: 1;
+    }
+
+    .announcement-right {
+      font-size: 0.85rem;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
 
     /* Header */
     header {
@@ -345,7 +358,15 @@
 <body>
 
   <!-- Announcement -->
-  <div class="announcement-bar">Free shipping on all orders over £25</div>
+    <div class="announcement-bar">
+      <div class="announcement-left">
+        Free shipping on all orders over £25
+      </div>
+      <div class="announcement-right">
+        English 🇬🇧
+      </div>
+    </div>
+
 
   <!-- Header -->
   <header>
