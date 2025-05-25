@@ -358,7 +358,10 @@
     <!-- 🔽 Logout Dropdown (initially hidden) -->
     <div id="logout-dropdown" class="hidden" style="position:absolute; right:1rem; top:4.2rem; background:white; border:1px solid #ccc; padding:1rem; border-radius:8px; z-index:1000;">
       <p>Are you sure you want to log out?</p>
-      <button id="confirm-logout" style="background:#204ECF; color:white; border:none; padding:0.5rem 1rem; border-radius:4px;">Yes, Log Out</button>
+      <button id="confirm-logout"
+        style="background:#204ECF; color:white; font-family: 'Fredoka', sans-serif; border:none; padding:0.5rem 1rem; border-radius:4px;">
+        Yes, Log Out
+      </button>
     </div>
 
   </header>
@@ -501,6 +504,28 @@
     });
   });
 </script>
+
+  <!-- Basket Dropdown -->
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const cartIcon = document.querySelector(".cart-icon");
+    const basketPreview = document.getElementById("basket-preview");
+
+    if (cartIcon && basketPreview) {
+      cartIcon.addEventListener("click", function (e) {
+        e.preventDefault();
+        basketPreview.classList.toggle("hidden");
+      });
+
+      document.addEventListener("click", function (event) {
+        if (!cartIcon.contains(event.target) && !basketPreview.contains(event.target)) {
+          basketPreview.classList.add("hidden");
+        }
+      });
+    }
+  });
+</script>
+
 
 
 </body>
