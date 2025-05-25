@@ -1,15 +1,17 @@
-
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Login - You're So Golden</title>
-<!-- Fonts & Icons -->
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
-<style>
+  <!-- 🔧 Meta & Title -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - You're So Golden</title>
+
+  <!-- 🔤 Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+
+  <!-- 🎨 Embedded Styles -->
+  <style>
     @font-face {
       font-family: 'Raks';
       src: url('Raks.otf') format('opentype');
@@ -28,6 +30,7 @@
       color: #333;
     }
 
+    /* 🟦 Top Free Shipping Banner */
     .announcement-bar {
       background-color: var(--electric-blue);
       color: #fff;
@@ -38,6 +41,7 @@
       letter-spacing: 0.5px;
     }
 
+    /* 🔷 Header Styling */
     header {
       background-color: #CCE0FF;
       padding: 1rem;
@@ -51,6 +55,7 @@
       margin: 0;
     }
 
+    /* 📦 Login Container */
     .login-container {
       max-width: 400px;
       margin: 4rem auto;
@@ -65,6 +70,7 @@
       color: var(--electric-blue);
     }
 
+    /* 🧾 Form Inputs and Button */
     .login-container input,
     .login-container button {
       width: 100%;
@@ -91,6 +97,7 @@
       background-color: #183aa0;
     }
 
+    /* ❌ Login Error Message */
     #login-error {
       color: red;
       font-weight: 500;
@@ -98,6 +105,7 @@
       display: none;
     }
 
+    /* 🔚 Footer */
     footer {
       text-align: center;
       padding: 1.5rem;
@@ -108,44 +116,65 @@
     }
   </style>
 </head>
-<body><div class="announcement-bar">Free shipping on all UK orders over £25</div>
-<header class="site-header">
-<div class="header-left">
-<a href="#"><i class="fab fa-instagram"></i></a>
-<a href="#"><i class="fab fa-facebook-f"></i></a>
-<a href="#"><i class="fas fa-phone"></i></a>
-<a href="#"><i class="fas fa-envelope"></i></a>
-</div>
-<h1 class="header-title"><a class="logo-link" href="index.html">You're So Golden</a></h1>
-<div class="header-right">
-<a class="cart-icon" href="#cart"><i class="fas fa-basket-shopping"></i></a>
-<a class="login-icon" href="login.html" title="Login">
-<i class="fas fa-user"></i>
-</a>
-</div>
-<div class="basket-preview hidden" id="basket-preview">
-<p><strong>Your basket is empty.</strong></p>
-</div>
-</header>
-<nav class="nav-links">
-<a href="#">Home</a>
-<a href="#">Shop</a>
-<a href="#">About</a>
-<a href="contacts.html">Contact</a>
-</nav>
-<section class="login-container">
-<h2><i class="fas fa-user"></i> Login</h2>
-<form id="loginForm">
-<input id="email" placeholder="Email" required="" type="email"/>
-<input id="password" placeholder="Password" required="" type="password"/>
-<button type="submit">Log In</button>
-<p id="login-error"></p>
-</form>
-</section>
-<footer>© 2025 You're So Golden · All Rights Reserved</footer>
-<script type="module">
+
+<body>
+  <!-- 🟦 Announcement Bar -->
+  <div class="announcement-bar">Free shipping on all UK orders over £25</div>
+
+  <!-- 👑 Site Header with Icons and Logo -->
+  <header class="site-header">
+    <div class="header-left">
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-facebook-f"></i></a>
+      <a href="#"><i class="fas fa-phone"></i></a>
+      <a href="#"><i class="fas fa-envelope"></i></a>
+    </div>
+    <h1 class="header-title">
+      <a class="logo-link" href="index.html">You're So Golden</a>
+    </h1>
+    <div class="header-right">
+      <a class="cart-icon" href="#cart"><i class="fas fa-basket-shopping"></i></a>
+      <a class="login-icon" href="login.html" title="Login">
+        <i class="fas fa-user"></i>
+      </a>
+    </div>
+    <!-- 🛒 Basket Preview Placeholder -->
+    <div class="basket-preview hidden" id="basket-preview">
+      <p><strong>Your basket is empty.</strong></p>
+    </div>
+  </header>
+
+  <!-- 🔗 Navigation Links (you can style further or adjust) -->
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="#">Shop</a>
+    <a href="#">About</a>
+    <a href="contacts.html">Contact</a>
+  </nav>
+
+  <!-- 🔐 Login Form Section -->
+  <section class="login-container">
+    <h2><i class="fas fa-user"></i> Login</h2>
+    <form id="loginForm">
+      <input id="email" type="email" placeholder="Email" required />
+      <input id="password" type="password" placeholder="Password" required />
+      <button type="submit">Log In</button>
+      <p id="login-error"></p>
+    </form>
+  </section>
+
+  <!-- 🔻 Footer -->
+  <footer>© 2025 You're So Golden · All Rights Reserved</footer>
+
+  <!-- 🔐 Firebase Auth Logic -->
+  <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-    import { getAuth, setPersistence, browserLocalPersistence, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+    import {
+      getAuth,
+      setPersistence,
+      browserLocalPersistence,
+      signInWithEmailAndPassword
+    } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyA6kN9-7dN9Ovq6BmWBBJwBhLXRW6INX4c",
@@ -159,8 +188,11 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+
+    // 🧠 Keep user logged in between page refreshes
     setPersistence(auth, browserLocalPersistence);
 
+    // 📩 Handle Form Submission
     const form = document.getElementById("loginForm");
     const loginError = document.getElementById("login-error");
 
@@ -171,12 +203,15 @@
       try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
+        // 👑 If admin email, go to dashboard
         if (user.email === "daisybelle76@gmail.com") {
           window.location.href = "admin.html";
         } else {
-          window.location.href = "index.html"; // or any general page for normal users
+          // 🌐 All other users go to homepage
+          window.location.href = "index.html";
         }
       } catch (error) {
+        // ❌ Show login error message
         loginError.textContent = "❌ " + error.message.replace("Firebase: ", "");
         loginError.style.display = "block";
       }
