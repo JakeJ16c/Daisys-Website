@@ -40,9 +40,11 @@
       color: inherit;
     }
     
-    header {
+    /* ========== Header Section ========== */
+    .site-header {
       background-color: #CCE0FF;
-      padding: 0.8rem;
+      padding-top: 0.8rem;
+      padding-bottom: 0rem;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -62,14 +64,9 @@
       color: var(--electric-blue);
       font-size: 1.2rem;
       text-decoration: none;
-      transition: color 0.3s ease;
     }
 
-    .header-left a:hover {
-      color: #183aa0;
-    }
-
-    header h1 {
+    .header-title {
       font-family: 'Raks', serif;
       font-size: 2.3rem;
       color: var(--electric-blue);
@@ -77,43 +74,65 @@
       margin: 0;
     }
 
-    .cart-icon {
+    .logo-link {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .header-right {
       position: absolute;
       right: 1rem;
       top: 50%;
       transform: translateY(-50%);
+      display: flex;
+      align items: center;
+    }
+
+    .cart-icon {
       font-size: 1.5rem;
       color: var(--electric-blue);
     }
 
-    .cart-icon:hover {
-      color: #183aa0;
-    }
     .basket-preview {
       position: absolute;
       top: 100%;
       right: 1rem;
       margin-top: 0.5rem;
-      width: 220px;
       background: white;
-      border: 1px solid #ccc;
       border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       padding: 1rem;
+      width: 220px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border: 1px solid #ccc;
       z-index: 999;
     }
 
-    .hidden {
-      display: none;
+    .hidden { display: none; }
+
+    .login-icon {
+      margin-left: 1rem;
+      font-size: 1.2rem;
+      color: var(--electric-blue);
+      transition: transform 0.2s ease, color 0.2s ease;
     }
 
+    .login-icon:hover {
+      color: #000;
+      transform: scale(1.1);
+    }
+
+    .login-icon,
+    .cart-icon {
+      font-size: clamp(1rem, 2.5vw, 1.5rem);
+    }
+
+    /* ========== Navigation Bar ========== */
     .nav-links {
       display: flex;
       gap: 0.5rem;
-      padding: 0.3rem 1rem;
+      padding: 0rem 1rem;
       background-color: #CCE0FF;
       justify-content: center;
-      border-bottom: 1px solid #ddd;
     }
 
     .nav-links a {
@@ -123,11 +142,6 @@
       font-size: 0.9rem;
       padding: 0.4rem 0.75rem;
       border-radius: 6px;
-      transition: background 0.2s;
-    }
-
-    .nav-links a:hover {
-      background-color: #dce2ff;
     }
     
     .section-title {
