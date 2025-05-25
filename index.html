@@ -347,14 +347,22 @@
     <h1 class="header-title"><a href="index.html" class="logo-link">You're So Golden</a></h1>
     <div class="header-right">
       <a href="#cart" class="cart-icon"><i class="fas fa-basket-shopping"></i></a>
-      <a href="login.html" class="login-icon" title="Login">
-      <i class="fas fa-user"></i>
-    </a>
+      <a id="auth-icon" class="login-icon" href="login.html" title="Login">
+        <i id="auth-icon-symbol" class="fas fa-user"></i>
+      </a>
+
 </div>
 
     <div id="basket-preview" class="basket-preview hidden">
       <p><strong>Your basket is empty.</strong></p>
     </div>
+    
+    <!-- 🔽 Logout Dropdown (initially hidden) -->
+    <div id="logout-dropdown" class="hidden" style="position:absolute; right:1rem; top:4.2rem; background:white; border:1px solid #ccc; padding:1rem; border-radius:8px; z-index:1000;">
+      <p>Are you sure you want to log out?</p>
+      <button id="confirm-logout" style="background:#204ECF; color:white; border:none; padding:0.5rem 1rem; border-radius:4px;">Yes, Log Out</button>
+    </div>
+
   </header>
 
   <!-- Navigation Bar -->
@@ -440,6 +448,87 @@
       }
     });
   </script>
+  
+  <!-- Firebase Login Status Script -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+
+  // ✅ Firebase config for your app
+  const firebaseConfig = {
+    apiKey: "AIzaSyA6kN9-7dN9Ovq6BmWBBJwBhLXRW6INX4c",
+    authDomain: "daisy-s-website.firebaseapp.com",
+    projectId: "daisy-s-website",
+    storageBucket: "daisy-s-website.firebasestorage.app",
+    messagingSenderId: "595443495060",
+    appId: "1:595443495060:web:7bbdd1108ad336d55c8481",
+    measurementId: "G-ST5CQ6PV41"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // ✅ This will detect if a user is logged in when page loads
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+  console.log("✅ User is logged in:", user.email);
+  const iconLink = document.getElementById("auth-icon");
+  const iconSymbol = document.getElementById("auth-icon-symbol");
+  if (iconLink && iconSymbol) {
+    // 🔄 Change to logout icon
+    iconSymbol.classList.remove("fa-user");
+    iconSymbol.classList.add("fa-arrow-right-from-bracket");
+    iconLink.href = "#";
+    iconLink.title = "Log Out";
+    // ⏬ Set up logout confirmation popup (added in next step)
+    iconLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      showLogoutDropdown(); // Will define this in Step 3
+    });
+  }
+} else {
+  console.log("👤 No user logged in");
+  const iconLink = document.getElementById("auth-icon");
+  const iconSymbol = document.getElementById("auth-icon-symbol");
+  if (iconLink && iconSymbol) {
+    // ↩️ Revert to login icon
+    iconSymbol.classList.remove("fa-arrow-right-from-bracket");
+    iconSymbol.classList.add("fa-user");
+    iconLink.href = "login.html";
+    iconLink.title = "Login";
+  }
+}
+    function showLogoutDropdown() {
+  const dropdown = document.getElementById("logout-dropdown");
+  if (dropdown) dropdown.classList.remove("hidden");
+
+  // Close if clicked outside
+  document.addEventListener("click", function handler(e) {
+    if (!dropdown.contains(e.target) && e.target.id !== "auth-icon") {
+      dropdown.classList.add("hidden");
+      document.removeEventListener("click", handler);
+    }
+  });
+}
+import { signOut } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+
+document.addEventListener("DOMContentLoaded", () => {
+  const logoutBtn = document.getElementById("confirm-logout");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      signOut(auth).then(() => {
+        window.location.reload(); // Optional: refresh to update UI
+      }).catch((error) => {
+        alert("Error logging out: " + error.message);
+      });
+    });
+  }
+});
+
+
+  });
+</script>
+
 
 </body>
 </html>
