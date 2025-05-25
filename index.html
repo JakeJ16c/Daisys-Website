@@ -294,19 +294,15 @@
 
     /* ========== Responsive Fixes ========== */
     @media (max-width: 600px) {
-  .header-left {
-    display: none;
-  }
-
   .site-header {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    gap: 0.5rem;
     padding: 1rem;
-    background-color: #CCE0FF;
     position: relative;
+    background-color: #CCE0FF;
+    height: 60px; /* ✅ force height to wrap icons and title */
   }
 
   .header-title {
@@ -317,24 +313,26 @@
 
   .login-icon,
   .cart-icon {
+    position: absolute;
     font-size: 1.3rem;
+    top: 50%;
+    transform: translateY(-50%);
     color: var(--electric-blue);
   }
 
   .login-icon {
-    position: absolute;
     left: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
   }
 
   .cart-icon {
-    position: absolute;
     right: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
+  }
+
+  .header-left {
+    display: none;
   }
 }
+
 
 
   </style>
