@@ -73,7 +73,6 @@
       color: var(--electric-blue);
     }
 
-    /* Make inputs and button the same width */
     .login-container input,
     .login-container button {
       width: 100%;
@@ -131,17 +130,20 @@
 </head>
 <body>
 
+  <!-- Announcement bar -->
   <div class="announcement-bar">Free shipping on all orders over £25</div>
 
+  <!-- Website header with logo -->
   <header>
     <h1><a href="index.html" class="logo-link">You're So Golden</a></h1>
   </header>
 
+  <!-- Login form section -->
   <section class="login-container">
     <h2><i class="fas fa-user"></i> Login</h2>
-    <form action="#" method="post">
-      <input type="email" placeholder="Email" required>
-      <input type="password" placeholder="Password" required>
+    <form id="loginForm">
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="password" placeholder="Password" required>
       <button type="submit">Log In</button>
     </form>
     <div class="link">
@@ -150,7 +152,55 @@
     </div>
   </section>
 
+  <!-- Footer -->
   <footer>© 2025 You're So Golden · All Rights Reserved</footer>
 
+  <!-- Firebase Login Script -->
+  <script type="module">
+    // Import required Firebase SDKs
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyA6kN9-7dN9Ovq6BmWBBJwBhLXRW6INX4c",
+      authDomain: "daisy-s-website.firebaseapp.com",
+      projectId: "daisy-s-website",
+      storageBucket: "daisy-s-website.firebasestorage.app",
+      messagingSenderId: "595443495060",
+      appId: "1:595443495060:web:7bbdd1108ad336d55c8481",
+      measurementId: "G-ST5CQ6PV41"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Login form logic
+    const form = document.getElementById("loginForm");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // ✅ Replace with your girlfriend's registered Firebase email
+        const adminEmail = "daisybelle76@gmail.com";
+
+        // Redirect to admin page if email matches
+        if (user.email === adminEmail) {
+          window.location.href = "admin.html";
+        } else {
+          alert("Access denied. You're not authorized to access the admin dashboard.");
+        }
+      } catch (error) {
+        alert("Login failed: " + error.message);
+      }
+    });
+  </script>
 </body>
 </html>
