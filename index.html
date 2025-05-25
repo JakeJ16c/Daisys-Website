@@ -433,8 +433,13 @@
   <!-- Basket Toggle Script -->
   <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+  import {
+    getAuth,
+    onAuthStateChanged,
+    signOut
+  } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 
+  // ✅ Firebase config
   const firebaseConfig = {
     apiKey: "AIzaSyA6kN9-7dN9Ovq6BmWBBJwBhLXRW6INX4c",
     authDomain: "daisy-s-website.firebaseapp.com",
@@ -448,9 +453,8 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
 
-  // ✅ Shared DOMContentLoaded for both features
+  // ✅ Wait until DOM is ready before attaching any listeners
   document.addEventListener("DOMContentLoaded", () => {
-    // === 🛒 Basket Toggle ===
     const cartIcon = document.querySelector(".cart-icon");
     const basketPreview = document.getElementById("basket-preview");
 
@@ -460,19 +464,19 @@
         basketPreview.classList.toggle("hidden");
       });
 
-      document.addEventListener("click", function(event) {
+      document.addEventListener("click", (event) => {
         if (!cartIcon.contains(event.target) && !basketPreview.contains(event.target)) {
           basketPreview.classList.add("hidden");
         }
       });
     }
 
-    // === 🚪 Logout Button ===
+    // ✅ Attach logout event handler once button exists
     const logoutBtn = document.getElementById("confirm-logout");
     if (logoutBtn) {
       logoutBtn.addEventListener("click", () => {
         signOut(auth).then(() => {
-          window.location.reload();
+          window.location.reload(); // Refresh page to update icon
         }).catch((error) => {
           alert("Error logging out: " + error.message);
         });
@@ -480,22 +484,33 @@
     }
   });
 
-  // ✅ Detect login state
+  // ✅ Detect if user is logged in and adjust icon dynamically
   onAuthStateChanged(auth, (user) => {
     const iconLink = document.getElementById("auth-icon");
     const iconSymbol = document.getElementById("auth-icon-symbol");
 
     if (user) {
-      console.log("✅ Logged in:", user.email);
+      console.log("✅ Logged in as:", user.email);
       if (iconLink && iconSymbol) {
         iconSymbol.classList.remove("fa-user");
         iconSymbol.classList.add("fa-arrow-right-from-bracket");
         iconLink.href = "#";
         iconLink.title = "Log Out";
 
+        // 🔽 Show logout dropdown on icon click
         iconLink.addEventListener("click", (e) => {
           e.preventDefault();
-          showLogoutDropdown();
+          const dropdown = document.getElementById("logout-dropdown");
+          if (dropdown) dropdown.classList.remove("hidden");
+
+          // ❌ Close dropdown if clicked outside
+          const handler = function (e) {
+            if (!dropdown.contains(e.target) && e.target.id !== "auth-icon") {
+              dropdown.classList.add("hidden");
+              document.removeEventListener("click", handler);
+            }
+          };
+          document.addEventListener("click", handler);
         });
       }
     } else {
@@ -508,19 +523,8 @@
       }
     }
   });
-
-  function showLogoutDropdown() {
-    const dropdown = document.getElementById("logout-dropdown");
-    if (dropdown) dropdown.classList.remove("hidden");
-
-    document.addEventListener("click", function handler(e) {
-      if (!dropdown.contains(e.target) && e.target.id !== "auth-icon") {
-        dropdown.classList.add("hidden");
-        document.removeEventListener("click", handler);
-      }
-    });
-  }
 </script>
+
 
 
 </body>
