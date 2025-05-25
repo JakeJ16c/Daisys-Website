@@ -474,60 +474,53 @@
       });
     }
 
-    // 🔄 Update icon state and attach logout icon click logic
+    // 🔘 Always attach logout button handler (even before user is confirmed)
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", () => {
+        signOut(auth).then(() => {
+          window.location.reload();
+        }).catch((error) => {
+          alert("Error logging out: " + error.message);
+        });
+      });
+    }
+
+    // 👤 Watch for login state and adjust icon
     onAuthStateChanged(auth, (user) => {
-      if (user) {
-        console.log("✅ Logged in as:", user.email);
-        if (iconLink && iconSymbol) {
-          iconSymbol.classList.remove("fa-user");
-          iconSymbol.classList.add("fa-arrow-right-from-bracket");
-          iconLink.href = "#";
-          iconLink.title = "Log Out";
-        }
+      if (user && iconLink && iconSymbol) {
+        iconSymbol.classList.remove("fa-user");
+        iconSymbol.classList.add("fa-arrow-right-from-bracket");
+        iconLink.href = "#";
+        iconLink.title = "Log Out";
 
-        // 👆 Only bind logout icon once
-        if (iconLink) {
-          iconLink.addEventListener("click", (e) => {
-            e.preventDefault();
-            if (logoutDropdown) {
-              logoutDropdown.classList.remove("hidden");
+        // 🧠 Attach dropdown toggle ONCE (not repeatedly)
+        iconLink.addEventListener("click", (e) => {
+          e.preventDefault();
+          if (logoutDropdown) {
+            logoutDropdown.classList.remove("hidden");
 
-              const handler = function (e) {
-                if (!logoutDropdown.contains(e.target) && e.target.id !== "auth-icon") {
-                  logoutDropdown.classList.add("hidden");
-                  document.removeEventListener("click", handler);
-                }
-              };
-              document.addEventListener("click", handler);
-            }
-          });
-        }
+            // 🧹 Hide dropdown when clicking outside
+            const handler = function (e) {
+              if (!logoutDropdown.contains(e.target) && e.target.id !== "auth-icon") {
+                logoutDropdown.classList.add("hidden");
+                document.removeEventListener("click", handler);
+              }
+            };
+            document.addEventListener("click", handler);
+          }
+        });
+      }
 
-        // 🧹 Confirm logout click
-        if (logoutBtn) {
-          logoutBtn.addEventListener("click", () => {
-            signOut(auth).then(() => {
-              window.location.reload();
-            }).catch((error) => {
-              alert("Error logging out: " + error.message);
-            });
-          });
-        }
-      } else {
-        console.log("👤 Not logged in");
-        if (iconLink && iconSymbol) {
-          iconSymbol.classList.remove("fa-arrow-right-from-bracket");
-          iconSymbol.classList.add("fa-user");
-          iconLink.href = "login.html";
-          iconLink.title = "Login";
-        }
+      // 👋 Not logged in
+      if (!user && iconLink && iconSymbol) {
+        iconSymbol.classList.remove("fa-arrow-right-from-bracket");
+        iconSymbol.classList.add("fa-user");
+        iconLink.href = "login.html";
+        iconLink.title = "Login";
       }
     });
   });
 </script>
-
-
-
 
 </body>
 </html>
