@@ -133,6 +133,7 @@
       padding: 0rem 1rem;
       background-color: #CCE0FF;
       justify-content: center;
+
     }
 
     .nav-links a {
@@ -143,35 +144,264 @@
       padding: 0.4rem 0.75rem;
       border-radius: 6px;
     }
-    </style>
-    
-  <h1>Our Products</h1>
-  <div id="productGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;"></div>
 
-  <script type="module">
-    import { collection, getDocs } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
-    const db = window.firebaseDB;
-
-    async function loadProducts() {
-      const grid = document.getElementById('productGrid');
-      const snapshot = await getDocs(collection(db, "products"));
-      snapshot.forEach(doc => {
-        const p = doc.data();
-        const div = document.createElement('div');
-        div.style.border = "1px solid #ccc";
-        div.style.padding = "10px";
-        div.style.borderRadius = "8px";
-        div.innerHTML = `
-          <img src="${p.image}" style="width: 100%; height: auto; border-radius: 8px;" />
-          <h3>${p.title}</h3>
-          <p>${p.description}</p>
-          <p><strong>£${p.price.toFixed(2)}</strong></p>
-        `;
-        grid.appendChild(div);
-      });
+    /* ========== Hero Section ========== */
+    .hero {
+      text-align: center;
     }
 
-    loadProducts();
-  </script>
+    .btn {
+      background-color: #80CBC4;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 25px;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background-color: var(--electric-blue);
+      color: white;
+    }
+
+    /* ========== Product Grid ========== */
+    .section-title {
+      text-align: center;
+      font-size: 1.75rem;
+      margin: 3rem 0 1rem;
+    }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    .product-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-align: center;
+    }
+
+    .product-card img {
+      height: 250px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      width: 100%;
+    }
+
+    /* ========== Hover Jump Animation ========== */
+    .product-card:hover {
+      transform: translateY(-5px);
+      transition: transform 0.3s ease;
+    }
+
+    /* ========== Footer ========== */
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      background-color: var(--soft-pink);
+      font-size: 0.9rem;
+    }
+
+    /* ========== Responsive Fixes ========== */
+    @media (max-width: 600px) {
+  .site-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    position: relative;
+    background-color: #CCE0FF;
+  }
+
+  .header-title {
+    font-size: 1.8rem;
+    font-family: 'Raks', serif;
+    margin: 0 auto;
+  }
+
+  .login-icon,
+  .cart-icon {
+    position: static;
+    font-size: 1.3rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--electric-blue);
+  }
+
+  .header-left {
+    display: none;
+  }
+}
+
+  </style>
+</head>
+<body>
+
+  <!-- Top Announcement -->
+  <div class="announcement-bar">Free shipping on all UK orders over £25</div>
+
+  <!-- Header Section -->
+  <header class="site-header">
+    <div class="header-left">
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-facebook-f"></i></a>
+      <a href="#"><i class="fas fa-phone"></i></a>
+      <a href="#"><i class="fas fa-envelope"></i></a>
+    </div>
+    <h1 class="header-title"><a href="index.html" class="logo-link">You're So Golden</a></h1>
+    <div class="header-right">
+      <a href="#cart" class="cart-icon"><i class="fas fa-basket-shopping"></i></a>
+      <a id="auth-icon" class="login-icon" href="login.html" title="Login">
+        <i id="auth-icon-symbol" class="fas fa-user"></i>
+      </a>
+
+</div>
+
+    <div id="basket-preview" class="basket-preview hidden">
+      <p><strong>Your basket is empty.</strong></p>
+    </div>
+    
+    <!-- 🔽 Logout Dropdown (initially hidden) -->
+    <div id="logout-dropdown" class="hidden" style="position:absolute; right:1rem; top:4.2rem; background:white; border:1px solid #ccc; padding:1rem; border-radius:8px; z-index:1000;">
+      <p>Are you sure you want to log out?</p>
+      <button id="confirm-logout"
+        style="background:#204ECF; color:white; font-family: 'Fredoka', sans-serif; border:none; padding:0.5rem 1rem; border-radius:4px;">
+        Yes, Log Out
+      </button>
+    </div>
+
+  </header>
+
+  <!-- Navigation Bar -->
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="shop.html">Shop</a>
+    <a href="#">About</a>
+    <a href="contacts.html">Contact</a>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <h2>All Products</h2>
+  </section>
+
+  <!-- Product Grid -->
+  <h2 class="section-title">My Collection</h2>
+  <section class="products">
+    <div class="product-card"><img src="image1.jpeg"><h3>Scotch</h3><p>£10.00</p><a class="btn" href="#">Buy Now</a></div>
+    <div class="product-card"><img src="image2.jpeg"><h3>Spritz</h3><p><s>£15.00</s> £10.00</p><a class="btn" href="#">Buy Now</a></div>
+    <div class="product-card"><img src="image3.jpeg"><h3>Manhattan</h3><p>£10.00</p><a class="btn" href="#">Buy Now</a></div>
+    <div class="product-card"><img src="image4.jpeg"><h3>French 75</h3><p>£10.00</p><a class="btn" href="#">Buy Now</a></div>
+    <div class="product-card"><img src="image5.jpeg"><h3>Whiskey Sour</h3><p>£10.00</p><a class="btn" href="#">Buy Now</a></div>
+    <div class="product-card"><img src="image1.jpeg"><h3>Mojito</h3><p>£10.00</p><a class="btn" href="#">Buy Now</a></div>
+  </section>
+
+  <!-- Footer -->
+  <footer>© 2025 You're So Golden · All Rights Reserved</footer>
+
+  <!-- Basket Toggle Script -->
+      <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+
+  // ✅ Initialize Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyA6kN9-7dN9Ovq6BmWBBJwBhLXRW6INX4c",
+    authDomain: "daisy-s-website.firebaseapp.com",
+    projectId: "daisy-s-website",
+    storageBucket: "daisy-s-website.firebasestorage.app",
+    messagingSenderId: "595443495060",
+    appId: "1:595443495060:web:7bbdd1108ad336d55c8481",
+    measurementId: "G-ST5CQ6PV41"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const iconLink = document.getElementById("auth-icon");
+    const iconSymbol = document.getElementById("auth-icon-symbol");
+    const logoutDropdown = document.getElementById("logout-dropdown");
+    const logoutBtn = document.getElementById("confirm-logout");
+
+    // 🟡 Detect login status
+    onAuthStateChanged(auth, (user) => {
+      if (user && iconLink && iconSymbol) {
+        // ✅ Logged in - switch to logout icon
+        iconSymbol.classList.remove("fa-user");
+        iconSymbol.classList.add("fa-arrow-right-from-bracket");
+        iconLink.href = "#";
+        iconLink.title = "Log Out";
+
+        iconLink.addEventListener("click", (e) => {
+          e.preventDefault();
+          if (logoutDropdown) logoutDropdown.classList.remove("hidden");
+        });
+
+        // 🟡 Confirm logout click
+        if (logoutBtn) {
+          logoutBtn.addEventListener("click", () => {
+            signOut(auth).then(() => {
+              window.location.reload();
+            }).catch((error) => {
+              alert("Error logging out: " + error.message);
+            });
+          });
+        }
+
+        // 🔒 Hide dropdown when clicking outside
+        document.addEventListener("click", (e) => {
+          if (
+            logoutDropdown &&
+            !logoutDropdown.contains(e.target) &&
+            e.target.id !== "auth-icon" &&
+            e.target.id !== "auth-icon-symbol"
+          ) {
+            logoutDropdown.classList.add("hidden");
+          }
+        });
+      } else if (iconLink && iconSymbol) {
+        // ❌ Not logged in - show login icon
+        iconSymbol.classList.remove("fa-arrow-right-from-bracket");
+        iconSymbol.classList.add("fa-user");
+        iconLink.href = "login.html";
+        iconLink.title = "Login";
+      }
+    });
+  });
+</script>
+
+  <!-- Basket Dropdown -->
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const cartIcon = document.querySelector(".cart-icon");
+    const basketPreview = document.getElementById("basket-preview");
+
+    if (cartIcon && basketPreview) {
+      cartIcon.addEventListener("click", function (e) {
+        e.preventDefault();
+        basketPreview.classList.toggle("hidden");
+      });
+
+      document.addEventListener("click", function (event) {
+        if (!cartIcon.contains(event.target) && !basketPreview.contains(event.target)) {
+          basketPreview.classList.add("hidden");
+        }
+      });
+    }
+  });
+</script>
+  
 </body>
 </html>
