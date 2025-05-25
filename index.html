@@ -288,24 +288,41 @@
 
     /* ========== Responsive Fixes ========== */
     @media (max-width: 600px) {
-      .header-left { display: none; }
-      .site-header { flex-direction: column; text-align: center; gap: 0.5rem; }
-      .header-title { font-size: 1.8rem; }
-      .header-right {position: absolute;top: 1rem;right: 1rem;transform: none; }
-      .login-icon {left: 1rem;right: auto;top: 1rem;transform: none;font-size: 1.5rem;}
+  .header-left {
+    display: none;
+  }
 
-      
-      .products {
-        grid-template-columns: repeat(2, 1fr); /* Two items per row */
-        padding: 2rem 1rem;
-        gap: 1rem;
-      }
+  .site-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    position: relative; /* ✅ Needed for absolute positioning inside */
+    align-items: center;
+  }
 
-      .product-card img {
-        height: 180px;
-        object-fit: cover;
-      }
+  .header-title {
+    font-size: 1.8rem;
+  }
+
+  .header-right {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    transform: none;
+  }
+
+  .login-icon {
+    position: absolute;     /* ✅ Add this */
+    left: 1rem;
+    right: auto;
+    top: 1rem;
+    transform: none;
+    font-size: 1.5rem;
+    color: var(--electric-blue);
+  }
 }
+
 }
 
 
