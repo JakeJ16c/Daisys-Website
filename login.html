@@ -108,6 +108,22 @@
       transition: background 0.3s ease;
     }
 
+    .auth-container .link {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+.auth-container .link a {
+  color: var(--electric-blue);
+  text-decoration: none;
+}
+
+.auth-container .link a:hover {
+  text-decoration: underline;
+}
+
+
     /* Button hover effect */
     .login-container button:hover {
       background-color: #183aa0;
@@ -138,10 +154,15 @@
   <section class="login-container">
     <h2><i class="fas fa-user"></i> Login</h2>
     <form action="#" method="post">
-      <input type="email" placeholder="Email" required>
-      <input type="password" placeholder="Password" required>
-      <button type="submit">Log In</button>
-    </form>
+  <input type="email" placeholder="Email" required>
+  <input type="password" placeholder="Password" required>
+  <button type="submit">Log In</button>
+</form>
+<div class="link">
+  <a href="#">Forgot your password?</a><br>
+  Don’t have an account? <a href="register.html">Register here</a>
+</div>
+
   </section>
 
   <!-- Footer -->
