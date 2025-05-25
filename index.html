@@ -444,6 +444,44 @@
   <!-- Footer -->
   <footer>© 2025 You're So Golden · All Rights Reserved</footer>
 
+  <!-- Custom Logout Confirmation Modal -->
+<div id="logout-modal" class="hidden" style="
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;">
+  <div style="
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    font-family: 'Fredoka', sans-serif;
+    text-align: center;
+    max-width: 300px;">
+    <p style="margin-bottom: 1.5rem;">Are you sure you want to log out?</p>
+    <button id="confirm-logout-btn" style="
+      background-color: #204ECF;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      font-size: 1rem;">Yes, Log Out</button>
+    <br/><br/>
+    <button id="cancel-logout-btn" style="
+      background-color: transparent;
+      color: #204ECF;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 0.9rem;">Cancel</button>
+  </div>
+</div>
+
   <!-- User Toggle Script -->
       <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
@@ -498,15 +536,25 @@
 
       const logoutBtn = document.getElementById("confirm-logout");
       logoutBtn.addEventListener("click", () => {
-        const confirmLogout = confirm("Are you sure you want to log out?");
-        if (!confirmLogout) return;
+      const modal = document.getElementById("logout-modal");
+      if (modal) modal.classList.remove("hidden");
 
+      const confirmBtn = document.getElementById("confirm-logout-btn");
+      const cancelBtn = document.getElementById("cancel-logout-btn");
+
+      confirmBtn.onclick = () => {
         signOut(auth).then(() => {
           window.location.reload();
         }).catch((error) => {
           alert("Logout error: " + error.message);
         });
-      });
+      };
+
+  cancelBtn.onclick = () => {
+    modal.classList.add("hidden");
+  };
+});
+
     } else {
       // 🚫 Not logged in view
       dropdownContent.innerHTML = `
