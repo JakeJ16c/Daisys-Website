@@ -41,23 +41,23 @@
       letter-spacing: 0.5px;
     }
 
-    /* ========== Header Styling ========== */
-    header {
+    /* ========== Header Section ========== */
+    .site-header {
       background-color: #CCE0FF;
-      padding: 1rem;
-      text-align: center;
+      padding-top: 0.8rem;
+      padding-bottom: 0rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
     }
 
-    header h1 {
+    .header-title {
       font-family: 'Raks', serif;
       font-size: 2.3rem;
       color: var(--electric-blue);
+      text-shadow: 1px 1px 0 #fff;
       margin: 0;
-    }
-
-    .logo-link {
-      text-decoration: none;
-      color: inherit;
     }
 
     /* ========== Navigation Bar ========== */
@@ -78,7 +78,7 @@
       padding: 0.4rem 0.75rem;
       border-radius: 6px;
     }
-
+    
     /* 📦 Login Container */
     .login-container {
       max-width: 400px;
