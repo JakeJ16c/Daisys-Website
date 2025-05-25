@@ -9,6 +9,7 @@
       padding: 20px;
       background-color: #f4f4f4;
     }
+
     input, textarea, button {
       display: block;
       margin: 10px 0;
@@ -17,14 +18,40 @@
       width: 100%;
       max-width: 400px;
     }
+
     button {
       background-color: #204ECF;
       color: white;
       border: none;
       cursor: pointer;
     }
+
     button:hover {
       background-color: #183aa0;
+    }
+
+    #login-error {
+      color: red;
+      font-weight: 500;
+      margin-top: 10px;
+      display: none;
+    }
+
+    ul {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    ul li {
+      margin-bottom: 8px;
+    }
+
+    ul li button {
+      background-color: red;
+      padding: 5px 10px;
+      font-size: 0.9rem;
+      border-radius: 4px;
+      margin-left: 10px;
     }
   </style>
 </head>
@@ -34,6 +61,7 @@
     <input type="email" id="email" placeholder="Email" />
     <input type="password" id="password" placeholder="Password" />
     <button id="loginBtn">Login</button>
+    <p id="login-error"></p>
   </div>
 
   <div id="admin-panel" style="display: none;">
@@ -50,13 +78,13 @@
     <ul id="productList"></ul>
   </div>
 
-  <!-- ✅ Entire Firebase & Logic Below -->
+  <!-- Firebase + Admin Logic -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
     import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
-    // ✅ Firebase config
+    // ✅ Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyA6kN9-7dN9Ovq6BmWBBJwBhLXRW6INX4c",
       authDomain: "daisy-s-website.firebaseapp.com",
@@ -67,11 +95,15 @@
       measurementId: "G-ST5CQ6PV41"
     };
 
+    // ✅ Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    // ✅ Handle Login
     const loginBtn = document.getElementById('loginBtn');
+    const loginError = document.getElementById('login-error');
+
     loginBtn.addEventListener('click', async () => {
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
@@ -80,32 +112,35 @@
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        // ✅ Allow only your girlfriend’s email
         if (user.email === "daisybelle76@gmail.com") {
           document.getElementById('login-section').style.display = 'none';
           document.getElementById('admin-panel').style.display = 'block';
+          loginError.style.display = 'none';
           loadProducts();
         } else {
-          alert("Access denied.");
+          loginError.textContent = "❌ Access denied.";
+          loginError.style.display = 'block';
         }
       } catch (error) {
-        alert("Login failed: " + error.message);
+        loginError.textContent = "❌ " + error.message.replace("Firebase: ", "");
+        loginError.style.display = 'block';
       }
     });
 
+    // ✅ Load and manage products
     async function loadProducts() {
-      const list = document.getElementById('productList');
-      list.innerHTML = '';
+      const productList = document.getElementById('productList');
+      productList.innerHTML = '';
       const snapshot = await getDocs(collection(db, "products"));
       snapshot.forEach(product => {
         const data = product.data();
         const li = document.createElement('li');
         li.innerHTML = `<strong>${data.title}</strong> - £${data.price.toFixed(2)} <button>Delete</button>`;
-        li.querySelector('button').onclick = async () => {
+        li.querySelector('button').addEventListener('click', async () => {
           await deleteDoc(doc(db, "products", product.id));
           loadProducts();
-        };
-        list.appendChild(li);
+        });
+        productList.appendChild(li);
       });
 
       document.getElementById('productForm').onsubmit = async (e) => {
