@@ -431,7 +431,7 @@
   <footer>© 2025 You're So Golden · All Rights Reserved</footer>
 
   <!-- Basket Toggle Script -->
-    <script type="module">
+      <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
   import {
     getAuth,
@@ -455,12 +455,7 @@
   document.addEventListener("DOMContentLoaded", () => {
     const cartIcon = document.querySelector(".cart-icon");
     const basketPreview = document.getElementById("basket-preview");
-    const iconLink = document.getElementById("auth-icon");
-    const iconSymbol = document.getElementById("auth-icon-symbol");
-    const logoutDropdown = document.getElementById("logout-dropdown");
-    const logoutBtn = document.getElementById("confirm-logout");
 
-    // 🛒 Basket toggle
     if (cartIcon && basketPreview) {
       cartIcon.addEventListener("click", (e) => {
         e.preventDefault();
@@ -473,52 +468,51 @@
         }
       });
     }
+  });
 
-    // 🔘 Always attach logout button handler (even before user is confirmed)
-    if (logoutBtn) {
-      logoutBtn.addEventListener("click", () => {
-        signOut(auth).then(() => {
-          window.location.reload();
-        }).catch((error) => {
-          alert("Error logging out: " + error.message);
-        });
-      });
-    }
+  onAuthStateChanged(auth, (user) => {
+    const iconLink = document.getElementById("auth-icon");
+    const iconSymbol = document.getElementById("auth-icon-symbol");
+    const logoutDropdown = document.getElementById("logout-dropdown");
 
-    // 👤 Watch for login state and adjust icon
-    onAuthStateChanged(auth, (user) => {
-      if (user && iconLink && iconSymbol) {
-        iconSymbol.classList.remove("fa-user");
-        iconSymbol.classList.add("fa-arrow-right-from-bracket");
-        iconLink.href = "#";
-        iconLink.title = "Log Out";
+    if (user && iconLink && iconSymbol) {
+      iconSymbol.classList.remove("fa-user");
+      iconSymbol.classList.add("fa-arrow-right-from-bracket");
+      iconLink.href = "#";
+      iconLink.title = "Log Out";
 
-        // 🧠 Attach dropdown toggle ONCE (not repeatedly)
-        iconLink.addEventListener("click", (e) => {
-          e.preventDefault();
-          if (logoutDropdown) {
-            logoutDropdown.classList.remove("hidden");
+      iconLink.addEventListener("click", (e) => {
+        e.preventDefault();
 
-            // 🧹 Hide dropdown when clicking outside
-            const handler = function (e) {
-              if (!logoutDropdown.contains(e.target) && e.target.id !== "auth-icon") {
-                logoutDropdown.classList.add("hidden");
-                document.removeEventListener("click", handler);
-              }
+        if (logoutDropdown) {
+          logoutDropdown.classList.remove("hidden");
+
+          // ✅ Attach event handler HERE — when dropdown is visible
+          const logoutBtn = document.getElementById("confirm-logout");
+          if (logoutBtn) {
+            logoutBtn.onclick = () => {
+              signOut(auth)
+                .then(() => window.location.reload())
+                .catch((error) => alert("Error logging out: " + error.message));
             };
-            document.addEventListener("click", handler);
           }
-        });
-      }
 
-      // 👋 Not logged in
-      if (!user && iconLink && iconSymbol) {
-        iconSymbol.classList.remove("fa-arrow-right-from-bracket");
-        iconSymbol.classList.add("fa-user");
-        iconLink.href = "login.html";
-        iconLink.title = "Login";
-      }
-    });
+          // ❌ Hide dropdown if click outside
+          const handler = function (e) {
+            if (!logoutDropdown.contains(e.target) && e.target.id !== "auth-icon") {
+              logoutDropdown.classList.add("hidden");
+              document.removeEventListener("click", handler);
+            }
+          };
+          document.addEventListener("click", handler);
+        }
+      });
+    } else if (iconLink && iconSymbol) {
+      iconSymbol.classList.remove("fa-arrow-right-from-bracket");
+      iconSymbol.classList.add("fa-user");
+      iconLink.href = "login.html";
+      iconLink.title = "Login";
+    }
   });
 </script>
 
