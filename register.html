@@ -4,8 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Register - You're So Golden</title>
+
+  <!-- Fonts & Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
   <style>
     @font-face {
       font-family: 'Raks';
@@ -23,7 +26,6 @@
       font-family: 'Fredoka', sans-serif;
       background-color: var(--light-pink);
       color: #333;
-      padding: 0 1rem; /* Equal margin left & right */
     }
 
     .announcement-bar {
@@ -54,7 +56,7 @@
       color: inherit;
     }
 
-    .auth-container {
+    .register-container {
       max-width: 400px;
       margin: 4rem auto;
       background: white;
@@ -63,48 +65,54 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
-    .auth-container h2 {
+    .register-container h2 {
       margin-bottom: 1.5rem;
       color: var(--electric-blue);
     }
 
-    .auth-container input {
+    /* Shared input + button styles */
+    .register-container input,
+    .register-container button {
       width: 100%;
+      box-sizing: border-box;
       padding: 0.75rem;
-      margin-bottom: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 6px;
       font-size: 1rem;
+      border-radius: 6px;
+      margin-bottom: 1rem;
     }
 
-    .auth-container button {
-      width: 100%;
+    .register-container input {
+      border: 1px solid #ccc;
+    }
+
+    .register-container button {
       background-color: var(--electric-blue);
       color: white;
       border: none;
-      padding: 0.75rem;
-      font-size: 1rem;
-      border-radius: 6px;
       cursor: pointer;
       transition: background 0.3s ease;
     }
 
-    .auth-container button:hover {
+    .register-container button:hover {
       background-color: #183aa0;
     }
 
-    .auth-container .link {
+    .link {
       text-align: center;
       margin-top: 1rem;
       font-size: 0.9rem;
+      color: #555;
     }
 
-    .auth-container .link a {
+    .link a {
       color: var(--electric-blue);
+      font-weight: 500;
       text-decoration: none;
+      transition: color 0.3s ease;
     }
 
-    .auth-container .link a:hover {
+    .link a:hover {
+      color: #183aa0;
       text-decoration: underline;
     }
 
@@ -126,7 +134,7 @@
     <h1><a href="index.html" class="logo-link">You're So Golden</a></h1>
   </header>
 
-  <section class="auth-container">
+  <section class="register-container">
     <h2><i class="fas fa-user-plus"></i> Create Account</h2>
     <form action="#" method="post">
       <input type="text" placeholder="Full Name" required>
