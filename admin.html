@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,6 +27,7 @@
       font-family: 'Fredoka', sans-serif;
       background-color: var(--light-pink);
       color: #333;
+      padding: 0;
     }
 
     .announcement-bar {
@@ -35,6 +37,7 @@
       font-size: 0.85rem;
       font-weight: 500;
       padding: 0.5rem 1rem;
+      letter-spacing: 0.5px;
     }
 
     header {
@@ -85,6 +88,13 @@
       background-color: #183aa0;
     }
 
+    #login-error {
+      color: red;
+      font-weight: 500;
+      margin-top: 10px;
+      display: none;
+    }
+
     ul {
       list-style-type: none;
       padding-left: 0;
@@ -123,9 +133,14 @@
 <body>
 
   <div class="announcement-bar">Free shipping on all orders over £25</div>
-  <header><h1>You're So Golden</h1></header>
+
+  <header>
+    <h1>You're So Golden</h1>
+  </header>
 
   <div class="admin-container">
+    
+
     <div id="admin-panel" style="display: none;">
       <h2>Manage Products</h2>
       <form id="productForm">
@@ -145,7 +160,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
     import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -162,17 +177,35 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // ✅ Only show admin panel if logged in as Daisy
-    onAuthStateChanged(auth, (user) => {
-      if (user && user.email === "daisybelle76@gmail.com") {
-        document.getElementById('admin-panel').style.display = 'block';
-        loadProducts();
-      } else {
-        window.location.href = "login.html";
+    
+onAuthStateChanged(auth, (user) => {
+  if (user && user.email === "daisybelle76@gmail.com") {
+    
+    document.getElementById('admin-panel').style.display = 'block';
+    loadProducts();
+  } else {
+    window.location.href = "login.html";
+  }
+});
+
+    const loginError = document.getElementById('login-error');
+
+    // Login section skipped; user already handled in auth check
+        if (user.email === "daisybelle76@gmail.com") {
+          
+          document.getElementById('admin-panel').style.display = 'block';
+          loginError.style.display = 'none';
+          loadProducts();
+        } else {
+          loginError.textContent = "❌ Access denied.";
+          loginError.style.display = 'block';
+        }
+      } catch (error) {
+        loginError.textContent = "❌ " + error.message.replace("Firebase: ", "");
+        loginError.style.display = 'block';
       }
     });
 
-    // ✅ Load and manage products
     async function loadProducts() {
       const productList = document.getElementById('productList');
       productList.innerHTML = '';
