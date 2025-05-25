@@ -139,13 +139,7 @@
   </header>
 
   <div class="admin-container">
-    <h2>Admin Login</h2>
-    <div id="login-section">
-      <input type="email" id="email" placeholder="Email" />
-      <input type="password" id="password" placeholder="Password" />
-      <button id="loginBtn">Login</button>
-      <p id="login-error"></p>
-    </div>
+    
 
     <div id="admin-panel" style="display: none;">
       <h2>Manage Products</h2>
@@ -186,7 +180,7 @@
     
 onAuthStateChanged(auth, (user) => {
   if (user && user.email === "daisybelle76@gmail.com") {
-    document.getElementById('login-section').style.display = 'none';
+    
     document.getElementById('admin-panel').style.display = 'block';
     loadProducts();
   } else {
@@ -198,7 +192,7 @@ onAuthStateChanged(auth, (user) => {
 
     // Login section skipped; user already handled in auth check
         if (user.email === "daisybelle76@gmail.com") {
-          document.getElementById('login-section').style.display = 'none';
+          
           document.getElementById('admin-panel').style.display = 'block';
           loginError.style.display = 'none';
           loadProducts();
