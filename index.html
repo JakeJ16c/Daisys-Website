@@ -498,6 +498,9 @@
 
       const logoutBtn = document.getElementById("confirm-logout");
       logoutBtn.addEventListener("click", () => {
+        const confirmLogout = confirm("Are you sure you want to log out?");
+        if (!confirmLogout) return;
+
         signOut(auth).then(() => {
           window.location.reload();
         }).catch((error) => {
