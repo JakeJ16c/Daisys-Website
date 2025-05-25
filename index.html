@@ -106,6 +106,18 @@
 
     .hidden { display: none; }
 
+    .login-icon {
+      margin-left: 1rem;
+      font-size: 1.2rem;
+      color: var(--electric-blue);
+      transition: transform 0.2s ease, color 0.2s ease;
+    }
+
+    .login-icon:hover {
+      color: #000;
+      transform: scale(1.1);
+    }
+
     /* ========== Navigation Bar ========== */
     .nav-links {
       display: flex;
@@ -314,7 +326,11 @@
     <h1 class="header-title"><a href="index.html" class="logo-link">You're So Golden</a></h1>
     <div class="header-right">
       <a href="#cart" class="cart-icon"><i class="fas fa-basket-shopping"></i></a>
-    </div>
+      <a href="login.html" class="login-icon" title="Login">
+      <i class="fa-solid fa-right-to-bracket"></i>
+    </a>
+</div>
+
     <div id="basket-preview" class="basket-preview hidden">
       <p><strong>Your basket is empty.</strong></p>
     </div>
