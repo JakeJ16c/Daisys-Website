@@ -92,25 +92,6 @@
       background-color: #183aa0;
     }
 
-    .link {
-      text-align: center;
-      margin-top: 1rem;
-      font-size: 0.9rem;
-      color: #555;
-    }
-
-    .link a {
-      color: var(--electric-blue);
-      font-weight: 500;
-      text-decoration: none;
-      transition: color 0.3s ease;
-    }
-
-    .link a:hover {
-      color: #183aa0;
-      text-decoration: underline;
-    }
-
     #login-error {
       color: red;
       font-weight: 500;
@@ -134,7 +115,7 @@
   <header><h1>You're So Golden</h1></header>
 
   <section class="login-container">
-    <h2><i class="fas fa-user"></i> Admin Login</h2>
+    <h2><i class="fas fa-user"></i> Login</h2>
     <form id="loginForm">
       <input type="email" id="email" placeholder="Email" required>
       <input type="password" id="password" placeholder="Password" required>
@@ -147,7 +128,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+    import { getAuth, setPersistence, browserLocalPersistence, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyA6kN9-7dN9Ovq6BmWBBJwBhLXRW6INX4c",
@@ -161,6 +142,7 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    setPersistence(auth, browserLocalPersistence);
 
     const form = document.getElementById("loginForm");
     const loginError = document.getElementById("login-error");
@@ -175,8 +157,7 @@
         if (user.email === "daisybelle76@gmail.com") {
           window.location.href = "admin.html";
         } else {
-          loginError.textContent = "❌ Access denied.";
-          loginError.style.display = "block";
+          window.location.href = "index.html"; // or any general page for normal users
         }
       } catch (error) {
         loginError.textContent = "❌ " + error.message.replace("Firebase: ", "");

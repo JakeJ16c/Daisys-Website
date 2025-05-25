@@ -194,11 +194,9 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
-// Removed manual login logic below
-
     const loginError = document.getElementById('login-error');
 
-    // Login logic removed
+    // Login section skipped; user already handled in auth check
         if (user.email === "daisybelle76@gmail.com") {
           document.getElementById('login-section').style.display = 'none';
           document.getElementById('admin-panel').style.display = 'block';
