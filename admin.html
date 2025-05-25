@@ -3,10 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <title>Admin Dashboard</title>
-
-  <!-- Load Firebase setup -->
-  <script type="module" src="firebase.js"></script>
-
   <style>
     body {
       font-family: sans-serif;
@@ -54,68 +50,75 @@
     <ul id="productList"></ul>
   </div>
 
+  <!-- ✅ Entire Firebase & Logic Below -->
   <script type="module">
-    // Wait a moment for firebase.js to load
-    setTimeout(() => {
-      const auth = window.firebaseAuth;
-      const db = window.firebaseDB;
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
-      // Login logic
-      const loginBtn = document.getElementById('loginBtn');
-      loginBtn.addEventListener('click', async () => {
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
+    // ✅ Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyA6kN9-7dN9Ovq6BmWBBJwBhLXRW6INX4c",
+      authDomain: "daisy-s-website.firebaseapp.com",
+      projectId: "daisy-s-website",
+      storageBucket: "daisy-s-website.firebasestorage.app",
+      messagingSenderId: "595443495060",
+      appId: "1:595443495060:web:7bbdd1108ad336d55c8481",
+      measurementId: "G-ST5CQ6PV41"
+    };
 
-        try {
-          const { signInWithEmailAndPassword, onAuthStateChanged } = await import("https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js");
-          const userCredential = await signInWithEmailAndPassword(auth, email, password);
-          const user = userCredential.user;
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-          // Only allow admin email
-          const adminEmail = "daisybelle76@gmail.com";
-          if (user.email === adminEmail) {
-            document.getElementById('login-section').style.display = 'none';
-            document.getElementById('admin-panel').style.display = 'block';
-            loadProducts();
-          } else {
-            alert("Access denied. You're not authorized to access the admin dashboard.");
-          }
-        } catch (err) {
-          alert("Login failed: " + err.message);
+    const loginBtn = document.getElementById('loginBtn');
+    loginBtn.addEventListener('click', async () => {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // ✅ Allow only your girlfriend’s email
+        if (user.email === "daisybelle76@gmail.com") {
+          document.getElementById('login-section').style.display = 'none';
+          document.getElementById('admin-panel').style.display = 'block';
+          loadProducts();
+        } else {
+          alert("Access denied.");
         }
-      });
+      } catch (error) {
+        alert("Login failed: " + error.message);
+      }
+    });
 
-      // Firestore logic
-      async function loadProducts() {
-        const { collection, getDocs, deleteDoc, doc, addDoc } = await import("https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js");
-        const productList = document.getElementById('productList');
-        productList.innerHTML = '';
-        const snapshot = await getDocs(collection(db, "products"));
-        snapshot.forEach(product => {
-          const data = product.data();
-          const li = document.createElement('li');
-          li.innerHTML = `<strong>${data.title}</strong> - £${data.price.toFixed(2)} <button>Delete</button>`;
-          li.querySelector('button').addEventListener('click', async () => {
-            await deleteDoc(doc(db, "products", product.id));
-            loadProducts();
-          });
-          productList.appendChild(li);
-        });
-
-        // Product form handler
-        const form = document.getElementById('productForm');
-        form.onsubmit = async (e) => {
-          e.preventDefault();
-          const title = document.getElementById('title').value;
-          const image = document.getElementById('image').value;
-          const price = parseFloat(document.getElementById('price').value);
-          const description = document.getElementById('description').value;
-          await addDoc(collection(db, "products"), { title, image, price, description });
-          form.reset();
+    async function loadProducts() {
+      const list = document.getElementById('productList');
+      list.innerHTML = '';
+      const snapshot = await getDocs(collection(db, "products"));
+      snapshot.forEach(product => {
+        const data = product.data();
+        const li = document.createElement('li');
+        li.innerHTML = `<strong>${data.title}</strong> - £${data.price.toFixed(2)} <button>Delete</button>`;
+        li.querySelector('button').onclick = async () => {
+          await deleteDoc(doc(db, "products", product.id));
           loadProducts();
         };
-      }
-    }, 300);
+        list.appendChild(li);
+      });
+
+      document.getElementById('productForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const title = document.getElementById('title').value;
+        const image = document.getElementById('image').value;
+        const price = parseFloat(document.getElementById('price').value);
+        const description = document.getElementById('description').value;
+        await addDoc(collection(db, "products"), { title, image, price, description });
+        e.target.reset();
+        loadProducts();
+      };
+    }
   </script>
 </body>
 </html>
