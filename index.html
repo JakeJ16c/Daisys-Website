@@ -489,11 +489,12 @@
     if (user) {
       // ✅ Logged in view
       dropdownContent.innerHTML = `
-        <p style="margin: 0 0 0.5rem; font-weight: 600;">Hello, ${user.email}</p>
-        <a href="account.html" style="display:block; margin-bottom: 0.5rem;">My Account</a>
-        <a href="orders.html" style="display:block; margin-bottom: 0.5rem;">My Orders</a>
-        <button id="confirm-logout" style="background:#204ECF; color:white; border:none; padding:0.5rem 1rem; border-radius:4px; font-family:'Fredoka', sans-serif;">Log Out</button>
-      `;
+  <p style="margin: 0 0 0.5rem; font-weight: 600; font-family: 'Fredoka', sans-serif;">👋 Hello<br><strong>${user.email}</strong></p>
+  <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;" />
+  <a href="account.html" style="display:block; margin-bottom: 0.4rem; font-family:'Fredoka'; text-decoration:none; color:#204ECF;">👤 My Account</a>
+  <a href="orders.html" style="display:block; margin-bottom: 0.8rem; font-family:'Fredoka'; text-decoration:none; color:#204ECF;">📦 My Orders</a>
+  <button id="confirm-logout" style="background:#204ECF; color:white; border:none; padding:0.5rem 1rem; border-radius:4px; font-family:'Fredoka'; cursor:pointer;">Log Out</button>
+`;
 
       const logoutBtn = document.getElementById("confirm-logout");
       logoutBtn.addEventListener("click", () => {
