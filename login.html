@@ -1,17 +1,15 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Meta settings for responsive design -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  
   <title>Login - You're So Golden</title>
 
   <!-- Fonts & Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-  <!-- Embedded CSS -->
   <style>
     @font-face {
       font-family: 'Raks';
@@ -52,11 +50,6 @@
       font-size: 2.3rem;
       color: var(--electric-blue);
       margin: 0;
-    }
-
-    .logo-link {
-      text-decoration: none;
-      color: inherit;
     }
 
     .login-container {
@@ -118,6 +111,13 @@
       text-decoration: underline;
     }
 
+    #login-error {
+      color: red;
+      font-weight: 500;
+      margin-top: 10px;
+      display: none;
+    }
+
     footer {
       text-align: center;
       padding: 1.5rem;
@@ -130,38 +130,25 @@
 </head>
 <body>
 
-  <!-- Announcement bar -->
   <div class="announcement-bar">Free shipping on all orders over £25</div>
+  <header><h1>You're So Golden</h1></header>
 
-  <!-- Website header with logo -->
-  <header>
-    <h1><a href="index.html" class="logo-link">You're So Golden</a></h1>
-  </header>
-
-  <!-- Login form section -->
   <section class="login-container">
-    <h2><i class="fas fa-user"></i> Login</h2>
+    <h2><i class="fas fa-user"></i> Admin Login</h2>
     <form id="loginForm">
       <input type="email" id="email" placeholder="Email" required>
       <input type="password" id="password" placeholder="Password" required>
       <button type="submit">Log In</button>
+      <p id="login-error"></p>
     </form>
-    <div class="link">
-      <a href="#">Forgot your password?</a><br>
-      Don’t have an account? <a href="register.html">Register here</a>
-    </div>
   </section>
 
-  <!-- Footer -->
   <footer>© 2025 You're So Golden · All Rights Reserved</footer>
 
-  <!-- Firebase Login Script -->
   <script type="module">
-    // Import required Firebase SDKs
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 
-    // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyA6kN9-7dN9Ovq6BmWBBJwBhLXRW6INX4c",
       authDomain: "daisy-s-website.firebaseapp.com",
@@ -172,33 +159,28 @@
       measurementId: "G-ST5CQ6PV41"
     };
 
-    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // Login form logic
     const form = document.getElementById("loginForm");
+    const loginError = document.getElementById("login-error");
+
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
-
       try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
-
-        // ✅ Replace with your girlfriend's registered Firebase email
-        const adminEmail = "daisybelle76@gmail.com";
-
-        // Redirect to admin page if email matches
-        if (user.email === adminEmail) {
+        if (user.email === "daisybelle76@gmail.com") {
           window.location.href = "admin.html";
         } else {
-          alert("Access denied. You're not authorized to access the admin dashboard.");
+          loginError.textContent = "❌ Access denied.";
+          loginError.style.display = "block";
         }
       } catch (error) {
-        alert("Login failed: " + error.message);
+        loginError.textContent = "❌ " + error.message.replace("Firebase: ", "");
+        loginError.style.display = "block";
       }
     });
   </script>

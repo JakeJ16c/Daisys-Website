@@ -183,17 +183,22 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    const loginBtn = document.getElementById('loginBtn');
+    
+onAuthStateChanged(auth, (user) => {
+  if (user && user.email === "daisybelle76@gmail.com") {
+    document.getElementById('login-section').style.display = 'none';
+    document.getElementById('admin-panel').style.display = 'block';
+    loadProducts();
+  } else {
+    window.location.href = "login.html";
+  }
+});
+
+// Removed manual login logic below
+
     const loginError = document.getElementById('login-error');
 
-    loginBtn.addEventListener('click', async () => {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-
-      try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-
+    // Login logic removed
         if (user.email === "daisybelle76@gmail.com") {
           document.getElementById('login-section').style.display = 'none';
           document.getElementById('admin-panel').style.display = 'block';
