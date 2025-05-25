@@ -432,11 +432,9 @@
 
   <!-- Basket Toggle Script -->
   <script type="module">
-  // 🔁 Firebase imports
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 
-  // ✅ Firebase config
   const firebaseConfig = {
     apiKey: "AIzaSyA6kN9-7dN9Ovq6BmWBBJwBhLXRW6INX4c",
     authDomain: "daisy-s-website.firebaseapp.com",
@@ -447,60 +445,29 @@
     measurementId: "G-ST5CQ6PV41"
   };
 
-  // ✅ Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
 
-  // 🔍 Detect if a user is logged in
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      console.log("✅ User is logged in:", user.email);
-      const iconLink = document.getElementById("auth-icon");
-      const iconSymbol = document.getElementById("auth-icon-symbol");
-
-      if (iconLink && iconSymbol) {
-        // 🔁 Change login icon to logout
-        iconSymbol.classList.remove("fa-user");
-        iconSymbol.classList.add("fa-arrow-right-from-bracket");
-        iconLink.href = "#";
-        iconLink.title = "Log Out";
-
-        // 📥 Show logout dropdown
-        iconLink.addEventListener("click", (e) => {
-          e.preventDefault();
-          showLogoutDropdown();
-        });
-      }
-
-    } else {
-      console.log("👤 No user logged in");
-      const iconLink = document.getElementById("auth-icon");
-      const iconSymbol = document.getElementById("auth-icon-symbol");
-
-      if (iconLink && iconSymbol) {
-        iconSymbol.classList.remove("fa-arrow-right-from-bracket");
-        iconSymbol.classList.add("fa-user");
-        iconLink.href = "login.html";
-        iconLink.title = "Login";
-      }
-    }
-  });
-
-  // ⬇️ Logout dropdown setup
-  function showLogoutDropdown() {
-    const dropdown = document.getElementById("logout-dropdown");
-    if (dropdown) dropdown.classList.remove("hidden");
-
-    document.addEventListener("click", function handler(e) {
-      if (!dropdown.contains(e.target) && e.target.id !== "auth-icon") {
-        dropdown.classList.add("hidden");
-        document.removeEventListener("click", handler);
-      }
-    });
-  }
-
-  // 🚪 Handle logout button click
+  // ✅ Shared DOMContentLoaded for both features
   document.addEventListener("DOMContentLoaded", () => {
+    // === 🛒 Basket Toggle ===
+    const cartIcon = document.querySelector(".cart-icon");
+    const basketPreview = document.getElementById("basket-preview");
+
+    if (cartIcon && basketPreview) {
+      cartIcon.addEventListener("click", (e) => {
+        e.preventDefault();
+        basketPreview.classList.toggle("hidden");
+      });
+
+      document.addEventListener("click", function(event) {
+        if (!cartIcon.contains(event.target) && !basketPreview.contains(event.target)) {
+          basketPreview.classList.add("hidden");
+        }
+      });
+    }
+
+    // === 🚪 Logout Button ===
     const logoutBtn = document.getElementById("confirm-logout");
     if (logoutBtn) {
       logoutBtn.addEventListener("click", () => {
@@ -512,7 +479,49 @@
       });
     }
   });
+
+  // ✅ Detect login state
+  onAuthStateChanged(auth, (user) => {
+    const iconLink = document.getElementById("auth-icon");
+    const iconSymbol = document.getElementById("auth-icon-symbol");
+
+    if (user) {
+      console.log("✅ Logged in:", user.email);
+      if (iconLink && iconSymbol) {
+        iconSymbol.classList.remove("fa-user");
+        iconSymbol.classList.add("fa-arrow-right-from-bracket");
+        iconLink.href = "#";
+        iconLink.title = "Log Out";
+
+        iconLink.addEventListener("click", (e) => {
+          e.preventDefault();
+          showLogoutDropdown();
+        });
+      }
+    } else {
+      console.log("👤 Not logged in");
+      if (iconLink && iconSymbol) {
+        iconSymbol.classList.remove("fa-arrow-right-from-bracket");
+        iconSymbol.classList.add("fa-user");
+        iconLink.href = "login.html";
+        iconLink.title = "Login";
+      }
+    }
+  });
+
+  function showLogoutDropdown() {
+    const dropdown = document.getElementById("logout-dropdown");
+    if (dropdown) dropdown.classList.remove("hidden");
+
+    document.addEventListener("click", function handler(e) {
+      if (!dropdown.contains(e.target) && e.target.id !== "auth-icon") {
+        dropdown.classList.add("hidden");
+        document.removeEventListener("click", handler);
+      }
+    });
+  }
 </script>
+
 
 </body>
 </html>
