@@ -366,13 +366,15 @@
     </div>
     
     <!-- 🔽 Logout Dropdown (initially hidden) -->
-    <div id="logout-dropdown" class="hidden" style="position:absolute; right:1rem; top:4.2rem; background:white; border:1px solid #ccc; padding:1rem; border-radius:8px; z-index:1000;">
-      <p>Are you sure you want to log out?</p>
-      <button id="confirm-logout"
-        style="background:#204ECF; color:white; font-family: 'Fredoka', sans-serif; border:none; padding:0.5rem 1rem; border-radius:4px;">
-        Yes, Log Out
-      </button>
+    <div id="logout-dropdown" class="hidden" style="position:absolute; right:1rem; top:4.2rem; background:white; border:1px solid #ccc; padding:1rem; border-radius:8px; z-index:1000; box-shadow:0 4px 12px rgba(0,0,0,0.1); min-width:160px;">
+      <p style="margin:0 0 0.5rem; font-weight:500;">Welcome!</p>
+      <ul style="list-style:none; padding:0; margin:0; font-family:'Fredoka', sans-serif;">
+        <li><a href="#" style="text-decoration:none; color:#333; display:block; padding:0.4rem 0;">🧑 My Account</a></li>
+        <li><a href="#" style="text-decoration:none; color:#333; display:block; padding:0.4rem 0;">📦 My Orders</a></li>
+        <li><button id="confirm-logout" style="background:#204ECF; color:white; border:none; padding:0.5rem 1rem; border-radius:4px; font-family:'Fredoka', sans-serif; margin-top:0.5rem;">🚪 Log Out</button></li>
+      </ul>
     </div>
+
 
   </header>
 
