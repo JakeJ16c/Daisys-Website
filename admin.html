@@ -3,10 +3,36 @@
 <head>
   <meta charset="UTF-8" />
   <title>Admin Dashboard</title>
-  <script type="module" src="firebase.js"></script>
-</head>
-<body style="font-family: sans-serif; padding: 20px;">
 
+  <!-- Load Firebase setup -->
+  <script type="module" src="firebase.js"></script>
+
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+    input, textarea, button {
+      display: block;
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 1rem;
+      width: 100%;
+      max-width: 400px;
+    }
+    button {
+      background-color: #204ECF;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #183aa0;
+    }
+  </style>
+</head>
+<body>
   <h2>Admin Login</h2>
   <div id="login-section">
     <input type="email" id="email" placeholder="Email" />
@@ -29,59 +55,67 @@
   </div>
 
   <script type="module">
-    import { signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
-    import { collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+    // Wait a moment for firebase.js to load
+    setTimeout(() => {
+      const auth = window.firebaseAuth;
+      const db = window.firebaseDB;
 
-    const auth = window.firebaseAuth;
-    const db = window.firebaseDB;
+      // Login logic
+      const loginBtn = document.getElementById('loginBtn');
+      loginBtn.addEventListener('click', async () => {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
 
-    const loginBtn = document.getElementById('loginBtn');
-    loginBtn.addEventListener('click', async () => {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-      } catch (err) {
-        alert('Login failed: ' + err.message);
-      }
-    });
+        try {
+          const { signInWithEmailAndPassword, onAuthStateChanged } = await import("https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js");
+          const userCredential = await signInWithEmailAndPassword(auth, email, password);
+          const user = userCredential.user;
 
-    onAuthStateChanged(auth, user => {
-      if (user) {
-        document.getElementById('login-section').style.display = 'none';
-        document.getElementById('admin-panel').style.display = 'block';
-        loadProducts();
-      }
-    });
+          // Only allow admin email
+          const adminEmail = "daisybelle76@gmail.com";
+          if (user.email === adminEmail) {
+            document.getElementById('login-section').style.display = 'none';
+            document.getElementById('admin-panel').style.display = 'block';
+            loadProducts();
+          } else {
+            alert("Access denied. You're not authorized to access the admin dashboard.");
+          }
+        } catch (err) {
+          alert("Login failed: " + err.message);
+        }
+      });
 
-    const form = document.getElementById('productForm');
-    form.addEventListener('submit', async e => {
-      e.preventDefault();
-      const title = document.getElementById('title').value;
-      const image = document.getElementById('image').value;
-      const price = parseFloat(document.getElementById('price').value);
-      const description = document.getElementById('description').value;
+      // Firestore logic
+      async function loadProducts() {
+        const { collection, getDocs, deleteDoc, doc, addDoc } = await import("https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js");
+        const productList = document.getElementById('productList');
+        productList.innerHTML = '';
+        const snapshot = await getDocs(collection(db, "products"));
+        snapshot.forEach(product => {
+          const data = product.data();
+          const li = document.createElement('li');
+          li.innerHTML = `<strong>${data.title}</strong> - £${data.price.toFixed(2)} <button>Delete</button>`;
+          li.querySelector('button').addEventListener('click', async () => {
+            await deleteDoc(doc(db, "products", product.id));
+            loadProducts();
+          });
+          productList.appendChild(li);
+        });
 
-      await addDoc(collection(db, "products"), { title, image, price, description });
-      form.reset();
-      loadProducts();
-    });
-
-    async function loadProducts() {
-      const list = document.getElementById('productList');
-      list.innerHTML = '';
-      const snapshot = await getDocs(collection(db, "products"));
-      snapshot.forEach(docSnap => {
-        const data = docSnap.data();
-        const li = document.createElement('li');
-        li.innerHTML = `<strong>${data.title}</strong> - £${data.price.toFixed(2)} <button data-id="${docSnap.id}">Delete</button>`;
-        li.querySelector('button').onclick = async () => {
-          await deleteDoc(doc(window.firebaseDB, "products", docSnap.id));
+        // Product form handler
+        const form = document.getElementById('productForm');
+        form.onsubmit = async (e) => {
+          e.preventDefault();
+          const title = document.getElementById('title').value;
+          const image = document.getElementById('image').value;
+          const price = parseFloat(document.getElementById('price').value);
+          const description = document.getElementById('description').value;
+          await addDoc(collection(db, "products"), { title, image, price, description });
+          form.reset();
           loadProducts();
         };
-        list.appendChild(li);
-      });
-    }
+      }
+    }, 300);
   </script>
 </body>
 </html>
