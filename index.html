@@ -365,15 +365,13 @@
       <p><strong>Your basket is empty.</strong></p>
     </div>
     
-    <!-- 🔽 Logout Dropdown (initially hidden) -->
+    <!-- 👤 User Dropdown (dynamic) -->
     <div id="logout-dropdown" class="hidden" style="position:absolute; right:1rem; top:4.2rem; background:white; border:1px solid #ccc; padding:1rem; border-radius:8px; z-index:1000; box-shadow:0 4px 12px rgba(0,0,0,0.1); min-width:160px;">
-      <p style="margin:0 0 0.5rem; font-weight:500;">Welcome!</p>
-      <ul style="list-style:none; padding:0; margin:0; font-family:'Fredoka', sans-serif;">
-        <li><a href="#" style="text-decoration:none; color:#333; display:block; padding:0.4rem 0;">🧑 My Account</a></li>
-        <li><a href="#" style="text-decoration:none; color:#333; display:block; padding:0.4rem 0;">📦 My Orders</a></li>
-        <li><button id="confirm-logout" style="background:#204ECF; color:white; border:none; padding:0.5rem 1rem; border-radius:4px; font-family:'Fredoka', sans-serif; margin-top:0.5rem;">🚪 Log Out</button></li>
-      </ul>
-    </div>
+      <div id="user-dropdown-content">
+        <!-- Content will be filled in by JS -->
+  </div>
+</div>
+
 
 
   </header>
@@ -445,12 +443,13 @@
   <!-- Footer -->
   <footer>© 2025 You're So Golden · All Rights Reserved</footer>
 
-  <!-- Basket Toggle Script -->
+  <!-- User Toggle Script -->
       <script type="module">
+  // ✅ Import Firebase
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 
-  // ✅ Initialize Firebase
+  // ✅ Firebase config
   const firebaseConfig = {
     apiKey: "AIzaSyA6kN9-7dN9Ovq6BmWBBJwBhLXRW6INX4c",
     authDomain: "daisy-s-website.firebaseapp.com",
@@ -461,30 +460,48 @@
     measurementId: "G-ST5CQ6PV41"
   };
 
+  // ✅ Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
 
-  document.addEventListener("DOMContentLoaded", () => {
-    const iconLink = document.getElementById("auth-icon");
-    const iconSymbol = document.getElementById("auth-icon-symbol");
-    const logoutDropdown = document.getElementById("logout-dropdown");
-    const logoutBtn = document.getElementById("confirm-logout");
+  // ✅ Grab key DOM elements
+  const iconLink = document.getElementById("auth-icon");
+  const dropdown = document.getElementById("logout-dropdown");
+  const dropdownContent = document.getElementById("user-dropdown-content");
 
-    // 🟡 Detect login status
-    onAuthStateChanged(auth, (user) => {
-      if (user && iconLink && iconSymbol) {
-        // ✅ Logged in - switch to logout icon
-        iconSymbol.classList.remove("fa-user");
-        iconSymbol.classList.add("fa-arrow-right-from-bracket");
-        iconLink.href = "#";
-        iconLink.title = "Log Out";
+  let currentUser = null; // We'll track the logged-in user
 
-        iconLink.addEventListener("click", (e) => {
-          e.preventDefault();
-          if (logoutDropdown) logoutDropdown.classList.remove("hidden");
-        });
+  // ✅ Handle icon click to show dropdown
+  iconLink.addEventListener("click", (e) => {
+    e.preventDefault();
+    showLogoutDropdown(currentUser);
+  });
 
-        // 🟡 Confirm logout click
+  // ✅ Detect if user is logged in or out
+  onAuthStateChanged(auth, (user) => {
+    currentUser = user; // Store for later use
+  });
+
+  // ✅ Show the dropdown with dynamic content
+  function showLogoutDropdown(user) {
+    if (!dropdown || !dropdownContent) return;
+
+    dropdown.classList.remove("hidden"); // Show dropdown
+
+    if (user) {
+      // ✅ User is logged in: show account options and logout
+      dropdownContent.innerHTML = `
+        <p style="margin:0 0 0.5rem; font-weight:500;">Welcome, ${user.email}</p>
+        <ul style="list-style:none; padding:0; margin:0; font-family:'Fredoka', sans-serif;">
+          <li><a href="#" style="text-decoration:none; color:#333; display:block; padding:0.4rem 0;">🧑 My Account</a></li>
+          <li><a href="#" style="text-decoration:none; color:#333; display:block; padding:0.4rem 0;">📦 My Orders</a></li>
+          <li><button id="confirm-logout" style="background:#204ECF; color:white; border:none; padding:0.5rem 1rem; border-radius:4px; font-family:'Fredoka', sans-serif; margin-top:0.5rem;">🚪 Log Out</button></li>
+        </ul>
+      `;
+
+      // ✅ Attach logout button listener
+      setTimeout(() => {
+        const logoutBtn = document.getElementById("confirm-logout");
         if (logoutBtn) {
           logoutBtn.addEventListener("click", () => {
             signOut(auth).then(() => {
@@ -494,28 +511,26 @@
             });
           });
         }
+      }, 0);
 
-        // 🔒 Hide dropdown when clicking outside
-        document.addEventListener("click", (e) => {
-          if (
-            logoutDropdown &&
-            !logoutDropdown.contains(e.target) &&
-            e.target.id !== "auth-icon" &&
-            e.target.id !== "auth-icon-symbol"
-          ) {
-            logoutDropdown.classList.add("hidden");
-          }
-        });
-      } else if (iconLink && iconSymbol) {
-        // ❌ Not logged in - show login icon
-        iconSymbol.classList.remove("fa-arrow-right-from-bracket");
-        iconSymbol.classList.add("fa-user");
-        iconLink.href = "login.html";
-        iconLink.title = "Login";
+    } else {
+      // ❌ No user: show log in link
+      dropdownContent.innerHTML = `
+        <p style="margin:0; font-weight:500; font-family:'Fredoka', sans-serif;">Not signed in.</p>
+        <a href="login.html" style="display:inline-block; margin-top:0.5rem; background:#204ECF; color:white; padding:0.5rem 1rem; border-radius:4px; text-decoration:none; font-family:'Fredoka', sans-serif;">🔑 Log In</a>
+      `;
+    }
+
+    // ✅ Hide dropdown when clicking outside
+    document.addEventListener("click", function handler(e) {
+      if (!dropdown.contains(e.target) && e.target.id !== "auth-icon") {
+        dropdown.classList.add("hidden");
+        document.removeEventListener("click", handler);
       }
     });
-  });
+  }
 </script>
+
 
   <!-- Basket Dropdown -->
   <script>
