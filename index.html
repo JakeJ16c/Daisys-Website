@@ -433,12 +433,9 @@
   <!-- Basket Toggle Script -->
       <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-  import {
-    getAuth,
-    onAuthStateChanged,
-    signOut
-  } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 
+  // ✅ Initialize Firebase
   const firebaseConfig = {
     apiKey: "AIzaSyA6kN9-7dN9Ovq6BmWBBJwBhLXRW6INX4c",
     authDomain: "daisy-s-website.firebaseapp.com",
@@ -453,68 +450,58 @@
   const auth = getAuth(app);
 
   document.addEventListener("DOMContentLoaded", () => {
-    const cartIcon = document.querySelector(".cart-icon");
-    const basketPreview = document.getElementById("basket-preview");
-
-    if (cartIcon && basketPreview) {
-      cartIcon.addEventListener("click", (e) => {
-        e.preventDefault();
-        basketPreview.classList.toggle("hidden");
-      });
-
-      document.addEventListener("click", (event) => {
-        if (!cartIcon.contains(event.target) && !basketPreview.contains(event.target)) {
-          basketPreview.classList.add("hidden");
-        }
-      });
-    }
-  });
-
-  onAuthStateChanged(auth, (user) => {
     const iconLink = document.getElementById("auth-icon");
     const iconSymbol = document.getElementById("auth-icon-symbol");
     const logoutDropdown = document.getElementById("logout-dropdown");
+    const logoutBtn = document.getElementById("confirm-logout");
 
-    if (user && iconLink && iconSymbol) {
-      iconSymbol.classList.remove("fa-user");
-      iconSymbol.classList.add("fa-arrow-right-from-bracket");
-      iconLink.href = "#";
-      iconLink.title = "Log Out";
+    // 🟡 Detect login status
+    onAuthStateChanged(auth, (user) => {
+      if (user && iconLink && iconSymbol) {
+        // ✅ Logged in - switch to logout icon
+        iconSymbol.classList.remove("fa-user");
+        iconSymbol.classList.add("fa-arrow-right-from-bracket");
+        iconLink.href = "#";
+        iconLink.title = "Log Out";
 
-      iconLink.addEventListener("click", (e) => {
-        e.preventDefault();
+        iconLink.addEventListener("click", (e) => {
+          e.preventDefault();
+          if (logoutDropdown) logoutDropdown.classList.remove("hidden");
+        });
 
-        if (logoutDropdown) {
-          logoutDropdown.classList.remove("hidden");
-
-          // ✅ Attach event handler HERE — when dropdown is visible
-          const logoutBtn = document.getElementById("confirm-logout");
-          if (logoutBtn) {
-            logoutBtn.onclick = () => {
-              signOut(auth)
-                .then(() => window.location.reload())
-                .catch((error) => alert("Error logging out: " + error.message));
-            };
-          }
-
-          // ❌ Hide dropdown if click outside
-          const handler = function (e) {
-            if (!logoutDropdown.contains(e.target) && e.target.id !== "auth-icon") {
-              logoutDropdown.classList.add("hidden");
-              document.removeEventListener("click", handler);
-            }
-          };
-          document.addEventListener("click", handler);
+        // 🟡 Confirm logout click
+        if (logoutBtn) {
+          logoutBtn.addEventListener("click", () => {
+            signOut(auth).then(() => {
+              window.location.reload();
+            }).catch((error) => {
+              alert("Error logging out: " + error.message);
+            });
+          });
         }
-      });
-    } else if (iconLink && iconSymbol) {
-      iconSymbol.classList.remove("fa-arrow-right-from-bracket");
-      iconSymbol.classList.add("fa-user");
-      iconLink.href = "login.html";
-      iconLink.title = "Login";
-    }
+
+        // 🔒 Hide dropdown when clicking outside
+        document.addEventListener("click", (e) => {
+          if (
+            logoutDropdown &&
+            !logoutDropdown.contains(e.target) &&
+            e.target.id !== "auth-icon" &&
+            e.target.id !== "auth-icon-symbol"
+          ) {
+            logoutDropdown.classList.add("hidden");
+          }
+        });
+      } else if (iconLink && iconSymbol) {
+        // ❌ Not logged in - show login icon
+        iconSymbol.classList.remove("fa-arrow-right-from-bracket");
+        iconSymbol.classList.add("fa-user");
+        iconLink.href = "login.html";
+        iconLink.title = "Login";
+      }
+    });
   });
 </script>
+
 
 </body>
 </html>
