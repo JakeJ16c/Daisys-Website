@@ -431,7 +431,7 @@
   <footer>© 2025 You're So Golden · All Rights Reserved</footer>
 
   <!-- Basket Toggle Script -->
-  <script type="module">
+    <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
   import {
     getAuth,
@@ -439,7 +439,6 @@
     signOut
   } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 
-  // ✅ Firebase config
   const firebaseConfig = {
     apiKey: "AIzaSyA6kN9-7dN9Ovq6BmWBBJwBhLXRW6INX4c",
     authDomain: "daisy-s-website.firebaseapp.com",
@@ -453,11 +452,15 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
 
-  // ✅ Wait until DOM is ready before attaching any listeners
   document.addEventListener("DOMContentLoaded", () => {
     const cartIcon = document.querySelector(".cart-icon");
     const basketPreview = document.getElementById("basket-preview");
+    const iconLink = document.getElementById("auth-icon");
+    const iconSymbol = document.getElementById("auth-icon-symbol");
+    const logoutDropdown = document.getElementById("logout-dropdown");
+    const logoutBtn = document.getElementById("confirm-logout");
 
+    // 🛒 Basket toggle
     if (cartIcon && basketPreview) {
       cartIcon.addEventListener("click", (e) => {
         e.preventDefault();
@@ -471,59 +474,58 @@
       });
     }
 
-    // ✅ Attach logout event handler once button exists
-    const logoutBtn = document.getElementById("confirm-logout");
-    if (logoutBtn) {
-      logoutBtn.addEventListener("click", () => {
-        signOut(auth).then(() => {
-          window.location.reload(); // Refresh page to update icon
-        }).catch((error) => {
-          alert("Error logging out: " + error.message);
-        });
-      });
-    }
-  });
+    // 🔄 Update icon state and attach logout icon click logic
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log("✅ Logged in as:", user.email);
+        if (iconLink && iconSymbol) {
+          iconSymbol.classList.remove("fa-user");
+          iconSymbol.classList.add("fa-arrow-right-from-bracket");
+          iconLink.href = "#";
+          iconLink.title = "Log Out";
+        }
 
-  // ✅ Detect if user is logged in and adjust icon dynamically
-  onAuthStateChanged(auth, (user) => {
-    const iconLink = document.getElementById("auth-icon");
-    const iconSymbol = document.getElementById("auth-icon-symbol");
+        // 👆 Only bind logout icon once
+        if (iconLink) {
+          iconLink.addEventListener("click", (e) => {
+            e.preventDefault();
+            if (logoutDropdown) {
+              logoutDropdown.classList.remove("hidden");
 
-    if (user) {
-      console.log("✅ Logged in as:", user.email);
-      if (iconLink && iconSymbol) {
-        iconSymbol.classList.remove("fa-user");
-        iconSymbol.classList.add("fa-arrow-right-from-bracket");
-        iconLink.href = "#";
-        iconLink.title = "Log Out";
-
-        // 🔽 Show logout dropdown on icon click
-        iconLink.addEventListener("click", (e) => {
-          e.preventDefault();
-          const dropdown = document.getElementById("logout-dropdown");
-          if (dropdown) dropdown.classList.remove("hidden");
-
-          // ❌ Close dropdown if clicked outside
-          const handler = function (e) {
-            if (!dropdown.contains(e.target) && e.target.id !== "auth-icon") {
-              dropdown.classList.add("hidden");
-              document.removeEventListener("click", handler);
+              const handler = function (e) {
+                if (!logoutDropdown.contains(e.target) && e.target.id !== "auth-icon") {
+                  logoutDropdown.classList.add("hidden");
+                  document.removeEventListener("click", handler);
+                }
+              };
+              document.addEventListener("click", handler);
             }
-          };
-          document.addEventListener("click", handler);
-        });
+          });
+        }
+
+        // 🧹 Confirm logout click
+        if (logoutBtn) {
+          logoutBtn.addEventListener("click", () => {
+            signOut(auth).then(() => {
+              window.location.reload();
+            }).catch((error) => {
+              alert("Error logging out: " + error.message);
+            });
+          });
+        }
+      } else {
+        console.log("👤 Not logged in");
+        if (iconLink && iconSymbol) {
+          iconSymbol.classList.remove("fa-arrow-right-from-bracket");
+          iconSymbol.classList.add("fa-user");
+          iconLink.href = "login.html";
+          iconLink.title = "Login";
+        }
       }
-    } else {
-      console.log("👤 Not logged in");
-      if (iconLink && iconSymbol) {
-        iconSymbol.classList.remove("fa-arrow-right-from-bracket");
-        iconSymbol.classList.add("fa-user");
-        iconLink.href = "login.html";
-        iconLink.title = "Login";
-      }
-    }
+    });
   });
 </script>
+
 
 
 
