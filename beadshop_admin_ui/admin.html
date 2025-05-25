@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Dashboard</title>
+  <script type="module" src="firebase.js"></script>
+</head>
+<body style="font-family: sans-serif; padding: 20px;">
+
+  <h2>Admin Login</h2>
+  <div id="login-section">
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
+    <button id="loginBtn">Login</button>
+  </div>
+
+  <div id="admin-panel" style="display: none;">
+    <h2>Manage Products</h2>
+    <form id="productForm">
+      <input type="text" id="title" placeholder="Product Name" required />
+      <input type="text" id="image" placeholder="Image URL" required />
+      <input type="number" id="price" placeholder="Price" required />
+      <textarea id="description" placeholder="Description"></textarea>
+      <button type="submit">Add Product</button>
+    </form>
+
+    <h3>Product List</h3>
+    <ul id="productList"></ul>
+  </div>
+
+  <script type="module">
+    import { signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+    import { collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+
+    const auth = window.firebaseAuth;
+    const db = window.firebaseDB;
+
+    const loginBtn = document.getElementById('loginBtn');
+    loginBtn.addEventListener('click', async () => {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+      } catch (err) {
+        alert('Login failed: ' + err.message);
+      }
+    });
+
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        document.getElementById('login-section').style.display = 'none';
+        document.getElementById('admin-panel').style.display = 'block';
+        loadProducts();
+      }
+    });
+
+    const form = document.getElementById('productForm');
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const title = document.getElementById('title').value;
+      const image = document.getElementById('image').value;
+      const price = parseFloat(document.getElementById('price').value);
+      const description = document.getElementById('description').value;
+
+      await addDoc(collection(db, "products"), { title, image, price, description });
+      form.reset();
+      loadProducts();
+    });
+
+    async function loadProducts() {
+      const list = document.getElementById('productList');
+      list.innerHTML = '';
+      const snapshot = await getDocs(collection(db, "products"));
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        const li = document.createElement('li');
+        li.innerHTML = `<strong>${data.title}</strong> - £${data.price.toFixed(2)} <button data-id="${docSnap.id}">Delete</button>`;
+        li.querySelector('button').onclick = async () => {
+          await deleteDoc(doc(window.firebaseDB, "products", docSnap.id));
+          loadProducts();
+        };
+        list.appendChild(li);
+      });
+    }
+  </script>
+</body>
+</html>
