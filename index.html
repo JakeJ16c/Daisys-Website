@@ -484,84 +484,76 @@
 
   <!-- User Toggle Script -->
       <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyA6kN9-7dN9Ovq6BmWBBJwBhLXRW6INX4c",
-    authDomain: "daisy-s-website.firebaseapp.com",
-    projectId: "daisy-s-website",
-    storageBucket: "daisy-s-website.appspot.com",
-    messagingSenderId: "595443495060",
-    appId: "1:595443495060:web:7bbdd1108ad336d55c8481",
-    measurementId: "G-ST5CQ6PV41"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyA6kN9-7dN9Ovq6BmWBBJwBhLXRW6INX4c",
+  authDomain: "daisy-s-website.firebaseapp.com",
+  projectId: "daisy-s-website",
+  storageBucket: "daisy-s-website.appspot.com",
+  messagingSenderId: "595443495060",
+  appId: "1:595443495060:web:7bbdd1108ad336d55c8481",
+  measurementId: "G-ST5CQ6PV41"
+};
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
-  const iconLink = document.getElementById("auth-icon");
-  const dropdown = document.getElementById("logout-dropdown");
+onAuthStateChanged(auth, (user) => {
   const dropdownContent = document.getElementById("user-dropdown-content");
+  const logoutDropdown = document.getElementById("logout-dropdown");
+  const iconLink = document.getElementById("auth-icon");
+  const iconSymbol = document.getElementById("auth-icon-symbol");
 
-  // ✅ Toggle dropdown
-  iconLink.addEventListener("click", (e) => {
-    e.preventDefault(); // stop navigation
-    dropdown.classList.toggle("hidden");
-  });
+  if (user && dropdownContent) {
+    // 🔓 Logged in state
+    dropdownContent.innerHTML = `
+      <p style="margin: 0 0.5rem; font-weight: 600;">👋 Hello<br><strong>${user.email}</strong></p>
+      <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;" />
+      <a href="account.html" style="display:block; margin-bottom: 0.4rem;">👤 My Account</a>
+      <a href="orders.html" style="display:block; margin-bottom: 0.4rem;">📦 My Orders</a>
+      <button id="logout-trigger" style="background:#204ECF; color:white; padding:0.5rem 1rem; border:none; border-radius:4px; margin-top:0.5rem; cursor:pointer;">Log Out</button>
+    `;
 
-  // ✅ Hide if clicked outside
-  document.addEventListener("click", function (e) {
-    if (
-      !dropdown.contains(e.target) &&
-      !iconLink.contains(e.target)
-    ) {
-      dropdown.classList.add("hidden");
-    }
-  });
+    iconLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      logoutDropdown.classList.toggle("hidden");
+    });
 
-  // ✅ Auth state listener
-  onAuthStateChanged(auth, (user) => {
-    dropdownContent.innerHTML = ""; // reset
-
-    if (user) {
-      // ✅ Logged in view
-      dropdownContent.innerHTML = `
-  <p style="margin: 0 0 0.5rem; font-weight: 600; font-family: 'Fredoka', sans-serif;">👋 Hello<br><strong>${user.email}</strong></p>
-  <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;" />
-  <a href="account.html" style="display:block; margin-bottom: 0.4rem; font-family:'Fredoka'; text-decoration:none; color:#204ECF;">👤 My Account</a>
-  <a href="orders.html" style="display:block; margin-bottom: 0.8rem; font-family:'Fredoka'; text-decoration:none; color:#204ECF;">📦 My Orders</a>
-  <button id="confirm-logout" style="background:#204ECF; color:white; border:none; padding:0.5rem 1rem; border-radius:4px; font-family:'Fredoka'; cursor:pointer;">Log Out</button>
-`;
-
-      const logoutBtn = document.getElementById("confirm-logout");
-      logoutBtn.addEventListener("click", () => {
+    // 🧠 Wait until dropdown content is set before attaching logout logic
+    setTimeout(() => {
+      const logoutTrigger = document.getElementById("logout-trigger");
       const modal = document.getElementById("logout-modal");
-      if (modal) modal.classList.remove("hidden");
-
       const confirmBtn = document.getElementById("confirm-logout-btn");
       const cancelBtn = document.getElementById("cancel-logout-btn");
 
-      confirmBtn.onclick = () => {
-        signOut(auth).then(() => {
-          window.location.reload();
-        }).catch((error) => {
-          alert("Logout error: " + error.message);
-        });
-      };
+      logoutTrigger?.addEventListener("click", () => {
+        logoutDropdown.classList.add("hidden");
+        modal?.classList.remove("hidden");
+      });
 
-  cancelBtn.onclick = () => {
-    modal.classList.add("hidden");
-  };
+      confirmBtn?.addEventListener("click", () => {
+        signOut(auth).then(() => window.location.reload());
+      });
+
+      cancelBtn?.addEventListener("click", () => {
+        modal?.classList.add("hidden");
+      });
+    }, 100); // Delay ensures content is added to DOM
+
+  } else if (dropdownContent) {
+    // 🙈 Logged out state
+    dropdownContent.innerHTML = `
+      <a href="login.html" style="display:block; text-align:center; background:#204ECF; color:white; padding:0.5rem 1rem; border-radius:4px;">Log In</a>
+    `;
+
+    iconLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      logoutDropdown.classList.toggle("hidden");
+    });
+  }
 });
-
-    } else {
-      // 🚫 Not logged in view
-      dropdownContent.innerHTML = `
-        <a href="login.html" style="display:block; text-align:center; background:#204ECF; color:white; padding:0.5rem 1rem; border-radius:4px; text-decoration:none; font-family:'Fredoka', sans-serif;">Log In</a>
-      `;
-    }
-  });
 </script>
 
   <!-- Basket Dropdown -->
