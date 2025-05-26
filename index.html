@@ -363,7 +363,7 @@
 </div>
 
     <div id="basket-preview" class="basket-preview hidden">
-      <p><strong>Your basket is empty.</strong></p>
+      <!-- Basket contents will be injected here -->
     </div>
     
     <!-- 👤 User Dropdown (dynamic) -->
@@ -570,25 +570,49 @@
   });
 </script>
 
-  <!-- Basket Dropdown -->
-  <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const cartIcon = document.querySelector(".cart-icon");
-    const basketPreview = document.getElementById("basket-preview");
+  <!-- Basket Dropdown Script -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const cartKey = 'daisyCart';
+  const cartIcon = document.querySelector(".cart-icon");
+  const basketPreview = document.getElementById("basket-preview");
 
-    if (cartIcon && basketPreview) {
-      cartIcon.addEventListener("click", function (e) {
-        e.preventDefault();
-        basketPreview.classList.toggle("hidden");
-      });
+  // Toggle dropdown visibility
+  if (cartIcon && basketPreview) {
+    cartIcon.addEventListener("click", (e) => {
+      e.preventDefault();
+      basketPreview.classList.toggle("hidden");
+      renderBasketContents(); // Show updated contents when opened
+    });
 
-      document.addEventListener("click", function (event) {
-        if (!cartIcon.contains(event.target) && !basketPreview.contains(event.target)) {
-          basketPreview.classList.add("hidden");
-        }
-      });
+    document.addEventListener("click", (event) => {
+      if (!cartIcon.contains(event.target) && !basketPreview.contains(event.target)) {
+        basketPreview.classList.add("hidden");
+      }
+    });
+  }
+
+  // Renders basket items into the preview
+  function renderBasketContents() {
+    const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+    basketPreview.innerHTML = ""; // Clear before rendering
+
+    if (cart.length === 0) {
+      basketPreview.innerHTML = "<p>Your basket is empty</p>";
+      return;
     }
-  });
+
+    cart.forEach(item => {
+      const itemEl = document.createElement("div");
+      itemEl.classList.add("basket-item");
+      itemEl.innerHTML = `
+        <strong>${item.name}</strong><br>
+        £${item.price.toFixed(2)} x ${item.qty}
+      `;
+      basketPreview.appendChild(itemEl);
+    });
+  }
+});
 </script>
 
 </body>
