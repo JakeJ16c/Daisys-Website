@@ -554,12 +554,25 @@ window.addEventListener("DOMContentLoaded", () => {
 
       // 🛠 Attach listeners after DOM update
       setTimeout(() => {
-        const logoutBtn = document.getElementById("logout-button");
-        if (logoutBtn) {
-          logoutBtn.addEventListener("click", () => {
-            dropdown.classList.add("hidden");
-            modal.classList.remove("hidden");
-          });
+        const logoutBtn = document.getElementById("confirm-logout-btn");
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", () => {
+    signOut(auth)
+      .then(() => {
+        // ✅ Hide modal manually first
+        document.getElementById("logout-modal").classList.add("hidden");
+
+        // ✅ Delay reload to give DOM time to update
+        setTimeout(() => {
+          window.location.href = window.location.pathname;
+        }, 100); // Small delay to ensure class is applied
+      })
+      .catch((error) => {
+        alert("Logout error: " + error.message);
+      });
+  });
+}
+
         }
       }, 0);
     } else {
