@@ -453,49 +453,12 @@
   });
 </script>
 
-  <script>
-  // 🔑 Define a key to store the cart in localStorage
-  const cartKey = 'daisyCart';
+    <script>
+// ✅ Unique key for localStorage
+const cartKey = 'daisyCart';
 
-  // 🔁 Find all buttons with the class 'add-to-cart-btn' and attach a click event
-  document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
-    btn.addEventListener('click', e => {
-      // 🎯 Find the nearest .product element to get its data attributes
-      const product = e.target.closest('.product');
-
-      // 📦 Extract product data from the HTML
-      const id = product.dataset.id;
-      const name = product.dataset.name;
-      const price = parseFloat(product.dataset.price);
-
-      // 🛒 Retrieve the current cart from localStorage or initialize an empty one
-      let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
-
-      // 🔍 Check if the item already exists in the cart
-      const existing = cart.find(item => item.id === id);
-
-      if (existing) {
-        // ➕ If it exists, increase quantity
-        existing.qty += 1;
-      } else {
-        // 🆕 If not, add as new item
-        cart.push({ id, name, price, qty: 1 });
-      }
-
-      // 💾 Save the updated cart back into localStorage
-      localStorage.setItem(cartKey, JSON.stringify(cart));
-
-      // ✅ Give user feedback
-      alert(`${name} added to basket!`);
-    });
-  });
-</script>
-
-  <script>
-  // Retrieve existing basket or start new
-  const basket = JSON.parse(localStorage.getItem('basket')) || [];
-
-  // Attach click event to each Add to Basket button
+document.addEventListener("DOMContentLoaded", () => {
+  // 🔁 Attach event to all 'Add to Basket' buttons
   document.querySelectorAll('.add-to-basket').forEach(button => {
     button.addEventListener('click', () => {
       const card = button.closest('.product-card');
@@ -503,22 +466,27 @@
       const name = card.dataset.name;
       const price = parseFloat(card.dataset.price);
 
-      // Check if already in basket
-      const existingItem = basket.find(item => item.id === id);
-      if (existingItem) {
-        existingItem.quantity += 1;
+      // 🛒 Load existing cart or create new one
+      let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+
+      // 🔍 Check if item is already in the cart
+      const existing = cart.find(item => item.id === id);
+      if (existing) {
+        existing.qty += 1;
       } else {
-        basket.push({ id, name, price, quantity: 1 });
+        cart.push({ id, name, price, qty: 1 });
       }
 
-      // Save to localStorage
-      localStorage.setItem('basket', JSON.stringify(basket));
+      // 💾 Save updated cart to localStorage
+      localStorage.setItem(cartKey, JSON.stringify(cart));
 
-      // Confirm visually
-      alert(`${name} added to basket`);
+      // ✅ Feedback
+      alert(`${name} added to basket!`);
     });
   });
+});
 </script>
+
   
 </body>
 </html>
