@@ -130,6 +130,41 @@
       box-sizing: border-box;
     }
 
+    .file-upload-wrapper {
+  width: 100%;
+  margin-bottom: 1.25rem;
+}
+
+.file-upload-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 2rem;
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+  background-color: #fff;
+  color: #999;
+  cursor: pointer;
+  transition: border 0.3s ease;
+  font-family: 'Fredoka', sans-serif;
+  text-align: center;
+}
+
+.file-upload-box:hover {
+  border-color: #204ecf;
+}
+
+.file-upload-text {
+  font-size: 0.95rem;
+  color: #666;
+}
+
+.file-input {
+  display: none;
+}
+
+
     .btn-submit {
       background-color: #80CBC4;
       color: white;
@@ -216,8 +251,13 @@
       <label for="idea">Tell us about your design idea</label>
       <textarea id="idea" name="idea" placeholder="Describe your custom design..." required></textarea>
       
-      <label for="file">Attach a reference image (optional)</label>
-      <input type="file" id="file" name="file">
+      <div class="file-upload-wrapper">
+  <label for="file-upload" class="file-upload-box">
+    <span class="file-upload-text">Drop files or click to upload</span>
+    <input id="file-upload" name="file" type="file" class="file-input" />
+  </label>
+</div>
+
       <button type="submit" class="btn-submit">Submit Idea</button>
     </form>
   </div>
