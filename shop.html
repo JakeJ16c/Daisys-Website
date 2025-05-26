@@ -445,13 +445,23 @@ document.addEventListener("DOMContentLoaded", () => {
   const basketPreview = document.getElementById("basket-preview");
   const cartIcon = document.querySelector(".cart-icon");
 
+  // 🧩 Function to update the basket dropdown UI
   function updateBasketPreview() {
     const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
     basketPreview.innerHTML = "";
 
+    // 💡 Apply a wider layout to the basket dropdown
+    basketPreview.style.width = "320px";
+    basketPreview.style.padding = "1rem";
+    basketPreview.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)";
+    basketPreview.style.borderRadius = "12px";
+
+    // 📝 Header
     const header = document.createElement("h3");
     header.textContent = "Your Basket";
+    header.style.textAlign = "center";
     header.style.marginBottom = "1rem";
+    header.style.fontWeight = "bold";
     basketPreview.appendChild(header);
 
     if (cart.length === 0) {
@@ -470,9 +480,9 @@ document.addEventListener("DOMContentLoaded", () => {
       itemRow.style.justifyContent = "space-between";
       itemRow.style.marginBottom = "1rem";
 
-      // Image
+      // 🖼️ Image
       const img = document.createElement("img");
-      img.src = item.image || "placeholder.jpg"; // fallback image
+      img.src = item.image || "placeholder.jpg";
       img.alt = item.name;
       img.style.width = "60px";
       img.style.height = "60px";
@@ -480,7 +490,7 @@ document.addEventListener("DOMContentLoaded", () => {
       img.style.borderRadius = "8px";
       img.style.marginRight = "0.75rem";
 
-      // Left Column: Image + Info
+      // 📦 Product info and quantity controls
       const infoWrapper = document.createElement("div");
       infoWrapper.style.display = "flex";
       infoWrapper.style.alignItems = "center";
@@ -494,7 +504,7 @@ document.addEventListener("DOMContentLoaded", () => {
       name.textContent = item.name;
       name.style.marginBottom = "0.5rem";
 
-      // Quantity Controls
+      // ➖➕ Quantity Controls
       const quantityControls = document.createElement("div");
       quantityControls.style.display = "flex";
       quantityControls.style.alignItems = "center";
@@ -533,11 +543,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
       nameAndControls.appendChild(name);
       nameAndControls.appendChild(quantityControls);
-
       infoWrapper.appendChild(img);
       infoWrapper.appendChild(nameAndControls);
 
-      // Price
+      // 💰 Price
       const price = document.createElement("span");
       price.textContent = `£${(item.price * item.qty).toFixed(2)}`;
       price.style.fontWeight = "bold";
@@ -545,35 +554,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
       itemRow.appendChild(infoWrapper);
       itemRow.appendChild(price);
-
       basketPreview.appendChild(itemRow);
     });
 
-    // Subtotal
+    // 🧾 Subtotal Display
     const subtotalEl = document.createElement("div");
     subtotalEl.textContent = `Subtotal: £${subtotal.toFixed(2)}`;
-    subtotalEl.style.marginTop = "1rem";
+    subtotalEl.style.marginTop = "0.5rem";
     subtotalEl.style.fontWeight = "bold";
     basketPreview.appendChild(subtotalEl);
 
-    // Buttons
+    // 🎯 Buttons: View Basket + Checkout
     const buttonRow = document.createElement("div");
     buttonRow.style.display = "flex";
     buttonRow.style.gap = "1rem";
     buttonRow.style.marginTop = "1rem";
-
-    const clearBtn = document.createElement("button");
-    clearBtn.textContent = "Clear";
-    clearBtn.style.background = "#e57373";
-    clearBtn.style.color = "white";
-    clearBtn.style.border = "none";
-    clearBtn.style.padding = "0.5rem 1rem";
-    clearBtn.style.borderRadius = "6px";
-    clearBtn.style.cursor = "pointer";
-    clearBtn.addEventListener("click", () => {
-      localStorage.removeItem(cartKey);
-      updateBasketPreview();
-    });
+    buttonRow.style.flexWrap = "wrap";
+    buttonRow.style.justifyContent = "center";
 
     const viewBtn = document.createElement("button");
     viewBtn.textContent = "View Basket";
@@ -583,8 +580,9 @@ document.addEventListener("DOMContentLoaded", () => {
     viewBtn.style.padding = "0.5rem 1rem";
     viewBtn.style.borderRadius = "6px";
     viewBtn.style.cursor = "pointer";
+    viewBtn.style.flex = "1";
     viewBtn.addEventListener("click", () => {
-      window.location.href = "basket.html"; // update with your basket page
+      window.location.href = "basket.html";
     });
 
     const checkoutBtn = document.createElement("button");
@@ -595,17 +593,17 @@ document.addEventListener("DOMContentLoaded", () => {
     checkoutBtn.style.padding = "0.5rem 1rem";
     checkoutBtn.style.borderRadius = "6px";
     checkoutBtn.style.cursor = "pointer";
+    checkoutBtn.style.flex = "1";
     checkoutBtn.addEventListener("click", () => {
-      window.location.href = "checkout.html"; // update with your checkout page
+      window.location.href = "checkout.html";
     });
 
-    buttonRow.appendChild(clearBtn);
     buttonRow.appendChild(viewBtn);
     buttonRow.appendChild(checkoutBtn);
     basketPreview.appendChild(buttonRow);
   }
 
-  // Add to Basket
+  // ➕ Add to Basket button handler
   document.querySelectorAll(".add-to-basket").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       const product = e.target.closest(".product-card");
@@ -629,7 +627,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Basket toggle
+  // 🛒 Basket toggle visibility
   if (cartIcon && basketPreview) {
     cartIcon.addEventListener("click", (e) => {
       e.preventDefault();
@@ -649,8 +647,6 @@ document.addEventListener("DOMContentLoaded", () => {
   updateBasketPreview();
 });
 </script>
-
-
 
 </body>
 </html>
