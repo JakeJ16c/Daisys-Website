@@ -488,85 +488,107 @@
 
   <!-- User Toggle Script -->
       <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 
-// Firebase config
-const firebaseConfig = {
-  apiKey: "AIzaSyA6kN9-7dN9Ovq6BmWBBJwBhLXRW6INX4c",
-  authDomain: "daisy-s-website.firebaseapp.com",
-  projectId: "daisy-s-website",
-  storageBucket: "daisy-s-website.appspot.com",
-  messagingSenderId: "595443495060",
-  appId: "1:595443495060:web:7bbdd1108ad336d55c8481",
-  measurementId: "G-ST5CQ6PV41"
-};
+  const firebaseConfig = {
+    apiKey: "AIzaSyA6kN9-7dN9Ovq6BmWBBJwBhLXRW6INX4c",
+    authDomain: "daisy-s-website.firebaseapp.com",
+    projectId: "daisy-s-website",
+    storageBucket: "daisy-s-website.appspot.com",
+    messagingSenderId: "595443495060",
+    appId: "1:595443495060:web:7bbdd1108ad336d55c8481",
+    measurementId: "G-ST5CQ6PV41"
+  };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
 
-const iconLink = document.getElementById("auth-icon");
-const iconSymbol = document.getElementById("auth-icon-symbol");
-const dropdown = document.getElementById("logout-dropdown");
-const dropdownContent = document.getElementById("user-dropdown-content");
-const modal = document.getElementById("logout-modal");
-const confirmLogoutBtn = document.getElementById("confirm-logout-btn");
-const cancelLogoutBtn = document.getElementById("cancel-logout-btn");
+  // Elements
+  const iconLink = document.getElementById("auth-icon");
+  const dropdown = document.getElementById("logout-dropdown");
+  const dropdownContent = document.getElementById("user-dropdown-content");
+  const logoutModal = document.getElementById("logout-modal");
+  const confirmLogoutBtn = document.getElementById("confirm-logout-btn");
+  const cancelLogoutBtn = document.getElementById("cancel-logout-btn");
 
-onAuthStateChanged(auth, (user) => {
-  iconLink.addEventListener("click", (e) => {
-    e.preventDefault();
-    dropdown.classList.toggle("hidden");
+  // 🔁 Always hide modal on page load in case it's stuck
+  document.addEventListener("DOMContentLoaded", () => {
+    if (logoutModal) logoutModal.classList.add("hidden");
   });
 
-  if (user) {
-    dropdownContent.innerHTML = `
-      <p style="margin: 0.5rem 0;"><strong>${user.email}</strong></p>
-      <hr style="margin: 0.5rem 0;">
-      <a href="account.html">My Account</a><br>
-      <a href="orders.html">My Orders</a><br><br>
-      <button id="open-logout-modal" style="margin-top: 0.5rem;">Log Out</button>
-    `;
+  // 👤 Toggle dropdown on icon click
+  if (iconLink) {
+    iconLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (dropdown) dropdown.classList.toggle("hidden");
+    });
+  }
 
-    // Open modal on logout button click
-    setTimeout(() => {
-      const openLogoutBtn = document.getElementById("open-logout-modal");
-      if (openLogoutBtn) {
-        openLogoutBtn.addEventListener("click", () => {
-          dropdown.classList.add("hidden");
-          modal.classList.remove("hidden");
+  // 👀 Handle auth state
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // ✅ Logged in view
+      dropdownContent.innerHTML = `
+        <p style="margin: 0 0 0.5rem; font-weight: 600; font-family: 'Fredoka', sans-serif;">👋 Hello<br><strong>${user.email}</strong></p>
+        <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;" />
+        <a href="account.html" style="display:block; margin-bottom: 0.4rem; text-decoration:none; color:#204ECF;">👤 My Account</a>
+        <a href="orders.html" style="display:block; margin-bottom: 0.8rem; text-decoration:none; color:#204ECF;">📦 My Orders</a>
+        <button id="show-logout-confirm" style="background:#204ECF; color:white; border:none; padding:0.5rem 1rem; border-radius:6px; cursor:pointer;">Log Out</button>
+      `;
+
+      // ✳️ Rebind logout popup opener
+      setTimeout(() => {
+        const showLogoutBtn = document.getElementById("show-logout-confirm");
+        if (showLogoutBtn) {
+          showLogoutBtn.addEventListener("click", () => {
+            if (logoutModal) logoutModal.classList.remove("hidden");
+            dropdown.classList.add("hidden");
+          });
+        }
+      }, 0);
+
+    } else {
+      // 🚫 Not logged in
+      dropdownContent.innerHTML = `
+        <a href="login.html" style="display:block; text-align:center; background:#204ECF; color:white; padding:0.5rem 1rem; border-radius:6px; text-decoration:none;">Login</a>
+      `;
+    }
+  });
+
+  // 🔐 Confirm logout
+  if (confirmLogoutBtn) {
+    confirmLogoutBtn.addEventListener("click", () => {
+      signOut(auth)
+        .then(() => {
+          logoutModal.classList.add("hidden");
+          location.reload(); // refresh to update UI
+        })
+        .catch((error) => {
+          alert("Logout failed: " + error.message);
         });
-      }
-    }, 100);
-  } else {
-    dropdownContent.innerHTML = `
-      <a href="login.html">Login</a>
-    `;
+    });
   }
-});
 
-// Confirm logout
-confirmLogoutBtn.addEventListener("click", () => {
-  signOut(auth).then(() => {
-    modal.classList.add("hidden");
-    location.reload();
+  // ❌ Cancel logout
+  if (cancelLogoutBtn) {
+    cancelLogoutBtn.addEventListener("click", () => {
+      if (logoutModal) logoutModal.classList.add("hidden");
+    });
+  }
+
+  // 🧹 Close dropdown if clicking outside
+  document.addEventListener("click", (e) => {
+    if (
+      dropdown &&
+      !dropdown.contains(e.target) &&
+      e.target.id !== "auth-icon" &&
+      e.target.id !== "auth-icon-symbol"
+    ) {
+      dropdown.classList.add("hidden");
+    }
   });
-});
-
-// Cancel logout
-cancelLogoutBtn.addEventListener("click", () => {
-  modal.classList.add("hidden");
-  window.location.href = "index.html"; // or use `location.reload()` if preferred
-});
-
-// Close dropdown when clicking outside
-document.addEventListener("click", function (e) {
-  if (!dropdown.contains(e.target) && e.target.id !== "auth-icon" && !iconLink.contains(e.target)) {
-    dropdown.classList.add("hidden");
-  }
-});
 </script>
-
 
   <!-- Basket Dropdown -->
   <script>
