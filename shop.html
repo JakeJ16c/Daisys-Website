@@ -432,8 +432,8 @@
   });
 </script>
 
-  <!-- Basket Dropdown Script -->
-      <script>
+      <!-- Basket Dropdown Script -->
+<script>
 document.addEventListener("DOMContentLoaded", () => {
   const cartKey = "daisyCart";
   const cartIcon = document.querySelector(".cart-icon");
@@ -443,159 +443,146 @@ document.addEventListener("DOMContentLoaded", () => {
     const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
     basketPreview.innerHTML = "";
 
+    const container = document.createElement("div");
+    container.style.padding = "1rem";
+
     if (cart.length === 0) {
-      basketPreview.innerHTML = "<p><strong>Your basket is empty.</strong></p>";
-      return;
+      container.innerHTML = `<p style="font-weight: bold; text-align: center">Your basket is empty</p>`;
+    } else {
+      cart.forEach((item, index) => {
+        const itemDiv = document.createElement("div");
+        itemDiv.style.display = "flex";
+        itemDiv.style.justifyContent = "space-between";
+        itemDiv.style.alignItems = "center";
+        itemDiv.style.marginBottom = "1rem";
+
+        const name = document.createElement("strong");
+        name.textContent = item.name;
+        name.style.flex = "1";
+
+        const controls = document.createElement("div");
+        controls.style.display = "flex";
+        controls.style.alignItems = "center";
+        controls.style.gap = "0.5rem";
+
+        const minusBtn = document.createElement("button");
+        minusBtn.textContent = "-";
+        minusBtn.style.padding = "0.25rem 0.75rem";
+        minusBtn.style.borderRadius = "5px";
+        minusBtn.style.border = "1px solid #ccc";
+        minusBtn.style.cursor = "pointer";
+        minusBtn.addEventListener("click", () => {
+          if (item.qty > 1) {
+            item.qty--;
+          } else {
+            cart.splice(index, 1);
+          }
+          localStorage.setItem(cartKey, JSON.stringify(cart));
+          updateBasketPreview();
+        });
+
+        const qty = document.createElement("span");
+        qty.textContent = item.qty;
+        qty.style.minWidth = "1.5rem";
+        qty.style.textAlign = "center";
+
+        const plusBtn = document.createElement("button");
+        plusBtn.textContent = "+";
+        plusBtn.style.padding = "0.25rem 0.75rem";
+        plusBtn.style.borderRadius = "5px";
+        plusBtn.style.border = "1px solid #ccc";
+        plusBtn.style.cursor = "pointer";
+        plusBtn.addEventListener("click", () => {
+          item.qty++;
+          localStorage.setItem(cartKey, JSON.stringify(cart));
+          updateBasketPreview();
+        });
+
+        controls.appendChild(minusBtn);
+        controls.appendChild(qty);
+        controls.appendChild(plusBtn);
+
+        itemDiv.appendChild(name);
+        itemDiv.appendChild(controls);
+        container.appendChild(itemDiv);
+      });
+
+      // Add buttons row
+      const btnRow = document.createElement("div");
+      btnRow.style.display = "flex";
+      btnRow.style.justifyContent = "space-between";
+      btnRow.style.marginTop = "1rem";
+      btnRow.style.gap = "1rem";
+
+      const clearBtn = document.createElement("button");
+      clearBtn.textContent = "Clear Basket";
+      clearBtn.style.flex = "1";
+      clearBtn.style.background = "#ef767a";
+      clearBtn.style.border = "none";
+      clearBtn.style.padding = "0.75rem";
+      clearBtn.style.color = "white";
+      clearBtn.style.fontWeight = "bold";
+      clearBtn.style.cursor = "pointer";
+      clearBtn.style.borderRadius = "6px";
+      clearBtn.addEventListener("click", () => {
+        localStorage.removeItem(cartKey);
+        updateBasketPreview();
+      });
+
+      const viewBtn = document.createElement("button");
+      viewBtn.textContent = "View Basket";
+      viewBtn.style.flex = "1";
+      viewBtn.style.background = "#3d3dc2";
+      viewBtn.style.border = "none";
+      viewBtn.style.padding = "0.75rem";
+      viewBtn.style.color = "white";
+      viewBtn.style.fontWeight = "bold";
+      viewBtn.style.cursor = "pointer";
+      viewBtn.style.borderRadius = "6px";
+      viewBtn.addEventListener("click", () => {
+        window.location.href = "basket.html"; // Or your actual basket page
+      });
+
+      btnRow.appendChild(clearBtn);
+      btnRow.appendChild(viewBtn);
+      container.appendChild(btnRow);
     }
 
-    const list = document.createElement("ul");
-    list.style.listStyle = "none";
-    list.style.padding = "0";
-
-    cart.forEach((item, index) => {
-      const li = document.createElement("li");
-      li.style.display = "flex";
-      li.style.justifyContent = "space-between";
-      li.style.alignItems = "center";
-      li.style.marginBottom = "0.5rem";
-
-      const name = document.createElement("strong");
-      name.textContent = item.name;
-
-      const controls = document.createElement("div");
-      controls.style.display = "flex";
-      controls.style.alignItems = "center";
-      controls.style.gap = "0.5rem";
-
-      const minusBtn = document.createElement("button");
-      minusBtn.textContent = "−";
-      minusBtn.style.background = "#eee";
-      minusBtn.style.border = "1px solid #ccc";
-      minusBtn.style.borderRadius = "4px";
-      minusBtn.style.padding = "0.25rem 0.6rem";
-      minusBtn.style.cursor = "pointer";
-
-      const qtyDisplay = document.createElement("span");
-      qtyDisplay.textContent = item.qty;
-      qtyDisplay.style.minWidth = "1.5rem";
-      qtyDisplay.style.textAlign = "center";
-
-      const plusBtn = document.createElement("button");
-      plusBtn.textContent = "+";
-      plusBtn.style.background = "#eee";
-      plusBtn.style.border = "1px solid #ccc";
-      plusBtn.style.borderRadius = "4px";
-      plusBtn.style.padding = "0.25rem 0.6rem";
-      plusBtn.style.cursor = "pointer";
-
-      minusBtn.addEventListener("click", () => {
-        if (item.qty > 1) {
-          item.qty -= 1;
-        } else {
-          cart.splice(index, 1);
-        }
-        localStorage.setItem(cartKey, JSON.stringify(cart));
-        updateBasketPreview();
-      });
-
-      plusBtn.addEventListener("click", () => {
-        item.qty += 1;
-        localStorage.setItem(cartKey, JSON.stringify(cart));
-        updateBasketPreview();
-      });
-
-      controls.appendChild(minusBtn);
-      controls.appendChild(qtyDisplay);
-      controls.appendChild(plusBtn);
-
-      const itemBox = document.createElement("div");
-      itemBox.style.flex = "1";
-      itemBox.appendChild(name);
-
-      li.appendChild(itemBox);
-      li.appendChild(controls);
-      list.appendChild(li);
-    });
-
-    basketPreview.appendChild(list);
-
-    // Add footer controls (Clear + View Basket)
-    const footer = document.createElement("div");
-    footer.style.display = "flex";
-    footer.style.justifyContent = "space-between";
-    footer.style.marginTop = "1rem";
-    footer.style.gap = "1rem";
-
-    const clearBtn = document.createElement("button");
-    clearBtn.textContent = "Clear Basket";
-    clearBtn.style.background = "#ff6961";
-    clearBtn.style.border = "none";
-    clearBtn.style.color = "white";
-    clearBtn.style.padding = "0.5rem 1rem";
-    clearBtn.style.cursor = "pointer";
-    clearBtn.style.borderRadius = "4px";
-    clearBtn.style.flex = "1";
-
-    const viewBtn = document.createElement("button");
-    viewBtn.textContent = "View Basket";
-    viewBtn.style.background = "var(--electric-blue)";
-    viewBtn.style.border = "none";
-    viewBtn.style.color = "white";
-    viewBtn.style.padding = "0.5rem 1rem";
-    viewBtn.style.cursor = "pointer";
-    viewBtn.style.borderRadius = "4px";
-    viewBtn.style.flex = "1";
-
-    clearBtn.addEventListener("click", () => {
-      localStorage.removeItem(cartKey);
-      updateBasketPreview();
-    });
-
-    viewBtn.addEventListener("click", () => {
-      window.location.href = "basket.html"; // update if different
-    });
-
-    footer.appendChild(clearBtn);
-    footer.appendChild(viewBtn);
-    basketPreview.appendChild(footer);
+    basketPreview.appendChild(container);
   }
 
+  // Add to basket buttons
   document.querySelectorAll(".add-to-basket").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       const product = e.target.closest(".product-card");
       const id = product.dataset.id;
       const name = product.dataset.name;
       const price = parseFloat(product.dataset.price);
+      basketPreview.classList.remove("hidden");
 
       let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
       const existing = cart.find((item) => item.id === id);
 
       if (existing) {
-        existing.qty += 1;
+        existing.qty++;
       } else {
         cart.push({ id, name, price, qty: 1 });
       }
 
       localStorage.setItem(cartKey, JSON.stringify(cart));
-
-      // Show dropdown & update
-      basketPreview.classList.remove("hidden");
       updateBasketPreview();
     });
   });
 
-  // Toggle dropdown on cart icon
+  // Toggle visibility
   if (cartIcon && basketPreview) {
-    cartIcon.addEventListener("click", (e) => {
+    cartIcon.addEventListener("click", function (e) {
       e.preventDefault();
       basketPreview.classList.toggle("hidden");
     });
 
-    document.addEventListener("click", (event) => {
-      if (
-        !cartIcon.contains(event.target) &&
-        !basketPreview.contains(event.target)
-      ) {
+    document.addEventListener("click", function (event) {
+      if (!cartIcon.contains(event.target) && !basketPreview.contains(event.target)) {
         basketPreview.classList.add("hidden");
       }
     });
@@ -604,6 +591,7 @@ document.addEventListener("DOMContentLoaded", () => {
   updateBasketPreview();
 });
 </script>
+
 
 
   
