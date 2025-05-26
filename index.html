@@ -577,6 +577,56 @@ document.addEventListener("DOMContentLoaded", () => {
   const cartIcon = document.querySelector(".cart-icon");
   const basketPreview = document.getElementById("basket-preview");
 
+function updateBasketPreview() {
+  const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+  const basketPreview = document.getElementById("basket-preview");
+
+  // Clear current content
+  basketPreview.innerHTML = "";
+
+  if (cart.length === 0) {
+    basketPreview.innerHTML = "<p><strong>Your basket is empty.</strong></p>";
+    return;
+  }
+
+  const list = document.createElement("ul");
+  list.style.listStyle = "none";
+  list.style.padding = "0";
+
+  cart.forEach((item, index) => {
+    const li = document.createElement("li");
+    li.style.display = "flex";
+    li.style.justifyContent = "space-between";
+    li.style.alignItems = "center";
+    li.style.marginBottom = "0.5rem";
+
+    const text = document.createElement("span");
+    text.textContent = `${item.name} x${item.qty} - £${(item.price * item.qty).toFixed(2)}`;
+
+    const removeBtn = document.createElement("button");
+    removeBtn.textContent = "Remove";
+    removeBtn.style.background = "#ff6961";
+    removeBtn.style.border = "none";
+    removeBtn.style.color = "white";
+    removeBtn.style.padding = "2px 6px";
+    removeBtn.style.borderRadius = "5px";
+    removeBtn.style.cursor = "pointer";
+    removeBtn.style.fontSize = "0.75rem";
+
+    removeBtn.addEventListener("click", () => {
+      cart.splice(index, 1); // Remove item by index
+      localStorage.setItem(cartKey, JSON.stringify(cart)); // Save updated cart
+      updateBasketPreview(); // Refresh the UI
+    });
+
+    li.appendChild(text);
+    li.appendChild(removeBtn);
+    list.appendChild(li);
+  });
+
+  basketPreview.appendChild(list);
+}
+
   // Toggle dropdown visibility
   if (cartIcon && basketPreview) {
     cartIcon.addEventListener("click", (e) => {
