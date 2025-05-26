@@ -1,17 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
- <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>
-   Submit Your Ideas - You're So Golden
-  </title>
-  <link href="favicon_circle.ico" rel="icon" type="image/x-icon"/>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Submit Your Ideas - You're So Golden</title>
+  <link rel="icon" type="image/x-icon" href="favicon_circle.ico" />
+
   <!-- Fonts & Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
-   /* ========== Custom Font ========== */
+    /* ========== Custom Font ========== */
     @font-face {
       font-family: 'Raks';
       src: url('Raks.otf') format('opentype');
@@ -221,71 +220,157 @@
 
     }
   </style>
- </head>
- <body>
+</head>
+<body>
+
   <!-- Top Announcement -->
-  <div class="announcement-bar">
-   Free shipping on all UK orders over £25
-  </div>
+  <div class="announcement-bar">Free shipping on all UK orders over £25</div>
+
   <!-- Header Section -->
   <header class="site-header">
-   <h1 class="header-title">
-    <a class="logo-link" href="index.html">
-     You're So Golden
-    </a>
-   </h1>
+    <h1 class="header-title"><a href="index.html" class="logo-link">You're So Golden</a></h1>
   </header>
+
   <!-- Navigation Bar -->
   <nav class="nav-links">
-   <a href="index.html">
-    Home
-   </a>
-   <a href="shop.html">
-    Shop
-   </a>
-   <a href="#">
-    About
-   </a>
-   <a href="contacts.html">
-    Contact
-   </a>
+    <a href="index.html">Home</a>
+    <a href="shop.html">Shop</a>
+    <a href="#">About</a>
+    <a href="contacts.html">Contact</a>
   </nav>
-  <h2 class="page-title">
-   Submit Your Custom Beadwork Idea
-  </h2>
+  
+  <h2 class="page-title">Submit Your Custom Beadwork Idea</h2>
+
   <div class="form-container">
-   <form action="https://formspree.io/f/mrbqweqp" enctype="multipart/form-data" method="POST">
-    <label for="name">
-     Your Name
-    </label>
-    <input id="name" name="name" placeholder="Enter your name" required="" type="text"/>
-    <label for="email">
-     Your Email
-    </label>
-    <input id="email" name="email" placeholder="Enter your email" required="" type="email"/>
-    <label for="idea">
-     Tell us about your design idea
-    </label>
-    <textarea id="idea" name="idea" placeholder="Describe your custom design..." required=""></textarea>
-    <div class="file-upload-wrapper">
-     <label class="file-upload-box" for="file-upload">
-      <span class="file-upload-text">
-       Drop files or click to upload
-      </span>
-      <input class="file-input" id="file-upload" name="file" type="file"/>
-     </label>
-    </div>
-    <button class="btn-submit" type="submit">
-     Submit Idea
-    </button>
-   </form>
+    <form action="https://formspree.io/f/mrbqweqp" method="POST" enctype="multipart/form-data">
+      <label for="name">Your Name</label>
+      <input type="text" id="name" name="name" placeholder="Enter your name" required>
+
+      <label for="email">Your Email</label>
+      <input type="email" id="email" name="email" placeholder="Enter your email" required>
+
+      <label for="idea">Tell us about your design idea</label>
+      <textarea id="idea" name="idea" placeholder="Describe your custom design..." required></textarea>
+      
+      <div class="file-upload-wrapper">
+  <label for="file-upload" class="file-upload-box">
+    <span class="file-upload-text">Drop files or click to upload</span>
+    <input id="file-upload" name="file" type="file" class="file-input" />
+  </label>
+</div>
+
+      <button type="submit" class="btn-submit">Submit Idea</button>
+    </form>
   </div>
-  <footer>
-   © 2025 You're So Golden · All Rights Reserved
-  </footer>
-  <script defer="True" src="basket.js">
-  </script>
-  <div class="basket-preview hidden" id="basket-preview">
-  </div>
- </body>
+
+  <footer>© 2025 You're So Golden · All Rights Reserved</footer>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const cartKey = "daisyCart";
+  const cartIcon = document.querySelector(".cart-icon");
+  const basketPreview = document.getElementById("basket-preview");
+
+  document.querySelectorAll(".add-to-basket").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      const product = e.target.closest(".product-card");
+      const id = product.dataset.id;
+      const name = product.dataset.name;
+      const price = parseFloat(product.dataset.price);
+      const img = product.querySelector("img").getAttribute("src");
+
+      let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+      const existing = cart.find((item) => item.id === id);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({ id, name, price, qty: 1, img });
+      }
+
+      localStorage.setItem(cartKey, JSON.stringify(cart));
+      updateBasketPreview();
+      basketPreview.classList.remove("hidden");
+    });
+  });
+
+  if (cartIcon && basketPreview) {
+    cartIcon.addEventListener("click", function (e) {
+      e.preventDefault();
+      basketPreview.classList.toggle("hidden");
+    });
+
+    document.addEventListener("click", function (event) {
+      if (!cartIcon.contains(event.target) && !basketPreview.contains(event.target)) {
+        basketPreview.classList.add("hidden");
+      }
+    });
+  }
+
+  function updateBasketPreview() {
+    const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+    basketPreview.innerHTML = "<h3 style='text-align:center; font-weight:bold;'>Your Basket</h3>";
+
+    if (cart.length === 0) {
+      basketPreview.innerHTML += "<p>Your basket is empty.</p>";
+      return;
+    }
+
+    let subtotal = 0;
+    cart.forEach((item) => {
+      const total = (item.price * item.qty).toFixed(2);
+      subtotal += parseFloat(total);
+      const itemHTML = `
+        <div style="display:flex; align-items:center; margin: 0.75rem 0;">
+          <img src="${item.img}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px; margin-right: 0.75rem;">
+          <div style="flex: 1;">
+            <div style="font-weight:bold;">${item.name}</div>
+            <div style="display:flex; align-items:center; margin-top: 0.5rem;">
+              <button data-id="${item.id}" class="qty-btn" data-action="decrease">−</button>
+              <span style="margin: 0 0.5rem;">${item.qty}</span>
+              <button data-id="${item.id}" class="qty-btn" data-action="increase">+</button>
+            </div>
+          </div>
+          <div style="margin-left: auto; font-weight:bold;">£${total}</div>
+        </div>
+      `;
+      basketPreview.innerHTML += itemHTML;
+    });
+
+    basketPreview.innerHTML += `
+      <div style="text-align:right; font-weight:bold; margin-top: 1rem;">
+        Subtotal: £${subtotal.toFixed(2)}
+      </div>
+      <div style="margin-top: 1rem; display:flex; gap:1rem;">
+        <a href="basket.html" style="flex:1; background-color:#4b4be4; color:white; text-align:center; padding:0.75rem; border-radius:5px; text-decoration:none; font-weight:bold;">View Basket</a>
+        <a href="checkout.html" style="flex:1; background-color:black; color:white; text-align:center; padding:0.75rem; border-radius:5px; text-decoration:none; font-weight:bold;">Checkout</a>
+      </div>
+    `;
+
+    attachQuantityHandlers();
+  }
+
+  function attachQuantityHandlers() {
+    document.querySelectorAll(".qty-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const action = btn.dataset.action;
+        const id = btn.dataset.id;
+        let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+        const item = cart.find((i) => i.id === id);
+        if (item) {
+          if (action === "increase") item.qty++;
+          if (action === "decrease") item.qty = Math.max(1, item.qty - 1);
+        }
+        localStorage.setItem(cartKey, JSON.stringify(cart));
+        updateBasketPreview();
+        basketPreview.classList.remove("hidden");
+      });
+    });
+  }
+
+  updateBasketPreview();
+});
+</script>
+
+</body>
 </html>
