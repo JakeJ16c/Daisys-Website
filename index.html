@@ -444,7 +444,7 @@
   <!-- Footer -->
   <footer>© 2025 You're So Golden · All Rights Reserved</footer>
 
-  <!-- Custom Logout Confirmation Modal -->
+    <!-- Logout Confirmation Modal -->
 <div id="logout-modal" class="hidden" style="
   position: fixed;
   top: 0; left: 0;
@@ -453,15 +453,17 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 9999;">
+  z-index: 9999;
+">
   <div style="
     background: white;
     border-radius: 12px;
     padding: 2rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     font-family: 'Fredoka', sans-serif;
     text-align: center;
-    max-width: 300px;">
+    max-width: 300px;
+  ">
     <p style="margin-bottom: 1.5rem;">Are you sure you want to log out?</p>
     <button id="confirm-logout-btn" style="
       background-color: #204ECF;
@@ -470,141 +472,101 @@
       border-radius: 6px;
       padding: 0.5rem 1rem;
       cursor: pointer;
-      font-size: 1rem;">Yes, Log Out</button>
-    <br/><br/>
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    ">Yes, Log Out</button><br>
     <button id="cancel-logout-btn" style="
       background-color: transparent;
       color: #204ECF;
       border: none;
       font-weight: bold;
       cursor: pointer;
-      font-size: 0.9rem;">Cancel</button>
+      font-size: 0.9rem;
+    ">Cancel</button>
   </div>
 </div>
 
   <!-- User Toggle Script -->
-      <!-- Firebase User Script -->
-<script type="module">
-  
-  // 🔒 Ensure logout modal is hidden on page load no matter what
-window.addEventListener("DOMContentLoaded", () => {
-  const modal = document.getElementById("logout-modal");
-  if (modal) modal.classList.add("hidden");
+      <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+
+// Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyA6kN9-7dN9Ovq6BmWBBJwBhLXRW6INX4c",
+  authDomain: "daisy-s-website.firebaseapp.com",
+  projectId: "daisy-s-website",
+  storageBucket: "daisy-s-website.appspot.com",
+  messagingSenderId: "595443495060",
+  appId: "1:595443495060:web:7bbdd1108ad336d55c8481",
+  measurementId: "G-ST5CQ6PV41"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+const iconLink = document.getElementById("auth-icon");
+const iconSymbol = document.getElementById("auth-icon-symbol");
+const dropdown = document.getElementById("logout-dropdown");
+const dropdownContent = document.getElementById("user-dropdown-content");
+const modal = document.getElementById("logout-modal");
+const confirmLogoutBtn = document.getElementById("confirm-logout-btn");
+const cancelLogoutBtn = document.getElementById("cancel-logout-btn");
+
+onAuthStateChanged(auth, (user) => {
+  iconLink.addEventListener("click", (e) => {
+    e.preventDefault();
+    dropdown.classList.toggle("hidden");
+  });
+
+  if (user) {
+    dropdownContent.innerHTML = `
+      <p style="margin: 0.5rem 0;"><strong>${user.email}</strong></p>
+      <hr style="margin: 0.5rem 0;">
+      <a href="account.html">My Account</a><br>
+      <a href="orders.html">My Orders</a><br><br>
+      <button id="open-logout-modal" style="margin-top: 0.5rem;">Log Out</button>
+    `;
+
+    // Open modal on logout button click
+    setTimeout(() => {
+      const openLogoutBtn = document.getElementById("open-logout-modal");
+      if (openLogoutBtn) {
+        openLogoutBtn.addEventListener("click", () => {
+          dropdown.classList.add("hidden");
+          modal.classList.remove("hidden");
+        });
+      }
+    }, 100);
+  } else {
+    dropdownContent.innerHTML = `
+      <a href="login.html">Login</a>
+    `;
+  }
 });
 
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
-
-  // ✅ Firebase config
-  const firebaseConfig = {
-    apiKey: "AIzaSyA6kN9-7dN9Ovq6BmWBBJwBhLXRW6INX4c",
-    authDomain: "daisy-s-website.firebaseapp.com",
-    projectId: "daisy-s-website",
-    storageBucket: "daisy-s-website.appspot.com",
-    messagingSenderId: "595443495060",
-    appId: "1:595443495060:web:7bbdd1108ad336d55c8481",
-    measurementId: "G-ST5CQ6PV41"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-
-  // Elements
-  const dropdown = document.getElementById("logout-dropdown");
-  const dropdownContent = document.getElementById("user-dropdown-content");
-  const modal = document.getElementById("logout-modal");
-  const confirmLogout = document.getElementById("confirm-logout-btn");
-  const cancelLogout = document.getElementById("cancel-logout-btn");
-  const authIcon = document.getElementById("auth-icon");
-
-  // Toggle dropdown
-  if (authIcon) {
-    authIcon.addEventListener("click", (e) => {
-      e.preventDefault();
-      dropdown.classList.toggle("hidden");
-    });
-  }
-
-  // Handle clicks outside dropdown
-  document.addEventListener("click", function (e) {
-    if (
-      !dropdown.contains(e.target) &&
-      e.target.id !== "auth-icon" &&
-      !e.target.closest("#logout-dropdown")
-    ) {
-      dropdown.classList.add("hidden");
-    }
+// Confirm logout
+confirmLogoutBtn.addEventListener("click", () => {
+  signOut(auth).then(() => {
+    modal.classList.add("hidden");
+    location.reload();
   });
-
-  // Handle auth state
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      // ✅ Logged in view
-      dropdownContent.innerHTML = `
-        <p style="margin: 0 0 0.5rem; font-weight: 600; font-family: 'Fredoka', sans-serif;">
-          👋 Hello<br><strong>${user.email}</strong>
-        </p>
-        <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;" />
-        <a href="account.html" style="display:block; margin-bottom: 0.4rem; text-decoration:none; color:#204ECF;">👤 My Account</a>
-        <a href="orders.html" style="display:block; margin-bottom: 0.6rem; text-decoration:none; color:#204ECF;">📦 My Orders</a>
-        <button id="logout-button" style="background-color: #204ECF; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; font-family: 'Fredoka'; cursor:pointer;">
-          Log Out
-        </button>
-      `;
-
-      // 🛠 Attach listeners after DOM update
-      setTimeout(() => {
-        const logoutBtn = document.getElementById("confirm-logout-btn");
-if (logoutBtn) {
-  logoutBtn.addEventListener("click", () => {
-    signOut(auth)
-      .then(() => {
-        // ✅ Hide modal manually first
-        document.getElementById("logout-modal").classList.add("hidden");
-
-        // ✅ Delay reload to give DOM time to update
-        setTimeout(() => {
-          window.location.href = window.location.pathname;
-        }, 100); // Small delay to ensure class is applied
-      })
-      .catch((error) => {
-        alert("Logout error: " + error.message);
-      });
-  });
-}
-
-        }
-      }, 0);
-    } else {
-      // 👤 Logged out view
-      dropdownContent.innerHTML = `
-        <a href="login.html" style="display:block; text-align:center; background:#204ECF; color:white; padding:0.5rem 1rem; border-radius:4px; text-decoration:none;">Login</a>
-      `;
-    }
-  });
-
-  // ✅ Confirm logout
-if (confirmLogout) {
-  confirmLogout.addEventListener("click", () => {
-    signOut(auth).then(() => {
-  document.getElementById("logout-modal").classList.add("hidden"); // Hide modal
-  setTimeout(() => window.location.reload(), 100); // Reload after hiding
-}).catch((error) => {
-  alert("Logout error: " + error.message);
 });
-.catch((error) => {
-      alert("Logout error: " + error.message);
-    });
-  });
-}
 
-  // ❌ Cancel logout
-  if (cancelLogout) {
-    cancelLogout.addEventListener("click", () => {
-      modal.classList.add("hidden");
-    });
+// Cancel logout
+cancelLogoutBtn.addEventListener("click", () => {
+  modal.classList.add("hidden");
+  window.location.href = "index.html"; // or use `location.reload()` if preferred
+});
+
+// Close dropdown when clicking outside
+document.addEventListener("click", function (e) {
+  if (!dropdown.contains(e.target) && e.target.id !== "auth-icon" && !iconLink.contains(e.target)) {
+    dropdown.classList.add("hidden");
   }
+});
 </script>
+
 
   <!-- Basket Dropdown -->
   <script>
