@@ -286,18 +286,31 @@
   <!-- Product Grid -->
   <h2 class="section-title">All Products</h2>
   <section class="products">
-    <div class="product-card"><img src="image1.jpeg"><h3>Scotch</h3><p>£10.00</p><a class="btn" href="#">Buy Now</a></div>
-    <div class="product-card"><img src="image2.jpeg"><h3>Spritz</h3><p><s>£15.00</s> £10.00</p><a class="btn" href="#">Buy Now</a></div>
-    <div class="product-card"><img src="image3.jpeg"><h3>Manhattan</h3><p>£10.00</p><a class="btn" href="#">Buy Now</a></div>
-    <div class="product-card"><img src="image4.jpeg"><h3>French 75</h3><p>£10.00</p><a class="btn" href="#">Buy Now</a></div>
-    <div class="product-card"><img src="image5.jpeg"><h3>Whiskey Sour</h3><p>£10.00</p><a class="btn" href="#">Buy Now</a></div>
-    <div class="product-card"><img src="image1.jpeg"><h3>Mojito</h3><p>£10.00</p><a class="btn" href="#">Buy Now</a></div>
-    <div class="product-card"><img src="image1.jpeg"><h3>Scotch</h3><p>£10.00</p><a class="btn" href="#">Buy Now</a></div>
-    <div class="product-card"><img src="image2.jpeg"><h3>Spritz</h3><p><s>£15.00</s> £10.00</p><a class="btn" href="#">Buy Now</a></div>
-    <div class="product-card"><img src="image3.jpeg"><h3>Manhattan</h3><p>£10.00</p><a class="btn" href="#">Buy Now</a></div>
-    <div class="product-card"><img src="image4.jpeg"><h3>French 75</h3><p>£10.00</p><a class="btn" href="#">Buy Now</a></div>
-    <div class="product-card"><img src="image5.jpeg"><h3>Whiskey Sour</h3><p>£10.00</p><a class="btn" href="#">Buy Now</a></div>
-    <div class="product-card"><img src="image1.jpeg"><h3>Mojito</h3><p>£10.00</p><a class="btn" href="#">Buy Now</a></div>
+    <div class="product" data-id="001" data-name="Bead Charm1" data-price="9.99">
+        <img src="image1.jpeg" alt="Bead Charm">
+        <button class="add-to-cart-btn">Add to Basket</button>
+    </div>
+    <div class="product" data-id="002" data-name="Bead Charm2" data-price="9.99">
+        <img src="image2.jpeg" alt="Bead Charm">
+        <button class="add-to-cart-btn">Add to Basket</button>
+    </div>
+    <div class="product" data-id="003" data-name="Bead Charm3" data-price="9.99">
+        <img src="image3.jpeg" alt="Bead Charm">
+        <button class="add-to-cart-btn">Add to Basket</button>
+    </div>
+    <div class="product" data-id="004" data-name="Bead Charm4" data-price="9.99">
+        <img src="image4.jpeg" alt="Bead Charm">
+        <button class="add-to-cart-btn">Add to Basket</button>
+    </div>
+    <div class="product" data-id="005" data-name="Bead Charm5" data-price="9.99">
+        <img src="image5.jpeg" alt="Bead Charm">
+        <button class="add-to-cart-btn">Add to Basket</button>
+    </div>
+    <div class="product" data-id="006" data-name="Bead Charm6" data-price="9.99">
+        <img src="image1.jpeg" alt="Bead Charm">
+        <button class="add-to-cart-btn">Add to Basket</button>
+    </div>      
+
   </section>
 
   <!-- Footer -->
@@ -395,6 +408,45 @@
     }
   });
 </script>
+
+  <script>
+  // 🔑 Define a key to store the cart in localStorage
+  const cartKey = 'daisyCart';
+
+  // 🔁 Find all buttons with the class 'add-to-cart-btn' and attach a click event
+  document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      // 🎯 Find the nearest .product element to get its data attributes
+      const product = e.target.closest('.product');
+
+      // 📦 Extract product data from the HTML
+      const id = product.dataset.id;
+      const name = product.dataset.name;
+      const price = parseFloat(product.dataset.price);
+
+      // 🛒 Retrieve the current cart from localStorage or initialize an empty one
+      let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+
+      // 🔍 Check if the item already exists in the cart
+      const existing = cart.find(item => item.id === id);
+
+      if (existing) {
+        // ➕ If it exists, increase quantity
+        existing.qty += 1;
+      } else {
+        // 🆕 If not, add as new item
+        cart.push({ id, name, price, qty: 1 });
+      }
+
+      // 💾 Save the updated cart back into localStorage
+      localStorage.setItem(cartKey, JSON.stringify(cart));
+
+      // ✅ Give user feedback
+      alert(`${name} added to basket!`);
+    });
+  });
+</script>
+
   
 </body>
 </html>
