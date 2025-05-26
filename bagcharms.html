@@ -261,9 +261,6 @@
 
   </header>
 
-<div id="basket-preview" class="hidden"></div>
-
-
   <h2 class="section-title">My Collection of Bag Charms</h2>
 <section class="products">
   <!-- Row 1 -->
@@ -294,114 +291,6 @@
       basketPreview.classList.add('hidden');
     }
   });
-</script>
-
-<script src="basket.js"></script>
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const cartKey = "daisyCart";
-  const cartIcon = document.querySelector(".cart-icon");
-  const basketPreview = document.getElementById("basket-preview");
-
-  document.querySelectorAll(".add-to-basket").forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      const product = e.target.closest(".product-card");
-      const id = product.dataset.id;
-      const name = product.dataset.name;
-      const price = parseFloat(product.dataset.price);
-      const img = product.querySelector("img").getAttribute("src");
-
-      let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
-      const existing = cart.find((item) => item.id === id);
-      if (existing) {
-        existing.qty += 1;
-      } else {
-        cart.push({ id, name, price, qty: 1, img });
-      }
-
-      localStorage.setItem(cartKey, JSON.stringify(cart));
-      updateBasketPreview();
-      basketPreview.classList.remove("hidden");
-    });
-  });
-
-  if (cartIcon && basketPreview) {
-    cartIcon.addEventListener("click", function (e) {
-      e.preventDefault();
-      basketPreview.classList.toggle("hidden");
-    });
-
-    document.addEventListener("click", function (event) {
-      if (!cartIcon.contains(event.target) && !basketPreview.contains(event.target)) {
-        basketPreview.classList.add("hidden");
-      }
-    });
-  }
-
-  function updateBasketPreview() {
-    const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
-    basketPreview.innerHTML = "<h3 style='text-align:center; font-weight:bold;'>Your Basket</h3>";
-
-    if (cart.length === 0) {
-      basketPreview.innerHTML += "<p>Your basket is empty.</p>";
-      return;
-    }
-
-    let subtotal = 0;
-    cart.forEach((item) => {
-      const total = (item.price * item.qty).toFixed(2);
-      subtotal += parseFloat(total);
-      const itemHTML = `
-        <div style="display:flex; align-items:center; margin: 0.75rem 0;">
-          <img src="${item.img}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px; margin-right: 0.75rem;">
-          <div style="flex: 1;">
-            <div style="font-weight:bold;">${item.name}</div>
-            <div style="display:flex; align-items:center; margin-top: 0.5rem;">
-              <button data-id="${item.id}" class="qty-btn" data-action="decrease">−</button>
-              <span style="margin: 0 0.5rem;">${item.qty}</span>
-              <button data-id="${item.id}" class="qty-btn" data-action="increase">+</button>
-            </div>
-          </div>
-          <div style="margin-left: auto; font-weight:bold;">£${total}</div>
-        </div>
-      `;
-      basketPreview.innerHTML += itemHTML;
-    });
-
-    basketPreview.innerHTML += `
-      <div style="text-align:right; font-weight:bold; margin-top: 1rem;">
-        Subtotal: £${subtotal.toFixed(2)}
-      </div>
-      <div style="margin-top: 1rem; display:flex; gap:1rem;">
-        <a href="basket.html" style="flex:1; background-color:#4b4be4; color:white; text-align:center; padding:0.75rem; border-radius:5px; text-decoration:none; font-weight:bold;">View Basket</a>
-        <a href="checkout.html" style="flex:1; background-color:black; color:white; text-align:center; padding:0.75rem; border-radius:5px; text-decoration:none; font-weight:bold;">Checkout</a>
-      </div>
-    `;
-
-    attachQuantityHandlers();
-  }
-
-  function attachQuantityHandlers() {
-    document.querySelectorAll(".qty-btn").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const action = btn.dataset.action;
-        const id = btn.dataset.id;
-        let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
-        const item = cart.find((i) => i.id === id);
-        if (item) {
-          if (action === "increase") item.qty++;
-          if (action === "decrease") item.qty = Math.max(1, item.qty - 1);
-        }
-        localStorage.setItem(cartKey, JSON.stringify(cart));
-        updateBasketPreview();
-        basketPreview.classList.remove("hidden");
-      });
-    });
-  }
-
-  updateBasketPreview();
-});
 </script>
 
 </body>
