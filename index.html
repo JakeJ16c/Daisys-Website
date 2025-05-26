@@ -615,5 +615,46 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const basketPreview = document.getElementById("basket-preview");
+  const cartKey = "daisyCart";
+
+  function updateBasketPreview() {
+    const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+
+    // Clear the preview
+    basketPreview.innerHTML = "";
+
+    if (cart.length === 0) {
+      basketPreview.innerHTML = "<p><strong>Your basket is empty.</strong></p>";
+      return;
+    }
+
+    const list = document.createElement("ul");
+    list.style.listStyle = "none";
+    list.style.padding = "0";
+
+    cart.forEach(item => {
+      const li = document.createElement("li");
+      li.innerHTML = `${item.name} x${item.qty} - £${(item.price * item.qty).toFixed(2)}`;
+      list.appendChild(li);
+    });
+
+    basketPreview.appendChild(list);
+  }
+
+  // Run it once when page loads
+  updateBasketPreview();
+
+  // Re-run every time something is added
+  document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+    btn.addEventListener("click", () => {
+      setTimeout(updateBasketPreview, 100); // short delay to allow cart update
+    });
+  });
+});
+</script>
+
 </body>
 </html>
