@@ -445,18 +445,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const basketPreview = document.getElementById("basket-preview");
   const cartIcon = document.querySelector(".cart-icon");
 
-  // 🧩 Function to update the basket dropdown UI
-  function updateBasketPreview() {
+  // 🧩 Update basket content display
+  function updateBasketPreview(keepVisible = false) {
     const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
     basketPreview.innerHTML = "";
 
-    // 💡 Apply a wider layout to the basket dropdown
+    // 🍱 Set styling and layout
     basketPreview.style.width = "320px";
     basketPreview.style.padding = "1rem";
     basketPreview.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)";
     basketPreview.style.borderRadius = "12px";
 
-    // 📝 Header
+    // 🛒 Header
     const header = document.createElement("h3");
     header.textContent = "Your Basket";
     header.style.textAlign = "center";
@@ -476,8 +476,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const itemRow = document.createElement("div");
       itemRow.style.display = "flex";
-      itemRow.style.alignItems = "center";
       itemRow.style.justifyContent = "space-between";
+      itemRow.style.alignItems = "center";
       itemRow.style.marginBottom = "1rem";
 
       // 🖼️ Image
@@ -490,21 +490,21 @@ document.addEventListener("DOMContentLoaded", () => {
       img.style.borderRadius = "8px";
       img.style.marginRight = "0.75rem";
 
-      // 📦 Product info and quantity controls
+      // 📝 Name & quantity
       const infoWrapper = document.createElement("div");
+      infoWrapper.style.flex = "1";
       infoWrapper.style.display = "flex";
       infoWrapper.style.alignItems = "center";
-      infoWrapper.style.flex = "1";
 
-      const nameAndControls = document.createElement("div");
-      nameAndControls.style.display = "flex";
-      nameAndControls.style.flexDirection = "column";
+      const nameQtyWrapper = document.createElement("div");
+      nameQtyWrapper.style.display = "flex";
+      nameQtyWrapper.style.flexDirection = "column";
 
       const name = document.createElement("strong");
       name.textContent = item.name;
       name.style.marginBottom = "0.5rem";
 
-      // ➖➕ Quantity Controls
+      // ➕➖ Controls
       const quantityControls = document.createElement("div");
       quantityControls.style.display = "flex";
       quantityControls.style.alignItems = "center";
@@ -513,14 +513,18 @@ document.addEventListener("DOMContentLoaded", () => {
       minus.textContent = "−";
       minus.style.padding = "0.25rem 0.5rem";
       minus.style.fontWeight = "bold";
-      minus.addEventListener("click", () => {
+      minus.style.cursor = "pointer";
+
+      minus.addEventListener("click", (e) => {
+        e.stopPropagation();
         if (item.qty > 1) {
           item.qty--;
         } else {
           cart.splice(index, 1);
         }
         localStorage.setItem(cartKey, JSON.stringify(cart));
-        updateBasketPreview();
+        basketPreview.classList.remove("hidden");
+        updateBasketPreview(true);
       });
 
       const qty = document.createElement("span");
@@ -531,22 +535,27 @@ document.addEventListener("DOMContentLoaded", () => {
       plus.textContent = "+";
       plus.style.padding = "0.25rem 0.5rem";
       plus.style.fontWeight = "bold";
-      plus.addEventListener("click", () => {
+      plus.style.cursor = "pointer";
+
+      plus.addEventListener("click", (e) => {
+        e.stopPropagation();
         item.qty++;
         localStorage.setItem(cartKey, JSON.stringify(cart));
-        updateBasketPreview();
+        basketPreview.classList.remove("hidden");
+        updateBasketPreview(true);
       });
 
       quantityControls.appendChild(minus);
       quantityControls.appendChild(qty);
       quantityControls.appendChild(plus);
 
-      nameAndControls.appendChild(name);
-      nameAndControls.appendChild(quantityControls);
-      infoWrapper.appendChild(img);
-      infoWrapper.appendChild(nameAndControls);
+      nameQtyWrapper.appendChild(name);
+      nameQtyWrapper.appendChild(quantityControls);
 
-      // 💰 Price
+      infoWrapper.appendChild(img);
+      infoWrapper.appendChild(nameQtyWrapper);
+
+      // 💷 Price
       const price = document.createElement("span");
       price.textContent = `£${(item.price * item.qty).toFixed(2)}`;
       price.style.fontWeight = "bold";
@@ -557,19 +566,18 @@ document.addEventListener("DOMContentLoaded", () => {
       basketPreview.appendChild(itemRow);
     });
 
-    // 🧾 Subtotal Display
+    // 💳 Subtotal (aligned right)
     const subtotalEl = document.createElement("div");
     subtotalEl.textContent = `Subtotal: £${subtotal.toFixed(2)}`;
-    subtotalEl.style.marginTop = "0.5rem";
+    subtotalEl.style.textAlign = "right";
     subtotalEl.style.fontWeight = "bold";
+    subtotalEl.style.margin = "0.5rem 0 1rem 0";
     basketPreview.appendChild(subtotalEl);
 
-    // 🎯 Buttons: View Basket + Checkout
+    // 🔘 Footer Buttons
     const buttonRow = document.createElement("div");
     buttonRow.style.display = "flex";
     buttonRow.style.gap = "1rem";
-    buttonRow.style.marginTop = "1rem";
-    buttonRow.style.flexWrap = "wrap";
     buttonRow.style.justifyContent = "center";
 
     const viewBtn = document.createElement("button");
@@ -601,9 +609,12 @@ document.addEventListener("DOMContentLoaded", () => {
     buttonRow.appendChild(viewBtn);
     buttonRow.appendChild(checkoutBtn);
     basketPreview.appendChild(buttonRow);
+
+    // 🛒 Keep basket visible after update
+    if (keepVisible) basketPreview.classList.remove("hidden");
   }
 
-  // ➕ Add to Basket button handler
+  // ➕ Add to Basket functionality
   document.querySelectorAll(".add-to-basket").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       const product = e.target.closest(".product-card");
@@ -622,12 +633,14 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       localStorage.setItem(cartKey, JSON.stringify(cart));
+
+      // 👇 Force basket open after adding
       basketPreview.classList.remove("hidden");
-      updateBasketPreview();
+      updateBasketPreview(true);
     });
   });
 
-  // 🛒 Basket toggle visibility
+  // 🧿 Toggle Basket manually
   if (cartIcon && basketPreview) {
     cartIcon.addEventListener("click", (e) => {
       e.preventDefault();
@@ -644,6 +657,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // 🔁 Load basket on page load
   updateBasketPreview();
 });
 </script>
