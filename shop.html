@@ -473,6 +473,34 @@
   });
 </script>
 
+  <script>
+  // Retrieve existing basket or start new
+  const basket = JSON.parse(localStorage.getItem('basket')) || [];
+
+  // Attach click event to each Add to Basket button
+  document.querySelectorAll('.add-to-basket').forEach(button => {
+    button.addEventListener('click', () => {
+      const card = button.closest('.product-card');
+      const id = card.dataset.id;
+      const name = card.dataset.name;
+      const price = parseFloat(card.dataset.price);
+
+      // Check if already in basket
+      const existingItem = basket.find(item => item.id === id);
+      if (existingItem) {
+        existingItem.quantity += 1;
+      } else {
+        basket.push({ id, name, price, quantity: 1 });
+      }
+
+      // Save to localStorage
+      localStorage.setItem('basket', JSON.stringify(basket));
+
+      // Confirm visually
+      alert(`${name} added to basket`);
+    });
+  });
+</script>
   
 </body>
 </html>
