@@ -564,16 +564,18 @@
   });
 
   // ✅ Confirm logout
-  if (confirmLogout) {
-    confirmLogout.addEventListener("click", () => {
-      signOut(auth).then(() => {
-        modal.classList.add("hidden");
-        window.location.reload();
-      }).catch((error) => {
-        alert("Logout error: " + error.message);
-      });
+if (confirmLogout) {
+  confirmLogout.addEventListener("click", () => {
+    signOut(auth).then(() => {
+      console.log("✅ Signed out");
+      modal.classList.add("hidden"); // hide the modal
+      dropdown.classList.add("hidden"); // just in case it's still open
+      location.href = "index.html"; // 🔁 redirect to reset state properly
+    }).catch((error) => {
+      alert("Logout error: " + error.message);
     });
-  }
+  });
+}
 
   // ❌ Cancel logout
   if (cancelLogout) {
