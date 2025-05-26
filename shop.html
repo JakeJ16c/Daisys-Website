@@ -439,7 +439,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const cartIcon = document.querySelector(".cart-icon");
   const basketPreview = document.getElementById("basket-preview");
 
-  // 🔄 Function to update the basket dropdown contents
+  // 🔁 Load & display current basket items
   function updateBasketPreview() {
     const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
     basketPreview.innerHTML = "";
@@ -487,7 +487,7 @@ document.addEventListener("DOMContentLoaded", () => {
     basketPreview.appendChild(list);
   }
 
-  // ➕ Add to basket on button click
+  // ➕ Add item to basket on button click
   document.querySelectorAll(".add-to-basket").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       const product = e.target.closest(".product-card");
@@ -506,20 +506,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
       localStorage.setItem(cartKey, JSON.stringify(cart));
 
-      // Show basket + update contents
-      basketPreview.classList.remove("hidden");
-      updateBasketPreview();
+      // ✅ FIX: Wait a moment before showing dropdown (to avoid click conflict)
+      setTimeout(() => {
+        basketPreview.classList.remove("hidden");
+        updateBasketPreview();
+      }, 50);
     });
   });
 
-  // 🧺 Toggle basket dropdown on cart icon click
+  // 🧺 Toggle basket dropdown when clicking cart icon
   if (cartIcon && basketPreview) {
     cartIcon.addEventListener("click", (e) => {
       e.preventDefault();
       basketPreview.classList.toggle("hidden");
     });
 
-    // 🧼 Hide basket if clicking outside
+    // 🧼 Close dropdown when clicking outside
     document.addEventListener("click", (event) => {
       if (
         !cartIcon.contains(event.target) &&
@@ -530,7 +532,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ⏳ Load basket on page load
+  // 🔁 Populate on load
   updateBasketPreview();
 });
 </script>
