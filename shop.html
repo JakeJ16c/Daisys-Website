@@ -138,7 +138,6 @@
       padding: 0rem 1rem;
       background-color: #CCE0FF;
       justify-content: center;
-
     }
 
     .nav-links a {
@@ -208,7 +207,6 @@
       background-color: var(--electric-blue);
       color: white;
     }
-
 
     /* ========== Hover Jump Animation ========== */
     .product-card:hover {
@@ -439,8 +437,8 @@
 </script>
 
       <!-- Basket Dropdown Script -->
-        <script>
-document.addEventListener("DOMContentLoaded", () => {
+      <script>
+  document.addEventListener("DOMContentLoaded", () => {
   const cartKey = "daisyCart";
   const basketPreview = document.getElementById("basket-preview");
   const cartIcon = document.querySelector(".cart-icon");
@@ -647,14 +645,16 @@ document.addEventListener("DOMContentLoaded", () => {
       basketPreview.classList.toggle("hidden");
     });
 
-    document.addEventListener("click", (event) => {
-      if (
-        !cartIcon.contains(event.target) &&
-        !basketPreview.contains(event.target)
-      ) {
-        basketPreview.classList.add("hidden");
-      }
-    });
+    document.addEventListener("click", function (event) {
+  if (
+    !cartIcon.contains(event.target) &&
+    !basketPreview.contains(event.target) &&
+    !event.target.classList.contains("add-to-basket")
+  ) {
+    basketPreview.classList.add("hidden");
+  }
+});
+
   }
 
   // 🔁 Load basket on page load
