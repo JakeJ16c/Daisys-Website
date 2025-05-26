@@ -571,14 +571,16 @@
 </script>
 
   <!-- Basket Dropdown Script -->
-<script>
+    <script>
 document.addEventListener("DOMContentLoaded", () => {
-  const cartKey = 'daisyCart';
+  const cartKey = "daisyCart";
   const cartIcon = document.querySelector(".cart-icon");
   const basketPreview = document.getElementById("basket-preview");
 
+  // Function to update basket UI
   function updateBasketPreview() {
     const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+
     basketPreview.innerHTML = "";
 
     if (cart.length === 0) {
@@ -605,15 +607,15 @@ document.addEventListener("DOMContentLoaded", () => {
       removeBtn.style.background = "#ff6961";
       removeBtn.style.border = "none";
       removeBtn.style.color = "white";
-      removeBtn.style.marginLeft = "1rem";
       removeBtn.style.padding = "0.25rem 0.5rem";
-      removeBtn.style.borderRadius = "6px";
       removeBtn.style.cursor = "pointer";
+      removeBtn.style.marginLeft = "1rem";
+      removeBtn.style.borderRadius = "4px";
 
       removeBtn.addEventListener("click", () => {
-        cart.splice(index, 1); // remove item from cart
+        cart.splice(index, 1);
         localStorage.setItem(cartKey, JSON.stringify(cart));
-        updateBasketPreview(); // refresh preview
+        updateBasketPreview();
       });
 
       li.appendChild(text);
@@ -624,19 +626,50 @@ document.addEventListener("DOMContentLoaded", () => {
     basketPreview.appendChild(list);
   }
 
-  if (cartIcon && basketPreview) {
-    cartIcon.addEventListener("click", e => {
-      e.preventDefault();
-      basketPreview.classList.toggle("hidden");
+  // Add to basket
+  document.querySelectorAll(".add-to-basket").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      const product = e.target.closest(".product-card");
+      const id = product.dataset.id;
+      const name = product.dataset.name;
+      const price = parseFloat(product.dataset.price);
+
+      let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+
+      const existing = cart.find((item) => item.id === id);
+
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({ id, name, price, qty: 1 });
+      }
+
+      localStorage.setItem(cartKey, JSON.stringify(cart));
+
+      // Show basket and update preview
+      basketPreview.classList.remove("hidden");
       updateBasketPreview();
     });
+  });
 
-    document.addEventListener("click", event => {
-      if (!cartIcon.contains(event.target) && !basketPreview.contains(event.target)) {
+  // Basket toggle on cart icon click
+  if (cartIcon && basketPreview) {
+    cartIcon.addEventListener("click", function (e) {
+      e.preventDefault();
+      basketPreview.classList.toggle("hidden");
+    });
+
+    document.addEventListener("click", function (event) {
+      if (
+        !cartIcon.contains(event.target) &&
+        !basketPreview.contains(event.target)
+      ) {
         basketPreview.classList.add("hidden");
       }
     });
   }
+
+  updateBasketPreview(); // Load basket on page load
 });
 </script>
 
