@@ -439,7 +439,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const cartIcon = document.querySelector(".cart-icon");
   const basketPreview = document.getElementById("basket-preview");
 
-  // 🔁 Update basket dropdown UI
   function updateBasketPreview() {
     const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
     basketPreview.innerHTML = "";
@@ -460,9 +459,8 @@ document.addEventListener("DOMContentLoaded", () => {
       li.style.alignItems = "center";
       li.style.marginBottom = "0.5rem";
 
-      const nameQty = document.createElement("div");
-      nameQty.innerHTML = `<strong>${item.name}</strong><br>£${item.price.toFixed(2)} x ${item.qty}`;
-      nameQty.style.flex = "1";
+      const name = document.createElement("strong");
+      name.textContent = item.name;
 
       const controls = document.createElement("div");
       controls.style.display = "flex";
@@ -490,18 +488,16 @@ document.addEventListener("DOMContentLoaded", () => {
       plusBtn.style.padding = "0.25rem 0.6rem";
       plusBtn.style.cursor = "pointer";
 
-      // ➖ Decrease quantity
       minusBtn.addEventListener("click", () => {
         if (item.qty > 1) {
           item.qty -= 1;
         } else {
-          cart.splice(index, 1); // remove item
+          cart.splice(index, 1);
         }
         localStorage.setItem(cartKey, JSON.stringify(cart));
         updateBasketPreview();
       });
 
-      // ➕ Increase quantity
       plusBtn.addEventListener("click", () => {
         item.qty += 1;
         localStorage.setItem(cartKey, JSON.stringify(cart));
@@ -512,15 +508,58 @@ document.addEventListener("DOMContentLoaded", () => {
       controls.appendChild(qtyDisplay);
       controls.appendChild(plusBtn);
 
-      li.appendChild(nameQty);
+      const itemBox = document.createElement("div");
+      itemBox.style.flex = "1";
+      itemBox.appendChild(name);
+
+      li.appendChild(itemBox);
       li.appendChild(controls);
       list.appendChild(li);
     });
 
     basketPreview.appendChild(list);
+
+    // Add footer controls (Clear + View Basket)
+    const footer = document.createElement("div");
+    footer.style.display = "flex";
+    footer.style.justifyContent = "space-between";
+    footer.style.marginTop = "1rem";
+    footer.style.gap = "1rem";
+
+    const clearBtn = document.createElement("button");
+    clearBtn.textContent = "Clear Basket";
+    clearBtn.style.background = "#ff6961";
+    clearBtn.style.border = "none";
+    clearBtn.style.color = "white";
+    clearBtn.style.padding = "0.5rem 1rem";
+    clearBtn.style.cursor = "pointer";
+    clearBtn.style.borderRadius = "4px";
+    clearBtn.style.flex = "1";
+
+    const viewBtn = document.createElement("button");
+    viewBtn.textContent = "View Basket";
+    viewBtn.style.background = "var(--electric-blue)";
+    viewBtn.style.border = "none";
+    viewBtn.style.color = "white";
+    viewBtn.style.padding = "0.5rem 1rem";
+    viewBtn.style.cursor = "pointer";
+    viewBtn.style.borderRadius = "4px";
+    viewBtn.style.flex = "1";
+
+    clearBtn.addEventListener("click", () => {
+      localStorage.removeItem(cartKey);
+      updateBasketPreview();
+    });
+
+    viewBtn.addEventListener("click", () => {
+      window.location.href = "basket.html"; // update if different
+    });
+
+    footer.appendChild(clearBtn);
+    footer.appendChild(viewBtn);
+    basketPreview.appendChild(footer);
   }
 
-  // ➕ Add to basket
   document.querySelectorAll(".add-to-basket").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       const product = e.target.closest(".product-card");
@@ -540,21 +579,18 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.setItem(cartKey, JSON.stringify(cart));
 
       // Show dropdown & update
-      setTimeout(() => {
-        basketPreview.classList.remove("hidden");
-        updateBasketPreview();
-      }, 50);
+      basketPreview.classList.remove("hidden");
+      updateBasketPreview();
     });
   });
 
-  // 🧺 Toggle basket on cart icon click
+  // Toggle dropdown on cart icon
   if (cartIcon && basketPreview) {
     cartIcon.addEventListener("click", (e) => {
       e.preventDefault();
       basketPreview.classList.toggle("hidden");
     });
 
-    // Hide dropdown when clicking outside
     document.addEventListener("click", (event) => {
       if (
         !cartIcon.contains(event.target) &&
@@ -565,10 +601,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Load basket on page load
   updateBasketPreview();
 });
 </script>
+
 
   
 </body>
