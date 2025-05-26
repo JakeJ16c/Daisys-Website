@@ -360,7 +360,7 @@
   <!-- Footer -->
   <footer>© 2025 You're So Golden · All Rights Reserved</footer>
 
-  <!-- Basket Toggle Script -->
+  <!-- User Toggle Script -->
       <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
@@ -433,16 +433,15 @@
 </script>
 
   <!-- Basket Dropdown Script -->
-    <script>
+      <script>
 document.addEventListener("DOMContentLoaded", () => {
   const cartKey = "daisyCart";
   const cartIcon = document.querySelector(".cart-icon");
   const basketPreview = document.getElementById("basket-preview");
 
-  // Function to update basket UI
+  // 🔄 Function to update the basket dropdown contents
   function updateBasketPreview() {
     const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
-
     basketPreview.innerHTML = "";
 
     if (cart.length === 0) {
@@ -462,7 +461,7 @@ document.addEventListener("DOMContentLoaded", () => {
       li.style.marginBottom = "0.5rem";
 
       const text = document.createElement("span");
-      text.textContent = `${item.name} £${item.price} x ${item.qty}`;
+      text.textContent = `${item.name} £${item.price.toFixed(2)} x ${item.qty}`;
 
       const removeBtn = document.createElement("button");
       removeBtn.textContent = "Remove";
@@ -488,17 +487,15 @@ document.addEventListener("DOMContentLoaded", () => {
     basketPreview.appendChild(list);
   }
 
-  // Add to basket
+  // ➕ Add to basket on button click
   document.querySelectorAll(".add-to-basket").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       const product = e.target.closest(".product-card");
       const id = product.dataset.id;
       const name = product.dataset.name;
       const price = parseFloat(product.dataset.price);
-      basketPreview.classList.remove("hidden");
 
       let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
-
       const existing = cart.find((item) => item.id === id);
 
       if (existing) {
@@ -509,20 +506,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
       localStorage.setItem(cartKey, JSON.stringify(cart));
 
-      // Show basket and update preview
+      // Show basket + update contents
       basketPreview.classList.remove("hidden");
       updateBasketPreview();
     });
   });
 
-  // Basket toggle on cart icon click
+  // 🧺 Toggle basket dropdown on cart icon click
   if (cartIcon && basketPreview) {
-    cartIcon.addEventListener("click", function (e) {
+    cartIcon.addEventListener("click", (e) => {
       e.preventDefault();
       basketPreview.classList.toggle("hidden");
     });
 
-    document.addEventListener("click", function (event) {
+    // 🧼 Hide basket if clicking outside
+    document.addEventListener("click", (event) => {
       if (
         !cartIcon.contains(event.target) &&
         !basketPreview.contains(event.target)
@@ -532,51 +530,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  updateBasketPreview(); // Load basket on page load
-});
-</script>
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const basketPreview = document.getElementById("basket-preview");
-  const cartKey = "daisyCart";
-
-  function updateBasketPreview() {
-    const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
-
-    // Clear the preview
-    basketPreview.innerHTML = "";
-
-    if (cart.length === 0) {
-      basketPreview.innerHTML = "<p><strong>Your basket is empty.</strong></p>";
-      return;
-    }
-
-    const list = document.createElement("ul");
-    list.style.listStyle = "none";
-    list.style.padding = "0";
-
-    cart.forEach(item => {
-      const li = document.createElement("li");
-      li.innerHTML = `${item.name} x${item.qty} - £${(item.price * item.qty).toFixed(2)}`;
-      list.appendChild(li);
-    });
-
-    basketPreview.appendChild(list);
-  }
-
-  // Run it once when page loads
+  // ⏳ Load basket on page load
   updateBasketPreview();
-
-  // Re-run every time something is added
-  document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
-    btn.addEventListener("click", () => {
-      setTimeout(updateBasketPreview, 100); // short delay to allow cart update
-    });
-  });
 });
 </script>
-
   
 </body>
 </html>
