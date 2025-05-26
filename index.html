@@ -574,8 +574,10 @@ window.addEventListener("DOMContentLoaded", () => {
 if (confirmLogout) {
   confirmLogout.addEventListener("click", () => {
     signOut(auth).then(() => {
-  // Force a clean redirect to the same page (removes modal state)
-  window.location.href = window.location.pathname;
+  document.getElementById("logout-modal").classList.add("hidden"); // Hide modal
+  setTimeout(() => window.location.reload(), 100); // Reload after hiding
+}).catch((error) => {
+  alert("Logout error: " + error.message);
 });
 .catch((error) => {
       alert("Logout error: " + error.message);
