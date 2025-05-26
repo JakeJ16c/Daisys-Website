@@ -483,7 +483,8 @@
 </div>
 
   <!-- User Toggle Script -->
-      <script type="module">
+      <!-- Firebase User Script -->
+<script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 
@@ -501,28 +502,41 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
 
-  const iconLink = document.getElementById("auth-icon");
-  const iconSymbol = document.getElementById("auth-icon-symbol");
+  // Elements
   const dropdown = document.getElementById("logout-dropdown");
   const dropdownContent = document.getElementById("user-dropdown-content");
-  const logoutModal = document.getElementById("logout-modal");
+  const modal = document.getElementById("logout-modal");
+  const confirmLogout = document.getElementById("confirm-logout-btn");
+  const cancelLogout = document.getElementById("cancel-logout-btn");
+  const authIcon = document.getElementById("auth-icon");
 
+  // Toggle dropdown
+  if (authIcon) {
+    authIcon.addEventListener("click", (e) => {
+      e.preventDefault();
+      dropdown.classList.toggle("hidden");
+    });
+  }
+
+  // Handle clicks outside dropdown
+  document.addEventListener("click", function (e) {
+    if (
+      !dropdown.contains(e.target) &&
+      e.target.id !== "auth-icon" &&
+      !e.target.closest("#logout-dropdown")
+    ) {
+      dropdown.classList.add("hidden");
+    }
+  });
+
+  // Handle auth state
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      // ✅ User is logged in
-      iconLink.href = "#";
-      iconLink.title = "User Menu";
-
-      // 👇 Clicking the user icon toggles dropdown
-      iconLink.addEventListener("click", (e) => {
-        e.preventDefault();
-        dropdown.classList.toggle("hidden");
-      });
-
-      // 👇 Populate dropdown content dynamically
+      // ✅ Logged in view
       dropdownContent.innerHTML = `
         <p style="margin: 0 0 0.5rem; font-weight: 600; font-family: 'Fredoka', sans-serif;">
-          👋 Hello<br><strong>${user.email}</strong></p>
+          👋 Hello<br><strong>${user.email}</strong>
+        </p>
         <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;" />
         <a href="account.html" style="display:block; margin-bottom: 0.4rem; text-decoration:none; color:#204ECF;">👤 My Account</a>
         <a href="orders.html" style="display:block; margin-bottom: 0.6rem; text-decoration:none; color:#204ECF;">📦 My Orders</a>
@@ -531,60 +545,42 @@
         </button>
       `;
 
-      // ❗ Attach modal logic after DOMContentLoaded
-      document.addEventListener("DOMContentLoaded", () => {
+      // 🛠 Attach listeners after DOM update
+      setTimeout(() => {
         const logoutBtn = document.getElementById("logout-button");
-        const confirmLogout = document.getElementById("confirm-logout-btn");
-        const cancelLogout = document.getElementById("cancel-logout-btn");
-
         if (logoutBtn) {
           logoutBtn.addEventListener("click", () => {
             dropdown.classList.add("hidden");
-            logoutModal.classList.remove("hidden");
+            modal.classList.remove("hidden");
           });
         }
-
-        if (confirmLogout) {
-          confirmLogout.addEventListener("click", () => {
-            signOut(auth).then(() => {
-              logoutModal.classList.add("hidden");
-              window.location.reload();
-            }).catch((error) => {
-              alert("Error logging out: " + error.message);
-            });
-          });
-        }
-
-        if (cancelLogout) {
-          cancelLogout.addEventListener("click", () => {
-            logoutModal.classList.add("hidden");
-          });
-        }
-      });
-
+      }, 0);
     } else {
-      // 📴 Not logged in – show Login link
+      // 👤 Logged out view
       dropdownContent.innerHTML = `
         <a href="login.html" style="display:block; text-align:center; background:#204ECF; color:white; padding:0.5rem 1rem; border-radius:4px; text-decoration:none;">Login</a>
       `;
+    }
+  });
 
-      iconLink.addEventListener("click", (e) => {
-        e.preventDefault();
-        dropdown.classList.toggle("hidden");
+  // ✅ Confirm logout
+  if (confirmLogout) {
+    confirmLogout.addEventListener("click", () => {
+      signOut(auth).then(() => {
+        modal.classList.add("hidden");
+        window.location.reload();
+      }).catch((error) => {
+        alert("Logout error: " + error.message);
       });
-    }
-  });
+    });
+  }
 
-  // 👇 Close dropdown when clicking outside
-  document.addEventListener("click", (e) => {
-    if (
-      !dropdown.contains(e.target) &&
-      e.target.id !== "auth-icon" &&
-      e.target.id !== "auth-icon-symbol"
-    ) {
-      dropdown.classList.add("hidden");
-    }
-  });
+  // ❌ Cancel logout
+  if (cancelLogout) {
+    cancelLogout.addEventListener("click", () => {
+      modal.classList.add("hidden");
+    });
+  }
 </script>
 
   <!-- Basket Dropdown -->
