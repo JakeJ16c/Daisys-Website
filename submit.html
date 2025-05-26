@@ -1,15 +1,15 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Submit Your Ideas - You're So Golden</title>
-  <link rel="icon" type="image/x-icon" href="favicon_circle.ico" />
-
-  <!-- Fonts & Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Submit Your Ideas - You're So Golden</title>
+<link href="favicon_circle.ico" rel="icon" type="image/x-icon"/>
+<!-- Fonts & Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+<style>
     /* ========== Custom Font ========== */
     @font-face {
       font-family: 'Raks';
@@ -222,48 +222,39 @@
   </style>
 </head>
 <body>
-
-  <!-- Top Announcement -->
-  <div class="announcement-bar">Free shipping on all UK orders over £25</div>
-
-  <!-- Header Section -->
-  <header class="site-header">
-    <h1 class="header-title"><a href="index.html" class="logo-link">You're So Golden</a></h1>
-  </header>
-
-  <!-- Navigation Bar -->
-  <nav class="nav-links">
-    <a href="index.html">Home</a>
-    <a href="shop.html">Shop</a>
-    <a href="#">About</a>
-    <a href="contacts.html">Contact</a>
-  </nav>
-  
-  <h2 class="page-title">Submit Your Custom Beadwork Idea</h2>
-
-  <div class="form-container">
-    <form action="https://formspree.io/f/mrbqweqp" method="POST" enctype="multipart/form-data">
-      <label for="name">Your Name</label>
-      <input type="text" id="name" name="name" placeholder="Enter your name" required>
-
-      <label for="email">Your Email</label>
-      <input type="email" id="email" name="email" placeholder="Enter your email" required>
-
-      <label for="idea">Tell us about your design idea</label>
-      <textarea id="idea" name="idea" placeholder="Describe your custom design..." required></textarea>
-      
-      <div class="file-upload-wrapper">
-  <label for="file-upload" class="file-upload-box">
-    <span class="file-upload-text">Drop files or click to upload</span>
-    <input id="file-upload" name="file" type="file" class="file-input" />
-  </label>
+<!-- Top Announcement -->
+<div class="announcement-bar">Free shipping on all UK orders over £25</div>
+<!-- Header Section -->
+<header class="site-header">
+<h1 class="header-title"><a class="logo-link" href="index.html">You're So Golden</a></h1>
+</header>
+<!-- Navigation Bar -->
+<nav class="nav-links">
+<a href="index.html">Home</a>
+<a href="shop.html">Shop</a>
+<a href="#">About</a>
+<a href="contacts.html">Contact</a>
+</nav>
+<h2 class="page-title">Submit Your Custom Beadwork Idea</h2>
+<div class="form-container">
+<form action="https://formspree.io/f/mrbqweqp" enctype="multipart/form-data" method="POST">
+<label for="name">Your Name</label>
+<input id="name" name="name" placeholder="Enter your name" required="" type="text"/>
+<label for="email">Your Email</label>
+<input id="email" name="email" placeholder="Enter your email" required="" type="email"/>
+<label for="idea">Tell us about your design idea</label>
+<textarea id="idea" name="idea" placeholder="Describe your custom design..." required=""></textarea>
+<div class="file-upload-wrapper">
+<label class="file-upload-box" for="file-upload">
+<span class="file-upload-text">Drop files or click to upload</span>
+<input class="file-input" id="file-upload" name="file" type="file"/>
+</label>
 </div>
-
-      <button type="submit" class="btn-submit">Submit Idea</button>
-    </form>
-  </div>
-
-  <footer>© 2025 You're So Golden · All Rights Reserved</footer>
-
+<button class="btn-submit" type="submit">Submit Idea</button>
+</form>
+</div>
+<footer>© 2025 You're So Golden · All Rights Reserved</footer>
+<script defer="True" src="basket.js"></script>
+<div class="basket-preview hidden" id="basket-preview"></div>
 </body>
 </html>

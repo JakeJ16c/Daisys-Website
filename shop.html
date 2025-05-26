@@ -1,16 +1,16 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <!-- ========== Basic Setup ========== -->
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="icon" type="image/x-icon" href="favicon_circle.ico">
-  <title>You're So Golden - All Products</title>
-
-  <!-- ========== Fonts & Icons ========== -->
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <style>
+<!-- ========== Basic Setup ========== -->
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="favicon_circle.ico" rel="icon" type="image/x-icon"/>
+<title>You're So Golden - All Products</title>
+<!-- ========== Fonts & Icons ========== -->
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+<style>
     /* ========== Custom Font ========== */
     @font-face {
       font-family: 'Raks';
@@ -257,118 +257,98 @@
   </style>
 </head>
 <body>
-
-  <!-- Top Announcement -->
-  <div class="announcement-bar">Free shipping on all UK orders over £25</div>
-
-  <!-- Header Section -->
-  <header class="site-header">
-    <div class="header-left">
-      <a href="#"><i class="fab fa-instagram"></i></a>
-      <a href="#"><i class="fab fa-facebook-f"></i></a>
-      <a href="#"><i class="fas fa-phone"></i></a>
-      <a href="#"><i class="fas fa-envelope"></i></a>
-    </div>
-    <h1 class="header-title"><a href="index.html" class="logo-link">You're So Golden</a></h1>
-    <div class="header-right">
-      <a href="#cart" class="cart-icon"><i class="fas fa-basket-shopping"></i></a>
-      <a id="auth-icon" class="login-icon" href="login.html" title="Login">
-        <i id="auth-icon-symbol" class="fas fa-user"></i>
-      </a>
-
+<!-- Top Announcement -->
+<div class="announcement-bar">Free shipping on all UK orders over £25</div>
+<!-- Header Section -->
+<header class="site-header">
+<div class="header-left">
+<a href="#"><i class="fab fa-instagram"></i></a>
+<a href="#"><i class="fab fa-facebook-f"></i></a>
+<a href="#"><i class="fas fa-phone"></i></a>
+<a href="#"><i class="fas fa-envelope"></i></a>
 </div>
-
-    <!-- Updated Basket Preview Dropdown -->
-<div id="basket-preview" class="basket-preview hidden">
-  <h3 style="margin-top: 0; font-size: 1.2rem; font-weight: 600; text-align: center;">Your Basket</h3>
-  <div id="basket-items"></div>
-  <div style="margin-top: 1rem; display: flex; gap: 0.5rem; justify-content: center;">
-    <button id="clear-basket" style="background: #ff6666; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: bold;">Clear</button>
-    <a href="basket.html" style="background: var(--electric-blue); color: white; padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; font-weight: bold;">View Basket</a>
-  </div>
+<h1 class="header-title"><a class="logo-link" href="index.html">You're So Golden</a></h1>
+<div class="header-right">
+<a class="cart-icon" href="#cart"><i class="fas fa-basket-shopping"></i></a>
+<a class="login-icon" href="login.html" id="auth-icon" title="Login">
+<i class="fas fa-user" id="auth-icon-symbol"></i>
+</a>
 </div>
-    
-    <!-- 🔽 Logout Dropdown (initially hidden) -->
-    <div id="logout-dropdown" class="hidden" style="position:absolute; right:1rem; top:4.2rem; background:white; border:1px solid #ccc; padding:1rem; border-radius:8px; z-index:1000;">
-      <p>Are you sure you want to log out?</p>
-      <button id="confirm-logout"
-        style="background:#204ECF; color:white; font-family: 'Fredoka', sans-serif; border:none; padding:0.5rem 1rem; border-radius:4px;">
+<!-- Updated Basket Preview Dropdown -->
+<div class="basket-preview hidden" id="basket-preview">
+<h3 style="margin-top: 0; font-size: 1.2rem; font-weight: 600; text-align: center;">Your Basket</h3>
+<div id="basket-items"></div>
+<div style="margin-top: 1rem; display: flex; gap: 0.5rem; justify-content: center;">
+<button id="clear-basket" style="background: #ff6666; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: bold;">Clear</button>
+<a href="basket.html" style="background: var(--electric-blue); color: white; padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; font-weight: bold;">View Basket</a>
+</div>
+</div>
+<!-- 🔽 Logout Dropdown (initially hidden) -->
+<div class="hidden" id="logout-dropdown" style="position:absolute; right:1rem; top:4.2rem; background:white; border:1px solid #ccc; padding:1rem; border-radius:8px; z-index:1000;">
+<p>Are you sure you want to log out?</p>
+<button id="confirm-logout" style="background:#204ECF; color:white; font-family: 'Fredoka', sans-serif; border:none; padding:0.5rem 1rem; border-radius:4px;">
         Yes, Log Out
       </button>
-    </div>
-
-  </header>
-
-<div id="basket-preview" class="hidden"></div>
-
-
-  <!-- Navigation Bar -->
-  <nav class="nav-links">
-    <a href="index.html">Home</a>
-    <a href="shop.html">Shop</a>
-    <a href="#">About</a>
-    <a href="contacts.html">Contact</a>
-  </nav>
-
-  <!-- Product Grid -->
-  <h2 class="section-title">All Products</h2>
-  <section class="products">
-      
-  <!-- Product Card 1 -->
-  <div class="product-card" data-id="001" data-name="Yellow Beads" data-price="4.99">
-    <img src="image1.jpeg" alt="Yellow Beads" />
-    <h3>Yellow Beads</h3>
-    <p>£4.99</p>
-    <button class="btn add-to-basket">Add to Basket</button>
-  </div>
-
-  <!-- Product Card 2 -->
-  <div class="product-card" data-id="002" data-name="Blue Tube Beads" data-price="5.49">
-    <img src="image2.jpeg" alt="Blue Tube Beads" />
-    <h3>Blue Tube Beads</h3>
-    <p>£5.49</p>
-    <button class="btn add-to-basket">Add to Basket</button>
-  </div>
-      
-    <!-- Product Card 3 -->
-  <div class="product-card" data-id="003" data-name="Yellow Beads" data-price="4.99">
-    <img src="image3.jpeg" alt="Yellow Beads" />
-    <h3>Yellow Beads</h3>
-    <p>£4.99</p>
-    <button class="btn add-to-basket">Add to Basket</button>
-  </div>
-
-  <!-- Product Card 4 -->
-  <div class="product-card" data-id="004" data-name="Blue Tube Beads" data-price="5.49">
-    <img src="image4.jpeg" alt="Blue Tube Beads" />
-    <h3>Blue Tube Beads</h3>
-    <p>£5.49</p>
-    <button class="btn add-to-basket">Add to Basket</button>
-  </div>
-      
-    <!-- Product Card 5 -->
-  <div class="product-card" data-id="005" data-name="Yellow Beads" data-price="4.99">
-    <img src="image5.jpeg" alt="Yellow Beads" />
-    <h3>Yellow Beads</h3>
-    <p>£4.99</p>
-    <button class="btn add-to-basket">Add to Basket</button>
-  </div>
-
-  <!-- Product Card 6 -->
-  <div class="product-card" data-id="006" data-name="Blue Tube Beads" data-price="5.49">
-    <img src="image1.jpeg" alt="Blue Tube Beads" />
-    <h3>Blue Tube Beads</h3>
-    <p>£5.49</p>
-    <button class="btn add-to-basket">Add to Basket</button>
-  </div>  
-
+</div>
+</header>
+<div class="hidden" id="basket-preview"></div>
+<!-- Navigation Bar -->
+<nav class="nav-links">
+<a href="index.html">Home</a>
+<a href="shop.html">Shop</a>
+<a href="#">About</a>
+<a href="contacts.html">Contact</a>
+</nav>
+<!-- Product Grid -->
+<h2 class="section-title">All Products</h2>
+<section class="products">
+<!-- Product Card 1 -->
+<div class="product-card" data-id="001" data-name="Yellow Beads" data-price="4.99">
+<img alt="Yellow Beads" src="image1.jpeg"/>
+<h3>Yellow Beads</h3>
+<p>£4.99</p>
+<button class="btn add-to-basket">Add to Basket</button>
+</div>
+<!-- Product Card 2 -->
+<div class="product-card" data-id="002" data-name="Blue Tube Beads" data-price="5.49">
+<img alt="Blue Tube Beads" src="image2.jpeg"/>
+<h3>Blue Tube Beads</h3>
+<p>£5.49</p>
+<button class="btn add-to-basket">Add to Basket</button>
+</div>
+<!-- Product Card 3 -->
+<div class="product-card" data-id="003" data-name="Yellow Beads" data-price="4.99">
+<img alt="Yellow Beads" src="image3.jpeg"/>
+<h3>Yellow Beads</h3>
+<p>£4.99</p>
+<button class="btn add-to-basket">Add to Basket</button>
+</div>
+<!-- Product Card 4 -->
+<div class="product-card" data-id="004" data-name="Blue Tube Beads" data-price="5.49">
+<img alt="Blue Tube Beads" src="image4.jpeg"/>
+<h3>Blue Tube Beads</h3>
+<p>£5.49</p>
+<button class="btn add-to-basket">Add to Basket</button>
+</div>
+<!-- Product Card 5 -->
+<div class="product-card" data-id="005" data-name="Yellow Beads" data-price="4.99">
+<img alt="Yellow Beads" src="image5.jpeg"/>
+<h3>Yellow Beads</h3>
+<p>£4.99</p>
+<button class="btn add-to-basket">Add to Basket</button>
+</div>
+<!-- Product Card 6 -->
+<div class="product-card" data-id="006" data-name="Blue Tube Beads" data-price="5.49">
+<img alt="Blue Tube Beads" src="image1.jpeg"/>
+<h3>Blue Tube Beads</h3>
+<p>£5.49</p>
+<button class="btn add-to-basket">Add to Basket</button>
+</div>
 </section>
-  
-  <!-- Footer -->
-  <footer>© 2025 You're So Golden · All Rights Reserved</footer>
-
-  <!-- User Toggle Script -->
-      <script type="module">
+<!-- Footer -->
+<footer>© 2025 You're So Golden · All Rights Reserved</footer>
+<!-- User Toggle Script -->
+<script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 
@@ -438,9 +418,8 @@
     });
   });
 </script>
-
-      <!-- Basket Dropdown Script -->
-      <script>
+<!-- Basket Dropdown Script -->
+<script>
   document.addEventListener("DOMContentLoaded", () => {
   const cartKey = "daisyCart";
   const basketPreview = document.getElementById("basket-preview");
@@ -664,7 +643,6 @@
   updateBasketPreview();
 });
 </script>
-
 <script src="basket.js"></script>
 </body>
 </html>
