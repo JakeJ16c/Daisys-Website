@@ -1,142 +1,283 @@
 <!DOCTYPE html>
 <html lang="en">
- <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>
-   You're So Golden - Bag Charms
-  </title>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
-  <link href="styles.css" rel="stylesheet"/>
- </head>
- <body>
-  <div class="announcement-bar">
-   Free shipping on all orders over £25
-  </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>You're So Golden - Bag Charms</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    @font-face {
+      font-family: 'Raks';
+      src: url('Raks.otf') format('opentype');
+    }
+
+    :root {
+      --light-pink: #F8F3EA;
+      --electric-blue: #204ECF;
+      --soft-pink: #FBB6C1;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Fredoka', sans-serif;
+      background-color: var(--light-pink);
+      color: #333;
+    }
+
+    .announcement-bar {
+      background-color: var(--electric-blue);
+      color: #fff;
+      text-align: center;
+      font-size: 0.85rem;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      letter-spacing: 0.5px;
+    }
+
+    .logo-link {
+      text-decoration: none;
+      color: inherit;
+    }
+    
+    header {
+      background-color: #CCE0FF;
+      padding: 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .header-left {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .header-left a {
+      color: var(--electric-blue);
+      font-size: 1.2rem;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .header-left a:hover {
+      color: #183aa0;
+    }
+
+    header h1 {
+      font-family: 'Raks', serif;
+      font-size: 2.3rem;
+      color: var(--electric-blue);
+      text-shadow: 1px 1px 0 #fff;
+      margin: 0;
+    }
+
+    .cart-icon {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.5rem;
+      color: var(--electric-blue);
+    }
+
+    .cart-icon:hover {
+      color: #183aa0;
+    }
+    .basket-preview {
+      position: absolute;
+      top: 100%;
+      right: 1rem;
+      margin-top: 0.5rem;
+      width: 220px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 1rem;
+      z-index: 999;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.3rem 1rem;
+      background-color: #CCE0FF;
+      justify-content: center;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--electric-blue);
+      font-weight: 500;
+      font-size: 0.9rem;
+      padding: 0.4rem 0.75rem;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .nav-links a:hover {
+      background-color: #dce2ff;
+    }
+    
+    .section-title {
+      text-align: center;
+      font-size: 1.75rem;
+      margin: 3rem 0 1rem;
+    }
+
+    .btn {
+      background-color: #80CBC4;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 25px;
+      font-size: 1rem;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background-color: #183aa0;
+    }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    .product-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 1.5rem;
+      height: 460px; /* Fixed height */
+    }
+
+    .product-card img {
+      width: 100%;
+      height: 250px; /* fixed height */
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+
+    .product-card h3 {
+      margin: 0.5rem 0 0.2rem;
+      font-size: 1.1rem;
+      word-wrap: break-word;
+    }
+
+    .product-card p {
+      margin-bottom: 1rem;
+      color: #666;
+      font-weight: bold;
+      font-size: 0.95rem;
+      min-height: 2rem; /* ensure consistent height */
+    }
+
+    .product-card .btn {
+      margin-top: auto;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      background-color: var(--soft-pink);
+      font-size: 0.9rem;
+      color: #444;
+    }
+
+    @media (max-width: 600px) {
+      .header-left {
+        display: none;
+      }  
+      .products {
+        grid-template-columns: repeat(2, 1fr); /* Two items per row */
+        padding: 2rem 1rem;
+        gap: 1rem;
+      }
+      .product-card img {
+        height: 180px;
+        object-fit: cover;
+      }
+
+  header {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+    padding: 1rem;
+  }
+
+  header h1 {
+    font-size: 1.8rem;
+  }
+
+  .cart-icon {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    transform: none;
+  }
+}
+
+    }
+  </style>
+</head>
+<body>
+
+  <div class="announcement-bar">Free shipping on all orders over £25</div>
+
   <header>
-   <div class="header-left">
-    <a href="#">
-     <i class="fab fa-instagram">
-     </i>
-    </a>
-    <a href="#">
-     <i class="fab fa-facebook-f">
-     </i>
-    </a>
-    <a href="#">
-     <i class="fas fa-phone">
-     </i>
-    </a>
-    <a href="#">
-     <i class="fas fa-envelope">
-     </i>
-    </a>
-   </div>
-   <h1>
-    <a class="logo-link" href="index.html">
-     You're So Golden
-    </a>
-   </h1>
-   <a class="cart-icon" href="#cart">
-    <i class="fas fa-basket-shopping">
-    </i>
-   </a>
-   <div class="basket-preview hidden" id="basket-preview">
-    <p>
-     <strong>
-      Your basket is empty.
-     </strong>
-    </p>
-   </div>
+    <div class="header-left">
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-facebook-f"></i></a>
+      <a href="#"><i class="fas fa-phone"></i></a>
+      <a href="#"><i class="fas fa-envelope"></i></a>
+    </div>
+    <h1><a href="index.html" class="logo-link">You're So Golden</a></h1>
+    <a href="#cart" class="cart-icon"><i class="fas fa-basket-shopping"></i></a>
+    <div id="basket-preview" class="basket-preview hidden">
+      <p><strong>Your basket is empty.</strong></p>
+  </div>
+
   </header>
-  <h2 class="section-title">
-   My Collection of Bag Charms
-  </h2>
-  <section class="products">
-   <!-- Row 1 -->
-   <div class="product-card">
-    <img alt="Scotch" src="image1.jpeg"/>
-    <h3>
-     Scotch
-    </h3>
-    <p>
-     £10.00
-    </p>
-    <a class="btn" href="#">
-     Buy Now
-    </a>
-   </div>
-   <div class="product-card">
-    <img alt="Spritz" src="image2.jpeg"/>
-    <h3>
-     Spritz
-    </h3>
-    <p>
-     <s>
-      £15.00
-     </s>
-     £10.00
-    </p>
-    <a class="btn" href="#">
-     Buy Now
-    </a>
-   </div>
-   <div class="product-card">
-    <img alt="Manhattan" src="image3.jpeg"/>
-    <h3>
-     Manhattan
-    </h3>
-    <p>
-     £10.00
-    </p>
-    <a class="btn" href="#">
-     Buy Now
-    </a>
-   </div>
-   <!-- Row 2 -->
-   <div class="product-card">
-    <img alt="French 75" src="image4.jpeg"/>
-    <h3>
-     French 75
-    </h3>
-    <p>
-     £10.00
-    </p>
-    <a class="btn" href="#">
-     Buy Now
-    </a>
-   </div>
-   <div class="product-card">
-    <img alt="Whiskey Sour" src="image5.jpeg"/>
-    <h3>
-     Whiskey Sour
-    </h3>
-    <p>
-     £10.00
-    </p>
-    <a class="btn" href="#">
-     Buy Now
-    </a>
-   </div>
-   <div class="product-card">
-    <img alt="Mojito" src="image1.jpeg"/>
-    <h3>
-     Mojito
-    </h3>
-    <p>
-     £10.00
-    </p>
-    <a class="btn" href="#">
-     Buy Now
-    </a>
-   </div>
-  </section>
-  <footer>
-   © 2025 You're So Golden · All Rights Reserved
-  </footer>
-  <script>
-   const cartIcon = document.querySelector('.cart-icon');
+
+  <h2 class="section-title">My Collection of Bag Charms</h2>
+<section class="products">
+  <!-- Row 1 -->
+  <div class="product-card"><img src="image1.jpeg" alt="Scotch"><h3>Scotch</h3><p>£10.00</p><a class="btn" href="#">Buy Now</a></div>
+  <div class="product-card"><img src="image2.jpeg" alt="Spritz"><h3>Spritz</h3><p><s>£15.00</s> £10.00</p><a class="btn" href="#">Buy Now</a></div>
+  <div class="product-card"><img src="image3.jpeg" alt="Manhattan"><h3>Manhattan</h3><p>£10.00</p><a class="btn" href="#">Buy Now</a></div>
+
+  <!-- Row 2 -->
+  <div class="product-card"><img src="image4.jpeg" alt="French 75"><h3>French 75</h3><p>£10.00</p><a class="btn" href="#">Buy Now</a></div>
+  <div class="product-card"><img src="image5.jpeg" alt="Whiskey Sour"><h3>Whiskey Sour</h3><p>£10.00</p><a class="btn" href="#">Buy Now</a></div>
+  <div class="product-card"><img src="image1.jpeg" alt="Mojito"><h3>Mojito</h3><p>£10.00</p><a class="btn" href="#">Buy Now</a></div>
+</section>
+
+  <footer>© 2025 You're So Golden · All Rights Reserved</footer>
+  
+<script>
+  const cartIcon = document.querySelector('.cart-icon');
   const basketPreview = document.getElementById('basket-preview');
 
   cartIcon.addEventListener('click', function(e) {
@@ -150,6 +291,7 @@
       basketPreview.classList.add('hidden');
     }
   });
-  </script>
- </body>
+</script>
+
+</body>
 </html>
