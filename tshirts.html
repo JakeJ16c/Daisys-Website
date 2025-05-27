@@ -262,31 +262,35 @@
   <div class="announcement-bar">Free shipping on all UK orders over £25</div>
 
   <!-- Header Section -->
-  
-<!-- Header -->
-<header class="site-header">
-  <div class="announcement-bar">Free shipping on all UK orders over £25</div>
-  <div class="header-wrapper">
-    <div class="social-icons">
-      <a href="#"><i class="fa-brands fa-instagram"></i></a>
-      <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
-      <a href="#"><i class="fa-solid fa-phone"></i></a>
-      <a href="#"><i class="fa-solid fa-envelope"></i></a>
+  <header class="site-header">
+    <div class="header-left">
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-facebook-f"></i></a>
+      <a href="#"><i class="fas fa-phone"></i></a>
+      <a href="#"><i class="fas fa-envelope"></i></a>
     </div>
-    <h1 class="site-title">You're So Golden</h1>
-    <div class="user-icons">
-      <div id="user-icon"></div>
-      <div id="cart-icon"></div>
-    </div>
-  </div>
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="shop.html">Shop</a>
-    <a href="about.html">About</a>
-    <a href="contact.html">Contact</a>
-  </nav>
-</header>
+    <h1 class="header-title"><a href="index.html" class="logo-link">You're So Golden</a></h1>
+    <div class="header-right">
+      <a href="#cart" class="cart-icon"><i class="fas fa-basket-shopping"></i></a>
+      <a id="auth-icon" class="login-icon" href="#" title="User Menu">
+        <i id="auth-icon-symbol" class="fas fa-user"></i>
+      </a>
 
+
+</div>
+
+    <div id="basket-preview" class="basket-preview hidden">
+      <!-- Basket contents will be injected here -->
+    </div>
+    
+    <!-- 👤 User Dropdown (dynamic) -->
+    <div id="logout-dropdown" class="hidden" style="position:absolute; right:1rem; top:4.2rem; background:white; border:1px solid #ccc; padding:1rem; border-radius:8px; z-index:1000; box-shadow:0 4px 12px rgba(0,0,0,0.1); min-width:160px;">
+      <div id="user-dropdown-content">
+        <!-- Content will be filled in by JS -->
+  </div>
+</div>
+
+  </header>
 
   <!-- Navigation Bar -->
   <nav class="nav-links">
