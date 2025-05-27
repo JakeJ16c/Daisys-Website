@@ -1,154 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Register - You're So Golden</title>
-
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Register - You're So Golden
+  </title>
   <!-- Fonts & Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-
-  <style>
-    @font-face {
-      font-family: 'Raks';
-      src: url('Raks.otf') format('opentype');
-    }
-
-    :root {
-      --light-pink: #F8F3EA;
-      --electric-blue: #204ECF;
-      --soft-pink: #FBB6C1;
-    }
-
-    body {
-      margin: 0;
-      font-family: 'Fredoka', sans-serif;
-      background-color: var(--light-pink);
-      color: #333;
-    }
-
-    .announcement-bar {
-      background-color: var(--electric-blue);
-      color: #fff;
-      text-align: center;
-      font-size: 0.85rem;
-      font-weight: 500;
-      padding: 0.5rem 1rem;
-      letter-spacing: 0.5px;
-    }
-
-    header {
-      background-color: #CCE0FF;
-      padding: 1rem;
-      text-align: center;
-    }
-
-    header h1 {
-      font-family: 'Raks', serif;
-      font-size: 2.3rem;
-      color: var(--electric-blue);
-      margin: 0;
-    }
-
-    .logo-link {
-      text-decoration: none;
-      color: inherit;
-    }
-
-    .register-container {
-      max-width: 400px;
-      margin: 4rem auto;
-      background: white;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-
-    .register-container h2 {
-      margin-bottom: 1.5rem;
-      color: var(--electric-blue);
-    }
-
-    /* Shared input + button styles */
-    .register-container input,
-    .register-container button {
-      width: 100%;
-      box-sizing: border-box;
-      padding: 0.75rem;
-      font-size: 1rem;
-      border-radius: 6px;
-      margin-bottom: 1rem;
-    }
-
-    .register-container input {
-      border: 1px solid #ccc;
-    }
-
-    .register-container button {
-      background-color: var(--electric-blue);
-      color: white;
-      border: none;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    .register-container button:hover {
-      background-color: #183aa0;
-    }
-
-    .link {
-      text-align: center;
-      margin-top: 1rem;
-      font-size: 0.9rem;
-      color: #555;
-    }
-
-    .link a {
-      color: var(--electric-blue);
-      font-weight: 500;
-      text-decoration: none;
-      transition: color 0.3s ease;
-    }
-
-    .link a:hover {
-      color: #183aa0;
-      text-decoration: underline;
-    }
-
-    footer {
-      text-align: center;
-      padding: 1.5rem;
-      background-color: var(--soft-pink);
-      font-size: 0.9rem;
-      color: #444;
-      margin-top: 4rem;
-    }
-  </style>
-</head>
-<body>
-
-  <div class="announcement-bar">Free shipping on all orders over £25</div>
-
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+  <link href="styles.css" rel="stylesheet"/>
+ </head>
+ <body>
+  <div class="announcement-bar">
+   Free shipping on all orders over £25
+  </div>
   <header>
-    <h1><a href="index.html" class="logo-link">You're So Golden</a></h1>
+   <h1>
+    <a class="logo-link" href="index.html">
+     You're So Golden
+    </a>
+   </h1>
   </header>
-
   <section class="register-container">
-    <h2><i class="fas fa-user-plus"></i> Create Account</h2>
-    <form action="#" method="post">
-      <input type="text" placeholder="Full Name" required>
-      <input type="email" placeholder="Email" required>
-      <input type="password" placeholder="Password" required>
-      <input type="password" placeholder="Confirm Password" required>
-      <button type="submit">Register</button>
-    </form>
-    <div class="link">
-      Already have an account? <a href="login.html">Login here</a>
-    </div>
+   <h2>
+    <i class="fas fa-user-plus">
+    </i>
+    Create Account
+   </h2>
+   <form action="#" method="post">
+    <input placeholder="Full Name" required="" type="text"/>
+    <input placeholder="Email" required="" type="email"/>
+    <input placeholder="Password" required="" type="password"/>
+    <input placeholder="Confirm Password" required="" type="password"/>
+    <button type="submit">
+     Register
+    </button>
+   </form>
+   <div class="link">
+    Already have an account?
+    <a href="login.html">
+     Login here
+    </a>
+   </div>
   </section>
-
-  <footer>© 2025 You're So Golden · All Rights Reserved</footer>
-
-</body>
+  <footer>
+   © 2025 You're So Golden · All Rights Reserved
+  </footer>
+ </body>
 </html>
