@@ -272,10 +272,9 @@
     <h1 class="header-title"><a href="index.html" class="logo-link">You're So Golden</a></h1>
     <div class="header-right">
       <a href="#cart" class="cart-icon"><i class="fas fa-basket-shopping"></i></a>
-      <a id="auth-icon" class="login-icon" href="#" title="User Menu">
+      <a id="auth-icon" class="login-icon" href="login.html" title="Login">
         <i id="auth-icon-symbol" class="fas fa-user"></i>
       </a>
-
 
 </div>
 
@@ -302,7 +301,16 @@
 
   <!-- Product Grid -->
   <h2 class="section-title">All Products</h2>
-  <section class="products">
+  
+<!-- Filter Buttons -->
+<div class="filter-buttons" style="text-align: center; margin-bottom: 2rem;">
+  <button class="btn filter-btn" data-filter="all">All</button>
+  <button class="btn filter-btn" data-filter="beadwork">Beadwork</button>
+  <button class="btn filter-btn" data-filter="tshirt">T-Shirts</button>
+  <button class="btn filter-btn" data-filter="charm">Charms</button>
+  <button class="btn filter-btn" data-filter="bracelet">Bracelets</button>
+</div>
+<section class="products">
       
   <!-- Product Card 1 -->
   <div class="product-card" data-id="001" data-name="Yellow Beads" data-price="4.99">
@@ -357,12 +365,26 @@
   <!-- Footer -->
   <footer>© 2025 You're So Golden · All Rights Reserved</footer>
 
-
   <!-- 'User' Toggle Btn -->
   <script type="module" src="user-toggle.js"></script>
 
   <!-- Basket Dropdown Btn -->
   <script src="basket-dropdown.js"></script>
-  
+
+<script>
+  const filterButtons = document.querySelectorAll('.filter-btn');
+  const productCards = document.querySelectorAll('.product-card');
+
+  filterButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const category = button.getAttribute('data-filter');
+      productCards.forEach(card => {
+        const match = category === 'all' || card.getAttribute('data-category') === category;
+        card.style.display = match ? 'flex' : 'none';
+      });
+    });
+  });
+</script>
+
 </body>
 </html>

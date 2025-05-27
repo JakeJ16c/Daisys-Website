@@ -1,15 +1,12 @@
-
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Admin Dashboard - You're So Golden</title>
-<!-- Fonts & Icons -->
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
-<style>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Admin Dashboard - You're So Golden</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+  <style>
     @font-face {
       font-family: 'Raks';
       src: url('Raks.otf') format('opentype');
@@ -26,31 +23,12 @@
       font-family: 'Fredoka', sans-serif;
       background-color: var(--light-pink);
       color: #333;
-      padding: 0;
     }
-    /* ========== Header Section ========== */
+
     .site-header {
       background-color: #CCE0FF;
       padding: 0.8rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
-
-    .header-left {
-      position: absolute;
-      left: 1rem;
-      top: 50%;
-      transform: translateY(-50%);
-      display: flex;
-      gap: 0.75rem;
-    }
-
-    .header-left a {
-      color: var(--electric-blue);
-      font-size: 1.2rem;
-      text-decoration: none;
+      text-align: center;
     }
 
     .header-title {
@@ -61,85 +39,27 @@
       margin: 0;
     }
 
-    .logo-link {
-      text-decoration: none;
-      color: inherit;
-    }
-
-    .header-right {
-      position: absolute;
-      right: 1rem;
-      top: 50%;
-      transform: translateY(-50%);
+    .admin-panel-wrapper {
       display: flex;
-      align items: center;
-    }
-
-    .cart-icon {
-      font-size: 1.5rem;
-      color: var(--electric-blue);
-    }
-
-    .basket-preview {
-      position: absolute;
-      top: 100%;
-      right: 1rem;
-      margin-top: 0.5rem;
-      background: white;
-      border-radius: 8px;
-      padding: 1rem;
-      width: 220px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      border: 1px solid #ccc;
-      z-index: 999;
-    }
-
-    .hidden { display: none; }
-
-    .login-icon {
-      margin-left: 1rem;
-      font-size: 1.2rem;
-      color: var(--electric-blue);
-      transition: transform 0.2s ease, color 0.2s ease;
-    }
-
-    .login-icon:hover {
-      color: #000;
-      transform: scale(1.1);
-    }
-
-    .login-icon,
-    .cart-icon {
-      font-size: clamp(1rem, 2.5vw, 1.5rem);
-    }
-
-
-    /* ========== Navigation Bar ========== */
-    .nav-links {
-      display: flex;
-      gap: 0.5rem;
-      padding: 0rem 1rem;
-      background-color: #CCE0FF;
-      justify-content: center;
-
-    }
-
-    .nav-links a {
-      text-decoration: none;
-      color: var(--electric-blue);
-      font-weight: 500;
-      font-size: 0.9rem;
-      padding: 0.4rem 0.75rem;
-      border-radius: 6px;
-    }
-
-    .admin-container {
-      max-width: 600px;
+      flex-wrap: wrap;
+      gap: 2rem;
+      max-width: 1200px;
       margin: 3rem auto;
+      padding: 0 1rem;
+    }
+
+    .admin-column {
+      flex: 1;
       background: white;
       padding: 2rem;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      min-width: 300px;
+    }
+
+    h2 {
+      color: var(--electric-blue);
+      margin-bottom: 1rem;
     }
 
     input, textarea, button {
@@ -166,13 +86,6 @@
 
     button:hover {
       background-color: #183aa0;
-    }
-
-    #login-error {
-      color: red;
-      font-weight: 500;
-      margin-top: 10px;
-      display: none;
     }
 
     ul {
@@ -210,76 +123,52 @@
     }
   </style>
 </head>
-      <!-- Header Section -->
-      <header class="site-header">
-    <div class="header-left">
-      <a href="#"><i class="fab fa-instagram"></i></a>
-      <a href="#"><i class="fab fa-facebook-f"></i></a>
-      <a href="#"><i class="fas fa-phone"></i></a>
-      <a href="#"><i class="fas fa-envelope"></i></a>
-    </div>
+<body>
+
+  <header class="site-header">
     <h1 class="header-title"><a href="index.html" class="logo-link">You're So Golden</a></h1>
-    <div class="header-right">
-      <a href="#cart" class="cart-icon"><i class="fas fa-basket-shopping"></i></a>
-      <a id="auth-icon" class="login-icon" href="#" title="User Menu">
-        <i id="auth-icon-symbol" class="fas fa-user"></i>
-      </a>
-
-
-</div>
-
-    <div id="basket-preview" class="basket-preview hidden">
-      <!-- Basket contents will be injected here -->
-    </div>
-    
-    <!-- 👤 User Dropdown (dynamic) -->
-    <div id="logout-dropdown" class="hidden" style="position:absolute; right:1rem; top:4.2rem; background:white; border:1px solid #ccc; padding:1rem; border-radius:8px; z-index:1000; box-shadow:0 4px 12px rgba(0,0,0,0.1); min-width:160px;">
-      <div id="user-dropdown-content">
-        <!-- Content will be filled in by JS -->
-  </div>
-</div>
-
   </header>
 
-      <!-- Navigation Bar -->
-      <nav class="nav-links">
-        <a href="index.html">Home</a>
-        <a href="#">Shop</a>
-        <a href="#">About</a>
-        <a href="contacts.html">Contact</a>
-      </nav>
+  <!-- Two-column admin area -->
+  <div class="admin-panel-wrapper">
 
-    <!-- 🛠️ Admin Product Panel -->
-    <section class="admin-container">
+    <!-- 📦 Product Management -->
+    <section class="admin-column">
       <h2>Manage Products</h2>
-
-      <!-- 📥 Add Product Form -->
       <form id="productForm">
         <input type="text" id="title" placeholder="Product Name" required />
         <input type="text" id="image" placeholder="Image URL" required />
-        <input type="number" id="price" placeholder="Price" required />
+        <input type="number" id="price" placeholder="Price (£)" required />
         <textarea id="description" placeholder="Description" rows="3"></textarea>
         <button type="submit">Add Product</button>
       </form>
 
-      <!-- 📋 Product List Area -->
-      <h3 style="margin-top: 2rem;">Product List</h3>
+      <h3>Product List</h3>
       <ul id="productList"></ul>
     </section>
 
+    <!-- 📝 Pending Orders -->
+    <section class="admin-column">
+      <h2>Pending Orders</h2>
+      <ul id="orderList">
+        <li>Loading orders...</li>
+      </ul>
+    </section>
 
-    <footer>© 2025 You're So Golden · Admin Dashboard</footer>
-    
-<script type="module">
+  </div>
+
+  <footer>© 2025 You're So Golden · Admin Dashboard</footer>
+
+  <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
     import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyA6kN9-7dN9Ovq6BmWBBJwBhLXRW6INX4c",
       authDomain: "daisy-s-website.firebaseapp.com",
       projectId: "daisy-s-website",
-      storageBucket: "daisy-s-website.firebasestorage.app",
+      storageBucket: "daisy-s-website.appspot.com",
       messagingSenderId: "595443495060",
       appId: "1:595443495060:web:7bbdd1108ad336d55c8481",
       measurementId: "G-ST5CQ6PV41"
@@ -289,35 +178,16 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    
-onAuthStateChanged(auth, (user) => {
-  if (user && user.email === "daisybelle76@gmail.com") {
-    
-    document.getElementById('admin-panel').style.display = 'block';
-    loadProducts();
-  } else {
-    window.location.href = "login.html";
-  }
-});
-
-    const loginError = document.getElementById('login-error');
-
-    // Login section skipped; user already handled in auth check
-        if (user.email === "daisybelle76@gmail.com") {
-          
-          document.getElementById('admin-panel').style.display = 'block';
-          loginError.style.display = 'none';
-          loadProducts();
-        } else {
-          loginError.textContent = "❌ Access denied.";
-          loginError.style.display = 'block';
-        }
-      } catch (error) {
-        loginError.textContent = "❌ " + error.message.replace("Firebase: ", "");
-        loginError.style.display = 'block';
+    onAuthStateChanged(auth, (user) => {
+      if (user && user.email === "daisybelle76@gmail.com") {
+        loadProducts();
+        loadOrders();
+      } else {
+        window.location.href = "login.html";
       }
     });
 
+    // 🛍️ Load & display products
     async function loadProducts() {
       const productList = document.getElementById('productList');
       productList.innerHTML = '';
@@ -344,6 +214,24 @@ onAuthStateChanged(auth, (user) => {
         loadProducts();
       };
     }
+
+    // 📦 Load & display pending orders
+    async function loadOrders() {
+      const orderList = document.getElementById('orderList');
+      orderList.innerHTML = '';
+      const snapshot = await getDocs(collection(db, "orders"));
+      if (snapshot.empty) {
+        orderList.innerHTML = "<li>No orders yet.</li>";
+        return;
+      }
+      snapshot.forEach(order => {
+        const data = order.data();
+        const li = document.createElement('li');
+        li.innerHTML = `<span><strong>${data.name || 'Unnamed'}</strong><br/>${data.email || ''}<br/>${data.items?.length || 0} item(s)</span>`;
+        orderList.appendChild(li);
+      });
+    }
   </script>
+
 </body>
 </html>
