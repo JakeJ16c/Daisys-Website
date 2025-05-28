@@ -2,11 +2,24 @@ import {
   collection,
   getDocs,
   doc,
-  updateDoc,
-  Timestamp
+  updateDoc
 } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
 import { db } from './firebase.js';
+
+function formatDate(timestamp) {
+  const date = timestamp.toDate();
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+
+  let hours = date.getHours();
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const ampm = hours >= 12 ? "PM" : "AM";
+  hours = hours % 12 || 12;
+
+  return `${day}/${month}/${year} @ ${hours}:${minutes} ${ampm}`;
+}
 
 async function loadOrders() {
   const ordersRef = collection(db, "Orders");
@@ -29,7 +42,7 @@ async function loadOrders() {
     }, 0);
 
     const createdAt = data.createdAt?.toDate
-      ? data.createdAt.toDate().toLocaleString()
+      ? formatDate(data.createdAt)
       : "Unknown";
 
     const orderCard = document.createElement("div");
@@ -82,7 +95,6 @@ async function loadOrders() {
         await updateDoc(orderRef, { status: newStatus });
         alert(`Order updated to "${newStatus}"`);
 
-        // Update collapsed summary
         const header = e.target.closest('.content').previousElementSibling;
         header.querySelector('.overview-status').textContent = newStatus;
       } catch (err) {
