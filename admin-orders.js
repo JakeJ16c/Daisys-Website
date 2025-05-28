@@ -5,7 +5,7 @@ async function loadOrders() {
   const ordersRef = collection(db, "Orders");
   const snapshot = await getDocs(ordersRef);
   const container = document.getElementById("orderList");
-  container.innerHTML = ""; // clear loading message
+  container.innerHTML = ""; // clear “Loading…”
 
   snapshot.forEach(docSnap => {
     const data = docSnap.data();
@@ -25,9 +25,15 @@ async function loadOrders() {
     `).join("");
 
     orderCard.innerHTML = `
-      <button class="collapsible"><strong>${data.name}</strong> &lt;${data.email}&gt;</button>
+      <button class="collapsible">
+        <div class="overview-row">
+          <span class="overview-name">${data.name}</span>
+          <span class="overview-status">${data.status || 'unknown'}</span>
+        </div>
+      </button>
       <div class="content">
-        <p><strong>Address:</strong><br>${data.address || 'No address'}</p>
+        <p><strong>Email:</strong> ${data.email || "no@email.com"}</p>
+        <p><strong>Address:</strong><br>${data.address || 'No address provided'}</p>
         <p><strong>Status:</strong> 
           <select class="status-dropdown" data-id="${orderId}">
             <option value="pending" ${data.status === "pending" ? "selected" : ""}>pending</option>
@@ -42,7 +48,6 @@ async function loadOrders() {
     container.appendChild(orderCard);
   });
 
-  // Toggle collapsible content
   document.querySelectorAll(".collapsible").forEach(btn => {
     btn.addEventListener("click", () => {
       const content = btn.nextElementSibling;
@@ -50,7 +55,6 @@ async function loadOrders() {
     });
   });
 
-  // Handle status changes
   document.querySelectorAll(".status-dropdown").forEach(dropdown => {
     dropdown.addEventListener("change", async (e) => {
       const orderId = e.target.dataset.id;
@@ -59,10 +63,13 @@ async function loadOrders() {
       try {
         const orderRef = doc(db, "Orders", orderId);
         await updateDoc(orderRef, { status: newStatus });
-        alert(`Order ${orderId} updated to "${newStatus}"`);
+        alert(`Order updated to "${newStatus}"`);
+        // Update summary text too
+        const overview = e.target.closest('.content').previousElementSibling;
+        overview.querySelector('.overview-status').textContent = newStatus;
       } catch (err) {
-        console.error("Failed to update order status:", err);
-        alert("Error updating order. Please try again.");
+        console.error("Failed to update status:", err);
+        alert("Failed to update order status.");
       }
     });
   });
