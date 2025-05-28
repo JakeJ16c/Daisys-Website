@@ -1,9 +1,44 @@
-import { db } from './firebase.js';
+import { db, auth } from './firebase.js';
 import {
   collection,
   addDoc,
+  doc,
+  getDoc,
   serverTimestamp
 } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+
+import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
+
+let currentUser = {
+  name: "Anonymous",
+  email: "no@email.com",
+  address: "Not provided"
+};
+
+// 🔐 Get user info + delivery address from Firestore
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    try {
+      const userDocRef = doc(db, "users", user.uid);
+      const userDocSnap = await getDoc(userDocRef);
+
+      if (userDocSnap.exists()) {
+        const data = userDocSnap.data();
+        const address = data.deliveryAddress || {};
+
+        currentUser = {
+          name: data.name || user.displayName || "Customer",
+          email: user.email || "no@email.com",
+          address: `${address.houseNumber || ""} ${address.street || ""}, ${address.city || ""}, ${address.county || ""}, ${address.postcode || ""}`.trim()
+        };
+      } else {
+        console.warn("User document not found in Firestore.");
+      }
+    } catch (err) {
+      console.error("Error fetching user delivery address:", err);
+    }
+  }
+});
 
 const basket = JSON.parse(localStorage.getItem("daisyCart")) || [];
 const summary = document.getElementById("basket-summary");
@@ -39,21 +74,17 @@ function renderBasket() {
   subtotalDisplay.textContent = `Subtotal: £${subtotal.toFixed(2)}`;
 }
 
-// 🧾 Order submission
+// 🧾 Submit order
 export async function submitOrder() {
-  const nameInput = document.getElementById("cust-name");
-  const emailInput = document.getElementById("cust-email");
-  const name = nameInput?.value.trim();
-  const email = emailInput?.value.trim();
-
   if (basket.length === 0) {
     alert("You have nothing in the basket to checkout!");
     return;
   }
 
   const orderPayload = {
-    name: name || "Anonymous",
-    email: email || "no@email.com",
+    name: currentUser?.name || "Anonymous",
+    email: currentUser?.email || "no@email.com",
+    address: currentUser?.address || "Not provided",
     items: basket.map(item => ({
       productId: item.id || "unknown",
       productName: item.name || "Unnamed",
@@ -77,7 +108,7 @@ export async function submitOrder() {
   }
 }
 
-// 📦 On page load: render basket + attach submit handler
+// 📦 On page load
 document.addEventListener("DOMContentLoaded", () => {
   renderBasket();
 
