@@ -61,7 +61,12 @@ async function loadOrders() {
       </button>
       <div class="content">
         <p><strong>Email:</strong> ${data.email || "no@email.com"}</p>
-        <p><strong>Address:</strong><br>${data.address || 'No address provided'}</p>
+        <p><strong>Address:</strong><br>${
+  typeof data.address === "object"
+    ? `${data.address.houseNumber || ""} ${data.address.street || ""}, ${data.address.city || ""}, ${data.address.county || ""}, ${data.address.postcode || ""}`.replace(/\s+/g, ' ').replace(/,\s*,/g, ',').trim()
+    : data.address || 'No address provided'
+}</p>
+
         <p><strong>Status:</strong> 
           <select class="status-dropdown" data-id="${orderId}">
             <option value="pending" ${data.status === "pending" ? "selected" : ""}>pending</option>
