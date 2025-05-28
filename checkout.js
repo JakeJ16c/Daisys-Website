@@ -24,7 +24,7 @@ onAuthStateChanged(auth, async (user) => {
 
       if (userDocSnap.exists()) {
         const data = userDocSnap.data();
-        const address = data.deliveryAddress || {};
+        const address = data.address || data.deliveryAddress || {};
 
         currentUser = {
           name: data.name || user.displayName || "Customer",
