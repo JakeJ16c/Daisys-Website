@@ -12,8 +12,8 @@ export async function submitOrder() {
   const email      = emailInput?.value.trim();
   const basket     = JSON.parse(localStorage.getItem("daisyCart")) || [];
 
-  if (!name || !email || basket.length === 0) {
-    alert("Please enter your name, email, and make sure your basket isn't empty.");
+  if (basket.length === 0) {
+    alert("You have nothing in the basket to checkout!");
     return;
   }
 
