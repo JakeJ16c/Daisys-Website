@@ -27,6 +27,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     window.updateBasketPreview = updateBasketPreview;
+    document.addEventListener("DOMContentLoaded", () => {
+      updateBasketPreview(); // Auto-run on page load
+    });
 
     let subtotal = 0;
 
