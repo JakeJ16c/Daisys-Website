@@ -51,20 +51,23 @@ export async function submitOrder() {
     return;
   }
 
-  try {
-    await addDoc(collection(db, "Orders"), {
-      name,
-      email,
-      items: basket.map(item => ({
-        productId: item.id,
-        productName: item.name,
-        qty: item.qty,
-        price: item.price
-      })),
-      status: "pending",
-      createdAt: serverTimestamp()
-    });
+  const orderPayload = {
+    name: name || "Anonymous",
+    email: email || "no@email.com",
+    items: basket.map(item => ({
+      productId: item.id || "unknown",
+      productName: item.name || "Unnamed",
+      qty: parseFloat(item.qty) || 1,
+      price: parseFloat(item.price) || 0
+    })),
+    status: "pending",
+    createdAt: serverTimestamp()
+  };
 
+  console.log("Submitting order payload:", orderPayload);
+
+  try {
+    await addDoc(collection(db, "Orders"), orderPayload);
     alert("Order placed successfully! 🛒");
     localStorage.removeItem("daisyCart");
     window.location.href = "index.html";
@@ -78,9 +81,11 @@ export async function submitOrder() {
 document.addEventListener("DOMContentLoaded", () => {
   renderBasket();
 
-  const form = document.querySelector("form");
-  form?.addEventListener("submit", (e) => {
-    e.preventDefault();
-    submitOrder();
-  });
+  const form = document.getElementById("checkout-form");
+  if (form) {
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      submitOrder();
+    });
+  }
 });
