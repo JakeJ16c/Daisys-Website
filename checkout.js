@@ -12,33 +12,44 @@ import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.8.1/fi
 let currentUser = {
   name: "Anonymous",
   email: "no@email.com",
-  address: "Not provided"
+  address: {} // ← must be an object
 };
 
-// 🔐 Get user info + delivery address from Firestore
-onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    try {
-      const userDocRef = doc(db, "users", user.uid);
-      const userDocSnap = await getDoc(userDocRef);
+// ✅ Load current user info and full address
+async function loadCurrentUser() {
+  return new Promise((resolve, reject) => {
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          const userDocRef = doc(db, "users", user.uid);
+          const userDocSnap = await getDoc(userDocRef);
 
-      if (userDocSnap.exists()) {
-        const data = userDocSnap.data();
-        const address = data.address || data.deliveryAddress || {};
+          if (userDocSnap.exists()) {
+            const data = userDocSnap.data();
+            const address = data.address || data.deliveryAddress || {};
 
-        currentUser = {
-          name: data.name || user.displayName || "Customer",
-          email: user.email || "no@email.com",
-          address: address
-        };
+            currentUser = {
+              name: data.name || `${data.firstName || ''} ${data.lastName || ''}`.trim() || user.displayName || "Customer",
+              email: user.email || "no@email.com",
+              address: address
+            };
+
+            resolve(); // done loading
+          } else {
+            console.warn("User document not found in Firestore.");
+            resolve();
+          }
+        } catch (err) {
+          console.error("Error fetching user info:", err);
+          reject(err);
+        }
       } else {
-        console.warn("User document not found in Firestore.");
+        console.warn("User not authenticated");
+        resolve(); // allow guest checkout
       }
-    } catch (err) {
-      console.error("Error fetching user delivery address:", err);
-    }
-  }
-});
+    });
+  });
+}
 
 const basket = JSON.parse(localStorage.getItem("daisyCart")) || [];
 const summary = document.getElementById("basket-summary");
@@ -84,7 +95,7 @@ export async function submitOrder() {
   const orderPayload = {
     name: currentUser?.name || "Anonymous",
     email: currentUser?.email || "no@email.com",
-    address: currentUser?.address || "Not provided",
+    address: currentUser?.address || {}, // 🛑 full object here
     items: basket.map(item => ({
       productId: item.id || "unknown",
       productName: item.name || "Unnamed",
@@ -109,32 +120,15 @@ export async function submitOrder() {
 }
 
 // 📦 On page load
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  await loadCurrentUser();
   renderBasket();
 
   const form = document.getElementById("checkout-form");
   if (form) {
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    // Wait for currentUser to be fully populated if needed
-    if (!currentUser.address || Object.keys(currentUser.address).length === 0) {
-      try {
-        const user = auth.currentUser;
-        const userDocRef = doc(db, "users", user.uid);
-        const userDocSnap = await getDoc(userDocRef);
-
-        if (userDocSnap.exists()) {
-          const data = userDocSnap.data();
-          currentUser.address = data.address || {};
-        }
-      } catch (err) {
-        console.warn("Retry fetch user address failed:", err);
-      }
-    }
-
-    submitOrder();
-  });
-}
-
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      await submitOrder();
+    });
+  }
 });
