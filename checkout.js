@@ -29,7 +29,7 @@ onAuthStateChanged(auth, async (user) => {
         currentUser = {
           name: data.name || user.displayName || "Customer",
           email: user.email || "no@email.com",
-          address: `${address.houseNumber || ""} ${address.street || ""}, ${address.city || ""}, ${address.county || ""}, ${address.postcode || ""}`.trim()
+          address: address
         };
       } else {
         console.warn("User document not found in Firestore.");
