@@ -414,6 +414,106 @@
       margin-top: 1.5rem;
     }
 
+    /* ========== Submit Page Styling ========== */
+	h2.page-title {
+      text-align: center;
+      font-size: 1.8rem;
+      color: var(--electric-blue);
+      margin: 2rem 0 1rem;
+    }
+
+    .form-container {
+      background-color: white;
+      padding: 2rem 2.5rem; /* Equal padding left and right */
+      border-radius: 12px;
+      max-width: 500px;
+      margin: 0 auto 3rem;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+      box-sizing: border-box;
+    }
+
+    form, input, textarea {
+       margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1.25rem;
+      font-family: inherit;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    form textarea {
+      min-height: 120px;
+      height: auto;
+      resize: vertical;
+    }
+
+    form {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    .file-upload-wrapper {
+      width: 100%;
+      margin-bottom: 1.25rem;
+    }
+
+    .file-upload-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 2rem;
+      border: 2px dashed #ccc;
+      border-radius: 10px;
+      background-color: #fff;
+      color: #999;
+      cursor: pointer;
+      transition: border 0.3s ease;
+      font-family: 'Fredoka', sans-serif;
+      text-align: center;
+    }
+
+    .file-upload-box:hover {
+      border-color: #204ecf;
+    }
+
+    .file-upload-text {
+      font-size: 0.95rem;
+      color: #666;
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    .btn-submit {
+      background-color: #80CBC4;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 25px;
+      font-weight: 200;
+      font-size: medium;
+      border: none;
+      font-family: 'Fredoka', sans-serif;
+      letter-spacing: 0.05rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .btn-submit:hover {
+      background-color: #183aa0;
+    }
+
     /* ========== Footer ========== */
     footer {
       text-align: center;
