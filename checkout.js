@@ -114,9 +114,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const form = document.getElementById("checkout-form");
   if (form) {
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      submitOrder();
-    });
-  }
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    // Wait for currentUser to be fully populated if needed
+    if (!currentUser.address || Object.keys(currentUser.address).length === 0) {
+      try {
+        const user = auth.currentUser;
+        const userDocRef = doc(db, "users", user.uid);
+        const userDocSnap = await getDoc(userDocRef);
+
+        if (userDocSnap.exists()) {
+          const data = userDocSnap.data();
+          currentUser.address = data.address || {};
+        }
+      } catch (err) {
+        console.warn("Retry fetch user address failed:", err);
+      }
+    }
+
+    submitOrder();
+  });
+}
+
 });
