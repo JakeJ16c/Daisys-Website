@@ -26,6 +26,8 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    window.updateBasketPreview = updateBasketPreview;
+
     let subtotal = 0;
 
     cart.forEach((item, index) => {
@@ -204,6 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ) {
         basketPreview.classList.add("hidden");
       }
+      
     });
   }
 
