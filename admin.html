@@ -1,23 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="visibility:hidden">
 <head>
+  
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>Admin Dashboard - You're So Golden</title>
+  <title>Admin Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+  <link rel="icon" href="favicon_circle.ico" type="image/x-icon" />
+  
+  <!-- ========== Fonts & Icons ========== -->
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  
   <style>
+    /* ========== Custom Font ========== */
     @font-face {
       font-family: 'Raks';
       src: url('Raks.otf') format('opentype');
     }
 
+    /* ========== Theme Colours ========== */
     :root {
       --light-pink: #F8F3EA;
       --electric-blue: #204ECF;
       --soft-pink: #FBB6C1;
     }
-
+    
+    /* ========== Global Styles ========== */
     body {
       margin: 0;
       font-family: 'Fredoka', sans-serif;
@@ -25,10 +35,23 @@
       color: #333;
     }
 
+    .announcement-bar {
+      background-color: var(--electric-blue);
+      color: #fff;
+      text-align: center;
+      font-size: 0.85rem;
+      padding: 0.5rem 1rem;
+    }
+
+    /* ========== Header Section ========== */
     .site-header {
       background-color: #CCE0FF;
-      padding: 0.8rem;
-      text-align: center;
+      padding-top: 0.8rem;
+      padding-bottom: 0rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
     }
 
     .header-title {
@@ -39,6 +62,37 @@
       margin: 0;
     }
 
+    .logo-link {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .hidden { display: none; }
+
+    /* ========== Navigation Bar ========== */
+    .nav-links {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0rem 1rem;
+      background-color: #CCE0FF;
+      justify-content: center;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--electric-blue);
+      font-weight: 500;
+      font-size: 0.9rem;
+      padding: 0.4rem 0.75rem;
+      border-radius: 6px;
+    }
+
+    .nav-links a:hover {
+      color: #000;
+      transform: scale(1.1);
+    }
+
+    /* ========== Admin Section ========== */
     .admin-panel-wrapper {
       display: flex;
       flex-wrap: wrap;
@@ -113,6 +167,7 @@
       cursor: pointer;
     }
 
+    /* ========== Footer ========== */
     footer {
       text-align: center;
       padding: 1.5rem;
@@ -122,12 +177,26 @@
       margin-top: 4rem;
     }
   </style>
+  
 </head>
 <body>
+  
+  <!-- Top Announcement -->
+  <div class="announcement-bar">Free shipping on all UK orders over £25</div>
 
+  <!-- Header Section -->
   <header class="site-header">
     <h1 class="header-title"><a href="index.html" class="logo-link">You're So Golden</a></h1>
   </header>
+
+  <!-- Navigation Bar -->
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="shop.html">Shop</a>
+    <a href="#">About</a>
+    <a href="contacts.html">Contact</a>
+  </nav>\n\n<main>
+
 
   <!-- Two-column admin area -->
   <div class="admin-panel-wrapper">
@@ -157,81 +226,14 @@
 
   </div>
 
-  <footer>© 2025 You're So Golden · Admin Dashboard</footer>
+  </main>\n\n<footer>
+© 2025 You're So Golden · Admin Dashboard</footer>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+  <script type="module" src="firebase.js"></script>
+  <script type="module" src="admin-auth.js"></script>
+  <script type="module" src="admin-products.js"></script>
+  <script type="module" src="admin-orders.js"></script>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyA6kN9-7dN9Ovq6BmWBBJwBhLXRW6INX4c",
-      authDomain: "daisy-s-website.firebaseapp.com",
-      projectId: "daisy-s-website",
-      storageBucket: "daisy-s-website.appspot.com",
-      messagingSenderId: "595443495060",
-      appId: "1:595443495060:web:7bbdd1108ad336d55c8481",
-      measurementId: "G-ST5CQ6PV41"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    onAuthStateChanged(auth, (user) => {
-      if (user && user.email === "daisybelle76@gmail.com") {
-        loadProducts();
-        loadOrders();
-      } else {
-        window.location.href = "login.html";
-      }
-    });
-
-    // 🛍️ Load & display products
-    async function loadProducts() {
-      const productList = document.getElementById('productList');
-      productList.innerHTML = '';
-      const snapshot = await getDocs(collection(db, "products"));
-      snapshot.forEach(product => {
-        const data = product.data();
-        const li = document.createElement('li');
-        li.innerHTML = `<span><strong>${data.title}</strong> - £${data.price.toFixed(2)}</span> <button>Delete</button>`;
-        li.querySelector('button').onclick = async () => {
-          await deleteDoc(doc(db, "products", product.id));
-          loadProducts();
-        };
-        productList.appendChild(li);
-      });
-
-      document.getElementById('productForm').onsubmit = async (e) => {
-        e.preventDefault();
-        const title = document.getElementById('title').value;
-        const image = document.getElementById('image').value;
-        const price = parseFloat(document.getElementById('price').value);
-        const description = document.getElementById('description').value;
-        await addDoc(collection(db, "products"), { title, image, price, description });
-        e.target.reset();
-        loadProducts();
-      };
-    }
-
-    // 📦 Load & display pending orders
-    async function loadOrders() {
-      const orderList = document.getElementById('orderList');
-      orderList.innerHTML = '';
-      const snapshot = await getDocs(collection(db, "orders"));
-      if (snapshot.empty) {
-        orderList.innerHTML = "<li>No orders yet.</li>";
-        return;
-      }
-      snapshot.forEach(order => {
-        const data = order.data();
-        const li = document.createElement('li');
-        li.innerHTML = `<span><strong>${data.name || 'Unnamed'}</strong><br/>${data.email || ''}<br/>${data.items?.length || 0} item(s)</span>`;
-        orderList.appendChild(li);
-      });
-    }
-  </script>
 
 </body>
 </html>

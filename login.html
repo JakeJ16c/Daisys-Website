@@ -188,7 +188,8 @@
     <a href="#">Shop</a>
     <a href="#">About</a>
     <a href="contacts.html">Contact</a>
-  </nav>
+  </nav>\n\n<main>
+
 
   <!-- 🔐 Login Form Section -->
   <section class="login-container">
@@ -208,58 +209,11 @@
   </section>
 
   <!-- 🔻 Footer -->
-  <footer>© 2025 You're So Golden · All Rights Reserved</footer>
+  </main>\n\n<footer>
+© 2025 You're So Golden · All Rights Reserved</footer>
 
-  <!-- 🔐 Firebase Auth Logic -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-    import {
-      getAuth,
-      setPersistence,
-      browserLocalPersistence,
-      signInWithEmailAndPassword
-    } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyA6kN9-7dN9Ovq6BmWBBJwBhLXRW6INX4c",
-      authDomain: "daisy-s-website.firebaseapp.com",
-      projectId: "daisy-s-website",
-      storageBucket: "daisy-s-website.firebasestorage.app",
-      messagingSenderId: "595443495060",
-      appId: "1:595443495060:web:7bbdd1108ad336d55c8481",
-      measurementId: "G-ST5CQ6PV41"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    // 🧠 Keep user logged in between page refreshes
-    setPersistence(auth, browserLocalPersistence);
-
-    // 📩 Handle Form Submission
-    const form = document.getElementById("loginForm");
-    const loginError = document.getElementById("login-error");
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-        // 👑 If admin email, go to dashboard
-        if (user.email === "daisybelle76@gmail.com") {
-          window.location.href = "admin.html";
-        } else {
-          // 🌐 All other users go to homepage
-          window.location.href = "index.html";
-        }
-      } catch (error) {
-        // ❌ Show login error message
-        loginError.textContent = "❌ " + error.message.replace("Firebase: ", "");
-        loginError.style.display = "block";
-      }
-    });
-  </script>
+  <!-- just one script tag to pull in your auth logic -->
+  <script type="module" src="login-auth.js"></script>
+  
 </body>
 </html>
