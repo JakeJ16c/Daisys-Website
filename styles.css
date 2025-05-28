@@ -375,6 +375,88 @@
       background-color: #1a3eb5;
     }
 
+    /* ========== Checkout Page - Needs tweaking ========== */
+    .checkout-container {
+      max-width: 900px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: var(--electric-blue);
+    }
+
+    .basket-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 1rem;
+    }
+
+    .basket-item img {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .basket-details {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .item-name {
+      font-weight: bold;
+    }
+
+    .item-price {
+      font-weight: bold;
+      color: #444;
+    }
+
+    #subtotal-display {
+      text-align: right;
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin: 1rem 0;
+    }
+
+    form {
+      margin-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    input {
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    button {
+      background: var(--electric-blue);
+      color: white;
+      padding: 0.75rem;
+      font-size: 1rem;
+      font-family: 'Fredoka', sans-serif;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #183aa0;
+    }
+	
     /* ========== Account & Registration Boxes ========== */
     .form-card {
       background: #fff;
