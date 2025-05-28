@@ -63,9 +63,16 @@ async function loadOrders() {
         <p><strong>Email:</strong> ${data.email || "no@email.com"}</p>
         <p><strong>Address:</strong><br>${
   typeof data.address === "object"
-    ? `${data.address.houseNumber || ""} ${data.address.street || ""}, ${data.address.city || ""}, ${data.address.county || ""}, ${data.address.postcode || ""}`.replace(/\s+/g, ' ').replace(/,\s*,/g, ',').trim()
-    : data.address || 'No address provided'
+    ? `
+      ${data.address.houseNumber ? `<div><strong>House Number:</strong> ${data.address.houseNumber}</div>` : ""}
+      ${data.address.street ? `<div><strong>Street:</strong> ${data.address.street}</div>` : ""}
+      ${data.address.city ? `<div><strong>City:</strong> ${data.address.city}</div>` : ""}
+      ${data.address.county ? `<div><strong>County:</strong> ${data.address.county}</div>` : ""}
+      ${data.address.postcode ? `<div><strong>Postcode:</strong> ${data.address.postcode}</div>` : ""}
+    `.trim()
+    : `<div>${data.address || 'No address provided'}</div>`
 }</p>
+
 
         <p><strong>Status:</strong> 
           <select class="status-dropdown" data-id="${orderId}">
