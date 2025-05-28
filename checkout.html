@@ -50,48 +50,7 @@
 
   <footer>© 2025 You're So Golden · All Rights Reserved</footer>
 
-  <script>
-    const basket = JSON.parse(localStorage.getItem("daisyCart")) || [];
-    const summary = document.getElementById("basket-summary");
-    const subtotalDisplay = document.getElementById("subtotal-display");
-
-    function renderBasket() {
-      let subtotal = 0;
-      summary.innerHTML = "";
-
-      if (basket.length === 0) {
-        summary.innerHTML = "<p>Your basket is empty.</p>";
-        return;
-      }
-
-      basket.forEach(item => {
-        subtotal += item.qty * item.price;
-        const div = document.createElement("div");
-        div.className = "basket-item";
-        div.innerHTML = `
-          <img src="${item.image}" alt="${item.name}">
-          <div class="basket-details">
-            <span class="item-name">${item.name} × ${item.qty}</span>
-            <span class="item-price">£${(item.price * item.qty).toFixed(2)}</span>
-          </div>
-        `;
-        summary.appendChild(div);
-      });
-
-      subtotalDisplay.textContent = `Subtotal: £${subtotal.toFixed(2)}`;
-    }
-
-    renderBasket();
-  </script>
-
-  <!-- Checkout / Firestore logic -->
   <script type="module" src="checkout.js"></script>
-  <script type="module">
-    import { submitOrder } from './checkout.js';
-    document
-      .getElementById('place-order-btn')
-      .addEventListener('click', submitOrder);
-  </script>
-  
+
 </body>
 </html>
