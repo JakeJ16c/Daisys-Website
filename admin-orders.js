@@ -1,11 +1,18 @@
-import { collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+import {
+  collection,
+  getDocs,
+  doc,
+  updateDoc,
+  Timestamp
+} from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+
 import { db } from './firebase.js';
 
 async function loadOrders() {
   const ordersRef = collection(db, "Orders");
   const snapshot = await getDocs(ordersRef);
   const container = document.getElementById("orderList");
-  container.innerHTML = ""; // clear “Loading…”
+  container.innerHTML = "";
 
   snapshot.forEach(docSnap => {
     const data = docSnap.data();
@@ -16,6 +23,14 @@ async function loadOrders() {
       : Array.isArray(data.Items)
         ? data.Items
         : [];
+
+    const subtotal = items.reduce((acc, item) => {
+      return acc + (parseFloat(item.price || 0) * parseFloat(item.qty || 0));
+    }, 0);
+
+    const createdAt = data.createdAt?.toDate
+      ? data.createdAt.toDate().toLocaleString()
+      : "Unknown";
 
     const orderCard = document.createElement("div");
     orderCard.className = "order-card";
@@ -42,6 +57,8 @@ async function loadOrders() {
           </select>
         </p>
         <ul>${itemHTML}</ul>
+        <p><strong>Subtotal:</strong> £${subtotal.toFixed(2)}</p>
+        <p><strong>Placed:</strong> ${createdAt}</p>
       </div>
     `;
 
@@ -64,9 +81,10 @@ async function loadOrders() {
         const orderRef = doc(db, "Orders", orderId);
         await updateDoc(orderRef, { status: newStatus });
         alert(`Order updated to "${newStatus}"`);
-        // Update summary text too
-        const overview = e.target.closest('.content').previousElementSibling;
-        overview.querySelector('.overview-status').textContent = newStatus;
+
+        // Update collapsed summary
+        const header = e.target.closest('.content').previousElementSibling;
+        header.querySelector('.overview-status').textContent = newStatus;
       } catch (err) {
         console.error("Failed to update status:", err);
         alert("Failed to update order status.");
