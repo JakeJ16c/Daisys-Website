@@ -2,7 +2,8 @@ import {
   collection,
   getDocs,
   doc,
-  updateDoc
+  updateDoc,
+  setDoc
 } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
 import { db, messaging } from './firebase.js';
