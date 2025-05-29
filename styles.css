@@ -157,7 +157,6 @@
       transform: scale(1.1);
     }
 
-
     /* ========== HomePage Hero Section ========== */
     .hero {
       text-align: center;
@@ -193,6 +192,21 @@
       background-color: var(--electric-blue);
       color: white;
     }
+/* ========== PWA Install btn ========== */
+.install-button {
+  padding: 10px 15px;
+  background-color: #204ECF;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 10px;
+}
+
+.install-button:hover {
+  background-color: #102a7a;
+}
 
     /* ========== HomePage Marquee Section ========== */
     .marquee-container {
