@@ -138,27 +138,32 @@
 </html>
 
 <script>
-  let deferredPrompt = null;
-
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
+  window.addEventListener('DOMContentLoaded', () => {
+    console.log('🟡 DOM fully loaded');
 
     const installBtn = document.getElementById('install-btn');
-    if (installBtn) {
+    if (!installBtn) {
+      console.warn('⚠️ Install button not found');
+      return;
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      console.log('✅ beforeinstallprompt event received');
+      e.preventDefault();
       installBtn.style.display = 'inline-block';
+
       installBtn.addEventListener('click', () => {
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then((choiceResult) => {
-          if (choiceResult.outcome === 'accepted') {
-            console.log('✅ App installed');
+        console.log('📲 Install button clicked');
+        e.prompt();
+        e.userChoice.then((choice) => {
+          if (choice.outcome === 'accepted') {
+            console.log('✅ App successfully installed');
           } else {
-            console.log('❌ Install dismissed');
+            console.log('❌ User dismissed the install prompt');
           }
-          deferredPrompt = null;
         });
       });
-    }
+    });
   });
 </script>
 </body>

@@ -647,8 +647,9 @@
   border-radius: 6px;
   margin-left: 12px;
   cursor: pointer;
+  z-index: 9999;
+  position: relative;
 }
-
 #install-btn:hover {
   background-color: #1839a6;
 }
