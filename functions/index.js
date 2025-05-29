@@ -4,7 +4,7 @@ const admin = require("firebase-admin");
 admin.initializeApp();
 
 exports.notifyOnNewOrder = functions.firestore
-  .document("orders/{orderId}")
+  .document("Orders/{orderId}")
   .onCreate(async (snap, context) => {
     const order = snap.data();
 
