@@ -7,11 +7,9 @@ exports.notifyOnNewOrder = functions.firestore
   .document("Orders/{orderId}")
   .onCreate(async (snap, context) => {
     const order = snap.data();
+    console.log("📦 New order received:", JSON.stringify(order));
 
-    // Log order for debug
-    console.log("Order:", JSON.stringify(order));
-
-    // 🔍 Get admin token
+    // Get admin token
     const tokenSnap = await admin.firestore().doc("adminTokens/admin").get();
 
     if (!tokenSnap.exists) {
@@ -20,10 +18,10 @@ exports.notifyOnNewOrder = functions.firestore
     }
 
     const token = tokenSnap.data()?.token;
-    console.log("📬 Admin token found:", token);
+    console.log("📬 Retrieved token:", token);
 
     if (!token) {
-      console.error("❌ Token field missing in admin document.");
+      console.error("❌ Token field is missing.");
       return null;
     }
 
@@ -39,9 +37,8 @@ exports.notifyOnNewOrder = functions.firestore
       const response = await admin.messaging().send(message);
       console.log("✅ Notification sent successfully:", response);
     } catch (error) {
-      console.error("❌ Error sending notification:", error);
+      console.error("❌ Error sending notification:", error.message || error);
     }
 
     return null;
   });
-
