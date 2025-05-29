@@ -275,10 +275,6 @@
   display: block;
 }
 
-.product-link:hover {
-  text-decoration: underline;
-}
-
     /* ========== Hover Jump Animation ========== */
     .circle-card:hover,
     .product-card:hover {
