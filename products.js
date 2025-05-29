@@ -69,8 +69,5 @@ document.addEventListener("click", (e) => {
     if (typeof updateBasketPreview === "function") {
       updateBasketPreview(true);
   }
-
-    window.updateBasketPreview?.(true);
-    document.getElementById("basket-preview")?.classList.remove("hidden");
   }
 });
