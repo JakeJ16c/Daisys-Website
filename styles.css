@@ -635,3 +635,20 @@
     display: none;
   }
 }
+
+
+#install-btn {
+  display: none;
+  background-color: #204ECF;
+  color: white;
+  font-weight: bold;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  margin-left: 12px;
+  cursor: pointer;
+}
+
+#install-btn:hover {
+  background-color: #1839a6;
+}
