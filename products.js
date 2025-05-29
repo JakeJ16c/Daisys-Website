@@ -65,6 +65,11 @@ document.addEventListener("click", (e) => {
     }
 
     localStorage.setItem(cartKey, JSON.stringify(cart));
+    document.getElementById("basket-preview")?.classList.remove("hidden");
+    if (typeof updateBasketPreview === "function") {
+      updateBasketPreview(true);
+  }
+
     window.updateBasketPreview?.(true);
     document.getElementById("basket-preview")?.classList.remove("hidden");
   }
