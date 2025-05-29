@@ -8,15 +8,17 @@
   "orientation": "portrait-primary",
   "scope": "/",
   "icons": [
-    {
-      "src": "favicon_circle.ico",
-      "sizes": "192x192",
-      "type": "image/x-icon"
-    },
-    {
-      "src": "favicon_circle.ico",
-      "sizes": "512x512",
-      "type": "image/x-icon"
-    }
-  ]
-}
+  {
+    "src": "icon-192.png",
+    "type": "image/png",
+    "sizes": "192x192",
+    "purpose": "any"
+  },
+  {
+    "src": "icon-512.png",
+    "type": "image/png",
+    "sizes": "512x512",
+    "purpose": "any"
+  }
+]
+
