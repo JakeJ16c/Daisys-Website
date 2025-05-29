@@ -269,6 +269,16 @@
       width: 100%;
     }
 
+	.product-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.product-link:hover {
+  text-decoration: underline;
+}
+
     /* ========== Hover Jump Animation ========== */
     .circle-card:hover,
     .product-card:hover {
