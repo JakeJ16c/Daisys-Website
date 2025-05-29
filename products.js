@@ -32,7 +32,7 @@ async function loadProducts() {
     productCard.setAttribute("data-price", data.price);
 
     productCard.innerHTML = `
-    <a href="product.html?id=${doc.id}">
+    <a href="product.html?id=${doc.id}" class="product-link">
     <img src="${data.image}" alt="${data.name}" />
     <h3>${data.name}</h3>
     <p>£${parseFloat(data.price).toFixed(2)}</p>
