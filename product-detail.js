@@ -1,5 +1,5 @@
 // /js/product-detail.js
-import { db } from 'firebase.js';
+import { db } from './firebase.js';
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
 // Get the product ID from the URL
