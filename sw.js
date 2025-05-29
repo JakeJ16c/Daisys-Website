@@ -1,7 +1,6 @@
 
 const CACHE_NAME = "golden-cache-v1";
 const urlsToCache = [
-  "./",
   "./index.html",
   "./shop.html",
   "./account.html",
