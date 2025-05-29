@@ -1,7 +1,7 @@
 {
   "name": "Daisy's Website",
   "short_name": "Daisy",
-  "start_url": "/index.html",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
