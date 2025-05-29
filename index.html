@@ -11,6 +11,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link rel="stylesheet" href="styles.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#204ECF">
 </head>
 <body>
 
@@ -134,5 +136,14 @@
   <!-- Import Products List -->
   <script type="module" src="products.js"></script>
 
+
+<script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js")
+      .then(reg => console.log("✅ Service Worker registered", reg))
+      .catch(err => console.error("❌ Service Worker registration failed", err));
+  }
+</script>
 </body>
+
 </html>
