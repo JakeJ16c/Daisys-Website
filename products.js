@@ -45,7 +45,6 @@ async function loadProducts() {
 loadProducts();
 console.log("Connected to Firestore");
 
-// ✅ Global listener: handles all future .add-to-basket clicks
 document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("click", (e) => {
     if (e.target && e.target.classList.contains("add-to-basket")) {
@@ -73,4 +72,3 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
-
