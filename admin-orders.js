@@ -25,7 +25,7 @@ function formatDate(timestamp) {
 // ✅ STEP 1: Ask for notification permission and get FCM token
 async function setupPushNotifications() {
   try {
-    const registration = await navigator.serviceWorker.register('firebase-messaging-sw.js');
+    const registration = await navigator.serviceWorker.register('./firebase-messaging-sw.js');
     const permission = await Notification.requestPermission();
     if (permission === "granted") {
       const token = await getToken(messaging, {
