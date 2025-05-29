@@ -8,12 +8,22 @@ exports.notifyOnNewOrder = functions.firestore
   .onCreate(async (snap, context) => {
     const order = snap.data();
 
-    // Get admin token from Firestore
+    // Log order for debug
+    console.log("Order:", JSON.stringify(order));
+
+    // 🔍 Get admin token
     const tokenSnap = await admin.firestore().doc("adminTokens/admin").get();
+
+    if (!tokenSnap.exists) {
+      console.error("❌ No adminTokens/admin document found.");
+      return null;
+    }
+
     const token = tokenSnap.data()?.token;
+    console.log("📬 Admin token found:", token);
 
     if (!token) {
-      console.log("No token found for admin.");
+      console.error("❌ Token field missing in admin document.");
       return null;
     }
 
@@ -27,10 +37,11 @@ exports.notifyOnNewOrder = functions.firestore
 
     try {
       const response = await admin.messaging().send(message);
-      console.log("Notification sent successfully:", response);
+      console.log("✅ Notification sent successfully:", response);
     } catch (error) {
-      console.error("Error sending notification:", error);
+      console.error("❌ Error sending notification:", error);
     }
 
     return null;
   });
+
