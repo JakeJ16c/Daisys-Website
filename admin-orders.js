@@ -25,24 +25,26 @@ function formatDate(timestamp) {
 // ✅ STEP 1: Ask for notification permission and get FCM token
 async function setupPushNotifications() {
   try {
-    const registration = await navigator.serviceWorker.register('firebase-messaging-sw.js');
+    // ✅ Correct relative path to match GitHub Pages subfolder deployment
+    const registration = await navigator.serviceWorker.register('./firebase-messaging-sw.js');
+
     const permission = await Notification.requestPermission();
     if (permission === "granted") {
       const token = await getToken(messaging, {
-        vapidKey: "YOUR_PUBLIC_VAPID_KEY_HERE"
+        vapidKey: "BKWmwmuEDejKmOZEFLtWAgZXD2OUPqS_77NA6hTEf9-9SXDG9fJh0EZDG7qExr8IDrRiHVPSNvbXohUKsV12ueA",
+        serviceWorkerRegistration: registration  // ✅ Tell Firebase to use your SW
       });
+
       console.log("✅ FCM Token retrieved:", token);
-
-      // 🔄 TODO: Save this token to Firestore (e.g. collection "adminTokens")
-      // await setDoc(doc(db, "adminTokens", "admin"), { token });
-
+      // await setDoc(doc(db, "adminTokens", "admin"), { token }); // optional
     } else {
       console.warn("❌ Notification permission denied");
     }
   } catch (err) {
-    console.error("❌ Failed to get FCM token:", err);
+    console.error("❌ Failed to get FCM token or register service worker:", err);
   }
 }
+
 
 // ✅ STEP 2: Load existing orders from Firestore
 async function loadOrders() {
