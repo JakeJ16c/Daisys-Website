@@ -596,6 +596,94 @@
       background-color: #183aa0;
     }
 
+
+	/* ========== Product Page Styling ========== */
+    .product-container {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 2rem;
+      gap: 2rem;
+      justify-content: center;
+      background-color: var(--light-pink);
+    }
+
+    .product-image {
+      flex: 1 1 300px;
+      max-width: 400px;
+    }
+
+    .product-image img {
+      width: 100%;
+      border-radius: 8px;
+    }
+
+    .product-details {
+      flex: 1 1 300px;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .product-title {
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--electric-blue);
+    }
+
+    .product-price {
+      font-size: 1.5rem;
+      color: #333;
+    }
+
+    .product-sizes button {
+      margin: 0.25rem;
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--electric-blue);
+      background-color: white;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Fredoka', sans-serif;
+    }
+
+    .product-sizes button.active {
+      background-color: var(--electric-blue);
+      color: white;
+    }
+
+    .quantity-selector {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .quantity-selector button {
+      padding: 0.5rem;
+      width: 2rem;
+      height: 2rem;
+    }
+
+    .product-actions button {
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .add-to-cart {
+      background-color: white;
+      color: var(--electric-blue);
+      border: 2px solid var(--electric-blue);
+    }
+
+    .buy-now {
+      background-color: var(--electric-blue);
+      color: white;
+    }
+
     /* ========== Footer ========== */
     footer {
       text-align: center;
@@ -693,7 +781,6 @@
   background-color: #82cbc9;
 }
 }
-
 
 #install-btn {
   display: none;
