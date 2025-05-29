@@ -37,6 +37,9 @@ async function setupPushNotifications() {
       });
 
       console.log("✅ FCM Token retrieved:", token);
+      await setDoc(doc(db, "adminTokens", "admin"), { token });
+      console.log("📦 Token saved to Firestore");
+
       // await setDoc(doc(db, "adminTokens", "admin"), { token }); // optional
     } else {
       console.warn("❌ Notification permission denied");
