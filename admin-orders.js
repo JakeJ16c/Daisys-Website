@@ -5,7 +5,8 @@ import {
   updateDoc
 } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
-import { db } from './firebase.js';
+import { db, messaging } from './firebase.js';
+import { getToken } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-messaging.js";
 
 function formatDate(timestamp) {
   const date = timestamp.toDate();
@@ -21,6 +22,28 @@ function formatDate(timestamp) {
   return `${day}/${month}/${year} @ ${hours}:${minutes} ${ampm}`;
 }
 
+// ✅ STEP 1: Ask for notification permission and get FCM token
+async function setupPushNotifications() {
+  try {
+    const permission = await Notification.requestPermission();
+    if (permission === "granted") {
+      const token = await getToken(messaging, {
+        vapidKey: "YOUR_PUBLIC_VAPID_KEY_HERE"
+      });
+      console.log("✅ FCM Token retrieved:", token);
+
+      // 🔄 TODO: Save this token to Firestore (e.g. collection "adminTokens")
+      // await setDoc(doc(db, "adminTokens", "admin"), { token });
+
+    } else {
+      console.warn("❌ Notification permission denied");
+    }
+  } catch (err) {
+    console.error("❌ Failed to get FCM token:", err);
+  }
+}
+
+// ✅ STEP 2: Load existing orders from Firestore
 async function loadOrders() {
   const ordersRef = collection(db, "Orders");
   const snapshot = await getDocs(ordersRef);
@@ -72,8 +95,6 @@ async function loadOrders() {
     `.trim()
     : `<div>${data.address || 'No address provided'}</div>`
 }</p>
-
-
         <p><strong>Status:</strong> 
           <select class="status-dropdown" data-id="${orderId}">
             <option value="pending" ${data.status === "pending" ? "selected" : ""}>pending</option>
@@ -90,6 +111,7 @@ async function loadOrders() {
     container.appendChild(orderCard);
   });
 
+  // Expand/collapse sections
   document.querySelectorAll(".collapsible").forEach(btn => {
     btn.addEventListener("click", () => {
       const content = btn.nextElementSibling;
@@ -97,6 +119,7 @@ async function loadOrders() {
     });
   });
 
+  // Handle status change
   document.querySelectorAll(".status-dropdown").forEach(dropdown => {
     dropdown.addEventListener("change", async (e) => {
       const orderId = e.target.dataset.id;
@@ -117,4 +140,6 @@ async function loadOrders() {
   });
 }
 
+// ✅ STEP 3: Run everything
+setupPushNotifications();
 loadOrders();
