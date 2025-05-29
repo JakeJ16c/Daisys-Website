@@ -61,7 +61,6 @@
     <a href="admin.html" id="admin-btn" style="display: none; color: var(--electric-blue); font-weight:600;">
       Dashboard
     </a>
-    <button id="install-btn" style="display: none;" class="install-button">📲 Install App</button>
   </nav>
 
   <main>
@@ -151,36 +150,6 @@
         });
     });
   }
-</script>
-
-<script>
-  window.addEventListener('DOMContentLoaded', () => {
-    console.log('🟡 DOM fully loaded');
-
-    const installBtn = document.getElementById('install-btn');
-    if (!installBtn) {
-      console.warn('⚠️ Install button not found');
-      return;
-    }
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-      console.log('✅ beforeinstallprompt event received');
-      e.preventDefault();
-      installBtn.style.display = 'inline-block';
-
-      installBtn.addEventListener('click', () => {
-        console.log('📲 Install button clicked');
-        e.prompt();
-        e.userChoice.then((choice) => {
-          if (choice.outcome === 'accepted') {
-            console.log('✅ App successfully installed');
-          } else {
-            console.log('❌ User dismissed the install prompt');
-          }
-        });
-      });
-    });
-  });
 </script>
   
 </body>
