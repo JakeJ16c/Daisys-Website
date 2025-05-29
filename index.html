@@ -7,6 +7,9 @@
   <link rel="icon" type="image/x-icon" href="favicon_circle.ico">
   <title>You're So Golden</title>
 
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ffffff">
+
   <!-- ========== Fonts, Icons & Styling ========== -->
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
@@ -134,36 +137,21 @@
   <!-- Import Products List -->
   <script type="module" src="products.js"></script>
 
-
+  <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker
+        .register('sw.js')
+        .then(function (registration) {
+          console.log('✅ ServiceWorker registered: ', registration.scope);
+        })
+        .catch(function (error) {
+          console.error('❌ ServiceWorker registration failed: ', error);
+        });
+    });
+  }
+</script>
+  
+</body>
 </html>
 
-<script>
-  window.addEventListener('DOMContentLoaded', () => {
-    console.log('🟡 DOM fully loaded');
-
-    const installBtn = document.getElementById('install-btn');
-    if (!installBtn) {
-      console.warn('⚠️ Install button not found');
-      return;
-    }
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-      console.log('✅ beforeinstallprompt event received');
-      e.preventDefault();
-      installBtn.style.display = 'inline-block';
-
-      installBtn.addEventListener('click', () => {
-        console.log('📲 Install button clicked');
-        e.prompt();
-        e.userChoice.then((choice) => {
-          if (choice.outcome === 'accepted') {
-            console.log('✅ App successfully installed');
-          } else {
-            console.log('❌ User dismissed the install prompt');
-          }
-        });
-      });
-    });
-  });
-</script>
-</body>
