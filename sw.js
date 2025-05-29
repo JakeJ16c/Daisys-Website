@@ -10,13 +10,6 @@ const urlsToCache = [
   "basket.js",
   "account.js",
   "checkout.js",
-  "favicon_circle.ico",
-  "IMG_5319.jpg",
-  "image0.jpeg",
-  "image1.jpeg",
-  "image2.jpeg",
-  "image3.jpeg",
-  "image4.jpeg"
 ];
 
 self.addEventListener("install", event => {
