@@ -49,6 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("click", (e) => {
     if (e.target && e.target.classList.contains("add-to-basket")) {
       const product = e.target.closest(".product-card");
+      console.log("🛒 Add to basket clicked", product);
       const id = product.dataset.id;
       const name = product.dataset.name;
       const price = parseFloat(product.dataset.price);
