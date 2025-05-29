@@ -1,0 +1,22 @@
+{
+  "name": "Daisy's Website",
+  "short_name": "Daisy",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "favicon_circle.ico",
+      "sizes": "192x192",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "favicon_circle.ico",
+      "sizes": "512x512",
+      "type": "image/x-icon"
+    }
+  ]
+}
