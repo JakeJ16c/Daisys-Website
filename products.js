@@ -32,11 +32,14 @@ async function loadProducts() {
     productCard.setAttribute("data-price", data.price);
 
     productCard.innerHTML = `
-      <img src="${data.image}" alt="${data.name}" />
-      <h3>${data.name}</h3>
-      <p>£${parseFloat(data.price).toFixed(2)}</p>
-      <button class="btn add-to-basket">Add to Basket</button>
-    `;
+    <a href="product.html?id=${doc.id}">
+    <img src="${data.image}" alt="${data.name}" />
+    <h3>${data.name}</h3>
+    <p>£${parseFloat(data.price).toFixed(2)}</p>
+  </a>
+  <button class="btn add-to-basket">Add to Basket</button>
+`;
+
 
     container.appendChild(productCard);
   });
