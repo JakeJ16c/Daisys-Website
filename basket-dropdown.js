@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const cartIcon = document.querySelector(".cart-icon");
 
   function updateBasketPreview(keepVisible = false) {
+    window.updateBasketPreview = updateBasketPreview;
     const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
     basketPreview.innerHTML = "";
 
@@ -26,7 +27,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    window.updateBasketPreview = updateBasketPreview;
     document.addEventListener("DOMContentLoaded", () => {
       updateBasketPreview(); // Auto-run on page load
     });
