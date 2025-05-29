@@ -46,28 +46,31 @@ loadProducts();
 console.log("Connected to Firestore");
 
 // ✅ Global listener: handles all future .add-to-basket clicks
-document.addEventListener("click", (e) => {
-  if (e.target && e.target.classList.contains("add-to-basket")) {
-    const product = e.target.closest(".product-card");
-    const id = product.dataset.id;
-    const name = product.dataset.name;
-    const price = parseFloat(product.dataset.price);
-    const image = product.querySelector("img")?.src || "placeholder.jpg";
+document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener("click", (e) => {
+    if (e.target && e.target.classList.contains("add-to-basket")) {
+      const product = e.target.closest(".product-card");
+      const id = product.dataset.id;
+      const name = product.dataset.name;
+      const price = parseFloat(product.dataset.price);
+      const image = product.querySelector("img")?.src || "placeholder.jpg";
 
-    const cartKey = "daisyCart";
-    let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
-    const existing = cart.find((item) => item.id === id);
+      const cartKey = "daisyCart";
+      let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+      const existing = cart.find((item) => item.id === id);
 
-    if (existing) {
-      existing.qty++;
-    } else {
-      cart.push({ id, name, price, qty: 1, image });
+      if (existing) {
+        existing.qty++;
+      } else {
+        cart.push({ id, name, price, qty: 1, image });
+      }
+
+      localStorage.setItem(cartKey, JSON.stringify(cart));
+      document.getElementById("basket-preview")?.classList.remove("hidden");
+      if (typeof updateBasketPreview === "function") {
+        updateBasketPreview(true);
+      }
     }
-
-    localStorage.setItem(cartKey, JSON.stringify(cart));
-    document.getElementById("basket-preview")?.classList.remove("hidden");
-    if (typeof updateBasketPreview === "function") {
-      updateBasketPreview(true);
-  }
-  }
+  });
 });
+
