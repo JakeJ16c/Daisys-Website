@@ -29,6 +29,7 @@ async function loadCurrentUser() {
             const address = data.address || data.deliveryAddress || {};
 
             currentUser = {
+              uid: user.uid,
               name: data.name || `${data.firstName || ''} ${data.lastName || ''}`.trim() || user.displayName || "Customer",
               email: user.email || "no@email.com",
               address: address
