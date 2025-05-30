@@ -18,9 +18,17 @@ const firebaseConfig = {
 };
 
 // ================= Initialize Firebase =================
-const app = initializeApp(firebaseConfig);
+import { getApps } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+
+let app;
+if (!getApps().length) {
+  app = initializeApp(firebaseConfig);
+} else {
+  app = getApps()[0];
+}
 const db = getFirestore(app);
 const storage = getStorage(app);
+
 
 // ================= DOM Element References =================
 const form = document.getElementById('productForm');
