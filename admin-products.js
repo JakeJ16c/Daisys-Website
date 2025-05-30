@@ -157,7 +157,7 @@ fileInput.addEventListener("change", () => {
   handleFileUpload(files);
 });
 
-// 📤 Upload image to Firebase Storage
+
 // 📤 Upload image to Firebase Storage
 async function handleFileUpload(files) {
   if (!files.length) return;
@@ -170,47 +170,28 @@ async function handleFileUpload(files) {
     const uniqueName = `${Date.now()}-${file.name}`;
     const fileRef = storageRef(storage, `product-images/${uniqueName}`);
 
-    try {
-      await uploadBytes(fileRef, file);
-      const url = await getDownloadURL(fileRef);
-      uploadedImageURLs.push(url);
-
-      // Preview
-      const img = document.createElement("img");
-      img.src = url;
-      img.alt = "Preview";
-      img.style.width = "60px";
-      img.style.height = "60px";
-      img.style.objectFit = "cover";
-      img.style.borderRadius = "4px";
-      img.style.marginRight = "6px";
-
-      imagePreviewContainer.appendChild(img);
-    } catch (err) {
-      console.error("Upload failed", err);
-      uploadStatus.textContent = "Upload failed.";
-      return;
-    }
-  }
+   try {
+  await uploadBytes(fileRef, file);
+  const url = await getDownloadURL(fileRef);
+  uploadedImageURLs.push(url);
 
   uploadStatus.textContent = "Upload complete!";
+
+  // ✅ Display image preview
+  const previewContainer = document.getElementById("imagePreviewContainer");
+  const img = document.createElement("img");
+  img.src = url;
+  img.alt = "Preview";
+  img.style.maxWidth = "100px";
+  img.style.marginTop = "10px";
+  img.style.borderRadius = "4px";
+  img.style.marginRight = "6px";
+  previewContainer.appendChild(img);
+} catch (err) {
+  console.error("Upload failed", err);
+  uploadStatus.textContent = "Upload failed.";
 }
 
-    // ✅ Dynamically add preview image into the container
-    const previewContainer = document.getElementById("imagePreviewContainer");
-    previewContainer.innerHTML = ""; // Optional: clear previous
-    const img = document.createElement("img");
-    img.src = url;
-    img.alt = "Preview";
-    img.style.maxWidth = "100px";
-    img.style.marginTop = "10px";
-    img.style.borderRadius = "4px";
-    previewContainer.appendChild(img);
-
-    catch (err) {
-    console.error("Upload failed", err);
-    uploadStatus.textContent = "Upload failed.";
-  }
 }
 
 // ================= Init =================
