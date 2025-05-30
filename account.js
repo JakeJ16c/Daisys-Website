@@ -17,7 +17,7 @@ import { app } from "./firebase.js";
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-const form = document.getElementById("account-form");
+const form = document.getElementById("profileform");
 const greeting = document.getElementById("account-greeting");
 const logoutButton = document.getElementById("logout-btn");
 
