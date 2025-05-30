@@ -251,6 +251,18 @@
   border-radius: 4px;
 }
 
+    .image-preview-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 10px;
+  gap: 10px;
+}
+.image-preview-container img {
+  border-radius: 4px;
+  object-fit: cover;
+}
+
   </style>
   
 </head>
@@ -284,8 +296,8 @@
 
     <div id="drop-area" class="drop-area">
       <p>Drag & drop image here or click to upload</p>
-      <input type="file" id="imageFileInput" accept="image/*" hidden />
-      <img id="imagePreview" src="" alt="Image preview" style="display: none; max-width: 100px; margin-top: 10px;" />
+      <input type="file" id="imageFileInput" accept="image/*" multiple hidden />
+      <div id="imagePreviewContainer" class="image-preview-container"></div>
     </div>
 
     <small id="uploadStatus">No file selected</small>
