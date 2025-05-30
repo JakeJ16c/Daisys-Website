@@ -29,12 +29,9 @@ let currentUser = null;
 // 👤 Load User Profile
 // =========================
 async function loadUserProfile() {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        console.warn("User not logged in.");
-        return resolve();
-      }
+      if (!user) return resolve(); // not logged in
 
       currentUser = user;
 
@@ -44,147 +41,110 @@ async function loadUserProfile() {
 
         if (userSnap.exists()) {
           const data = userSnap.data();
+          const addr = data.address || {};
 
           document.getElementById("first-name").value = data.firstName || "";
           document.getElementById("last-name").value = data.lastName || "";
-          document.getElementById("house-number").value =
-            data.address?.houseNumber || "";
-          document.getElementById("street").value =
-            data.address?.street || "";
-          document.getElementById("city").value = data.address?.city || "";
-          document.getElementById("county").value = data.address?.county || "";
-          document.getElementById("postcode").value =
-            data.address?.postcode || "";
-        } else {
-          console.warn("User document not found in Firestore.");
+          document.getElementById("house-number").value = addr.houseNumber || "";
+          document.getElementById("street").value = addr.street || "";
+          document.getElementById("city").value = addr.city || "";
+          document.getElementById("county").value = addr.county || "";
+          document.getElementById("postcode").value = addr.postcode || "";
         }
-
-        resolve();
-      } catch (error) {
-        console.error("Failed to load user profile", error);
-        reject(error);
+      } catch (err) {
+        console.error("Error loading profile:", err);
       }
+
+      resolve();
     });
   });
 }
 
 // =========================
-// 💾 Save User Profile
+// 💾 Save Profile Info
 // =========================
-async function saveUserProfile() {
-  if (!currentUser) {
-    console.warn("No user is currently logged in.");
-    alert("You must be logged in to save your profile.");
-    return;
-  }
+async function saveProfile(e) {
+  e.preventDefault();
 
-  const userRef = doc(db, "users", currentUser.uid);
+  if (!currentUser) return alert("You must be logged in to save your profile.");
 
-  const userData = {
-    firstName: document.getElementById("first-name").value.trim(),
-    lastName: document.getElementById("last-name").value.trim(),
-    address: {
-      houseNumber: document.getElementById("house-number").value.trim(),
-      street: document.getElementById("street").value.trim(),
-      city: document.getElementById("city").value.trim(),
-      county: document.getElementById("county").value.trim(),
-      postcode: document.getElementById("postcode").value.trim(),
-    },
-    email: currentUser.email,
+  const firstName = document.getElementById("first-name").value.trim();
+  const lastName = document.getElementById("last-name").value.trim();
+  const address = {
+    houseNumber: document.getElementById("house-number").value.trim(),
+    street: document.getElementById("street").value.trim(),
+    city: document.getElementById("city").value.trim(),
+    county: document.getElementById("county").value.trim(),
+    postcode: document.getElementById("postcode").value.trim(),
   };
 
-  console.log("Saving user profile to Firestore:", userData);
-
   try {
-    await setDoc(userRef, userData, { merge: true });
-    alert("Profile saved successfully!");
-  } catch (error) {
-    console.error("Error saving profile to Firestore:", error);
-    alert("Failed to save profile. Please try again.");
+    await setDoc(doc(db, "users", currentUser.uid), {
+      firstName,
+      lastName,
+      address,
+    });
+
+    alert("Profile updated successfully!");
+  } catch (err) {
+    console.error("Failed to save profile:", err);
+    alert("There was an error saving your profile.");
   }
 }
 
 // =========================
 // 📦 Load User Orders
 // =========================
-async function loadUserOrders() {
-  const ordersDiv = document.querySelectorAll(".form-container:not(:first-of-type)")[0];
-  const statusPara = ordersDiv.querySelector("p");
+async function loadUserOrders(user) {
+  const ordersRef = collection(db, "Orders");
+  const q = query(ordersRef, where("userId", "==", user.uid));
+  const snapshot = await getDocs(q);
 
-  if (!currentUser) {
-    statusPara.textContent = "You need to be logged in to view orders.";
+  const ordersDiv = document.querySelector(".form-container:nth-of-type(2)");
+  if (snapshot.empty) {
+    ordersDiv.innerHTML = `<p>You haven't placed any orders yet.</p>`;
     return;
   }
 
-  try {
-    const ordersRef = collection(db, "Orders");
-    const q = query(ordersRef, where("userId", "==", currentUser.uid));
-    const querySnapshot = await getDocs(q);
-
-    if (querySnapshot.empty) {
-      statusPara.textContent = "You haven't placed any orders yet.";
-      return;
-    }
-
-    statusPara.remove(); // Remove "Loading..." or placeholder
-
-    querySnapshot.forEach((docSnap) => {
-      const order = docSnap.data();
-
-      const orderEl = document.createElement("div");
-      orderEl.className = "order-entry";
-      orderEl.innerHTML = `
-        <p><strong>Status:</strong> ${order.status || "pending"}</p>
-        <p><strong>Date:</strong> ${order.createdAt?.toDate().toLocaleString() || "Unknown"}</p>
-        <ul>
-          ${order.items
-            .map(
-              (item) =>
-                `<li>${item.productName} × ${item.qty} – £${(item.price * item.qty).toFixed(2)}</li>`
-            )
-            .join("")}
-        </ul>
-      `;
-
-      ordersDiv.appendChild(orderEl);
+  let html = "";
+  snapshot.forEach((docSnap) => {
+    const order = docSnap.data();
+    const date = order.createdAt?.toDate().toLocaleString() || "Unknown date";
+    html += `<div class="order-box"><strong>Date:</strong> ${date}<br><strong>Status:</strong> ${order.status}<ul>`;
+    order.items.forEach(item => {
+      html += `<li>${item.productName} × ${item.qty} – £${item.price.toFixed(2)}</li>`;
     });
-  } catch (err) {
-    console.error("Error loading orders:", err);
-    statusPara.textContent = "Failed to load your orders.";
-  }
+    html += `</ul></div>`;
+  });
+
+  ordersDiv.innerHTML = html;
 }
 
 // =========================
-// 🚪 Setup Logout
+// 🚪 Logout
 // =========================
 function setupLogout() {
-  const logoutBtn = document.getElementById("logoutBtn");
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", async () => {
-      try {
-        await signOut(auth);
-        window.location.href = "index.html";
-      } catch (err) {
-        console.error("Logout failed", err);
-      }
+  const btn = document.getElementById("logoutBtn");
+  if (btn) {
+    btn.addEventListener("click", async () => {
+      await signOut(auth);
+      window.location.href = "index.html";
     });
   }
 }
 
 // =========================
-// 🚀 Init Everything
+// 🚀 Init Page
 // =========================
-async function init() {
+document.addEventListener("DOMContentLoaded", async () => {
   await loadUserProfile();
-  await loadUserOrders();
 
   const saveBtn = document.getElementById("saveBtn");
-  if (saveBtn) {
-    saveBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      saveUserProfile();
-    });
+  if (saveBtn) saveBtn.addEventListener("click", saveProfile);
+
+  if (currentUser) {
+    loadUserOrders(currentUser);
   }
 
   setupLogout();
-}
+});
