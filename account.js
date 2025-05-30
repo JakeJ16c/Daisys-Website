@@ -120,6 +120,9 @@ async function loadUserOrders() {
     const ordersContainer = document.querySelector(".form-container:nth-of-type(2)");
     if (!ordersContainer) return;
 
+    // Remove loading message
+    ordersContainer.querySelector("p")?.remove();
+
     if (snap.empty) {
       ordersContainer.innerHTML += `<p>No orders found.</p>`;
       return;
