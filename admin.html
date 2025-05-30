@@ -224,17 +224,16 @@
 }
 
 /* ========== Image Drage & Drop Box ========== */
-.drop-area {
+#drop-area {
+  position: relative;
+  text-align: center;
+  padding: 1.5rem;
   border: 2px dashed #ccc;
   border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1.25rem;
-  background-color: #fff;
-  text-align: center;
-  color: #777;
-  font-size: 0.95rem;
+  background-color: #fafafa;
+  font-size: 0.9rem;
+  color: #555;
   cursor: pointer;
-  transition: border-color 0.3s ease;
 }
 
 .drop-area.highlight {
@@ -245,15 +244,11 @@
 /* ========== Image Preview Styling ========== */
 #imagePreview {
   display: none;
-  width: 100%;
   max-width: 100%;
-  height: auto;
-  margin-top: 0.75rem;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+  max-height: 150px;
+  margin-top: 1rem;
   object-fit: contain;
-  background-color: #fafafa;
-  padding: 0.5rem;
+  border-radius: 4px;
 }
 
   </style>
@@ -280,29 +275,28 @@
   <!-- Two-column admin area -->
   <div class="admin-panel-wrapper">
 
-    <!-- 📦 Product Management -->
-    <section class="admin-column">
-      <h2>Manage Products</h2>
-      <form id="productForm">
-        <input type="text" id="title" placeholder="Product Name" required />
+    <!-- 🛠 Product Management -->
+<section class="admin-column">
+  <h2>Manage Products</h2>
+  <form id="productForm">
 
-        <div id="drop-area" class="drop-area">
-          <p>Drag & drop image here or click to upload</p>
-          <input type="file" id="imageFileInput" accept="image/*" hidden />
-        </div>
-        <small id="uploadStatus">No file selected</small>
-        <!-- Image Preview Element -->
-        <img id="imagePreview" src="" alt="Image preview" style="display:none; max-width: 100px; margin-top: 10px;" />
+    <input type="text" id="title" placeholder="Product Name" required />
 
-        <input type="number" id="price" placeholder="Price (£)" required />
-        <textarea id="description" placeholder="Description" rows="3"></textarea>
-        <button type="submit">Add Product</button>
-      </form>
+    <div id="drop-area" class="drop-area">
+      <p>Drag & drop image here or click to upload</p>
+      <input type="file" id="imageFileInput" accept="image/*" hidden />
+      <img id="imagePreview" src="" alt="Image preview" style="display: none; max-width: 100px; margin-top: 10px;" />
+    </div>
 
+    <small id="uploadStatus">No file selected</small>
 
-      <h3>Product List</h3>
-      <ul id="productList"></ul>
-    </section>
+    <input type="number" id="price" placeholder="Price (£)" required />
+    <textarea id="description" placeholder="Description" rows="3"></textarea>
+
+    <button type="submit">Add Product</button>
+  </form>
+</section>
+
 
     <!-- 📝 Pending Orders -->
     <section class="admin-column">
