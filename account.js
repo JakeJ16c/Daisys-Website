@@ -124,7 +124,7 @@ async function loadUserOrders() {
     ordersContainer.querySelector("p")?.remove();
 
     if (snap.empty) {
-      ordersContainer.innerHTML += `<p>No orders found.</p>`;
+      ordersContainer.innerHTML += `<p>You haven't placed any orders yet.</p>`;
       return;
     }
 
