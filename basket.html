@@ -105,24 +105,25 @@
         }
 
         updatedCart.forEach((item, index) => {
-          const itemDiv = document.createElement("div");
-          itemDiv.className = "basket-item";
+  const itemDiv = document.createElement("div");
+  itemDiv.className = "basket-item-row";
 
-          itemDiv.innerHTML = `
-            <img src="${item.image}" alt="${item.name}">
-            <div class="basket-details">
-              <span class="item-name">${item.name}</span>
-              <div class="quantity-controls">
-                <button class="decrease" data-index="${index}">−</button>
-                <span>${item.qty}</span>
-                <button class="increase" data-index="${index}">+</button>
-              </div>
-              <div class="item-price">£${(item.price * item.qty).toFixed(2)}</div>
-            </div>
-          `;
+  itemDiv.innerHTML = `
+    <img src="${item.image}" alt="${item.name}">
+    <div class="basket-info">
+      <span class="item-name">${item.name}</span>
+      <div class="quantity-controls">
+        <button class="decrease" data-index="${index}">-</button>
+        <span>${item.qty}</span>
+        <button class="increase" data-index="${index}">+</button>
+      </div>
+    </div>
+    <div class="item-price">£${(item.price * item.qty).toFixed(2)}</div>
+  `;
 
-          container.appendChild(itemDiv);
-        });
+  container.appendChild(itemDiv);
+});
+
 
         subtotalDisplay.textContent = `Subtotal: £${calculateSubtotal(updatedCart).toFixed(2)}`;
         addButtonHandlers();
