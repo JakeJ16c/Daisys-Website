@@ -191,7 +191,7 @@ async function handleFileUpload(files) {
   console.error("Upload failed", err);
   uploadStatus.textContent = "Upload failed.";
 }
-
+  }
 }
 
 // ================= Init =================
