@@ -1,50 +1,57 @@
 <!-- footer.html -->
 <style>
   footer {
-    background-color: var(--soft-pink);
-    padding: 1rem;
+    background-color: var(--footer-bg, #e0e0e0);
+    padding: 1rem 2rem;
+    font-family: 'Raks', sans-serif;
     font-size: 0.9rem;
     color: var(--electric-blue);
-    text-align: center;
+
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
     align-items: center;
-    gap: 0.5rem;
+    flex-wrap: wrap;
   }
 
   .footer-text {
+    flex: 1;
+    text-align: center;
     font-weight: 500;
+    order: 1;
   }
 
-    .footer-right {
-    flex: 0 0 auto;
+  .footer-links {
     display: flex;
     gap: 0.75rem;
     align-items: center;
+    justify-content: flex-end;
+    flex: 1;
+    order: 2;
   }
 
-  .footer-right a {
+  .footer-links a {
     color: var(--electric-blue);
     text-decoration: none;
   }
 
-  .footer-right span {
+  .footer-links span {
     color: var(--electric-blue);
   }
+
 </style>
 
 <footer>
-  <!-- Centered text -->
-  <div class="footer-text">
-    © 2025 You're So Golden - All Rights Reserved
-  </div>
-
-  <!-- Horizontal link section -->
-  <div class="footer-right">
+  <!-- Footer links aligned right -->
+  <div class="footer-links">
     <a href="cookie-banner/privacy.html">Privacy & Cookies</a>
     <span>|</span>
     <a href="#">T&amp;Cs</a>
     <span>|</span>
     <a href="#">Accessibility</a>
+  </div>
+
+  <!-- Centered copyright -->
+  <div class="footer-text">
+    © 2025 You're So Golden - All Rights Reserved
   </div>
 </footer>
