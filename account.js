@@ -10,21 +10,17 @@ import {
   collection,
   query,
   where,
-  getDocs
+  getDocs,
+  setDoc
 } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
-import { app } from "./firebase.js";
-
-const auth = getAuth(app);
-const db = getFirestore(app);
+import { auth, db } from "./firebase.js";
 
 const form = document.getElementById("profileform");
 const greeting = document.getElementById("account-greeting");
-const logoutButton = document.getElementById("logout-btn");
+const logoutButton = document.getElementById("logoutBtn");
 
 onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    return window.location.replace("login.html");
-  }
+  if (!user) return window.location.replace("login.html");
 
   const userDocRef = doc(db, "users", user.uid);
   const userDoc = await getDoc(userDocRef);
@@ -34,19 +30,17 @@ onAuthStateChanged(auth, async (user) => {
 
     form["first-name"].value = userData["first-name"] || "";
     form["last-name"].value = userData["last-name"] || "";
-    form["email"].value = userData.email || user.email;
-    form["address-line1"].value = userData["address-line1"] || "";
-    form["address-line2"].value = userData["address-line2"] || "";
+    form["house-number"].value = userData["house-number"] || "";
+    form["street"].value = userData["street"] || "";
     form["city"].value = userData["city"] || "";
+    form["county"].value = userData["county"] || "";
     form["postcode"].value = userData["postcode"] || "";
 
     greeting.innerHTML = `
       <i class="fas fa-user-circle"></i> Welcome back, ${userData["first-name"] || user.displayName || "Friend"}
     `;
 
-    // ✅ Load orders once profile is loaded
     await loadUserOrders(user.uid);
-
   } else {
     greeting.innerHTML = `<i class="fas fa-user-circle"></i> Welcome back, ${user.displayName || "Friend"}`;
   }
@@ -61,24 +55,23 @@ form.addEventListener("submit", async (e) => {
   const formData = {
     "first-name": form["first-name"].value,
     "last-name": form["last-name"].value,
-    email: form["email"].value,
-    "address-line1": form["address-line1"].value,
-    "address-line2": form["address-line2"].value,
-    city: form["city"].value,
-    postcode: form["postcode"].value,
+    "house-number": form["house-number"].value,
+    "street": form["street"].value,
+    "city": form["city"].value,
+    "county": form["county"].value,
+    "postcode": form["postcode"].value,
+    email: user.email
   };
 
   await setDoc(userDocRef, formData, { merge: true });
   alert("Account details updated!");
 });
 
-// 🔐 Logout button
 logoutButton.addEventListener("click", async () => {
   await signOut(auth);
   window.location.href = "login.html";
 });
 
-// 📦 Load current user's orders
 async function loadUserOrders(userId) {
   const ordersContainer = document.getElementById("user-orders");
   ordersContainer.innerHTML = "<p>Loading your orders...</p>";
@@ -111,7 +104,6 @@ async function loadUserOrders(userId) {
     });
 
     ordersContainer.innerHTML = html;
-
   } catch (error) {
     console.error("Failed to load orders:", error);
     ordersContainer.innerHTML = "<p>There was an error loading your orders.</p>";
