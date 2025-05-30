@@ -148,6 +148,7 @@ fileInput.addEventListener("change", () => {
 });
 
 // 📤 Upload image to Firebase Storage
+// 📤 Upload image to Firebase Storage
 async function handleFileUpload(file) {
   if (!file) return;
 
@@ -161,8 +162,18 @@ async function handleFileUpload(file) {
     const url = await getDownloadURL(fileRef);
     uploadedImageURL = url;
     uploadStatus.textContent = "Upload complete!";
-    imagePreview.src = url;
-    imagePreview.style.display = "block";
+
+    // ✅ Dynamically add preview image into the container
+    const previewContainer = document.getElementById("imagePreviewContainer");
+    previewContainer.innerHTML = ""; // Optional: clear previous
+    const img = document.createElement("img");
+    img.src = url;
+    img.alt = "Preview";
+    img.style.maxWidth = "100px";
+    img.style.marginTop = "10px";
+    img.style.borderRadius = "4px";
+    previewContainer.appendChild(img);
+
   } catch (err) {
     console.error("Upload failed", err);
     uploadStatus.textContent = "Upload failed.";
