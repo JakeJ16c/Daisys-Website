@@ -33,11 +33,7 @@ const uploadStatus = document.getElementById("uploadStatus");
 let uploadedImageURL = "";
 
 // 👁️ Add image preview element
-const imagePreview = document.createElement("img");
-imagePreview.style.maxWidth = "100px";
-imagePreview.style.marginTop = "10px";
-imagePreview.style.display = "none";
-dropArea.appendChild(imagePreview);
+const imagePreview = document.getElementById("imagePreview");
 
 // ================= Load & Render Products =================
 async function loadProducts() {
