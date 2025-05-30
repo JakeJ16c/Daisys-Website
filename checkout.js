@@ -93,14 +93,15 @@ export async function submitOrder() {
   }
 
   const orderPayload = {
-    name: currentUser?.name || "Anonymous",
-    email: currentUser?.email || "no@email.com",
-    address: currentUser?.address || {}, // 🛑 full object here
+    userId: currentUser.uid,
+    name: currentUser.name || "Anonymous",
+    email: currentUser.email || "no@email.com",
+    address: currentUser.address || {},
     items: basket.map(item => ({
       productId: item.id || "unknown",
       productName: item.name || "Unnamed",
-      qty: parseFloat(item.qty) || 1,
-      price: parseFloat(item.price) || 0
+      qty: parseInt(item.qty) || 1,
+      price: parseFloat(item.price) || 0,
     })),
     status: "pending",
     createdAt: serverTimestamp()
