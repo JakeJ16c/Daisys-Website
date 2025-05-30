@@ -207,7 +207,7 @@ async function handleFileUpload(files) {
     img.style.borderRadius = "4px";
     previewContainer.appendChild(img);
 
-  } catch (err) {
+    catch (err) {
     console.error("Upload failed", err);
     uploadStatus.textContent = "Upload failed.";
   }
