@@ -33,7 +33,7 @@ async function loadProducts() {
 
     productCard.innerHTML = `
     <a href="product.html?id=${doc.id}" class="product-link">
-    <img src="${data.image}" alt="${data.name}" />
+    <img src="${Array.isArray(data.image) ? data.image[0] : data.image}" alt="${data.name}" />
     <h3>${data.name}</h3>
     <p>£${parseFloat(data.price).toFixed(2)}</p>
   </a>
