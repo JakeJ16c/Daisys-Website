@@ -38,10 +38,9 @@ const productList = document.getElementById('productList');
 const dropArea = document.getElementById("drop-area");
 const fileInput = document.getElementById("imageFileInput");
 const uploadStatus = document.getElementById("uploadStatus");
-const imagePreview = document.getElementById("imagePreview");
+const imagePreviewContainer = document.getElementById("imagePreviewContainer");
+let uploadedImageURLs = []; // Store multiple URLs
 
-// 💾 Store uploaded image URL for Firestore reference
-let uploadedImageURL = "";
 
 // ================= Load & Render Products =================
 async function loadProducts() {
@@ -137,31 +136,54 @@ dropArea.addEventListener("dragleave", () => {
 dropArea.addEventListener("drop", (e) => {
   e.preventDefault();
   dropArea.classList.remove("highlight");
-  const file = e.dataTransfer.files[0];
-  handleFileUpload(file);
+  const files = Array.from(e.dataTransfer.files);
+  handleFileUpload(files);
 });
 
 // File input change triggers upload
 fileInput.addEventListener("change", () => {
-  const file = fileInput.files[0];
-  handleFileUpload(file);
+  const files = Array.from(fileInput.files);
+  handleFileUpload(files);
 });
 
 // 📤 Upload image to Firebase Storage
 // 📤 Upload image to Firebase Storage
-async function handleFileUpload(file) {
-  if (!file) return;
-
-  const uniqueName = `${Date.now()}-${file.name}`;
-  const fileRef = storageRef(storage, `product-images/${uniqueName}`);
+async function handleFileUpload(files) {
+  if (!files.length) return;
 
   uploadStatus.textContent = "Uploading...";
+  imagePreviewContainer.innerHTML = ""; // Clear existing previews
+  uploadedImageURLs = [];
 
-  try {
-    await uploadBytes(fileRef, file);
-    const url = await getDownloadURL(fileRef);
-    uploadedImageURL = url;
-    uploadStatus.textContent = "Upload complete!";
+  for (const file of files) {
+    const uniqueName = `${Date.now()}-${file.name}`;
+    const fileRef = storageRef(storage, `product-images/${uniqueName}`);
+
+    try {
+      await uploadBytes(fileRef, file);
+      const url = await getDownloadURL(fileRef);
+      uploadedImageURLs.push(url);
+
+      // Preview
+      const img = document.createElement("img");
+      img.src = url;
+      img.alt = "Preview";
+      img.style.width = "60px";
+      img.style.height = "60px";
+      img.style.objectFit = "cover";
+      img.style.borderRadius = "4px";
+      img.style.marginRight = "6px";
+
+      imagePreviewContainer.appendChild(img);
+    } catch (err) {
+      console.error("Upload failed", err);
+      uploadStatus.textContent = "Upload failed.";
+      return;
+    }
+  }
+
+  uploadStatus.textContent = "Upload complete!";
+}
 
     // ✅ Dynamically add preview image into the container
     const previewContainer = document.getElementById("imagePreviewContainer");
