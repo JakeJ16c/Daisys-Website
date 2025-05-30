@@ -33,9 +33,6 @@ const imagePreview = document.getElementById("imagePreview");
 // 💾 For storing uploaded image URL
 let uploadedImageURL = "";
 
-// 👁️ Add image preview element
-const imagePreview = document.getElementById("imagePreview");
-
 // ================= Load & Render Products =================
 async function loadProducts() {
   productList.innerHTML = '';
