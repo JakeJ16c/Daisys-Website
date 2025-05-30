@@ -21,4 +21,4 @@ const db = getFirestore(app);
 const messaging = getMessaging(app);
 
 // Export instances to use elsewhere
-export { auth, db, messaging };
+export { app, auth, db, messaging };
