@@ -1,15 +1,52 @@
-<footer style="background-color: var(--footer-bg, #e0e0e0); padding: 1rem; font-family: 'Raks', sans-serif; font-size: 0.9rem; color: var(--electric-blue); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+<!-- footer.html -->
+<style>
+  footer {
+    background-color: var(--footer-bg, #e0e0e0);
+    padding: 1rem;
+    font-family: 'Raks', sans-serif;
+    font-size: 0.9rem;
+    color: var(--electric-blue);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
 
-  <div style="flex: 1 1 auto;">
+  .footer-text {
+    font-weight: 500;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .footer-links a {
+    color: var(--electric-blue);
+    text-decoration: none;
+  }
+
+  .footer-links span {
+    color: var(--electric-blue);
+  }
+</style>
+
+<footer>
+  <!-- Centered text -->
+  <div class="footer-text">
     © 2025 You're So Golden - All Rights Reserved
   </div>
 
-  <div style="flex: 0 0 auto; display: flex; gap: 0.75rem; align-items: center;">
-    <a href="cookie-banner/privacy.html" style="color: var(--electric-blue); text-decoration: none;">Privacy & Cookies</a>
-    <span style="color: var(--electric-blue);">|</span>
-    <a href="#" style="color: var(--electric-blue); text-decoration: none;">T&amp;Cs</a>
-    <span style="color: var(--electric-blue);">|</span>
-    <a href="#" style="color: var(--electric-blue); text-decoration: none;">Accessibility</a>
+  <!-- Horizontal link section -->
+  <div class="footer-links">
+    <a href="cookie-banner/privacy.html">Privacy & Cookies</a>
+    <span>|</span>
+    <a href="#">T&amp;Cs</a>
+    <span>|</span>
+    <a href="#">Accessibility</a>
   </div>
-
 </footer>
