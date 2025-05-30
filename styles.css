@@ -698,26 +698,6 @@
       font-size: 0.9rem;
     }
 
-	/* ========== Privacy Policy Page ========== */
-    body {
-      font-family: 'Fredoka', sans-serif;
-      line-height: 1.6;
-      padding: 2rem;
-      background-color: #fdfaf6;
-      color: #333;
-      max-width: 800px;
-      margin: auto;
-    }
-
-    h1 {
-      color: #204ECF;
-    }
-
-    a {
-      color: #204ECF;
-      text-decoration: underline;
-    }
-
     /* ========== Responsive Fixes ========== */
     @media (max-width: 600px) {
   .site-header {
