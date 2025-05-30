@@ -17,56 +17,71 @@ const firebaseConfig = {
   appId: "1:595443495060:web:7bbdd1108ad336d55c8481",
 };
 
-// ================= Initialize App =================
+// ================= Initialize Firebase =================
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-// ================= DOM Elements =================
+// ================= DOM Element References =================
 const form = document.getElementById('productForm');
 const productList = document.getElementById('productList');
 const dropArea = document.getElementById("drop-area");
 const fileInput = document.getElementById("imageFileInput");
 const uploadStatus = document.getElementById("uploadStatus");
 
+// 💾 For storing uploaded image URL
 let uploadedImageURL = "";
 
-// ================= Load Products =================
+// 👁️ Add image preview element
+const imagePreview = document.createElement("img");
+imagePreview.style.maxWidth = "100px";
+imagePreview.style.marginTop = "10px";
+imagePreview.style.display = "none";
+dropArea.appendChild(imagePreview);
+
+// ================= Load & Render Products =================
 async function loadProducts() {
   productList.innerHTML = '';
   const snapshot = await getDocs(collection(db, "Products"));
 
   snapshot.forEach((product) => {
     const data = product.data();
+
     const li = document.createElement('li');
     li.innerHTML = `
-      <span><strong>${data.name}</strong> - £${parseFloat(data.price).toFixed(2)}</span>
+      <div style="display:flex; align-items:center; gap:1rem;">
+        <img src="${data.image}" alt="${data.name}" style="width:50px;height:50px;object-fit:cover;border-radius:4px;" />
+        <span><strong>${data.name}</strong> - £${parseFloat(data.price).toFixed(2)}</span>
+      </div>
       <div>
         <button class="edit-btn">Edit</button>
         <button class="delete-btn">Delete</button>
       </div>`;
 
-    // Delete Handler
+    // 🗑️ Delete Button Functionality
     li.querySelector('.delete-btn').onclick = async () => {
       await deleteDoc(doc(db, "Products", product.id));
       loadProducts();
     };
 
-    // Edit Handler
+    // ✏️ Edit Button Functionality
     li.querySelector('.edit-btn').onclick = () => {
       document.getElementById('title').value = data.name;
       document.getElementById('price').value = data.price;
       document.getElementById('description').value = data.description;
-      uploadedImageURL = data.image; // Load existing image for editing
-      form.setAttribute('data-edit-id', product.id);
+
+      uploadedImageURL = data.image;
+      imagePreview.src = uploadedImageURL;
+      imagePreview.style.display = 'block';
       uploadStatus.textContent = "Image loaded (editing)";
+      form.setAttribute('data-edit-id', product.id);
     };
 
     productList.appendChild(li);
   });
 }
 
-// ================= Handle Product Form =================
+// ================= Handle Form Submission =================
 form.onsubmit = async (e) => {
   e.preventDefault();
 
@@ -89,24 +104,31 @@ form.onsubmit = async (e) => {
     await addDoc(collection(db, "Products"), productData);
   }
 
+  // Reset form + state
   form.reset();
   uploadedImageURL = "";
   uploadStatus.textContent = "No file selected";
+  imagePreview.style.display = 'none';
   loadProducts();
 };
 
-// ================= Handle Image Upload =================
+// ================= Image Upload Logic =================
+
+// 🖱️ Clicking on drop area triggers file selector
 dropArea.addEventListener("click", () => fileInput.click());
 
+// 🖱️ Dragging file over drop area highlights it
 dropArea.addEventListener("dragover", (e) => {
   e.preventDefault();
   dropArea.classList.add("highlight");
 });
 
+// 🖱️ Dragging file out of area removes highlight
 dropArea.addEventListener("dragleave", () => {
   dropArea.classList.remove("highlight");
 });
 
+// 🖱️ Dropping file onto drop area triggers upload
 dropArea.addEventListener("drop", (e) => {
   e.preventDefault();
   dropArea.classList.remove("highlight");
@@ -114,11 +136,13 @@ dropArea.addEventListener("drop", (e) => {
   handleFileUpload(file);
 });
 
+// 📁 Selecting file from input triggers upload
 fileInput.addEventListener("change", () => {
   const file = fileInput.files[0];
   handleFileUpload(file);
 });
 
+// 📤 Upload image to Firebase Storage
 async function handleFileUpload(file) {
   if (!file) return;
 
@@ -131,6 +155,10 @@ async function handleFileUpload(file) {
     await uploadBytes(fileRef, file);
     const url = await getDownloadURL(fileRef);
     uploadedImageURL = url;
+
+    // Show uploaded preview
+    imagePreview.src = uploadedImageURL;
+    imagePreview.style.display = 'block';
     uploadStatus.textContent = "Upload complete!";
   } catch (err) {
     console.error("Upload failed", err);
@@ -138,5 +166,5 @@ async function handleFileUpload(file) {
   }
 }
 
-// Load products initially
+// ================= Init =================
 loadProducts();
