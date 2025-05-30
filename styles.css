@@ -690,14 +690,6 @@
       color: white;
     }
 
-    /* ========== Footer ========== */
-    footer {
-      text-align: center;
-      padding: 1.5rem;
-      background-color: var(--soft-pink);
-      font-size: 0.9rem;
-    }
-
     /* ========== Responsive Fixes ========== */
     @media (max-width: 600px) {
   .site-header {
