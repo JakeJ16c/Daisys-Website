@@ -54,7 +54,7 @@ async function loadProducts() {
     // Product card layout
     li.innerHTML = `
       <div style="display:flex; align-items:center; gap:1rem;">
-        <img src="${data.image}" alt="${data.name}" style="width:50px;height:50px;object-fit:cover;border-radius:4px;" />
+       <img src="${data.images?.[0] || ''}" alt="${data.name}" style="width:50px;height:50px;object-fit:cover;border-radius:4px;" />
         <span><strong>${data.name}</strong> - £${parseFloat(data.price).toFixed(2)}</span>
       </div>
       <div>
@@ -74,10 +74,21 @@ async function loadProducts() {
       document.getElementById('price').value = data.price;
       document.getElementById('description').value = data.description;
 
-      uploadedImageURL = data.image;
-      imagePreview.src = uploadedImageURL;
-      imagePreview.style.display = 'block';
-      uploadStatus.textContent = "Image loaded (editing)";
+      uploadedImageURLs = data.images || [];
+      imagePreviewContainer.innerHTML = "";
+      uploadedImageURLs.forEach(url => {
+        const img = document.createElement("img");
+        img.src = url;
+        img.alt = "Preview";
+        img.style.width = "60px";
+        img.style.height = "60px";
+        img.style.objectFit = "cover";
+        img.style.borderRadius = "4px";
+        img.style.marginRight = "6px";
+        imagePreviewContainer.appendChild(img);
+      });
+      uploadStatus.textContent = "Images loaded (editing)";
+
       form.setAttribute('data-edit-id', product.id);
     };
 
@@ -94,12 +105,12 @@ form.onsubmit = async (e) => {
   const description = document.getElementById('description').value.trim();
   const editId = form.getAttribute('data-edit-id');
 
-  if (!uploadedImageURL) {
-    alert("Please upload an image before submitting.");
-    return;
-  }
+  if (!uploadedImageURLs.length) {
+  alert("Please upload at least one image before submitting.");
+  return;
+}
 
-  const productData = { name, image: uploadedImageURL, price, description };
+const productData = { name, images: uploadedImageURLs, price, description };
 
   if (editId) {
     await setDoc(doc(db, "Products", editId), productData);
