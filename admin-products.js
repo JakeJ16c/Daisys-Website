@@ -1,4 +1,6 @@
+
 // ================= Firebase Imports =================
+// Import Firebase modules for app initialization, Firestore DB, and Storage
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
 import {
   getFirestore, collection, addDoc, getDocs, deleteDoc, setDoc, doc
@@ -6,8 +8,10 @@ import {
 import {
   getStorage, ref as storageRef, uploadBytes, getDownloadURL
 } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-storage.js";
+import { getApps } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
 
 // ================= Firebase Config =================
+// Firebase project credentials
 const firebaseConfig = {
   apiKey: "AIzaSyA6kN9-7dN9Ovq6BmWBBJwBhLXRW6INX4c",
   authDomain: "daisy-s-website.firebaseapp.com",
@@ -18,19 +22,17 @@ const firebaseConfig = {
 };
 
 // ================= Initialize Firebase =================
-import { getApps } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-
 let app;
 if (!getApps().length) {
-  app = initializeApp(firebaseConfig);
+  app = initializeApp(firebaseConfig); // Only initialize if not already
 } else {
   app = getApps()[0];
 }
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-
 // ================= DOM Element References =================
+// Grabbing DOM elements used in UI
 const form = document.getElementById('productForm');
 const productList = document.getElementById('productList');
 const dropArea = document.getElementById("drop-area");
@@ -38,18 +40,19 @@ const fileInput = document.getElementById("imageFileInput");
 const uploadStatus = document.getElementById("uploadStatus");
 const imagePreview = document.getElementById("imagePreview");
 
-// 💾 For storing uploaded image URL
+// 💾 Store uploaded image URL for Firestore reference
 let uploadedImageURL = "";
 
 // ================= Load & Render Products =================
 async function loadProducts() {
-  productList.innerHTML = '';
+  productList.innerHTML = ''; // Clear list before render
   const snapshot = await getDocs(collection(db, "Products"));
 
   snapshot.forEach((product) => {
     const data = product.data();
-
     const li = document.createElement('li');
+
+    // Product card layout
     li.innerHTML = `
       <div style="display:flex; align-items:center; gap:1rem;">
         <img src="${data.image}" alt="${data.name}" style="width:50px;height:50px;object-fit:cover;border-radius:4px;" />
@@ -60,13 +63,13 @@ async function loadProducts() {
         <button class="delete-btn">Delete</button>
       </div>`;
 
-    // 🗑️ Delete Button Functionality
+    // 🗑️ Delete button logic
     li.querySelector('.delete-btn').onclick = async () => {
       await deleteDoc(doc(db, "Products", product.id));
-      loadProducts();
+      loadProducts(); // Refresh list
     };
 
-    // ✏️ Edit Button Functionality
+    // ✏️ Edit button logic
     li.querySelector('.edit-btn').onclick = () => {
       document.getElementById('title').value = data.name;
       document.getElementById('price').value = data.price;
@@ -106,7 +109,7 @@ form.onsubmit = async (e) => {
     await addDoc(collection(db, "Products"), productData);
   }
 
-  // Reset form + state
+  // Reset form state after submission
   form.reset();
   uploadedImageURL = "";
   uploadStatus.textContent = "No file selected";
@@ -116,21 +119,21 @@ form.onsubmit = async (e) => {
 
 // ================= Image Upload Logic =================
 
-// 🖱️ Clicking on drop area triggers file selector
+// Trigger hidden file input when drop area is clicked
 dropArea.addEventListener("click", () => fileInput.click());
 
-// 🖱️ Dragging file over drop area highlights it
+// Highlight drop area on drag over
 dropArea.addEventListener("dragover", (e) => {
   e.preventDefault();
   dropArea.classList.add("highlight");
 });
 
-// 🖱️ Dragging file out of area removes highlight
+// Remove highlight when drag leaves area
 dropArea.addEventListener("dragleave", () => {
   dropArea.classList.remove("highlight");
 });
 
-// 🖱️ Dropping file onto drop area triggers upload
+// Handle file drop onto area
 dropArea.addEventListener("drop", (e) => {
   e.preventDefault();
   dropArea.classList.remove("highlight");
@@ -138,7 +141,7 @@ dropArea.addEventListener("drop", (e) => {
   handleFileUpload(file);
 });
 
-// 📁 Selecting file from input triggers upload
+// File input change triggers upload
 fileInput.addEventListener("change", () => {
   const file = fileInput.files[0];
   handleFileUpload(file);
@@ -154,20 +157,17 @@ async function handleFileUpload(file) {
   uploadStatus.textContent = "Uploading...";
 
   try {
-  await uploadBytes(fileRef, file);
-  const url = await getDownloadURL(fileRef);
-  uploadedImageURL = url;
-  uploadStatus.textContent = "Upload complete!";
-
-  // ✅ Show image preview only once
-  imagePreview.src = url;
-  imagePreview.style.display = "block";
-} catch (err) {
-  console.error("Upload failed", err);
-  uploadStatus.textContent = "Upload failed.";
-}
-
+    await uploadBytes(fileRef, file);
+    const url = await getDownloadURL(fileRef);
+    uploadedImageURL = url;
+    uploadStatus.textContent = "Upload complete!";
+    imagePreview.src = url;
+    imagePreview.style.display = "block";
+  } catch (err) {
+    console.error("Upload failed", err);
+    uploadStatus.textContent = "Upload failed.";
+  }
 }
 
 // ================= Init =================
-loadProducts();
+loadProducts(); // Load products on initial page load
