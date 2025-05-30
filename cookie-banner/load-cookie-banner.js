@@ -5,17 +5,19 @@ fetch('./cookie-banner/cookie-banner.html')
     container.innerHTML = html;
     document.body.appendChild(container);
 
-    // ✅ Execute any <script> tags inside the HTML
-    container.querySelectorAll("script").forEach(oldScript => {
-      const newScript = document.createElement("script");
+    // ✅ Force any embedded <script> tags to execute
+    container.querySelectorAll('script').forEach(script => {
+      const newScript = document.createElement('script');
 
-      if (oldScript.src) {
-        newScript.src = oldScript.src;
+      if (script.src) {
+        newScript.src = script.src;
       } else {
-        newScript.textContent = oldScript.textContent;
+        newScript.textContent = script.textContent;
       }
 
       document.body.appendChild(newScript);
     });
+
+    console.log('✅ Cookie banner HTML injected and scripts evaluated');
   })
   .catch(err => console.error('❌ Failed to load cookie banner:', err));
