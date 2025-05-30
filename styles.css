@@ -728,52 +728,37 @@
 .basket-item-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  background: white;
-  padding: 1.5rem;
-  border-radius: 12px;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  min-height: 140px;
+  gap: 2rem;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid #ddd;
 }
 
 .basket-item-row img {
-  width: 120px;
-  height: 120px;
+  width: 100px;
+  height: 100px;
   object-fit: cover;
-  border-radius: 10px;
-  flex-shrink: 0;
+  border-radius: 8px;
 }
 
-.basket-item-row .basket-info {
+.basket-info {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 1.5rem;
   flex: 1;
 }
 
-.basket-item-row .item-name {
+.item-name {
   font-weight: 600;
-  min-width: 120px;
+  min-width: 150px;
 }
 
-.basket-item-row .quantity-controls {
+.quantity-controls {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-.basket-item-row .quantity-controls button {
-  background: var(--electric-blue);
-  color: #fff;
-  border: none;
-  padding: 0.5rem 0.8rem;
-  border-radius: 6px;
-  font-size: 1rem;
-  cursor: pointer;
-}
-
-.basket-item-row .item-price {
+.item-price {
   font-weight: bold;
   min-width: 70px;
   text-align: right;
