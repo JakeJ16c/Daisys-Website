@@ -49,16 +49,20 @@
   </nav>
   <main>
 
-  <section class="basket-page">
-    <h2>Your Basket</h2>
-    <div id="basket-empty-message" class="empty-message" style="display:none;">Your basket is empty.</div>
-    <div id="basket-container"></div>
-    <div id="subtotal-display"></div>
+  <div class="basket-wrapper">
+  <div class="basket-left" id="basket-left">
+    <!-- JS will populate basket items here -->
+  </div>
 
-  <div class="basket-buttons">
-    <button onclick="window.location.href='shop.html'">Continue Shopping</button>
-    <button onclick="window.location.href='checkout.html'">Checkout</button>
+  <div class="basket-summary">
+    <div class="summary-box">
+      <h3>Order Summary</h3>
+      <div id="subtotal-display">Subtotal: £0.00</div>
+      <button class="btn">Checkout</button>
+    </div>
+  </div>
 </div>
+
 
   </section>
   </main>
