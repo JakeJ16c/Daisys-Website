@@ -47,6 +47,12 @@ document.addEventListener("DOMContentLoaded", () => {
       itemRow.style.alignItems = "center";
       itemRow.style.marginBottom = "1rem";
 
+      const link = document.createElement("a");
+      link.href = `product.html?id=${item.id}`;
+      link.style.display = "flex";
+      link.style.alignItems = "center";
+      link.style.marginRight = "0.75rem";
+
       const img = document.createElement("img");
       img.src = item.image || "placeholder.jpg";
       img.alt = item.name;
@@ -54,7 +60,8 @@ document.addEventListener("DOMContentLoaded", () => {
       img.style.height = "60px";
       img.style.objectFit = "cover";
       img.style.borderRadius = "8px";
-      img.style.marginRight = "0.75rem";
+
+      link.appendChild(img);
 
       const infoWrapper = document.createElement("div");
       infoWrapper.style.flex = "1";
@@ -68,6 +75,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const name = document.createElement("strong");
       name.textContent = item.name;
       name.style.marginBottom = "0.5rem";
+      name.style.cursor = "pointer";
+      name.onclick = () => {
+        window.location.href = `product.html?id=${item.id}`;
+      };
 
       const quantityControls = document.createElement("div");
       quantityControls.style.display = "flex";
@@ -115,7 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       nameQtyWrapper.appendChild(name);
       nameQtyWrapper.appendChild(quantityControls);
-      infoWrapper.appendChild(img);
+      infoWrapper.appendChild(link);
       infoWrapper.appendChild(nameQtyWrapper);
 
       const price = document.createElement("span");
