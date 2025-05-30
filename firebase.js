@@ -9,7 +9,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyA6kN9-7dN9Ovq6BmWBBJwBhLXRW6INX4c",
   authDomain: "daisy-s-website.firebaseapp.com",
   projectId: "daisy-s-website",
-  storageBucket: "daisy-s-website.appspot.com",
+  storageBucket: "daisy-s-website.firebasestorage.app",
   messagingSenderId: "595443495060",
   appId: "1:595443495060:web:7bbdd1108ad336d55c8481"
 };
