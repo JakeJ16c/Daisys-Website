@@ -83,7 +83,7 @@
     document.addEventListener("DOMContentLoaded", () => {
       const cartKey = "daisyCart";
       const basket = JSON.parse(localStorage.getItem(cartKey)) || [];
-      const container = document.getElementById("basket-container");
+      const container = document.getElementById("basket-left");
       const emptyMessage = document.getElementById("basket-empty-message");
       const subtotalDisplay = document.getElementById("subtotal-display");
 
