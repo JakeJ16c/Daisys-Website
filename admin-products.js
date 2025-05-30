@@ -121,11 +121,10 @@ const productData = { name, images: uploadedImageURLs, price, description };
 
   // Reset form state after submission
   form.reset();
-  uploadedImageURL = "";
+  uploadedImageURLs = [];
   uploadStatus.textContent = "No file selected";
-  imagePreview.style.display = 'none';
-  loadProducts();
-};
+  imagePreviewContainer.innerHTML = '';
+  };
 
 // ================= Image Upload Logic =================
 
