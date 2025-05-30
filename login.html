@@ -158,16 +158,6 @@
       color: #183aa0;
     }
 
-
-    /* 🔚 Footer */
-    footer {
-      text-align: center;
-      padding: 1.5rem;
-      background-color: var(--soft-pink);
-      font-size: 0.9rem;
-      color: #444;
-      margin-top: 4rem;
-    }
   </style>
 </head>
 
@@ -207,8 +197,11 @@
     </form>
   </section>
 
-  <!-- 🔻 Footer -->
-  <footer>© 2025 You're So Golden · All Rights Reserved</footer>
+  <!-- Footer -->
+  <div id="footer-container"></div>
+  
+  <!-- Load Page Layout -->
+  <script src="layout/load-layout.js" type="module"></script>
 
   <!-- just one script tag to pull in your auth logic -->
   <script type="module" src="login-auth.js"></script>
