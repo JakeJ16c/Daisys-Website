@@ -28,6 +28,7 @@ const productList = document.getElementById('productList');
 const dropArea = document.getElementById("drop-area");
 const fileInput = document.getElementById("imageFileInput");
 const uploadStatus = document.getElementById("uploadStatus");
+const imagePreview = document.getElementById("imagePreview");
 
 // 💾 For storing uploaded image URL
 let uploadedImageURL = "";
@@ -151,6 +152,8 @@ async function handleFileUpload(file) {
     await uploadBytes(fileRef, file);
     const url = await getDownloadURL(fileRef);
     uploadedImageURL = url;
+    imagePreview.src = url;
+    imagePreview.style.display = "block";
 
     // Show uploaded preview
     imagePreview.src = uploadedImageURL;
