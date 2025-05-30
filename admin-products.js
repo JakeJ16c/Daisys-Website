@@ -149,20 +149,19 @@ async function handleFileUpload(file) {
   uploadStatus.textContent = "Uploading...";
 
   try {
-    await uploadBytes(fileRef, file);
-    const url = await getDownloadURL(fileRef);
-    uploadedImageURL = url;
-    imagePreview.src = url;
-    imagePreview.style.display = "block";
+  await uploadBytes(fileRef, file);
+  const url = await getDownloadURL(fileRef);
+  uploadedImageURL = url;
+  uploadStatus.textContent = "Upload complete!";
 
-    // Show uploaded preview
-    imagePreview.src = uploadedImageURL;
-    imagePreview.style.display = 'block';
-    uploadStatus.textContent = "Upload complete!";
-  } catch (err) {
-    console.error("Upload failed", err);
-    uploadStatus.textContent = "Upload failed.";
-  }
+  // ✅ Show image preview only once
+  imagePreview.src = url;
+  imagePreview.style.display = "block";
+} catch (err) {
+  console.error("Upload failed", err);
+  uploadStatus.textContent = "Upload failed.";
+}
+
 }
 
 // ================= Init =================
