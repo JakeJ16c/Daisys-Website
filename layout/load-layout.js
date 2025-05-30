@@ -5,6 +5,5 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById(id).innerHTML = html;
   };
 
-  inject("header-container", "layout/header.html");
   inject("footer-container", "layout/footer.html");
 });
