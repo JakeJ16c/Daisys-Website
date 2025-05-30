@@ -110,7 +110,7 @@ form.onsubmit = async (e) => {
   return;
 }
 
-const productData = { name, images: uploadedImageURLs, price, description };
+const productData = { name, images: uploadedImageURLs[0], price, description };
 
   if (editId) {
     await setDoc(doc(db, "Products", editId), productData);
