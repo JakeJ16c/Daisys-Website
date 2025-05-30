@@ -93,6 +93,14 @@ export async function submitOrder() {
     return;
   }
 
+   // Make sure user data is fully loaded before proceeding
+  await loadCurrentUser();
+
+  if (!currentUser || !currentUser.uid) {
+    alert("User information not loaded. Please log in again.");
+    return;
+  }
+
   const orderPayload = {
     userId: currentUser.uid,
     name: currentUser.name || "Anonymous",
