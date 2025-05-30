@@ -72,9 +72,14 @@ async function loadUserProfile() {
 // 💾 Save User Profile
 // =========================
 async function saveUserProfile() {
-  if (!currentUser) return;
+  if (!currentUser) {
+    console.warn("No user is currently logged in.");
+    alert("You must be logged in to save your profile.");
+    return;
+  }
 
   const userRef = doc(db, "users", currentUser.uid);
+
   const userData = {
     firstName: document.getElementById("first-name").value.trim(),
     lastName: document.getElementById("last-name").value.trim(),
@@ -88,11 +93,13 @@ async function saveUserProfile() {
     email: currentUser.email,
   };
 
+  console.log("Saving user profile to Firestore:", userData);
+
   try {
     await setDoc(userRef, userData, { merge: true });
     alert("Profile saved successfully!");
   } catch (error) {
-    console.error("Error saving profile", error);
+    console.error("Error saving profile to Firestore:", error);
     alert("Failed to save profile. Please try again.");
   }
 }
