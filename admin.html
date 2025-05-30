@@ -272,12 +272,12 @@
       <form id="productForm">
         <input type="text" id="title" placeholder="Product Name" required />
         
-        <label>Upload Image</label>
         <div id="drop-area" class="drop-area">
         <p>Drag & drop image here or click to upload</p>
         <input type="file" id="imageFileInput" accept="image/*" hidden />
         <img id="imagePreview" src="" alt="Preview" style="max-width: 100px; margin-top: 10px; display: none;" />
         </div>
+        <small id="uploadStatus">No file selected</small>
 
         <input type="number" id="price" placeholder="Price (£)" required />
         <textarea id="description" placeholder="Description" rows="3"></textarea>
