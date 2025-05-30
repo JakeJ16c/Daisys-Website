@@ -43,16 +43,21 @@
   <button id="accept-cookies">Got it!</button>
 
   <script>
-    const banner = document.getElementById('cookie-banner');
-    const button = document.getElementById('accept-cookies');
+  const banner = document.getElementById('cookie-banner');
+  const button = document.getElementById('accept-cookies');
 
-    if (!localStorage.getItem('cookiesAccepted')) {
-      banner.style.display = 'flex';
-    }
+  if (!localStorage.getItem('cookiesAccepted')) {
+    banner.style.display = 'flex';
+    console.log('🍪 Cookie banner shown: awaiting consent');
+  } else {
+    console.log('✅ Cookies already accepted');
+  }
 
-    button.addEventListener('click', () => {
-      localStorage.setItem('cookiesAccepted', 'true');
-      banner.style.display = 'none';
-    });
-  </script>
+  button.addEventListener('click', () => {
+    localStorage.setItem('cookiesAccepted', 'true');
+    banner.style.display = 'none';
+    console.log('👍 Cookies accepted and stored in localStorage');
+  });
+</script>
+
 </div>
