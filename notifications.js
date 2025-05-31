@@ -11,7 +11,7 @@ export async function initializeNotifications() {
     // Check if service workers are supported
     if ('serviceWorker' in navigator) {
       // Register the Firebase Messaging service worker
-      const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+      const registration = await navigator.serviceWorker.register('./firebase-messaging-sw.js');
       console.log('✅ Firebase Messaging SW registered: ', registration.scope);
       
       // Request notification permission
