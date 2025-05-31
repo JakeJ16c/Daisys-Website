@@ -22,7 +22,7 @@ export async function initializeNotifications() {
         
         // Get FCM token - using a public VAPID key
         const currentToken = await getToken(messaging, {
-          vapidKey: 'BPVvFQt0nRwDGtpwz8GDwQvQjBgXDW1Tgw7a0GGfgrqvfwC-qRO0jumAYpKcJSuAQKPNbhwTN3qsF4vfRsJr4Uw', // Public VAPID key for testing
+          vapidKey: 'BKWmwmuEDejKmOZEFLtWAgZXD2OUPqS_77NA6hTEf9-9SXDG9fJh0EZDG7qExr8IDrRiHVPSNvbXohUKsV12ueA', // Public VAPID key for testing
           serviceWorkerRegistration: registration
         });
         
