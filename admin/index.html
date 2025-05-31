@@ -1,30 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <title>Admin Dashboard</title>
+
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+  <link rel="icon" href="/favicon_circle.ico" type="image/x-icon" />
+
+  <!-- Manifest for installability -->
   <link rel="manifest" href="manifest.webmanifest" />
+
+  <!-- Styles -->
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header>
-    <h1>Admin Dashboard</h1>
-    <button id="logoutBtn">Log Out</button>
+
+
+  <!-- Header -->
+  <header class="site-header">
+    <h1 class="header-title"><a href="/index.html" class="logo-link">You're So Golden</a></h1>
   </header>
 
-  <main>
-    <section>
-      <h2>Orders</h2>
-      <div id="orderList">Loading orders...</div>
-    </section>
-    <section>
-      <h2>Products</h2>
-      <div id="productList">Loading products...</div>
-    </section>
-    <button id="addProductBtn">+ Add Product</button>
-  </main>
+  <!-- Navigation -->
+  <nav class="nav-links">
+    <a href="/index.html">Home</a>
+    <a href="/shop.html">Shop</a>
+    <a href="/contacts.html">Contact</a>
+  </nav>
 
-  <script type="module" src="dashboard.js"></script>
+  <!-- Admin Panel -->
+  <div class="admin-panel-wrapper">
+
+    <!-- Product Management -->
+    <section class="admin-column">
+      <h2>Manage Products</h2>
+      <form id="productForm">
+        <input type="text" id="title" placeholder="Product Name" required />
+
+        <div id="drop-area" class="drop-area">
+          <p>Drag & drop image here or click to upload</p>
+          <input type="file" id="imageFileInput" accept="image/*" multiple hidden />
+          <div id="imagePreviewContainer" class="image-preview-container"></div>
+        </div>
+
+        <small id="uploadStatus">No file selected</small>
+
+        <input type="number" id="price" placeholder="Price (£)" required />
+        <textarea id="description" placeholder="Description" rows="3"></textarea>
+
+        <button type="submit">Add Product</button>
+      </form>
+    </section>
+
+    <!-- Product List -->
+    <section class="admin-column">
+      <h2>Product List</h2>
+      <ul id="productList"></ul>
+    </section>
+
+    <!-- Pending Orders -->
+    <section class="admin-column">
+      <h2>Pending Orders</h2>
+      <ul id="orderList">
+        <li>You Currently Have No Pending Orders</li>
+      </ul>
+    </section>
+
+  </div>
+
+  <!-- Footer -->
+  <div id="footer-container"></div>
+
+  <!-- Admin Scripts -->
+  <script type="module" src="../layout/load-layout.js"></script>
+  <script type="module" src="../firebase.js"></script>
+  <script type="module" src="admin-auth.js"></script>
+  <script type="module" src="admin-products.js"></script>
+  <script type="module" src="admin-orders.js"></script>
+
+  <!-- Service Worker for PWA -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
+    }
+  </script>
 </body>
 </html>
