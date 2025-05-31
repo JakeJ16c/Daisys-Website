@@ -22,7 +22,7 @@ export async function initializeNotifications() {
         
         // Get FCM token
         const currentToken = await getToken(messaging, {
-          vapidKey: 'YOUR_VAPID_KEY_HERE', // Replace with your actual VAPID key from Firebase console
+          vapidKey: 'BKWmwmuEDejKmOZEFLtWAgZXD2OUPqS_77NA6hTEf9-9SXDG9fJh0EZDG7qExr8IDrRiHVPSNvbXohUKsV12ueA', // Replace with your actual VAPID key from Firebase console
           serviceWorkerRegistration: registration
         });
         
