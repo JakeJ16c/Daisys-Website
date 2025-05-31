@@ -1,7 +1,7 @@
 {
   "name": "You're So Golden - Admin",
   "short_name": "Admin Dashboard",
-  "start_url": "/admin/index.html",
+  "start_url": "https://jakej16c.github.io/Daisys-Website/admin/index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#204ECF",
