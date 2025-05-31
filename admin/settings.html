@@ -152,6 +152,39 @@
       70% { opacity: 1; }
       100% { opacity: 0; }
     }
+    
+    /* Category section styles */
+    .notification-categories {
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px dashed #eee;
+    }
+    
+    .category-header {
+      font-weight: 500;
+      margin-bottom: 10px;
+      color: #555;
+    }
+    
+    .category-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 10px;
+      margin-bottom: 8px;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+      transition: background-color 0.2s;
+    }
+    
+    .category-row:hover {
+      background-color: #f0f0f0;
+    }
+    
+    .category-icon {
+      margin-right: 8px;
+      color: #666;
+    }
   </style>
 </head>
 <body>
@@ -193,6 +226,71 @@
               <span class="slider"></span>
             </label>
             <div id="notification-status" class="status-disabled">Disabled</div>
+          </div>
+        </div>
+        
+        <!-- Notification Categories Section -->
+        <div id="notification-categories" class="notification-categories">
+          <div class="category-header">Notification Types</div>
+          
+          <!-- Orders Notifications -->
+          <div class="category-row">
+            <div>
+              <i class="fas fa-box category-icon"></i>
+              <span>New Orders</span>
+            </div>
+            <div>
+              <label class="switch">
+                <input type="checkbox" id="category-toggle-orders">
+                <span class="slider"></span>
+              </label>
+              <div id="category-status-orders" class="status-enabled">Enabled</div>
+            </div>
+          </div>
+          
+          <!-- Website Visits Notifications -->
+          <div class="category-row">
+            <div>
+              <i class="fas fa-globe category-icon"></i>
+              <span>Website Visits</span>
+            </div>
+            <div>
+              <label class="switch">
+                <input type="checkbox" id="category-toggle-visits">
+                <span class="slider"></span>
+              </label>
+              <div id="category-status-visits" class="status-enabled">Enabled</div>
+            </div>
+          </div>
+          
+          <!-- Basket Updates Notifications -->
+          <div class="category-row">
+            <div>
+              <i class="fas fa-shopping-cart category-icon"></i>
+              <span>Basket Updates</span>
+            </div>
+            <div>
+              <label class="switch">
+                <input type="checkbox" id="category-toggle-basket">
+                <span class="slider"></span>
+              </label>
+              <div id="category-status-basket" class="status-enabled">Enabled</div>
+            </div>
+          </div>
+          
+          <!-- New Reviews Notifications -->
+          <div class="category-row">
+            <div>
+              <i class="fas fa-star category-icon"></i>
+              <span>New Reviews</span>
+            </div>
+            <div>
+              <label class="switch">
+                <input type="checkbox" id="category-toggle-reviews">
+                <span class="slider"></span>
+              </label>
+              <div id="category-status-reviews" class="status-enabled">Enabled</div>
+            </div>
           </div>
         </div>
         
@@ -239,7 +337,14 @@
   
   <!-- Notifications Script -->
   <script type="module">
-    import { toggleAdminNotifications, updateNotificationToggleUI, sendTestNotification } from './notifications.js';
+    import { 
+      toggleAdminNotifications, 
+      updateNotificationToggleUI, 
+      sendTestNotification,
+      toggleNotificationCategory,
+      updateCategoryToggleUI,
+      initializeCategoryToggles
+    } from './notifications.js';
     
     // Set up event listeners when DOM is loaded
     document.addEventListener('DOMContentLoaded', () => {
@@ -251,6 +356,17 @@
         });
       }
       
+      // Category toggles
+      const categoryIds = ['orders', 'visits', 'basket', 'reviews'];
+      categoryIds.forEach(categoryId => {
+        const toggle = document.getElementById(`category-toggle-${categoryId}`);
+        if (toggle) {
+          toggle.addEventListener('change', (e) => {
+            toggleNotificationCategory(categoryId, e.target.checked);
+          });
+        }
+      });
+      
       // Test notification button
       const testNotificationBtn = document.getElementById('test-notification-btn');
       if (testNotificationBtn) {
@@ -261,6 +377,7 @@
       
       // Initialize UI
       updateNotificationToggleUI();
+      initializeCategoryToggles();
     });
   </script>
 

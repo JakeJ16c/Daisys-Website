@@ -10,6 +10,14 @@ const db = getFirestore(app);
 // VAPID key for web push notifications
 const VAPID_KEY = 'BKWmwmuEDejKmOZEFLtWAgZXD2OUPqS_77NA6hTEf9-9SXDG9fJh0EZDG7qExr8IDrRiHVPSNvbXohUKsV12ueA';
 
+// Notification categories
+const NOTIFICATION_CATEGORIES = [
+  { id: 'orders', name: 'New Orders', icon: 'fa-box' },
+  { id: 'visits', name: 'Website Visits', icon: 'fa-globe' },
+  { id: 'basket', name: 'Basket Updates', icon: 'fa-shopping-cart' },
+  { id: 'reviews', name: 'New Reviews', icon: 'fa-star' }
+];
+
 // Function to request notification permission and get FCM token
 export async function initializeAdminNotifications() {
   try {
@@ -94,6 +102,24 @@ export async function toggleAdminNotifications(enabled) {
   updateNotificationToggleUI();
 }
 
+// Function to toggle notification category
+export function toggleNotificationCategory(categoryId, enabled) {
+  // Get current category settings
+  const categoriesStr = localStorage.getItem('notificationCategories') || '{}';
+  const categories = JSON.parse(categoriesStr);
+  
+  // Update category setting
+  categories[categoryId] = enabled;
+  
+  // Save updated settings
+  localStorage.setItem('notificationCategories', JSON.stringify(categories));
+  
+  console.log(`${enabled ? '✅' : '❌'} ${categoryId} notifications ${enabled ? 'enabled' : 'disabled'}.`);
+  
+  // Update UI
+  updateCategoryToggleUI(categoryId);
+}
+
 // Function to update notification toggle UI
 export function updateNotificationToggleUI() {
   const toggle = document.getElementById('notification-toggle');
@@ -107,6 +133,57 @@ export function updateNotificationToggleUI() {
       statusElement.textContent = enabled ? 'Enabled' : 'Disabled';
       statusElement.className = enabled ? 'status-enabled' : 'status-disabled';
     }
+    
+    // Update category toggles visibility
+    const categoriesSection = document.getElementById('notification-categories');
+    if (categoriesSection) {
+      categoriesSection.style.display = enabled ? 'block' : 'none';
+    }
+  }
+}
+
+// Function to update category toggle UI
+export function updateCategoryToggleUI(categoryId) {
+  const toggle = document.getElementById(`category-toggle-${categoryId}`);
+  if (toggle) {
+    // Get current category settings
+    const categoriesStr = localStorage.getItem('notificationCategories') || '{}';
+    const categories = JSON.parse(categoriesStr);
+    
+    // Default to true if not set
+    const enabled = categories[categoryId] !== false;
+    toggle.checked = enabled;
+    
+    // Update status text
+    const statusElement = document.getElementById(`category-status-${categoryId}`);
+    if (statusElement) {
+      statusElement.textContent = enabled ? 'Enabled' : 'Disabled';
+      statusElement.className = enabled ? 'status-enabled' : 'status-disabled';
+    }
+  }
+}
+
+// Function to initialize all category toggles
+export function initializeCategoryToggles() {
+  // Get current category settings
+  const categoriesStr = localStorage.getItem('notificationCategories') || '{}';
+  const categories = JSON.parse(categoriesStr);
+  
+  // Initialize default values if not set
+  let updated = false;
+  NOTIFICATION_CATEGORIES.forEach(category => {
+    if (categories[category.id] === undefined) {
+      categories[category.id] = true; // Default to enabled
+      updated = true;
+    }
+    
+    // Update UI
+    updateCategoryToggleUI(category.id);
+  });
+  
+  // Save updated settings if changed
+  if (updated) {
+    localStorage.setItem('notificationCategories', JSON.stringify(categories));
   }
 }
 
@@ -178,6 +255,9 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Update UI
   updateNotificationToggleUI();
+  
+  // Initialize category toggles
+  initializeCategoryToggles();
   
   // Initialize notifications if enabled
   if (enabled) {
