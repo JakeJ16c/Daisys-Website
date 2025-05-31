@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>Admin Dashboard</title>
+  <title>Admin Login - You're So Golden</title>
 
   <!-- Fonts & Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet"/>
@@ -135,11 +135,6 @@
       padding-left: 40px;
       margin-bottom: 0;
     }
-    
-    /* Initially hide admin panel until authenticated */
-    .admin-panel-wrapper {
-      display: none;
-    }
   </style>
 </head>
 <body>
@@ -183,54 +178,6 @@
     </div>
   </div>
 
-  <!-- Admin Panel -->
-  <div class="admin-panel-wrapper">
-
-    <!-- Product Management -->
-    <section class="admin-column">
-      <h2>Manage Products</h2>
-      <form id="productForm">
-        <input type="text" id="title" placeholder="Product Name" required />
-
-        <div id="drop-area" class="drop-area">
-          <p>Drag & drop image here or click to upload</p>
-          <input type="file" id="imageFileInput" accept="image/*" multiple hidden />
-          <div id="imagePreviewContainer" class="image-preview-container"></div>
-        </div>
-
-        <small id="uploadStatus">No file selected</small>
-
-        <input type="number" id="price" placeholder="Price (£)" required />
-        <textarea id="description" placeholder="Description" rows="3"></textarea>
-
-        <button type="submit">Add Product</button>
-      </form>
-    </section>
-
-    <!-- Product List -->
-    <section class="admin-column">
-      <h2>Product List</h2>
-      <ul id="productList"></ul>
-    </section>
-
-    <!-- Pending Orders -->
-    <section class="admin-column">
-      <h2>Pending Orders</h2>
-      <ul id="orderList">
-        <li>You Currently Have No Pending Orders</li>
-      </ul>
-    </section>
-
-  </div>
-
-  <!-- Admin Scripts -->
-  <script type="module" src="../layout/load-layout.js"></script>
-  <script type="module" src="../firebase.js"></script>
-  <script type="module" src="admin-auth.js"></script>
-  <script type="module" src="dashboard.js"></script>
-  <script type="module" src="../admin-products.js"></script>
-  <script type="module" src="../admin-orders.js"></script>
-
   <!-- Service Worker for PWA -->
   <script>
     if ('serviceWorker' in navigator) {
@@ -238,5 +185,7 @@
     }
   </script>
   
+  <!-- Admin Auth Script -->
+  <script type="module" src="admin-auth.js"></script>
 </body>
 </html>
