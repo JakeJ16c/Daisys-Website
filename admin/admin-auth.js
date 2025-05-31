@@ -30,7 +30,7 @@ onAuthStateChanged(auth, (user) => {
     // If on index.html and not admin, redirect to login page
     const currentPath = window.location.pathname;
     if (currentPath.endsWith('index.html') && !loginOverlay) {
-      window.location.href = 'login.html';
+      window.location.href = './login.html';
     }
   }
 });
