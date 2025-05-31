@@ -53,12 +53,28 @@
       text-shadow: 1px 1px 0 #fff;
       margin: 0;
     }
-    .menu-btn {
+    .menu-toggle {
       background: none;
       border: none;
-      font-size: 1.5rem;
+      font-size: 1.1rem;
       color: var(--electric-blue);
       cursor: pointer;
+      padding: 0.5rem 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-radius: 6px;
+      background-color: #E5ECFF;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+      font-weight: 500;
+    }
+    
+    .menu-toggle:hover {
+      background-color: #d2e2ff;
+    }
+    
+    .menu-toggle i {
+      font-size: 1.2rem;
     }
     .sidebar {
       position: fixed;
