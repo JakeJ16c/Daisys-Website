@@ -1,242 +1,174 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>Admin Dashboard</title>
-
-  <!-- Fonts & Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
-  <link rel="icon" href="../favicon_circle.ico" type="image/x-icon" />
-
-  <!-- Manifest for installability -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard (Welcome, Daisy)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <!-- Manifest -->
   <link rel="manifest" href="manifest.webmanifest">
-
-  <!-- Styles -->
-  <link rel="stylesheet" href="styles.css" />
-  
   <style>
-    /* Admin Login Specific Styles */
-    .login-overlay {
+    @font-face {
+      font-family: 'Raks';
+      src: url('../Raks.otf') format('opentype');
+    }
+    :root {
+      --light-pink: #F8F3EA;
+      --electric-blue: #204ECF;
+      --soft-pink: #FBB6C1;
+    }
+    * {
+      box-sizing: border-box;
+      font-family: 'Fredoka', sans-serif !important;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+    body {
+      background-color: var(--light-pink);
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      background-color: #CCE0FF;
+      padding: 0.8rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    header h1 {
+      font-size: 1.7rem;
+      color: var(--electric-blue);
+      text-shadow: 1px 1px 0 #fff;
+      margin: 0;
+    }
+    .menu-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--electric-blue);
+      cursor: pointer;
+    }
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -240px;
+      height: 100%;
+      width: 220px;
+      background-color: var(--electric-blue);
+      color: white;
+      padding: 2rem 1rem;
+      transition: left 0.3s ease;
+      z-index: 1000;
+    }
+    .sidebar.show {
+      left: 0;
+    }
+    .sidebar h2 {
+      margin-top: 0;
+      font-size: 1.4rem;
+      margin-bottom: 2rem;
+    }
+    .sidebar a {
+      color: white;
+      text-decoration: none;
+      display: block;
+      margin-bottom: 1rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: 5px;
+      transition: background 0.2s ease;
+    }
+    .sidebar a i {
+      margin-right: 0.5rem;
+    }
+    .sidebar a:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    .overlay {
+      display: none;
       position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
       height: 100%;
-      background-color: rgba(248, 243, 234, 0.95);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-    
-    .login-container {
-      max-width: 400px;
-      width: 90%;
-      background: white;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-      animation: fadeIn 0.5s ease-in-out;
-    }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .login-container h2 {
-      margin-bottom: 1.5rem;
-      color: var(--electric-blue);
-      text-align: center;
-      font-size: 1.8rem;
-    }
-    
-    .login-container input,
-    .login-container button {
       width: 100%;
-      box-sizing: border-box;
-      padding: 0.85rem;
-      font-size: 1rem;
-      border-radius: 8px;
-      margin-bottom: 1.2rem;
-      font-family: 'Fredoka', sans-serif;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 999;
     }
-    
-    .login-container input {
-      border: 1px solid #ccc;
-      transition: border 0.3s ease;
-    }
-    
-    .login-container input:focus {
-      border-color: var(--electric-blue);
-      outline: none;
-      box-shadow: 0 0 0 2px rgba(32, 78, 207, 0.2);
-    }
-    
-    .login-container button {
-      background-color: var(--electric-blue);
-      color: white;
-      border: none;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-weight: 500;
-      margin-top: 0.5rem;
-    }
-    
-    .login-container button:hover {
-      background-color: #183aa0;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-    
-    .login-container button:active {
-      transform: translateY(0);
-    }
-    
-    #login-error {
-      color: #e74c3c;
-      font-weight: 500;
-      margin-top: 10px;
-      display: none;
-      text-align: center;
-      padding: 0.5rem;
-      border-radius: 6px;
-      background-color: rgba(231, 76, 60, 0.1);
-    }
-    
-    .login-header {
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
-    
-    .login-header i {
-      font-size: 3rem;
-      color: var(--electric-blue);
-      margin-bottom: 1rem;
+    .overlay.show {
       display: block;
     }
-    
-    .input-group {
-      position: relative;
-      margin-bottom: 1.2rem;
+    main {
+      padding: 2rem;
+      flex: 1;
+      margin-top: 60px; /* account for header height */
     }
-    
-    .input-group i {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
+    .section-placeholder {
+      background: white;
+      border: 1px dashed #ccc;
+      padding: 2rem;
+      text-align: center;
       color: #999;
-    }
-    
-    .input-group input {
-      padding-left: 40px;
-      margin-bottom: 0;
-    }
-    
-    /* Initially hide admin panel until authenticated */
-    .admin-panel-wrapper {
-      display: none;
+      border-radius: 10px;
     }
   </style>
 </head>
 <body>
-  <!-- Header -->
-  <header class="site-header">
-    <h1 class="header-title"><a href="../index.html" class="logo-link">You're So Golden</a></h1>
-  </header>
 
-  <!-- Navigation -->
-  <nav class="nav-links">
-    <a href="../index.html">Home</a>
-    <a href="../shop.html">Shop</a>
-    <a href="../contacts.html">Contact</a>
-  </nav>
+  <div class="admin-panel-wrapper" style="display:none; flex:1; position:relative;">
+    <header>
+      <button class="menu-btn" id="menu-toggle"><i class="fas fa-bars"></i></button>
+      <h1>You're So Golden Admin</h1>
+    </header>
 
-  <!-- Admin Login Overlay -->
-  <div class="login-overlay" id="adminLoginOverlay">
-    <div class="login-container">
-      <div class="login-header">
-        <i class="fas fa-user-shield"></i>
-        <h2>Admin Login</h2>
-      </div>
-      
-      <form id="adminLoginForm">
-        <div class="input-group">
-          <i class="fas fa-envelope"></i>
-          <input id="email" type="email" placeholder="Admin Email" required />
-        </div>
-        
-        <div class="input-group">
-          <i class="fas fa-lock"></i>
-          <input id="password" type="password" placeholder="Password" required />
-        </div>
-        
-        <button type="submit">
-          <i class="fas fa-sign-in-alt"></i> Secure Login
-        </button>
-        
-        <p id="login-error"></p>
-      </form>
+    <div class="sidebar" id="sidebar">
+      <h2>Welcome, Daisy</h2>
+      <a href="#"><i class="fas fa-store"></i> Product Management</a>
+      <a href="#"><i class="fas fa-box"></i> Order Management</a>
+      <a href="#"><i class="fas fa-chart-line"></i> Analytics</a>
+      <a href="#"><i class="fas fa-cog"></i> Settings</a>
+      <a href="#"><i class="fas fa-sign-out-alt"></i> Log Out</a>
     </div>
+
+    <div class="overlay" id="overlay"></div>
+
+    <main>
+      <div class="section-placeholder">
+        This is where the section content will appear (Products, Orders, Analytics, Settings).
+      </div>
+    </main>
   </div>
 
-  <!-- Admin Panel -->
-  <div class="admin-panel-wrapper">
-
-    <!-- Product Management -->
-    <section class="admin-column">
-      <h2>Manage Products</h2>
-      <form id="productForm">
-        <input type="text" id="title" placeholder="Product Name" required />
-
-        <div id="drop-area" class="drop-area">
-          <p>Drag & drop image here or click to upload</p>
-          <input type="file" id="imageFileInput" accept="image/*" multiple hidden />
-          <div id="imagePreviewContainer" class="image-preview-container"></div>
-        </div>
-
-        <small id="uploadStatus">No file selected</small>
-
-        <input type="number" id="price" placeholder="Price (£)" required />
-        <textarea id="description" placeholder="Description" rows="3"></textarea>
-
-        <button type="submit">Add Product</button>
-      </form>
-    </section>
-
-    <!-- Product List -->
-    <section class="admin-column">
-      <h2>Product List</h2>
-      <ul id="productList"></ul>
-    </section>
-
-    <!-- Pending Orders -->
-    <section class="admin-column">
-      <h2>Pending Orders</h2>
-      <ul id="orderList">
-        <li>You Currently Have No Pending Orders</li>
-      </ul>
-    </section>
-
-  </div>
-
-  <!-- Admin Scripts -->
-  <script type="module" src="../layout/load-layout.js"></script>
-  <script type="module" src="../firebase.js"></script>
+  <!-- Admin Auth Script (handles login gating) -->
   <script type="module" src="admin-auth.js"></script>
-  <script type="module" src="dashboard.js"></script>
-  <script type="module" src="../admin-products.js"></script>
-  <script type="module" src="../admin-orders.js"></script>
 
-  <!-- Service Worker for PWA -->
+  <!-- PWA Service Worker Registration -->
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js');
     }
   </script>
-  
+  <!-- Dashboard Interactions -->
+  <script>
+    const menuToggle = document.getElementById('menu-toggle');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+
+    menuToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('show');
+      overlay.classList.toggle('show');
+    });
+
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('show');
+      overlay.classList.remove('show');
+    });
+  </script>
+
 </body>
 </html>
