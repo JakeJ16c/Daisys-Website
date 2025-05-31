@@ -1,0 +1,1 @@
+// Simulated firebase-messaging.js content

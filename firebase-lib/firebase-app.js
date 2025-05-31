@@ -1,0 +1,1 @@
+// Simulated firebase-app.js content
