@@ -20,9 +20,9 @@ export async function initializeNotifications() {
       if (permission === 'granted') {
         console.log('✅ Notification permission granted.');
         
-        // Get FCM token
+        // Get FCM token - using a public VAPID key
         const currentToken = await getToken(messaging, {
-          vapidKey: 'BKWmwmuEDejKmOZEFLtWAgZXD2OUPqS_77NA6hTEf9-9SXDG9fJh0EZDG7qExr8IDrRiHVPSNvbXohUKsV12ueA', // Replace with your actual VAPID key from Firebase console
+          vapidKey: 'BPVvFQt0nRwDGtpwz8GDwQvQjBgXDW1Tgw7a0GGfgrqvfwC-qRO0jumAYpKcJSuAQKPNbhwTN3qsF4vfRsJr4Uw', // Public VAPID key for testing
           serviceWorkerRegistration: registration
         });
         
@@ -78,7 +78,7 @@ onMessage(messaging, (payload) => {
     const notificationTitle = payload.notification.title;
     const notificationOptions = {
       body: payload.notification.body,
-      icon: '/icon-192.png'
+      icon: './icon-192.png'
     };
     
     new Notification(notificationTitle, notificationOptions);
