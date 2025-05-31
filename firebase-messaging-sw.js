@@ -1,6 +1,6 @@
 // firebase-messaging-sw.js
-importScripts('https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js');
-importScripts('https://www.gstatic.com/firebasejs/11.8.1/firebase-messaging.js');
+importScripts('./firebase-lib/firebase-app.js');
+importScripts('./firebase-lib/firebase-messaging.js');
 
 firebase.initializeApp({
   apiKey: "AIzaSyA6kN9-7dN9Ovq6BmWBBJwBhLXRW6INX4c",
@@ -19,7 +19,7 @@ messaging.onBackgroundMessage(function(payload) {
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
     body: payload.notification.body,
-    icon: '/icon-192.png' // Or another icon in your public assets
+    icon: './icon-192.png' // Or another icon in your public assets
   };
 
   self.registration.showNotification(notificationTitle, notificationOptions);
