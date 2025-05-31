@@ -50,6 +50,11 @@
       text-shadow: 1px 1px 0 #fff;
       margin: 0;
     }
+    
+    .logo-link {
+      text-decoration: none;
+      color: inherit;
+    }
 
     .hidden { display: none; }
 
