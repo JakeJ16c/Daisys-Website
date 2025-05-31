@@ -27,7 +27,7 @@ function formatDate(timestamp) {
 async function setupPushNotifications() {
   try {
     // ✅ Correct relative path to match GitHub Pages subfolder deployment
-    const registration = await navigator.serviceWorker.register('./firebase-messaging-sw.js');
+    const registration = await navigator.serviceWorker.register('/Daisys-Website/firebase-messaging-sw.js');
 
     const permission = await Notification.requestPermission();
     if (permission === "granted") {
