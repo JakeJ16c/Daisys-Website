@@ -86,68 +86,80 @@ function loadOrdersLive() {
       `).join("");
 
       orderCard.innerHTML = `
-        <button class="collapsible">
-        <div class="overview-row" style="
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 12px 16px;
-          background-color: #f8f8f8;
-          border-bottom: 1px solid #eee;
-          font-size: 0.95rem;
-          font-weight: 500;
-        ">
-          <div style="flex: 1;">
-            <div style="color: #204ECF; font-weight: 600;">${data.name}</div>
-            <div style="font-size: 0.85rem; color: #777;">Subtotal: £${subtotal.toFixed(2)}</div>
-          </div>
-          <span class="status-badge" style="
-            padding: 5px 10px;
-            border-radius: 15px;
-            background-color: ${
-              data.status === 'pending' ? '#fff3cd' :
-              data.status === 'in progress' ? '#cce5ff' :
-              data.status === 'dispatched' ? '#d4edda' :
-              '#eee'
-            };
-            color: ${
-              data.status === 'pending' ? '#856404' :
-              data.status === 'in progress' ? '#004085' :
-              data.status === 'dispatched' ? '#155724' :
-              '#555'
-            };
-            font-size: 0.8rem;
-            min-width: 100px;
-            text-align: center;
-          ">${data.status || 'pending'}</span>
-        </div>
-      </button>
-
-        <div class="content">
-          <p><strong>Email:</strong> ${data.email || "no@email.com"}</p>
-          <p><strong>Address:</strong><br>${
+  <div style="
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    background-color: #f6f6f6;
+    margin-bottom: 20px;
+  ">
+    <div style="
+      background-color: #eeeeee;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      font-size: 1rem;
+      color: #333;
+    ">
+      ${data.name || 'Unnamed'}
+      <span style="
+        font-size: 0.85rem;
+        padding: 4px 10px;
+        border-radius: 15px;
+        background-color: ${
+          data.status === 'pending' ? '#fff3cd' :
+          data.status === 'in progress' ? '#cce5ff' :
+          data.status === 'dispatched' ? '#d4edda' :
+          '#eee'
+        };
+        color: ${
+          data.status === 'pending' ? '#856404' :
+          data.status === 'in progress' ? '#004085' :
+          data.status === 'dispatched' ? '#155724' :
+          '#555'
+        };
+      ">${data.status || 'pending'}</span>
+    </div>
+    <div style="background-color: #fff; padding: 20px; font-size: 0.95rem;">
+      <p><strong>Email:</strong> ${data.email || "no@email.com"}</p>
+      <p><strong>Address:</strong><br>${
         typeof data.address === "object"
           ? `
-            ${data.address.houseNumber ? `<div><strong>House Number:</strong> ${data.address.houseNumber}</div>` : ""}
-            ${data.address.street ? `<div><strong>Street:</strong> ${data.address.street}</div>` : ""}
-            ${data.address.city ? `<div><strong>City:</strong> ${data.address.city}</div>` : ""}
-            ${data.address.county ? `<div><strong>County:</strong> ${data.address.county}</div>` : ""}
-            ${data.address.postcode ? `<div><strong>Postcode:</strong> ${data.address.postcode}</div>` : ""}
+            ${data.address.houseNumber ? `<strong>House Number:</strong> ${data.address.houseNumber}<br>` : ""}
+            ${data.address.street ? `<strong>Street:</strong> ${data.address.street}<br>` : ""}
+            ${data.address.city ? `<strong>City:</strong> ${data.address.city}<br>` : ""}
+            ${data.address.county ? `<strong>County:</strong> ${data.address.county}<br>` : ""}
+            ${data.address.postcode ? `<strong>Postcode:</strong> ${data.address.postcode}` : ""}
           `.trim()
-          : `<div>${data.address || 'No address provided'}</div>`
+          : `${data.address || 'No address provided'}`
       }</p>
-          <p><strong>Status:</strong> 
-            <select class="status-dropdown" data-id="${orderId}">
-              <option value="pending" ${data.status === "pending" ? "selected" : ""}>pending</option>
-              <option value="in progress" ${data.status === "in progress" ? "selected" : ""}>in progress</option>
-              <option value="dispatched" ${data.status === "dispatched" ? "selected" : ""}>dispatched</option>
-            </select>
-          </p>
-          <ul>${itemHTML}</ul>
-          <p><strong>Subtotal:</strong> £${subtotal.toFixed(2)}</p>
-          <p><strong>Placed:</strong> ${createdAt}</p>
-        </div>
-      `;
+      <p><strong>Status:</strong> 
+        <select class="status-dropdown" data-id="${orderId}" style="
+          margin-top: 5px;
+          padding: 6px 10px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+          font-size: 0.9rem;
+        ">
+          <option value="pending" ${data.status === "pending" ? "selected" : ""}>pending</option>
+          <option value="in progress" ${data.status === "in progress" ? "selected" : ""}>in progress</option>
+          <option value="dispatched" ${data.status === "dispatched" ? "selected" : ""}>dispatched</option>
+        </select>
+      </p>
+      <ul style="margin: 15px 0; padding: 0; list-style: none;">
+        ${items.map(item => `
+          <li style="background: #f8f8f8; padding: 10px; margin-bottom: 5px; border-radius: 5px;">
+            ${item.productName} × ${item.qty} — £${(item.price * item.qty).toFixed(2)}
+          </li>
+        `).join("")}
+      </ul>
+      <p><strong>Subtotal:</strong> £${subtotal.toFixed(2)}</p>
+      <p><strong>Placed:</strong> ${createdAt}</p>
+    </div>
+  </div>
+`;
 
       container.appendChild(orderCard);
     });
