@@ -19,7 +19,7 @@ firebase.initializeApp(firebaseConfig);
 const messaging = firebase.messaging();
 
 // Cache name for the admin dashboard
-const CACHE_NAME = 'admin-dashboard-cache-v1';
+const CACHE_NAME = 'admin-dashboard-cache-' + Math.floor(Date.now() / (1000 * 60)); // new cache every minute
 
 // Resources to cache
 const RESOURCES_TO_CACHE = [
