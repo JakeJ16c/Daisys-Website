@@ -179,7 +179,7 @@ function debounce(fn, wait) {
 }
 
 // === Product Modal Logic ===
-const productModal = document.getElementById("productModal");
+const productModal = document.getElementById("productModal").style.display = "flex";
 const closeProductModal = document.getElementById("closeProductModal");
 const saveProductChanges = document.getElementById("saveProductChanges");
 
