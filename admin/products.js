@@ -1,13 +1,15 @@
-
-// admin/products.js – Updated Product Management UI
+// admin/products.js – Full Product Management UI with Add + Image Upload
 import { auth, db } from '../firebase.js';
 import {
   onAuthStateChanged, signOut
 } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
 import {
-  collection, getDocs, doc, getDoc, deleteDoc,
-  query, where, orderBy, limit, startAfter, endBefore, limitToLast, Timestamp
+  collection, getDocs, doc, getDoc, setDoc, addDoc, deleteDoc, updateDoc,
+  query, orderBy, limit, startAfter, endBefore, limitToLast
 } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+import {
+  getStorage, ref, uploadBytes, getDownloadURL
+} from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-storage.js';
 
 // DOM elements
 const container = document.getElementById("productsTableContainer");
@@ -16,6 +18,18 @@ const sortOrder = document.getElementById("sortOrder");
 const prevPageBtn = document.getElementById("prevPage");
 const nextPageBtn = document.getElementById("nextPage");
 const logoutBtn = document.getElementById("logoutBtn");
+const addProductBtn = document.getElementById("addProductBtn");
+
+const productModal = document.getElementById("productModal");
+const closeProductModal = document.getElementById("closeProductModal");
+const saveProductChanges = document.getElementById("saveProductChanges");
+const modalName = document.getElementById("modalName");
+const modalPrice = document.getElementById("modalPrice");
+const modalStock = document.getElementById("modalStock");
+const imageUploadInput = document.getElementById("imageUpload");
+const imagePreview = document.getElementById("imagePreview");
+
+const storage = getStorage();
 
 // State
 let currentProducts = [];
@@ -25,14 +39,16 @@ let currentPage = 1;
 const pageSize = 10;
 let currentSearch = "";
 let currentSort = "newest";
+let selectedProductId = null;
+let uploadedImages = [];
 
-// Auth gate
+// Auth check
 onAuthStateChanged(auth, user => {
   if (!user) location.href = "login.html";
   else loadProducts();
 });
 
-// Listeners
+// UI Listeners
 if (logoutBtn) logoutBtn.onclick = async () => {
   await signOut(auth);
   location.href = "login.html";
@@ -64,7 +80,79 @@ if (nextPageBtn) nextPageBtn.onclick = () => {
   loadProducts(true, 'next');
 };
 
-// Load and render
+if (addProductBtn) {
+  addProductBtn.onclick = () => {
+    selectedProductId = null;
+    modalName.value = "";
+    modalPrice.value = "";
+    modalStock.value = "";
+    uploadedImages = [];
+    imagePreview.innerHTML = "";
+    productModal.style.display = "flex";
+  };
+}
+
+if (closeProductModal) {
+  closeProductModal.onclick = () => {
+    productModal.style.display = "none";
+  };
+}
+
+window.addEventListener("click", e => {
+  if (e.target === productModal) {
+    productModal.style.display = "none";
+  }
+});
+
+if (saveProductChanges) {
+  saveProductChanges.onclick = async () => {
+    const data = {
+      name: modalName.value.trim(),
+      price: parseFloat(modalPrice.value),
+      stock: parseInt(modalStock.value),
+      images: uploadedImages,
+      updatedAt: new Date()
+    };
+
+    if (!data.name || isNaN(data.price)) {
+      alert("Please fill all required fields.");
+      return;
+    }
+
+    try {
+      if (selectedProductId) {
+        await updateDoc(doc(db, "Products", selectedProductId), data);
+      } else {
+        data.createdAt = new Date();
+        await addDoc(collection(db, "Products"), data);
+      }
+      productModal.style.display = "none";
+      loadProducts();
+    } catch (err) {
+      console.error("Error saving product:", err);
+    }
+  };
+}
+
+// Handle Image Upload
+imageUploadInput?.addEventListener("change", async (e) => {
+  const files = Array.from(e.target.files);
+  for (const file of files) {
+    const path = `products/${Date.now()}_${file.name.replace(/[^a-z0-9.]/gi, "_")}`;
+    const imageRef = ref(storage, path);
+    await uploadBytes(imageRef, file);
+    const url = await getDownloadURL(imageRef);
+    uploadedImages.push(url);
+
+    const imgEl = document.createElement("img");
+    imgEl.src = url;
+    imgEl.style.cssText = "width:60px;height:60px;margin-right:8px;border-radius:6px;";
+    imagePreview.appendChild(imgEl);
+  }
+  e.target.value = "";
+});
+
+// Load Products
 async function loadProducts(paginate = false, direction = 'next') {
   container.innerHTML = '<div class="loading-spinner"><div class="spinner"></div></div>';
 
@@ -72,14 +160,14 @@ async function loadProducts(paginate = false, direction = 'next') {
   let qConstraints = [];
 
   let [sortField, sortDir] = (() => {
-  switch (currentSort) {
-    case "newest": return ["name", "asc"]; // TEMP: fallback until timestamps exist
-    case "oldest": return ["name", "desc"];
-    case "highest": return ["price", "desc"];
-    case "lowest": return ["price", "asc"];
-    default: return ["name", "asc"];
-  }
-})();
+    switch (currentSort) {
+      case "newest": return ["name", "asc"];
+      case "oldest": return ["name", "desc"];
+      case "highest": return ["price", "desc"];
+      case "lowest": return ["price", "asc"];
+      default: return ["name", "asc"];
+    }
+  })();
 
   qConstraints.push(orderBy(sortField, sortDir));
 
@@ -109,8 +197,7 @@ async function loadProducts(paginate = false, direction = 'next') {
 
   currentProducts = snap.docs.map(doc => ({
     id: doc.id,
-    ...doc.data(),
-    createdAt: doc.data().createdAt?.toDate?.() || new Date()
+    ...doc.data()
   }));
 
   if (currentSearch) {
@@ -122,6 +209,7 @@ async function loadProducts(paginate = false, direction = 'next') {
   renderProducts(currentProducts);
 }
 
+// Render
 function renderProducts(products) {
   container.innerHTML = "";
 
@@ -157,17 +245,30 @@ function renderProducts(products) {
       </div>
     `;
 
-    card.querySelector('.edit-btn').onclick = () => viewProductDetails(product.id);
-    card.querySelector('.delete-btn').onclick = () => confirmDelete(product.id);
+    card.querySelector('.edit-btn').onclick = () => {
+      selectedProductId = product.id;
+      modalName.value = product.name || "";
+      modalPrice.value = product.price || "";
+      modalStock.value = product.stock || "";
+      uploadedImages = product.images || [];
+      imagePreview.innerHTML = "";
+      uploadedImages.forEach(url => {
+        const img = document.createElement("img");
+        img.src = url;
+        img.style.cssText = "width:60px;height:60px;margin-right:8px;border-radius:6px;";
+        imagePreview.appendChild(img);
+      });
+      productModal.style.display = "flex";
+    };
+
+    card.querySelector('.delete-btn').onclick = () => {
+      if (confirm("Delete this product?")) {
+        deleteDoc(doc(db, "Products", product.id)).then(loadProducts);
+      }
+    };
 
     container.appendChild(card);
   });
-}
-
-function confirmDelete(id) {
-  if (confirm("Delete this product?")) {
-    deleteDoc(doc(db, "Products", id)).then(loadProducts);
-  }
 }
 
 function debounce(fn, wait) {
@@ -177,62 +278,3 @@ function debounce(fn, wait) {
     timeout = setTimeout(() => fn(...args), wait);
   };
 }
-
-// === Product Modal Logic ===
-const productModal = document.getElementById("productModal")
-const closeProductModal = document.getElementById("closeProductModal");
-const saveProductChanges = document.getElementById("saveProductChanges");
-
-const modalName = document.getElementById("modalName");
-const modalPrice = document.getElementById("modalPrice");
-const modalStock = document.getElementById("modalStock");
-
-let selectedProductId = null;
-
-function viewProductDetails(productId) {
-  const product = currentProducts.find(p => p.id === productId);
-  if (!product) return;
-
-  selectedProductId = product.id;
-
-  // Populate form
-  modalName.value = product.name || '';
-  modalPrice.value = product.price || 0;
-  modalStock.value = product.stock || 0;
-
-  productModal.style.display = "flex";
-}
-
-if (closeProductModal) {
-  closeProductModal.onclick = () => {
-    productModal.style.display = "none";
-  };
-}
-
-if (saveProductChanges) {
-  saveProductChanges.onclick = async () => {
-    if (!selectedProductId) return;
-
-    const updatedData = {
-      name: modalName.value.trim(),
-      price: parseFloat(modalPrice.value),
-      stock: parseInt(modalStock.value),
-    };
-
-    try {
-      await updateDoc(doc(db, "Products", selectedProductId), updatedData);
-      productModal.style.display = "none";
-      loadProducts();
-    } catch (err) {
-      console.error("Error updating product:", err);
-      alert("Failed to save changes.");
-    }
-  };
-}
-
-window.addEventListener("click", e => {
-  if (e.target === productModal) {
-    productModal.style.display = "none";
-  }
-});
-
