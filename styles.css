@@ -815,8 +815,6 @@
   .cart-icon {
     position: static;
     font-size: 1.3rem;
-    top: 50%;
-    transform: translateY(-50%);
     color: var(--electric-blue);
   }
 
