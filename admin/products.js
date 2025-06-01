@@ -27,7 +27,6 @@ const modalName = document.getElementById("modalName");
 const modalPrice = document.getElementById("modalPrice");
 const modalStock = document.getElementById("modalStock");
 let imageUpload = null;
-let imagePreviewContainer = null;
 const imageUploadInput = document.getElementById("imageUpload");
 const imagePreviewContainer = document.getElementById("imagePreviewContainer");
 
