@@ -72,14 +72,14 @@ async function loadProducts(paginate = false, direction = 'next') {
   let qConstraints = [];
 
   let [sortField, sortDir] = (() => {
-    switch (currentSort) {
-      case "newest": return ["createdAt", "desc"];
-      case "oldest": return ["createdAt", "asc"];
-      case "highest": return ["price", "desc"];
-      case "lowest": return ["price", "asc"];
-      default: return ["createdAt", "desc"];
-    }
-  })();
+  switch (currentSort) {
+    case "newest": return ["name", "asc"]; // TEMP: fallback until timestamps exist
+    case "oldest": return ["name", "desc"];
+    case "highest": return ["price", "desc"];
+    case "lowest": return ["price", "asc"];
+    default: return ["name", "asc"];
+  }
+})();
 
   qConstraints.push(orderBy(sortField, sortDir));
 
