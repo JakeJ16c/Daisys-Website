@@ -234,7 +234,7 @@
       align-items: center;
       justify-content: center;
     }
-    
+
     .modal-box {
       background: #fff;
       border-radius: 12px;
@@ -243,8 +243,11 @@
       width: 90%;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
       animation: fadeIn 0.2s ease-out;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
-    
+
     .modal-header {
       display: flex;
       justify-content: space-between;
@@ -290,11 +293,13 @@
     .modal-footer .btn-primary {
       background-color: #204ECF;
       color: white;
-      padding: 8px 16px;
+      padding: 10px;
       border-radius: 6px;
       border: none;
       font-weight: 500;
       cursor: pointer;
+      width: 100%;
+      text-align: center;
     }
     
     @keyframes fadeIn {
