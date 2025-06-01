@@ -179,7 +179,7 @@ function debounce(fn, wait) {
 }
 
 // === Product Modal Logic ===
-const productModal = document.getElementById("productModal").style.display = "flex";
+const productModal = document.getElementById("productModal")
 const closeProductModal = document.getElementById("closeProductModal");
 const saveProductChanges = document.getElementById("saveProductChanges");
 
@@ -200,7 +200,7 @@ function viewProductDetails(productId) {
   modalPrice.value = product.price || 0;
   modalStock.value = product.stock || 0;
 
-  productModal.style.display = "block";
+  productModal.style.display = "flex";
 }
 
 if (closeProductModal) {
