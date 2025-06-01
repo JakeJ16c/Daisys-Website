@@ -21,6 +21,8 @@ const prevPageBtn = document.getElementById("prevPage");
 const nextPageBtn = document.getElementById("nextPage");
 const logoutBtn = document.getElementById("logoutBtn");
 const addProductBtn = document.getElementById("addProductBtn");
+const imageUpload = document.getElementById("imageUpload");
+const imagePreviewContainer = document.getElementById("imagePreviewContainer");
 
 // === MODAL ELEMENTS ===
 const productModal = document.getElementById("productModal");
