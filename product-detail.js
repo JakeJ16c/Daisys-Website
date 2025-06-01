@@ -26,7 +26,8 @@ async function loadProduct() {
     // Fill in the HTML elements
     document.querySelector('.product-title').textContent = data.name;
     document.querySelector('.product-price').textContent = `£${parseFloat(data.price).toFixed(2)}`;
-    document.querySelector('.product-image img').src = data.image;
+    document.querySelector('.product-image img').src = Array.isArray(data.images) ? data.images[0] : data.image;
+    document.querySelector('.product-image img').alt = data.name;
     document.querySelector('.product-description').textContent = data.description || '';
 
     // Optional: dynamically render sizes if you have that
