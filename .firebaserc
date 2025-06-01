@@ -2,4 +2,7 @@
   "projects": {
     "default": "daisy-s-website"
   }
+  "functions": {
+      "predeploy": []
+    }
 }
