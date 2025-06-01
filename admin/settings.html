@@ -328,6 +328,13 @@
           <div>
             <button class="btn">Change Password</button>
           </div>
+
+          <section class="settings-section">
+          <h2>App Settings</h2>
+          <button id="clearCacheBtn" class="btn btn-danger">Clear App Cache</button>
+          <p id="cacheMessage" style="margin-top: 10px; color: green;"></p>
+        </section>
+
         </div>
       </div>
     </div>
@@ -422,6 +429,21 @@
         link.crossOrigin = 'anonymous';
         link.referrerPolicy = 'no-referrer';
         document.head.appendChild(link);
+      }
+    });
+  </script>
+
+  <!-- Clear Cache -->
+  <script>
+    document.getElementById("clearCacheBtn").addEventListener("click", async () => {
+      const messageEl = document.getElementById("cacheMessage");
+      
+      if ('caches' in window) {
+        const cacheNames = await caches.keys();
+        await Promise.all(cacheNames.map(name => caches.delete(name)));
+        messageEl.textContent = "✅ App cache cleared. Restart the app to reload latest version.";
+      } else {
+        messageEl.textContent = "❌ Cache API not supported in this browser.";
       }
     });
   </script>
