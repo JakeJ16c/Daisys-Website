@@ -247,28 +247,34 @@ function renderProducts(products) {
       </div>
     `;
 
-    card.querySelector('.edit-btn').onclick = () => {
-      selectedProductId = product.id;
-      modalName.value = product.name || "";
-      modalPrice.value = product.price || "";
-      modalStock.value = product.stock || "";
-      uploadedImages = product.images || [];
-      imagePreview.innerHTML = "";
-      uploadedImages.forEach(url => {
-        const img = document.createElement("img");
-        img.src = url;
-        img.style.cssText = "width:60px;height:60px;margin-right:8px;border-radius:6px;";
-        imagePreview.appendChild(img);
-      });
-      productModal.style.display = "flex";
-    };
-
-    card.querySelector('.delete-btn').onclick = () => {
-      if (confirm("Delete this product?")) {
-        deleteDoc(doc(db, "Products", product.id)).then(loadProducts);
+    const editBtn = card.querySelector('.edit-btn');
+      if (editBtn) {
+        editBtn.onclick = () => {
+          selectedProductId = product.id;
+          modalName.value = product.name || "";
+          modalPrice.value = product.price || "";
+          modalStock.value = product.stock || "";
+          uploadedImages = product.images || [];
+          imagePreview.innerHTML = "";
+          uploadedImages.forEach((url) => {
+            const img = document.createElement("img");
+            img.src = url;
+            img.style.cssText = "width:60px;height:60px;margin-right:8px;border-radius:6px;";
+            imagePreview.appendChild(img);
+          });
+          productModal.style.display = "flex";
+        };
       }
-    };
 
+    const deleteBtn = card.querySelector('.delete-btn');
+      if (deleteBtn) {
+        deleteBtn.onclick = () => {
+          if (confirm("Delete this product?")) {
+            deleteDoc(doc(db, "Products", product.id)).then(loadProducts);
+          }
+        };
+      }
+    
     container.appendChild(card);
   });
 }
