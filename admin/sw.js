@@ -182,3 +182,10 @@ messaging.onBackgroundMessage((payload) => {
   
   self.registration.showNotification(notificationTitle, notificationOptions);
 });
+
+self.addEventListener('message', (event) => {
+  if (event.data?.action === 'skipWaiting') {
+    self.skipWaiting();
+  }
+});
+
