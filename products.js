@@ -1,6 +1,6 @@
 // products.js
 import { db } from './firebase.js';
-import { collection, getDocs } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+import { collection, getDocs, addDoc } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
 
 const container = document.getElementById('product-grid');
 
