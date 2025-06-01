@@ -5,10 +5,17 @@ import { collection, getDocs } from 'https://www.gstatic.com/firebasejs/11.8.1/f
 const container = document.getElementById('product-grid');
 
 async function loadProducts() {
+  const loader = document.getElementById("loader");
+  const grid = document.getElementById("product-grid");
+
   const querySnapshot = await getDocs(collection(db, "Products"));
 
+  // 🔥 Hide loader once Firestore responds
+  loader.style.display = "none";
+  grid.style.display = "block";
+
   if (querySnapshot.empty) {
-    container.innerHTML = `
+    grid.innerHTML = `
       <p class="no-products">
         <strong>Sorry, we’re currently out of stock!</strong><br/>
         We’re busy restocking—follow us on 
@@ -23,8 +30,6 @@ async function loadProducts() {
 
   querySnapshot.forEach((doc) => {
     const data = doc.data();
-    console.log("📦 Product data:", data);
-
     const productCard = document.createElement("div");
     productCard.className = "product-card";
     productCard.setAttribute("data-id", doc.id);
@@ -32,16 +37,15 @@ async function loadProducts() {
     productCard.setAttribute("data-price", data.price);
 
     productCard.innerHTML = `
-    <a href="product.html?id=${doc.id}" class="product-link">
-    <img src="${Array.isArray(data.images) ? data.images[0] : data.images}" alt="${data.name}" />
-    <h3>${data.name}</h3>
-    <p>£${parseFloat(data.price).toFixed(2)}</p>
-  </a>
-  <button class="btn add-to-basket">Add to Basket</button>
-`;
+      <a href="product.html?id=${doc.id}" class="product-link">
+        <img src="${Array.isArray(data.images) ? data.images[0] : data.images}" alt="${data.name}" />
+        <h3>${data.name}</h3>
+        <p>£${parseFloat(data.price).toFixed(2)}</p>
+      </a>
+      <button class="btn add-to-basket">Add to Basket</button>
+    `;
 
-
-    container.appendChild(productCard);
+    grid.appendChild(productCard);
   });
 }
 
