@@ -87,11 +87,42 @@ function loadOrdersLive() {
 
       orderCard.innerHTML = `
         <button class="collapsible">
-          <div class="overview-row">
-            <span class="overview-name">${data.name}</span>
-            <span class="overview-status">${data.status || 'unknown'}</span>
+        <div class="overview-row" style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 12px 16px;
+          background-color: #f8f8f8;
+          border-bottom: 1px solid #eee;
+          font-size: 0.95rem;
+          font-weight: 500;
+        ">
+          <div style="flex: 1;">
+            <div style="color: #204ECF; font-weight: 600;">${data.name}</div>
+            <div style="font-size: 0.85rem; color: #777;">Subtotal: £${subtotal.toFixed(2)}</div>
           </div>
-        </button>
+          <span class="status-badge" style="
+            padding: 5px 10px;
+            border-radius: 15px;
+            background-color: ${
+              data.status === 'pending' ? '#fff3cd' :
+              data.status === 'in progress' ? '#cce5ff' :
+              data.status === 'dispatched' ? '#d4edda' :
+              '#eee'
+            };
+            color: ${
+              data.status === 'pending' ? '#856404' :
+              data.status === 'in progress' ? '#004085' :
+              data.status === 'dispatched' ? '#155724' :
+              '#555'
+            };
+            font-size: 0.8rem;
+            min-width: 100px;
+            text-align: center;
+          ">${data.status || 'pending'}</span>
+        </div>
+      </button>
+
         <div class="content">
           <p><strong>Email:</strong> ${data.email || "no@email.com"}</p>
           <p><strong>Address:</strong><br>${
