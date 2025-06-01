@@ -78,8 +78,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-const db = getFirestore(app);
-
 async function logBasketActivity(product) {
   try {
     await addDoc(collection(db, "BasketUpdates"), {
