@@ -746,25 +746,6 @@
       overlay.classList.remove('show');
     });
     
-    // Modal interactions
-    const modal = document.getElementById('productDetailModal');
-    const closeModal = document.getElementById('closeModal');
-    const closeModalBtn = document.getElementById('closeModalBtn');
-    
-    closeModal.addEventListener('click', () => {
-      modal.style.display = 'none';
-    });
-    
-    closeModalBtn.addEventListener('click', () => {
-      modal.style.display = 'none';
-    });
-    
-    window.addEventListener('click', (event) => {
-      if (event.target === modal) {
-        modal.style.display = 'none';
-      }
-    });
-    
     // Added script to verify Font Awesome loading
     window.addEventListener('DOMContentLoaded', () => {
       // Check if Font Awesome is loaded
