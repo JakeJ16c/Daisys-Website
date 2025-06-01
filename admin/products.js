@@ -177,3 +177,62 @@ function debounce(fn, wait) {
     timeout = setTimeout(() => fn(...args), wait);
   };
 }
+
+// === Product Modal Logic ===
+const productModal = document.getElementById("productModal");
+const closeProductModal = document.getElementById("closeProductModal");
+const saveProductChanges = document.getElementById("saveProductChanges");
+
+const modalName = document.getElementById("modalName");
+const modalPrice = document.getElementById("modalPrice");
+const modalStock = document.getElementById("modalStock");
+
+let selectedProductId = null;
+
+function viewProductDetails(productId) {
+  const product = currentProducts.find(p => p.id === productId);
+  if (!product) return;
+
+  selectedProductId = product.id;
+
+  // Populate form
+  modalName.value = product.name || '';
+  modalPrice.value = product.price || 0;
+  modalStock.value = product.stock || 0;
+
+  productModal.style.display = "block";
+}
+
+if (closeProductModal) {
+  closeProductModal.onclick = () => {
+    productModal.style.display = "none";
+  };
+}
+
+if (saveProductChanges) {
+  saveProductChanges.onclick = async () => {
+    if (!selectedProductId) return;
+
+    const updatedData = {
+      name: modalName.value.trim(),
+      price: parseFloat(modalPrice.value),
+      stock: parseInt(modalStock.value),
+    };
+
+    try {
+      await updateDoc(doc(db, "Products", selectedProductId), updatedData);
+      productModal.style.display = "none";
+      loadProducts();
+    } catch (err) {
+      console.error("Error updating product:", err);
+      alert("Failed to save changes.");
+    }
+  };
+}
+
+window.addEventListener("click", e => {
+  if (e.target === productModal) {
+    productModal.style.display = "none";
+  }
+});
+
