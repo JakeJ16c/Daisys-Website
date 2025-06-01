@@ -3,6 +3,21 @@ document.addEventListener("DOMContentLoaded", () => {
   const basketPreview = document.getElementById("basket-preview");
   const cartIcon = document.querySelector(".cart-icon");
 
+  async function logBasketAdd(item) {
+    try {
+      const { addDoc, collection, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js");
+      const { db } = await import("./firebase.js");
+
+      await addDoc(collection(db, "BasketEvents"), {
+        productId: item.id,
+        name: item.name,
+        time: serverTimestamp()
+      });
+    } catch (err) {
+      console.error("Error logging basket add:", err);
+    }
+  }
+
   function updateBasketPreview(keepVisible = false) {
     window.updateBasketPreview = updateBasketPreview;
     const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
@@ -14,10 +29,9 @@ document.addEventListener("DOMContentLoaded", () => {
     basketPreview.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)";
     basketPreview.style.borderRadius = "12px";
     basketPreview.style.position = "fixed";
-    basketPreview.style.top = "70px"; // Adjust based on your header height
+    basketPreview.style.top = "70px";
     basketPreview.style.right = "20px";
     basketPreview.style.zIndex = "1000";
-
 
     // Header
     const header = document.createElement("h3");
@@ -31,10 +45,6 @@ document.addEventListener("DOMContentLoaded", () => {
       basketPreview.innerHTML += "<p><em>Your basket is empty.</em></p>";
       return;
     }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      updateBasketPreview(); // Auto-run on page load
-    });
 
     let subtotal = 0;
 
@@ -202,8 +212,12 @@ document.addEventListener("DOMContentLoaded", () => {
       ) {
         basketPreview.classList.add("hidden");
       }
-      
     });
+  }
+
+  const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+  if (cart.length) {
+    cart.forEach(logBasketAdd); // ✅ Log to Firestore
   }
 
   updateBasketPreview(); // Load on page ready
