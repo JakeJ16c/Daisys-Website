@@ -90,10 +90,11 @@ self.addEventListener('fetch', (event) => {
             const responseToCache = response.clone();
 
             // Add the response to the cache
-            caches.open(CACHE_NAME)
-              .then((cache) => {
+            if (event.request.url.startsWith('http')) {
+              caches.open(CACHE_NAME).then((cache) => {
                 cache.put(event.request, responseToCache);
               });
+            }
 
             return response;
           }
