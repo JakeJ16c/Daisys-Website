@@ -1,19 +1,17 @@
-
-// admin/products.js – Full Product Management UI with Add + Edit + Image Upload
-
+// admin/products.js – Full Product Management UI with Add + Image Upload
 import { auth, db } from '../firebase.js';
 import {
   onAuthStateChanged, signOut
 } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
 import {
-  collection, getDocs, doc, getDoc, deleteDoc, updateDoc, addDoc,
-  query, orderBy, limit, startAfter, endBefore, limitToLast, serverTimestamp
+  collection, getDocs, doc, getDoc, setDoc, addDoc, deleteDoc, updateDoc,
+  query, orderBy, limit, startAfter, endBefore, limitToLast
 } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
 import {
   getStorage, ref, uploadBytes, getDownloadURL
 } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-storage.js';
 
-// === DOM ELEMENTS ===
+// DOM elements
 const container = document.getElementById("productsTableContainer");
 const productSearch = document.getElementById("productSearch");
 const sortOrder = document.getElementById("sortOrder");
@@ -21,19 +19,21 @@ const prevPageBtn = document.getElementById("prevPage");
 const nextPageBtn = document.getElementById("nextPage");
 const logoutBtn = document.getElementById("logoutBtn");
 const addProductBtn = document.getElementById("addProductBtn");
-const imageUpload = document.getElementById("imageUpload");
-const imagePreviewContainer = document.getElementById("imagePreviewContainer");
 
-// === MODAL ELEMENTS ===
 const productModal = document.getElementById("productModal");
 const closeProductModal = document.getElementById("closeProductModal");
 const saveProductChanges = document.getElementById("saveProductChanges");
 const modalName = document.getElementById("modalName");
 const modalPrice = document.getElementById("modalPrice");
 const modalStock = document.getElementById("modalStock");
-const modalImages = document.getElementById("modalImages");
+let imageUpload = null;
+let imagePreviewContainer = null;
+const imageUploadInput = document.getElementById("imageUpload");
+const imagePreview = document.getElementById("imagePreview");
 
-// === STATE ===
+const storage = getStorage();
+
+// State
 let currentProducts = [];
 let lastVisible = null;
 let firstVisible = null;
@@ -42,15 +42,15 @@ const pageSize = 10;
 let currentSearch = "";
 let currentSort = "newest";
 let selectedProductId = null;
-let imageFiles = [];
+let uploadedImages = [];
 
-// === AUTH CHECK ===
+// Auth check
 onAuthStateChanged(auth, user => {
   if (!user) location.href = "login.html";
   else loadProducts();
 });
 
-// === EVENT LISTENERS ===
+// UI Listeners
 if (logoutBtn) logoutBtn.onclick = async () => {
   await signOut(auth);
   location.href = "login.html";
@@ -88,10 +88,9 @@ if (addProductBtn) {
     modalName.value = "";
     modalPrice.value = "";
     modalStock.value = "";
-    if (modalImages) modalImages.value = "";
-    imageFiles = [];
+    uploadedImages = [];
+    imagePreview.innerHTML = "";
     productModal.style.display = "flex";
-    document.getElementById("productModalTitle").innerText = "Add New Product";
   };
 }
 
@@ -101,62 +100,61 @@ if (closeProductModal) {
   };
 }
 
-// === SAVE/UPDATE PRODUCT ===
-if (saveProductChanges) {
-  saveProductChanges.onclick = async () => {
-    const name = modalName.value.trim();
-    const price = parseFloat(modalPrice.value);
-    const stock = parseInt(modalStock.value);
-
-    if (!name || isNaN(price)) {
-      alert("Name and price are required");
-      return;
-    }
-
-    try {
-      let imageUrls = [];
-      const storage = getStorage();
-
-      if (modalImages.files.length > 0) {
-        for (let file of modalImages.files) {
-          const imgRef = ref(storage, 'product-images/' + file.name + '_' + Date.now());
-          const snapshot = await uploadBytes(imgRef, file);
-          const downloadURL = await getDownloadURL(snapshot.ref);
-          imageUrls.push(downloadURL);
-        }
-      }
-
-      const productData = {
-        name,
-        price,
-        stock: isNaN(stock) ? 0 : stock,
-        images: imageUrls,
-        createdAt: serverTimestamp()
-      };
-
-      if (selectedProductId) {
-        await updateDoc(doc(db, "Products", selectedProductId), productData);
-      } else {
-        await addDoc(collection(db, "Products"), productData);
-      }
-
-      productModal.style.display = "none";
-      loadProducts();
-    } catch (err) {
-      console.error("Failed to save:", err);
-      alert("Something went wrong.");
-    }
-  };
-}
-
-// === CLICK OUTSIDE TO CLOSE ===
 window.addEventListener("click", e => {
   if (e.target === productModal) {
     productModal.style.display = "none";
   }
 });
 
-// === PRODUCT LOADING ===
+if (saveProductChanges) {
+  saveProductChanges.onclick = async () => {
+    const data = {
+      name: modalName.value.trim(),
+      price: parseFloat(modalPrice.value),
+      stock: parseInt(modalStock.value),
+      images: uploadedImages,
+      updatedAt: new Date()
+    };
+
+    if (!data.name || isNaN(data.price)) {
+      alert("Please fill all required fields.");
+      return;
+    }
+
+    try {
+      if (selectedProductId) {
+        await updateDoc(doc(db, "Products", selectedProductId), data);
+      } else {
+        data.createdAt = new Date();
+        await addDoc(collection(db, "Products"), data);
+      }
+      productModal.style.display = "none";
+      loadProducts();
+    } catch (err) {
+      console.error("Error saving product:", err);
+    }
+  };
+}
+
+// Handle Image Upload
+imageUploadInput?.addEventListener("change", async (e) => {
+  const files = Array.from(e.target.files);
+  for (const file of files) {
+    const path = `products/${Date.now()}_${file.name.replace(/[^a-z0-9.]/gi, "_")}`;
+    const imageRef = ref(storage, path);
+    await uploadBytes(imageRef, file);
+    const url = await getDownloadURL(imageRef);
+    uploadedImages.push(url);
+
+    const imgEl = document.createElement("img");
+    imgEl.src = url;
+    imgEl.style.cssText = "width:60px;height:60px;margin-right:8px;border-radius:6px;";
+    imagePreview.appendChild(imgEl);
+  }
+  e.target.value = "";
+});
+
+// Load Products
 async function loadProducts(paginate = false, direction = 'next') {
   container.innerHTML = '<div class="loading-spinner"><div class="spinner"></div></div>';
 
@@ -201,7 +199,7 @@ async function loadProducts(paginate = false, direction = 'next') {
 
   currentProducts = snap.docs.map(doc => ({
     id: doc.id,
-    ...doc.data(),
+    ...doc.data()
   }));
 
   if (currentSearch) {
@@ -213,7 +211,7 @@ async function loadProducts(paginate = false, direction = 'next') {
   renderProducts(currentProducts);
 }
 
-// === RENDER PRODUCTS ===
+// Render
 function renderProducts(products) {
   container.innerHTML = "";
 
@@ -233,46 +231,48 @@ function renderProducts(products) {
     `;
 
     card.innerHTML = `
-      <img src="${product.images?.[0] || '../icon-512.png'}" alt="${product.name}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%; margin-bottom: 12px;">
+      <img src="${product.images?.[0] || '../icon-512.png'}" alt="${product.name}" style="
+        width: 100px; height: 100px; object-fit: cover;
+        border-radius: 50%; margin-bottom: 12px;">
       <h3 style="font-size: 1.1rem; margin: 8px 0;">${product.name}</h3>
       <p style="margin: 4px 0;"><strong>£${Number(product.price).toFixed(2)}</strong></p>
       <p style="margin: 4px 0; color: #777;">Stock: ${product.stock ?? 0}</p>
       <div style="margin-top: 10px; display: flex; gap: 10px;">
-        <button class="edit-btn" data-id="${product.id}" style="padding: 6px 12px; border-radius: 6px; background: #204ECF; color: white; border: none;">Edit</button>
-        <button class="delete-btn" data-id="${product.id}" style="padding: 6px 12px; border-radius: 6px; background: #f87171; color: white; border: none;">Delete</button>
+        <button class="edit-btn" data-id="${product.id}" style="
+          padding: 6px 12px; border-radius: 6px;
+          background: #204ECF; color: white; border: none;">Edit</button>
+        <button class="delete-btn" data-id="${product.id}" style="
+          padding: 6px 12px; border-radius: 6px;
+          background: #f87171; color: white; border: none;">Delete</button>
       </div>
     `;
 
-    card.querySelector('.edit-btn').onclick = () => viewProductDetails(product.id);
-    card.querySelector('.delete-btn').onclick = () => confirmDelete(product.id);
+    card.querySelector('.edit-btn').onclick = () => {
+      selectedProductId = product.id;
+      modalName.value = product.name || "";
+      modalPrice.value = product.price || "";
+      modalStock.value = product.stock || "";
+      uploadedImages = product.images || [];
+      imagePreview.innerHTML = "";
+      uploadedImages.forEach(url => {
+        const img = document.createElement("img");
+        img.src = url;
+        img.style.cssText = "width:60px;height:60px;margin-right:8px;border-radius:6px;";
+        imagePreview.appendChild(img);
+      });
+      productModal.style.display = "flex";
+    };
+
+    card.querySelector('.delete-btn').onclick = () => {
+      if (confirm("Delete this product?")) {
+        deleteDoc(doc(db, "Products", product.id)).then(loadProducts);
+      }
+    };
 
     container.appendChild(card);
   });
 }
 
-// === EDIT PRODUCT ===
-function viewProductDetails(productId) {
-  const product = currentProducts.find(p => p.id === productId);
-  if (!product) return;
-
-  selectedProductId = product.id;
-  modalName.value = product.name || '';
-  modalPrice.value = product.price || '';
-  modalStock.value = product.stock || 0;
-  if (modalImages) modalImages.value = "";
-  imageFiles = [];
-  document.getElementById("productModalTitle").innerText = "Edit Product";
-  productModal.style.display = "flex";
-}
-
-// === DELETE PRODUCT ===
-function confirmDelete(id) {
-  if (confirm("Delete this product?")) {
-    deleteDoc(doc(db, "Products", id)).then(loadProducts);
-  }
-}
-
-// === UTILITY ===
 function debounce(fn, wait) {
   let timeout;
   return (...args) => {
