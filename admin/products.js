@@ -29,7 +29,7 @@ const modalStock = document.getElementById("modalStock");
 let imageUpload = null;
 let imagePreviewContainer = null;
 const imageUploadInput = document.getElementById("imageUpload");
-const imagePreview = document.getElementById("imagePreview");
+const imagePreviewContainer = document.getElementById("imagePreviewContainer");
 
 const storage = getStorage();
 
@@ -89,7 +89,7 @@ if (addProductBtn) {
     modalPrice.value = "";
     modalStock.value = "";
     uploadedImages = [];
-    imagePreview.innerHTML = "";
+    imagePreviewContainer.innerHTML = "";
     productModal.style.display = "flex";
   };
 }
@@ -149,7 +149,7 @@ imageUploadInput?.addEventListener("change", async (e) => {
     const imgEl = document.createElement("img");
     imgEl.src = url;
     imgEl.style.cssText = "width:60px;height:60px;margin-right:8px;border-radius:6px;";
-    imagePreview.appendChild(imgEl);
+    imagePreviewContainer.appendChild(imgEl);
   }
   e.target.value = "";
 });
@@ -255,12 +255,12 @@ function renderProducts(products) {
           modalPrice.value = product.price || "";
           modalStock.value = product.stock || "";
           uploadedImages = product.images || [];
-          imagePreview.innerHTML = "";
+          imagePreviewContainer.innerHTML = "";
           uploadedImages.forEach((url) => {
             const img = document.createElement("img");
             img.src = url;
             img.style.cssText = "width:60px;height:60px;margin-right:8px;border-radius:6px;";
-            imagePreview.appendChild(img);
+            imagePreviewContainer.appendChild(img);
           });
           productModal.style.display = "flex";
         };
