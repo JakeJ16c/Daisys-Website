@@ -21,7 +21,7 @@ document.body.appendChild(popup);
 
 let newSW;
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/Daisys-Website/firebase-messaging-sw.js') .then(reg => {
+  navigator.serviceWorker.register('./sw.js') .then(reg => {
     reg.addEventListener('updatefound', () => {
       newSW = reg.installing;
       newSW.addEventListener('statechange', () => {
