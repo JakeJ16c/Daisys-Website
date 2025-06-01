@@ -204,7 +204,7 @@ export async function sendTestNotification() {
     }
     
     // Display a local test notification
-    const testNotification = new Notification('Test Notification', {
+    const testNotification = new Notification('Youre So Golden', {
       body: 'This is a test notification from the admin dashboard.',
       icon: '../icon-512.png'
     });
