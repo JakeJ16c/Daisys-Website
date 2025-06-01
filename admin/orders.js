@@ -89,14 +89,16 @@ function loadOrdersLive() {
       <button class="order-toggle" style="
         width: 100%;
         border: none;
-        background: #eee;
-        padding: 12px 16px;
+        background: #eeeeee;
+        padding: 14px 18px;
         text-align: left;
         font-size: 1rem;
         font-weight: 600;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
         cursor: pointer;
       ">
         <span>${data.name || 'Unnamed'}</span>
@@ -120,10 +122,9 @@ function loadOrdersLive() {
       <div class="order-content" style="
         display: none;
         background: white;
-        padding: 20px;
-        border-bottom-left-radius: 8px;
-        border-bottom-right-radius: 8px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        padding: 16px;
+        border-bottom-left-radius: 12px;
+        border-bottom-right-radius: 12px;
       ">
         <p><strong>Email:</strong> ${data.email || "no@email.com"}</p>
         <p><strong>Address:</strong><br>${
@@ -161,8 +162,16 @@ function loadOrdersLive() {
         <p><strong>Placed:</strong> ${createdAt}</p>
       </div>
     `;
-
-      orderCard.querySelector('.order-toggle').addEventListener('click', () => {
+      
+    orderCard.style.cssText = `
+      background-color: white;
+      border-radius: 12px;
+      margin: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      overflow: hidden;
+    `;
+    
+    orderCard.querySelector('.order-toggle').addEventListener('click', () => {
       const content = orderCard.querySelector('.order-content');
       content.style.display = content.style.display === 'block' ? 'none' : 'block';
     });
