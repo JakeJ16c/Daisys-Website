@@ -157,7 +157,7 @@ function renderProducts(products) {
       </div>
     `;
 
-    card.querySelector('.edit-btn').onclick = () => alert('Open modal for: ' + product.name);
+    card.querySelector('.edit-btn').onclick = () => viewProductDetails(product.id);
     card.querySelector('.delete-btn').onclick = () => confirmDelete(product.id);
 
     container.appendChild(card);
