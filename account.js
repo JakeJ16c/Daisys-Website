@@ -100,7 +100,7 @@ async function loadUserOrders(user) {
   const q = query(ordersRef, where("userId", "==", user.uid));
   const snapshot = await getDocs(q);
 
-  const ordersDiv = document.querySelector(".form-container:nth-of-type(2)");
+  const ordersDiv = document.getElementById("user-orders");
   if (snapshot.empty) {
     ordersDiv.innerHTML = `<p>You haven't placed any orders yet.</p>`;
     return;
