@@ -42,3 +42,42 @@ exports.notifyOnNewOrder = functions.firestore
 
     return null;
   });
+
+  exports.notifyOnBasketUpdate = functions.firestore
+    .document("BasketUpdates/{updateId}")
+    .onCreate(async (snap, context) => {
+      const update = snap.data();
+      console.log("🛒 New basket activity:", JSON.stringify(update));
+  
+      const tokenSnap = await admin.firestore().doc("adminTokens/admin").get();
+      if (!tokenSnap.exists) {
+        console.error("❌ No adminTokens/admin document found.");
+        return null;
+      }
+  
+      const token = tokenSnap.data()?.token;
+      console.log("📬 Retrieved token:", token);
+  
+      if (!token) {
+        console.error("❌ Token field is missing.");
+        return null;
+      }
+  
+      const message = {
+        notification: {
+          title: "Basket Updated",
+          body: `${update.name} added ${update.qty}x to their basket.`,
+        },
+        token: token,
+      };
+  
+      try {
+        const response = await admin.messaging().send(message);
+        console.log("✅ Basket notification sent:", response);
+      } catch (error) {
+        console.error("❌ Error sending basket notification:", error.message || error);
+      }
+  
+      return null;
+    });
+
