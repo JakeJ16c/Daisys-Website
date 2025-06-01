@@ -27,7 +27,7 @@ function formatDate(timestamp) {
 // ✅ Get FCM token and store to Firestore
 async function setupPushNotifications() {
   try {
-    const registration = await navigator.serviceWorker.register('/admin/sw.js');
+    const registration = await navigator.serviceWorker.register('/Daisys-Website/admin/sw.js');
 
     const permission = await Notification.requestPermission();
     if (permission === "granted") {
