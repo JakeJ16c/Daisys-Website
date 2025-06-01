@@ -1,4 +1,4 @@
-// admin/products.js – Full Product Management UI with Add + Image Upload
+// admin/products.js – Full Product Management UI with Add + Image Upload + Description
 import { auth, db } from '../firebase.js';
 import {
   onAuthStateChanged, signOut
@@ -26,6 +26,7 @@ const saveProductChanges = document.getElementById("saveProductChanges");
 const modalName = document.getElementById("modalName");
 const modalPrice = document.getElementById("modalPrice");
 const modalStock = document.getElementById("modalStock");
+const modalDescription = document.getElementById("modalDescription");
 let imageUpload = null;
 const imageUploadInput = document.getElementById("imageUpload");
 const imagePreviewContainer = document.getElementById("imagePreviewContainer");
@@ -87,6 +88,7 @@ if (addProductBtn) {
     modalName.value = "";
     modalPrice.value = "";
     modalStock.value = "";
+    modalDescription.value = "";
     uploadedImages = [];
     imagePreviewContainer.innerHTML = "";
     productModal.style.display = "flex";
@@ -111,6 +113,7 @@ if (saveProductChanges) {
       name: modalName.value.trim(),
       price: parseFloat(modalPrice.value),
       stock: parseInt(modalStock.value),
+      description: modalDescription.value.trim(),
       images: uploadedImages,
       updatedAt: new Date()
     };
@@ -253,6 +256,7 @@ function renderProducts(products) {
           modalName.value = product.name || "";
           modalPrice.value = product.price || "";
           modalStock.value = product.stock || "";
+          modalDescription.value = product.description || "";
           uploadedImages = product.images || [];
           imagePreviewContainer.innerHTML = "";
           uploadedImages.forEach((url) => {
@@ -273,7 +277,7 @@ function renderProducts(products) {
           }
         };
       }
-    
+
     container.appendChild(card);
   });
 }
