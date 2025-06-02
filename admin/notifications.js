@@ -301,28 +301,6 @@ function shouldShowNotification(title) {
   return true;
 }
 
-// Handle foreground messages
-//onMessage(messaging, (payload) => {
-  //console.log('✅ Admin foreground message received: ', payload);
-  
-  // Display notification manually for foreground messages
- // if (payload.notification) {
-  //  const notificationTitle = payload.notification.title;
-    
-    // Check if this notification category is enabled
- //   if (!shouldShowNotification(notificationTitle)) {
-    //  return;
-    }
-    
- //   const notificationOptions = {
-   //   body: payload.notification.body,
-   //   icon: '../icon-512.png'
-    };
-    
- //  new Notification(notificationTitle, notificationOptions);
-  }
-});
-
 // Initialize notification settings on page load
 document.addEventListener('DOMContentLoaded', () => {
   // Set initial state from localStorage
