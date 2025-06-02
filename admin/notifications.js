@@ -1,6 +1,13 @@
-// Updated admin/notifications.js with correct service worker registration and category filtering
 import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-messaging.js";
 import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where
+} from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+
 import { app } from "../firebase.js";
 
 // Initialize Firebase Messaging and Firestore
@@ -72,20 +79,30 @@ export async function initializeAdminNotifications() {
 }
 
 // Function to store admin token in Firestore
+// Store admin token without overwriting others
 async function storeAdminToken(token) {
   try {
-    const tokenRef = doc(db, "adminTokens", "admin");
-    
-    await setDoc(tokenRef, {
+    const tokenQuery = query(
+      collection(db, "adminTokens"),
+      where("token", "==", token)
+    );
+
+    const snap = await getDocs(tokenQuery);
+    if (!snap.empty) {
+      console.log("⚠️ Token already stored.");
+      return;
+    }
+
+    await addDoc(collection(db, "adminTokens"), {
       token: token,
       timestamp: new Date().toISOString(),
       device: navigator.userAgent,
-      categories: getCategoryPreferences() // Store category preferences with token
+      categories: getCategoryPreferences()
     });
-    
-    console.log('✅ Admin token stored in Firestore.');
+
+    console.log('✅ New admin token saved.');
   } catch (error) {
-    console.error('❌ Error storing admin token: ', error);
+    console.error('❌ Error saving token:', error);
   }
 }
 
