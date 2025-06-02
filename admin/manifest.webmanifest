@@ -1,7 +1,8 @@
 {
   "name": "You're So Golden - Admin",
   "short_name": "Admin Dashboard",
-  "start_url": "./index.html?v=1.0.1",
+  "start_url": "../admin/index.html?v=1.0.1",
+  "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#ffffff",
