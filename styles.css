@@ -309,6 +309,75 @@
       color: #555;
     }
 
+    /* ========== Login Container ========== */
+    .login-container {
+      max-width: 400px;
+      margin: 4rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .login-container h2 {
+      margin-bottom: 1.5rem;
+      color: var(--electric-blue);
+    }
+
+    /* ========== Form Inputs & Button ========== */
+    .login-container input,
+    .login-container button {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0.75rem;
+      font-size: 1rem;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+    }
+
+    .login-container input {
+      border: 1px solid #ccc;
+    }
+
+    .login-container button {
+      background-color: var(--electric-blue);
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .login-container button:hover {
+      background-color: #183aa0;
+    }
+
+    /* ========== Login Error Message ========== */
+    #login-error {
+      color: red;
+      font-weight: 500;
+      margin-top: 10px;
+      display: none;
+    }
+
+    /* ========== 🔗 Login Utility Links ========== */
+    .login-links {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #555;
+      margin-top: 1rem;
+    }
+
+    .login-links a {
+      color: var(--electric-blue);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .login-links a:hover {
+      text-decoration: underline;
+      color: #183aa0;
+    }
+
     /* ========== Shop Page - No products in Store ========== */
     .no-products {
       text-align: center;
