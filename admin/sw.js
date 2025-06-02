@@ -152,14 +152,14 @@ self.addEventListener('push', event => {
     }
   }
   
-  const title = notificationData.title || 'You\'re So Golden';
-  const options = {
-    body: notificationData.body || 'You have a new notification',
-    icon: '../icon-512.png',
-    badge: '../favicon_circle.ico',
-    data: notificationData.data || {},
-    actions: notificationData.actions || []
-  };
+  //const title = notificationData.title || 'You\'re So Golden';
+  //const options = {
+    //body: notificationData.body || 'You have a new notification',
+    //icon: '../icon-512.png',
+    //badge: '../favicon_circle.ico',
+    //data: notificationData.data || {},
+    //actions: notificationData.actions || []
+  //};
   
   event.waitUntil(
     self.registration.showNotification(title, options)
