@@ -79,10 +79,7 @@ exports.notifyOnBasketUpdate = functions.firestore
     };
 
     try {
-      const response = await admin.messaging().sendMulticast({
-        ...message,
-        tokens
-      });
+      const response = await admin.messaging().sendMulticast(message);
       console.log("✅ Basket notification sent to", response.successCount, "devices.");
     } catch (error) {
       console.error("❌ Error sending basket notification:", error.message || error);
