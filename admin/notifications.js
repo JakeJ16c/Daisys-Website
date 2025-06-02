@@ -80,29 +80,21 @@ export async function initializeAdminNotifications() {
 
 // Function to store admin token in Firestore
 // Store admin token without overwriting others
+// Function to store admin token in Firestore (multi-device support)
 async function storeAdminToken(token) {
   try {
-    const tokenQuery = query(
-      collection(db, "adminTokens"),
-      where("token", "==", token)
-    );
+    const tokenRef = doc(db, "adminTokens", token); // token becomes doc ID
 
-    const snap = await getDocs(tokenQuery);
-    if (!snap.empty) {
-      console.log("⚠️ Token already stored.");
-      return;
-    }
-
-    await addDoc(collection(db, "adminTokens"), {
+    await setDoc(tokenRef, {
       token: token,
       timestamp: new Date().toISOString(),
       device: navigator.userAgent,
-      categories: getCategoryPreferences()
+      categories: getCategoryPreferences() // Store category preferences
     });
 
-    console.log('✅ New admin token saved.');
+    console.log('✅ Admin token stored in Firestore.');
   } catch (error) {
-    console.error('❌ Error saving token:', error);
+    console.error('❌ Error storing admin token: ', error);
   }
 }
 
