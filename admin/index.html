@@ -1,3 +1,4 @@
+// Updated admin/index.html with correct unified service worker registration
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -48,12 +49,20 @@
   <!-- Admin Auth Script (handles login gating) -->
   <script type="module" src="admin-auth.js"></script>
 
-  <!-- PWA Service Worker Registration -->
+  <!-- PWA Service Worker Registration - UPDATED to use unified service worker -->
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js');
+      // Register the unified service worker from root with scope '/'
+      navigator.serviceWorker.register('../firebase-messaging-sw.js', { scope: '/' })
+        .then(registration => {
+          console.log('✅ Unified service worker registered with scope:', registration.scope);
+        })
+        .catch(error => {
+          console.error('❌ Service worker registration failed:', error);
+        });
     }
   </script>
+  
   <!-- Dashboard Interactions -->
   <script>
     const menuToggle = document.getElementById('menu-toggle');
