@@ -1,4 +1,4 @@
-// admin/notifications.js
+// admin/notifications.js - Updated to use unified root service worker
 import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-messaging.js";
 import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 import { app } from "../firebase.js";
@@ -31,9 +31,12 @@ export async function initializeAdminNotifications() {
     
     // Check if service workers are supported
     if ('serviceWorker' in navigator) {
-      // Register the service worker
-      const registration = await navigator.serviceWorker.register('./sw.js');
-      console.log('✅ Admin Service Worker registered: ', registration.scope);
+      // Register the ROOT service worker with appropriate scope
+      // This is the key change - using the unified service worker from root
+      const registration = await navigator.serviceWorker.register('../firebase-messaging-sw.js', {
+        scope: '/'
+      });
+      console.log('✅ Unified Service Worker registered for admin: ', registration.scope);
       
       // Request notification permission
       const permission = await Notification.requestPermission();
