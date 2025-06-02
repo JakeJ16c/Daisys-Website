@@ -1,6 +1,34 @@
 // Updated admin/sw.js with proper scope handling
 // This service worker is specifically for the admin dashboard
 
+
+// Firebase background push support for FCM
+importScripts('https://www.gstatic.com/firebasejs/11.8.1/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/11.8.1/firebase-messaging-compat.js');
+
+firebase.initializeApp({
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+});
+
+const messaging = firebase.messaging();
+
+messaging.onBackgroundMessage((payload) => {
+  console.log('📨 [Admin SW] Firebase background message received:', payload);
+
+  const { title, body } = payload.notification;
+
+  self.registration.showNotification(title, {
+    body,
+    icon: '../icon-512.png',
+    badge: '../favicon_circle.ico'
+  });
+});
+
+
 const CACHE_NAME = 'admin-cache-v1';
 const OFFLINE_URL = 'index.html';
 
