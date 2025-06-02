@@ -1,4 +1,4 @@
-// Updated admin/notifications.js with correct service worker scope
+// Updated admin/notifications.js with correct service worker registration and category filtering
 import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-messaging.js";
 import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 import { app } from "../firebase.js";
@@ -79,13 +79,20 @@ async function storeAdminToken(token) {
     await setDoc(tokenRef, {
       token: token,
       timestamp: new Date().toISOString(),
-      device: navigator.userAgent
+      device: navigator.userAgent,
+      categories: getCategoryPreferences() // Store category preferences with token
     });
     
     console.log('✅ Admin token stored in Firestore.');
   } catch (error) {
     console.error('❌ Error storing admin token: ', error);
   }
+}
+
+// Function to get category preferences
+function getCategoryPreferences() {
+  const categoriesStr = localStorage.getItem('notificationCategories') || '{}';
+  return JSON.parse(categoriesStr);
 }
 
 // Function to toggle notifications
@@ -104,7 +111,7 @@ export async function toggleAdminNotifications(enabled) {
 }
 
 // Function to toggle notification category
-export function toggleNotificationCategory(categoryId, enabled) {
+export async function toggleNotificationCategory(categoryId, enabled) {
   // Get current category settings
   const categoriesStr = localStorage.getItem('notificationCategories') || '{}';
   const categories = JSON.parse(categoriesStr);
@@ -119,6 +126,21 @@ export function toggleNotificationCategory(categoryId, enabled) {
   
   // Update UI
   updateCategoryToggleUI(categoryId);
+  
+  // Update token in Firestore with new preferences
+  if (Notification.permission === 'granted') {
+    try {
+      const tokenSnap = await getDoc(doc(db, "adminTokens", "admin"));
+      if (tokenSnap.exists()) {
+        const data = tokenSnap.data();
+        if (data.token) {
+          await storeAdminToken(data.token);
+        }
+      }
+    } catch (error) {
+      console.error('❌ Error updating token with new preferences:', error);
+    }
+  }
 }
 
 // Function to update notification toggle UI
@@ -229,6 +251,36 @@ export async function sendTestNotification() {
   }
 }
 
+// Function to check if notification should be shown based on category
+function shouldShowNotification(title) {
+  // Get category settings
+  const categoriesStr = localStorage.getItem('notificationCategories') || '{}';
+  const categories = JSON.parse(categoriesStr);
+  
+  // Check title to determine category
+  if (title.includes('Basket Updated') && categories.basket === false) {
+    console.log('❌ Basket notifications disabled, not showing notification');
+    return false;
+  }
+  
+  if (title.includes('New Order') && categories.orders === false) {
+    console.log('❌ Order notifications disabled, not showing notification');
+    return false;
+  }
+  
+  if (title.includes('Review') && categories.reviews === false) {
+    console.log('❌ Review notifications disabled, not showing notification');
+    return false;
+  }
+  
+  if (title.includes('Visit') && categories.visits === false) {
+    console.log('❌ Visit notifications disabled, not showing notification');
+    return false;
+  }
+  
+  return true;
+}
+
 // Handle foreground messages
 onMessage(messaging, (payload) => {
   console.log('✅ Admin foreground message received: ', payload);
@@ -236,6 +288,12 @@ onMessage(messaging, (payload) => {
   // Display notification manually for foreground messages
   if (payload.notification) {
     const notificationTitle = payload.notification.title;
+    
+    // Check if this notification category is enabled
+    if (!shouldShowNotification(notificationTitle)) {
+      return;
+    }
+    
     const notificationOptions = {
       body: payload.notification.body,
       icon: '../icon-512.png'
