@@ -302,24 +302,24 @@ function shouldShowNotification(title) {
 }
 
 // Handle foreground messages
-onMessage(messaging, (payload) => {
-  console.log('✅ Admin foreground message received: ', payload);
+//onMessage(messaging, (payload) => {
+  //console.log('✅ Admin foreground message received: ', payload);
   
   // Display notification manually for foreground messages
-  if (payload.notification) {
-    const notificationTitle = payload.notification.title;
+ // if (payload.notification) {
+  //  const notificationTitle = payload.notification.title;
     
     // Check if this notification category is enabled
-    if (!shouldShowNotification(notificationTitle)) {
-      return;
+ //   if (!shouldShowNotification(notificationTitle)) {
+    //  return;
     }
     
-    const notificationOptions = {
-      body: payload.notification.body,
-      icon: '../icon-512.png'
+ //   const notificationOptions = {
+   //   body: payload.notification.body,
+   //   icon: '../icon-512.png'
     };
     
-    new Notification(notificationTitle, notificationOptions);
+ //  new Notification(notificationTitle, notificationOptions);
   }
 });
 
