@@ -17,18 +17,6 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
- messaging.onBackgroundMessage((payload) => {
-   console.log('📨 [Admin SW] Firebase background message received:', payload);
-
-   const { title, body } = payload.notification;
-
-     self.registration.showNotification(title, {
-     body,
-    icon: '../icon-512.png',
-     badge: '../favicon_circle.ico'
-   });
- });
-
 
 const CACHE_NAME = 'admin-cache-v1';
 const OFFLINE_URL = 'index.html';
