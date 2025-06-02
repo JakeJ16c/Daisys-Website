@@ -9,26 +9,16 @@ exports.notifyOnNewOrder = functions.firestore
     const order = snap.data();
     console.log("📦 New order received:", JSON.stringify(order));
 
-    // Get admin token
-    const tokenSnap = await admin.firestore().doc("adminTokens/admin").get();
+    // 🔄 Get ALL admin tokens
+    const snapshot = await admin.firestore().collection('adminTokens').get();
 
-    if (!tokenSnap.exists) {
-      console.error("❌ No adminTokens/admin document found.");
-      return null;
-    }
+    const tokens = snapshot.docs
+      .filter(doc => doc.data().categories?.orders !== false)
+      .map(doc => doc.data().token)
+      .filter(Boolean);
 
-    const token = tokenSnap.data()?.token;
-    console.log("📬 Retrieved token:", token);
-
-    if (!token) {
-      console.error("❌ Token field is missing.");
-      return null;
-    }
-
-    // Check if admin has enabled this notification category
-    const categories = tokenSnap.data()?.categories || {};
-    if (categories.orders === false) {
-      console.log("❌ Admin has disabled order notifications.");
+    if (tokens.length === 0) {
+      console.log("❌ No eligible admin tokens found.");
       return null;
     }
 
@@ -42,14 +32,14 @@ exports.notifyOnNewOrder = functions.firestore
         orderId: context.params.orderId,
         timestamp: new Date().toISOString()
       },
-      token: token,
+      tokens: tokens
     };
 
     try {
-      const response = await admin.messaging().send(message);
-      console.log("✅ Notification sent successfully:", response);
+      const response = await admin.messaging().sendMulticast(message);
+      console.log("✅ Notification sent to", response.successCount, "devices.");
     } catch (error) {
-      console.error("❌ Error sending notification:", error.message || error);
+      console.error("❌ Error sending multicast:", error.message || error);
     }
 
     return null;
