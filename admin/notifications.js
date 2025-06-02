@@ -33,9 +33,9 @@ export async function initializeAdminNotifications() {
     if ('serviceWorker' in navigator) {
       // Register the admin's own service worker with default scope
       // This is the key change - using the admin's own service worker instead of trying to use root scope
-      const registration = await navigator.serviceWorker.register('sw.js');
-      console.log('✅ Admin Service Worker registered with scope: ', registration.scope);
-      
+      const registration = await navigator.serviceWorker.ready;
+      console.log('✅ Using existing Service Worker with scope: ', registration.scope);
+
       // Request notification permission
       const permission = await Notification.requestPermission();
       
