@@ -1,6 +1,9 @@
 import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-messaging.js";
-import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
-import {
+import { 
+  getFirestore, 
+  doc, 
+  setDoc, 
+  getDoc,
   collection,
   addDoc,
   getDocs,
@@ -78,23 +81,37 @@ export async function initializeAdminNotifications() {
   return null;
 }
 
-// Function to store admin token in Firestore
-// Store admin token without overwriting others
 // Function to store admin token in Firestore (multi-device support)
 async function storeAdminToken(token) {
   try {
-    const tokenRef = doc(db, "adminTokens", token); // token becomes doc ID
-
-    await setDoc(tokenRef, {
+    // First try with the token as document ID
+    const tokenRef = doc(db, "adminTokens", token);
+    
+    try {
+      await setDoc(tokenRef, {
+        token: token,
+        timestamp: new Date().toISOString(),
+        device: navigator.userAgent,
+        categories: getCategoryPreferences()
+      });
+      console.log('✅ Admin token stored in Firestore.');
+      return;
+    } catch (error) {
+      console.warn('⚠️ Could not store token with token ID, trying alternative method:', error);
+    }
+    
+    // Fallback: Try storing in a document with a generated ID
+    const adminTokensRef = collection(db, "adminTokens");
+    await addDoc(adminTokensRef, {
       token: token,
       timestamp: new Date().toISOString(),
       device: navigator.userAgent,
-      categories: getCategoryPreferences() // Store category preferences
+      categories: getCategoryPreferences()
     });
-
-    console.log('✅ Admin token stored in Firestore.');
+    console.log('✅ Admin token stored in Firestore with generated ID.');
+    
   } catch (error) {
-    console.error('❌ Error storing admin token: ', error);
+    console.error('❌ Error storing admin token:', error);
   }
 }
 
@@ -139,12 +156,15 @@ export async function toggleNotificationCategory(categoryId, enabled) {
   // Update token in Firestore with new preferences
   if (Notification.permission === 'granted') {
     try {
-      const tokenSnap = await getDoc(doc(db, "adminTokens", "admin"));
-      if (tokenSnap.exists()) {
-        const data = tokenSnap.data();
-        if (data.token) {
-          await storeAdminToken(data.token);
-        }
+      // Get current token
+      const currentToken = await getToken(messaging, {
+        vapidKey: VAPID_KEY,
+        serviceWorkerRegistration: await navigator.serviceWorker.ready
+      });
+      
+      if (currentToken) {
+        // Store token with updated preferences
+        await storeAdminToken(currentToken);
       }
     } catch (error) {
       console.error('❌ Error updating token with new preferences:', error);
