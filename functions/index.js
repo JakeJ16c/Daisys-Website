@@ -74,7 +74,7 @@ exports.notifyOnBasketUpdate = functions.firestore
         productId: update.productId || "",
         productName: update.name || "",
         timestamp: new Date().toISOString()
-      }
+      },
       tokens: tokens
     };
 
