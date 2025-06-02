@@ -35,7 +35,7 @@ exports.notifyOnNewOrder = functions.firestore
     const message = {
       notification: {
         title: "New Order Received!",
-        body: `From ${order.name}`,
+        body: `From ${order.name || 'a customer'}`,
       },
       data: {
         category: "orders",
