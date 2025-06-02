@@ -1,4 +1,3 @@
-// Updated Cloud Function for basket notifications with category filtering
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 
