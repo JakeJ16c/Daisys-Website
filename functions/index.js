@@ -23,6 +23,7 @@ exports.notifyOnNewOrder = functions.firestore
     }
 
     const message = {
+      tokens: tokens,
       notification: {
         title: "New Order Received!",
         body: `From ${order.name || 'a customer'}`,
@@ -31,8 +32,7 @@ exports.notifyOnNewOrder = functions.firestore
         category: "orders",
         orderId: context.params.orderId,
         timestamp: new Date().toISOString()
-      },
-      tokens: tokens
+      }
     };
 
     try {
@@ -65,6 +65,7 @@ exports.notifyOnBasketUpdate = functions.firestore
     }
 
     const message = {
+      tokens: tokens,
       notification: {
         title: "Basket Updated",
         body: `${update.name || 'Someone'} added ${update.qty}x to their basket.`,
@@ -74,8 +75,7 @@ exports.notifyOnBasketUpdate = functions.firestore
         productId: update.productId || "",
         productName: update.name || "",
         timestamp: new Date().toISOString()
-      },
-      tokens: tokens
+      }
     };
 
     try {
