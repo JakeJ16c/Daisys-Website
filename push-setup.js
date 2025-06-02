@@ -3,7 +3,7 @@ import { getToken, onMessage } from 'https://www.gstatic.com/firebasejs/11.8.1/f
 import { doc, setDoc } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
 
 // Your Web Push certificate key from Firebase
-const VAPID_KEY = 'YOUR_PUBLIC_VAPID_KEY';
+const VAPID_KEY = 'BKWmwmuEDejKmOZEFLtWAgZXD2OUPqS_77NA6hTEf9-9SXDG9fJh0EZDG7qExr8IDrRiHVPSNvbXohUKsV12ueA';
 
 Notification.requestPermission().then((permission) => {
   if (permission === 'granted') {
@@ -13,9 +13,26 @@ Notification.requestPermission().then((permission) => {
       if (token) {
         console.log('📲 Token received:', token);
 
-        // Store the token in Firestore at the right location
-        const tokenRef = doc(db, 'adminTokens', 'admin');
-        setDoc(tokenRef, { token: token });
+        // Only store token if user is admin
+        const isAdmin = localStorage.getItem('isAdmin') === 'true';
+        console.log('👤 Is admin?', isAdmin);
+        
+        if (isAdmin) {
+          // Store the token in Firestore at the right location
+          const tokenRef = doc(db, 'adminTokens', 'admin');
+          setDoc(tokenRef, { 
+            token: token,
+            timestamp: new Date().toISOString()
+          })
+          .then(() => {
+            console.log('✅ Admin token stored in Firestore.');
+          })
+          .catch((error) => {
+            console.error('❌ Error storing admin token:', error);
+          });
+        } else {
+          console.log('ℹ️ Non-admin user, token not stored in adminTokens.');
+        }
       } else {
         console.log('⚠️ No token received.');
       }
@@ -29,5 +46,14 @@ Notification.requestPermission().then((permission) => {
 
 onMessage(messaging, (payload) => {
   console.log('📩 Foreground message received:', payload);
-  // Optional: Show alert/toast to user here
+  // Display notification manually for foreground messages
+  if (payload.notification) {
+    const notificationTitle = payload.notification.title;
+    const notificationOptions = {
+      body: payload.notification.body,
+      icon: './icon-192.png'
+    };
+    
+    new Notification(notificationTitle, notificationOptions);
+  }
 });
