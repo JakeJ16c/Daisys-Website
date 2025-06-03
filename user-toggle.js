@@ -29,11 +29,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const docSnap = await getDoc(docRef);
       const data = docSnap.exists() ? docSnap.data() : {};
       const greeting = document.createElement("p");
-      greeting.innerHTML = `👋 Hello <strong>${data.firstName}</strong>`;
+      greeting.innerHTML = `👋 Hello ${data.firstName}`;
       greeting.style.margin = "0 0 0.5rem";
       greeting.style.fontWeight = "600";
       greeting.style.textAlign = "center";
       greeting.style.fontSize = "0.9rem";
+      greeting.style.fontFamily = "Fredoka";
 
       // Divider
       const hr = document.createElement("hr");
