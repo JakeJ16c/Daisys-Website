@@ -32,15 +32,6 @@
       flex: 1; /* Pushes the footer down if content is short */
     }
 
-	.announcement-bar {
-	      background-color: var(--electric-blue);
-	      color: #fff;
-	      text-align: center;
-	      font-family: 'Fredoka';
-	      font-size: 0.85rem;
-	      padding: 0.5rem 1rem;
-	    }
-
     /* ========== Header Section ========== */
     .site-header {
       background-color: #CCE0FF;
