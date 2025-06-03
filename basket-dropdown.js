@@ -160,10 +160,6 @@ document.addEventListener("DOMContentLoaded", () => {
     subtotalEl.style.textAlign = "right";
     subtotalEl.style.fontWeight = "bold";
     subtotalEl.style.margin = "0.5rem 0 1rem 0";
-        // Divider
-          const hr2 = document.createElement("hr2");
-          hr2.style.margin = "0.5rem 0"; 
-    basketPreview.appendChild(hr2);
     basketPreview.appendChild(subtotalEl);
 
     const buttonRow = document.createElement("div");
