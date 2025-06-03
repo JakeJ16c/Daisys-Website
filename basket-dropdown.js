@@ -210,10 +210,5 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
-  if (cart.length) {
-    cart.forEach(logBasketAdd); // ✅ Log to Firestore
-  }
-
   updateBasketPreview(); // Load on page ready
 });
