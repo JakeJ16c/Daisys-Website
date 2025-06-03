@@ -4,7 +4,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const html = await res.text();
     document.getElementById(id).innerHTML = html;
 
-    if (callback) callback(); // <-- run animation code
+    if (typeof callback === "function") {
+      callback(); // run animation code
+    }
   };
 
   // Inject announcement bar + fade logic
