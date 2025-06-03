@@ -15,7 +15,7 @@ pinnedCard.setAttribute("data-price", "30");
 
 pinnedCard.innerHTML = `
   <a href="custom-design.html" class="product-link">
-    <img src="IMG_5319.jpg" alt="Your Personalised Design" />
+    <img src="IMG_8861.png" alt="Your Personalised Design" />
     <h3>Your Personalised Design</h3>
     <p>Want something unique? Send us your idea and we’ll make it real!</p>
     <p class="price">From £30</p>
