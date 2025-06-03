@@ -5,6 +5,26 @@ import { getDocs, getFirestore, collection, addDoc, serverTimestamp } from 'http
 const container = document.getElementById('product-grid');
 
 async function loadProducts() {
+
+// 🔖 Add custom pinned card first
+const pinnedCard = document.createElement("div");
+pinnedCard.className = "product-card pinned-card";
+pinnedCard.setAttribute("data-id", "custom-design");
+pinnedCard.setAttribute("data-name", "Your Personalised Design");
+pinnedCard.setAttribute("data-price", "30");
+
+pinnedCard.innerHTML = `
+  <a href="custom-design.html" class="product-link">
+    <img src="IMG_5319.jpg" alt="Your Personalised Design" />
+    <h3>Your Personalised Design</h3>
+    <p>Want something unique? Send us your idea and we’ll make it real!</p>
+    <p class="price">From £30</p>
+  </a>
+  <button class="btn add-to-basket">Start Now</button>
+`;
+
+container.appendChild(pinnedCard); // This goes at the top before all products
+  
   const querySnapshot = await getDocs(collection(db, "Products"));
 
   if (querySnapshot.empty) {
@@ -20,7 +40,7 @@ async function loadProducts() {
     `;
     return;
   }
-
+  
   querySnapshot.forEach((doc) => {
     const data = doc.data();
     console.log("📦 Product data:", data);
