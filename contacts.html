@@ -63,41 +63,45 @@
   <div id="announcement-bar-container"></div>
   <header> ... </header>
 
- <main class="contact-page">
-  <!-- Hero -->
-  <section class="contact-hero">
-    <h1>Contact Us</h1>
-    <p>Let us know how we can help. We’ll get back to you within 24 hours.</p>
-  </section>
-
-  <!-- Contact Form -->
-  <section class="contact-form">
-    <form>
-      <div class="form-row">
-        <input type="text" placeholder="Name" required>
-        <input type="email" placeholder="Email" required>
+<main class="contact-page">
+  <div class="contact-container">
+    <!-- Left Column: Info Boxes -->
+    <div class="contact-info-cards">
+      <div class="card">
+        <i class="fas fa-phone"></i>
+        <p>+44 1234 567890</p>
       </div>
-      <input type="text" placeholder="Subject" required>
-      <textarea placeholder="Message" required></textarea>
-      <button type="submit">Submit</button>
-    </form>
-  </section>
+      <div class="card">
+        <i class="fas fa-envelope"></i>
+        <p>hello@youresogolden.com</p>
+      </div>
+      <div class="card">
+        <i class="fas fa-map-marker-alt"></i>
+        <p>London, UK</p>
+      </div>
+    </div>
 
-  <!-- Info Cards -->
-  <section class="contact-cards">
-    <div class="card">
-      <i class="fas fa-phone"></i>
-      <p>+44 1234 567890</p>
+    <!-- Right Column: Contact Form -->
+    <div class="contact-form-wrapper">
+      <section class="contact-hero">
+        <h1>Contact Us</h1>
+        <p>Let us know how we can help. We'll get back to you within 24 hours.</p>
+      </section>
+
+      <section class="contact-form">
+        <form>
+          <div class="form-row">
+            <input type="text" placeholder="Name" required>
+            <input type="email" placeholder="Email" required>
+          </div>
+          <input type="text" placeholder="Subject" required>
+          <textarea placeholder="Message" required></textarea>
+          <button type="submit">Submit</button>
+        </form>
+      </section>
     </div>
-    <div class="card">
-      <i class="fas fa-envelope"></i>
-      <p>hello@youresogolden.com</p>
-    </div>
-    <div class="card">
-      <i class="fas fa-map-marker-alt"></i>
-      <p>London, UK</p>
-    </div>
-  </section>
+  </div>
+</main>
 
   <!-- Google Map Embed -->
   <section class="contact-map">
