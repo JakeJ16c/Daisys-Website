@@ -3,22 +3,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const basketPreview = document.getElementById("basket-preview");
   const cartIcon = document.querySelector(".cart-icon");
 
-  //async function logBasketAdd(item) {
-    //try {
-      //const { addDoc, collection, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js");
-      //const { db } = await import("./firebase.js");
-
-      //await addDoc(collection(db, "BasketUpdates"), {
-        //productId: item.id,
-        //name: item.name,
-        //qty: item.qty || 1,
-        //time: serverTimestamp()
-      //});
-    //} catch (err) {
-      //console.error("Error logging basket add:", err);
-    //}
-  //}
-
   function updateBasketPreview(keepVisible = false) {
     window.updateBasketPreview = updateBasketPreview;
     const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
