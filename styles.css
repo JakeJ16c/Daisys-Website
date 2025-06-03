@@ -500,6 +500,7 @@
 }
 
 .filter-content {
+  position: relative;
   background: white;
   border-radius: 16px;
   padding: 30px;
@@ -508,6 +509,28 @@
   box-shadow: 0 10px 30px rgba(0,0,0,0.2);
   text-align: left;
   animation: slideFadeIn 0.3s ease;
+}
+
+.filter-content .close-btn {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  font-size: 20px;
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.filter-content .close-btn:hover {
+  color: #1a2cc1;
+}
+
+.filter-section input[type="range"] {
+  width: 100%;
+  display: block;
+  margin-top: 8px;
 }
 
 .filter-content h3 {
