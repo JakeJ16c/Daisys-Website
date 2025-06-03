@@ -1008,12 +1008,11 @@
 .contact-container {
   display: flex;
   gap: 2rem;
-  padding: 3rem 1rem;
-  max-width: 1100px;
+  padding: 2rem 2rem;
+  max-width: 1000px;
   margin: 0 auto;
-  align-items: stretch; /* Makes both columns equal height */
+  align-items: stretch;
 }
-
 .contact-info-cards {
   flex: 2;
   display: flex;
