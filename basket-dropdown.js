@@ -42,6 +42,10 @@ document.addEventListener("DOMContentLoaded", () => {
     header.style.fontWeight = "bold";
     basketPreview.appendChild(header);
 
+    // Divider
+    const hr = document.createElement("hr");
+    hr.style.margin = "0.5rem 0";    
+
     if (cart.length === 0) {
       basketPreview.innerHTML += "<p><em>Your basket is empty.</em></p>";
       return;
