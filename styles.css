@@ -1018,19 +1018,15 @@
 .contact-item {
   display: flex;
   align-items: center;
-  font-size: 1.2rem;
   gap: 1rem;
+  font-size: 1.2rem;
   color: var(--electric-blue);
 }
 
 .contact-item i {
-  font-size: 2.4rem;
+  font-size: 2rem;
   color: var(--electric-blue);
 }
 
-.contact-icons a:hover {
-  transform: scale(1.2);
-  color: #000; /* change to dark on hover */
-}
 
 
