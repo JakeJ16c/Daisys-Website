@@ -1,68 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="icon" type="image/x-icon" href="favicon_circle.ico">
-  <title>You're So Golden - Checkout</title>
-  
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout - You're So Golden</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script src="layout/load-layout.js" defer></script>
 </head>
-  
+
 <body>
-  <!-- Top Announcement -->
   <div id="announcement-bar-container"></div>
 
-  <header class="site-header">
-    <div class="header-left">
-      <a href="#"><i class="fab fa-instagram"></i></a>
-      <a href="#"><i class="fab fa-facebook-f"></i></a>
-      <a href="#"><i class="fas fa-phone"></i></a>
-      <a href="#"><i class="fas fa-envelope"></i></a>
-    </div>
-    <h1 class="header-title"><a href="index.html" class="logo-link">You're So Golden</a></h1>
-    <div class="header-right">
-      <a href="basket.html" class="cart-icon"><i class="fas fa-basket-shopping"></i></a>
-      <a href="account.html" class="login-icon"><i class="fas fa-user"></i></a>
-    </div>
+  <header>
+    <!-- Your main header content will go here (if it's auto-loaded, ignore this) -->
   </header>
 
-  <nav class="nav-links">
-    <a href="index.html">Home</a>
-    <a href="shop.html">Shop</a>
-    <a href="#">About</a>
-    <a href="contacts.html">Contact</a>
-  </nav>
   <main>
+    <section class="checkout-section">
+      <h1>Checkout</h1>
+      <p>This is where your checkout form will go.</p>
+    </section>
 
-    <div class="contact-icons">
-  <a href="#"><i class="fab fa-instagram"></i></a>
-  <a href="#"><i class="fab fa-facebook"></i></a>
-  <a href="#"><i class="fas fa-phone"></i></a>
-  <a href="#"><i class="fas fa-envelope"></i></a>
-</div>
-
-  <div class="checkout-container">
-    <h2>Checkout</h2>
-    <div id="basket-summary"></div>
-    <div id="subtotal-display"></div>
-
-    <form id="checkout-form">
-    <button id="place-order-btn" class="btn">Place Order</button>
-    </form>
-  </div>
+    <section class="contact-icons vertical">
+      <div class="contact-item">
+        <i class="fab fa-instagram"></i>
+        <span>@youresogolden</span>
+      </div>
+      <div class="contact-item">
+        <i class="fab fa-facebook"></i>
+        <span>/youresogolden</span>
+      </div>
+      <div class="contact-item">
+        <i class="fas fa-phone"></i>
+        <span>+44 1234 567890</span>
+      </div>
+      <div class="contact-item">
+        <i class="fas fa-envelope"></i>
+        <span>hello@youresogolden.com</span>
+      </div>
+    </section>
   </main>
 
-  <!-- Footer -->
   <div id="footer-container"></div>
-  
-  <!-- Load Page Layout -->
-  <script src="layout/load-layout.js" type="module"></script>
-
-  <script type="module" src="checkout.js"></script>
-
 </body>
 </html>
