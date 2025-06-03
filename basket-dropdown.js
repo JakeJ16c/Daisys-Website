@@ -48,7 +48,12 @@ document.addEventListener("DOMContentLoaded", () => {
     basketPreview.appendChild(hr);
 
     if (cart.length === 0) {
-      basketPreview.innerHTML += "<p><em>Your basket is empty.</em></p>";
+          basketPreview.innerHTML += `
+      <p style="text-align: center; margin-top: 1rem;">
+        <em>Your basket is empty.</em>
+      </p>
+    `;
+
       return;
     }
 
