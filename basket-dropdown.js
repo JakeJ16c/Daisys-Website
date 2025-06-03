@@ -41,6 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
     header.style.marginBottom = "1rem";
     header.style.fontWeight = "bold";
     basketPreview.appendChild(header);
+    basketPreview.appendChild(hr);
 
     // Divider
     const hr = document.createElement("hr");
