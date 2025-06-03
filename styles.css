@@ -14,7 +14,7 @@
     /* ========== Global Styles ========== */
     body {
       margin: 0;
-      font-family: 'petit formal script';
+      font-family: 'Nunito Sans', sans-serif;
       background-color: var(--light-pink);
       color: #333;
       display: flex;
