@@ -1,18 +1,32 @@
 <style>
   .announcement-bar {
-      background-color: var(--electric-blue);
-      color: #fff;
-      text-align: center;
-      font-family: 'Fredoka';
-      font-size: 0.85rem;
-      padding: 0.5rem 1rem;
-    }
-  .announcement-bar p {
-    margin: 0;
-    line-height: 1.1;
-  }
+  background-color: var(--electric-blue);
+  color: #fff;
+  text-align: center;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  overflow: hidden;
+  height: 24px;
+  position: relative;
+}
+
+.announcement-messages p {
+  position: absolute;
+  width: 100%;
+  opacity: 0;
+  margin: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+.announcement-messages p.active {
+  opacity: 1;
+}
 </style>
 
 <div class="announcement-bar">
-  <p>Free shipping on all UK orders over £25</p>
+  <div class="announcement-messages">
+    <p>📦 Free shipping on all UK orders over £25</p>
+    <p>🎁 Sign up now for 20% off your first order!</p>
+  </div>
 </div>
