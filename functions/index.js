@@ -125,7 +125,7 @@ exports.notifyOnBasketUpdate = functions.firestore
           const message = {
             notification: {
               title: "You\'re So Golden",
-              body: `${order.name || 'Someone'} added ${order.qty || 1}x ${order.productName || 'a product'} to their basket.`,
+              body: `${update.name || 'Someone'} added ${update.qty || 1}x ${update.productName || 'a product'} to their basket.`,
             },
             data: {
               category: "basket",
