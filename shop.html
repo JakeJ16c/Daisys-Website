@@ -90,6 +90,9 @@
   <!-- === Filter Modal UI === -->
 <div class="filter-overlay" id="filterOverlay" onclick="event.target === this && this.classList.remove('active')">
   <div class="filter-content">
+      <button class="close-btn" onclick="document.getElementById('filterOverlay').classList.remove('active')">
+        &times;
+      </button>
     <h3>Filter Products</h3>
 
     <div class="filter-section">
