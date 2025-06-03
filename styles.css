@@ -1039,7 +1039,7 @@ h1.page-title {
       color: var(--electric-blue);
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: center;
       aspect-ratio: 1 / 1;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
