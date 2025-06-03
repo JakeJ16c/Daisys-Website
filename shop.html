@@ -62,14 +62,22 @@
   <!-- Product Grid -->
   <h2 class="section-title">All Products</h2>
   
-  <!-- Filter Buttons -->
-  <div class="filter-buttons" style="text-align: center; margin-bottom: 2rem;">
-    <button class="btn filter-btn" data-filter="all">All</button>
-    <button class="btn filter-btn" data-filter="beadwork">Beadwork</button>
-    <button class="btn filter-btn" data-filter="tshirt">T-Shirts</button>
-    <button class="btn filter-btn" data-filter="charm">Charms</button>
-    <button class="btn filter-btn" data-filter="bracelet">Bracelets</button>
+  <!-- Filter UI Trigger -->
+  <div class="filter-bar">
+    <div class="border-button sort">
+      <i class="fa-solid fa-sort"></i> Sort
+      <div class="dropdown">
+        <button>Lowest Price</button>
+        <button>Highest Price</button>
+        <button>Newest</button>
+        <button>Recommended</button>
+      </div>
+    </div>
+    <div class="border-button" onclick="document.getElementById('filterOverlay').classList.add('active')">
+      <i class="fa-solid fa-sliders"></i> Filter
+    </div>
   </div>
+
   
   <section id="product-grid" class="products">
   <!-- Product cards will be inserted here by products.js -->
@@ -78,6 +86,96 @@
   
   <!-- Footer -->
   <div id="footer-container"></div>
+
+  <!-- === Filter Modal UI === -->
+<div class="filter-overlay" id="filterOverlay" onclick="event.target === this && this.classList.remove('active')">
+  <div class="filter-content">
+    <h3>Filter Products</h3>
+
+    <div class="filter-section">
+      <label>Price Range</label>
+      <input type="range" id="priceRange" min="0" max="100" value="50" oninput="updatePriceLabel()">
+      <div class="range-output" id="priceOutput">£0 - £50</div>
+    </div>
+
+    <div class="filter-section">
+      <label>Category</label>
+      <div class="option-buttons" id="categoryButtons">
+        <button>T-Shirts</button>
+        <button>Bag Charms</button>
+        <button>Key Rings</button>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <label>Designs</label>
+      <div class="option-buttons" id="designButtons">
+        <button>Animals</button>
+        <button>Flowers</button>
+        <button>Others</button>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <label>Size</label>
+      <div class="option-buttons" id="sizeButtons">
+        <button>XS</button>
+        <button>Small</button>
+        <button>Medium</button>
+        <button>Large</button>
+        <button>XL</button>
+      </div>
+    </div>
+
+    <div class="action-buttons">
+      <button class="clear-btn" onclick="clearSelections()">Clear Selections</button>
+      <button class="apply-btn">Apply Filter(s)</button>
+    </div>
+  </div>
+</div>
+
+  <!-- === Filter Logic Script === -->
+  <script>
+    function toggleSelection(e) {
+      if (!e.target.classList.contains('disabled')) {
+        e.target.classList.toggle('selected');
+        updateSizeAvailability();
+      }
+    }
+  
+    function clearSelections() {
+      document.querySelectorAll('.option-buttons button').forEach(btn => btn.classList.remove('selected'));
+      document.getElementById('priceRange').value = 50;
+      updatePriceLabel();
+      updateSizeAvailability();
+    }
+  
+    function updatePriceLabel() {
+      const value = document.getElementById('priceRange').value;
+      document.getElementById('priceOutput').innerText = `£0 - £${value}`;
+    }
+  
+    function updateSizeAvailability() {
+      const categories = document.querySelectorAll('#categoryButtons button.selected');
+      const sizeButtons = document.querySelectorAll('#sizeButtons button');
+  
+      if (categories.length === 0 || [...categories].some(btn => btn.textContent === 'T-Shirts')) {
+        sizeButtons.forEach(btn => btn.classList.remove('disabled'));
+      } else {
+        sizeButtons.forEach(btn => {
+          btn.classList.add('disabled');
+          btn.classList.remove('selected');
+        });
+      }
+    }
+  
+    document.querySelectorAll('#categoryButtons button, #designButtons button, #sizeButtons button').forEach(btn => {
+      btn.addEventListener('click', toggleSelection);
+    });
+  
+    updatePriceLabel();
+    updateSizeAvailability();
+  </script>
   
   <!-- Load Page Layout -->
   <script src="layout/load-layout.js" type="module"></script>
@@ -97,20 +195,7 @@
   <!-- Cookie Banner -->
   <script src="cookie-banner/load-cookie-banner.js"></script>
 
-<script>
-  const filterButtons = document.querySelectorAll('.filter-btn');
-  const productCards = document.querySelectorAll('.product-card');
 
-  filterButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      const category = button.getAttribute('data-filter');
-      productCards.forEach(card => {
-        const match = category === 'all' || card.getAttribute('data-category') === category;
-        card.style.display = match ? 'flex' : 'none';
-      });
-    });
-  });
-</script>
 
 </body>
 </html>
