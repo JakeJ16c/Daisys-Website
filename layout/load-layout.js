@@ -5,5 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById(id).innerHTML = html;
   };
 
+  inject("announcement-bar-container", "layout/announcement-bar.html");
   inject("footer-container", "layout/footer.html");
 });
