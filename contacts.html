@@ -10,149 +10,15 @@
   <!-- ========== Fonts, Icons & Styling ========== -->
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="styles.css">
 
-  <style>
-    :root {
-      --electric-blue: #3e3eff;
-    }
-
-    body {
-      font-family: 'Fredoka', sans-serif;
-      background: #fdfbf6;
-      margin: 0;
-      padding: 0;
-    }
-
-    .page-title {
-      text-align: center;
-      font-size: 2.5rem;
-      color: var(--electric-blue);
-      margin-top: 2rem;
-    }
-
-    .contact-page {
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      gap: 3rem;
-      padding: 2rem;
-      max-width: 1400px;
-      margin: auto;
-      flex-wrap: wrap;
-    }
-
-    .contact-grid {
-      flex: 2;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
-    }
-
-    .contact-box {
-      background-color: #f1f3ff;
-      padding: 0.8rem;
-      border-radius: 10px;
-      text-align: center;
-      color: var(--electric-blue);
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      align-items: center;
-      font-size: 0.85rem;
-      aspect-ratio: 1 / 1;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-    }
-
-    .contact-box i {
-      font-size: 1.2rem;
-      margin-bottom: 0.5rem;
-      display: block;
-      text-align: center;
-    }
-
-    .contact-form-wrapper {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .contact-hero h2 {
-      font-size: 1.8rem;
-      margin: 0;
-      color: var(--electric-blue);
-    }
-
-    .contact-hero p {
-      margin: 0.5rem 0 1rem;
-      font-size: 0.9rem;
-      color: #444;
-    }
-
-    .contact-form form {
-      display: flex;
-      flex-direction: column;
-      gap: 0.8rem;
-    }
-
-    .form-row {
-      display: flex;
-      gap: 0.8rem;
-    }
-
-    input, textarea {
-      flex: 1;
-      padding: 0.6rem 0.8rem;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 0.95rem;
-    }
-
-    .contact-form input[type="file"] {
-      padding: 0.4rem;
-      background-color: #f9f9f9;
-      border: 1px dashed #ccc;
-      font-size: 0.9rem;
-      border-radius: 6px;
-    }
-
-    .contact-form button {
-      background-color: var(--electric-blue);
-      color: #fff;
-      padding: 0.7rem;
-      border: none;
-      border-radius: 6px;
-      font-weight: bold;
-      font-size: 0.95rem;
-      cursor: pointer;
-    }
-
-    .contact-form button:hover {
-      background-color: #2e2ed1;
-    }
-
-    @media (max-width: 1100px) {
-      .contact-page {
-        flex-direction: column;
-        gap: 2rem;
-      }
-
-      .contact-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (max-width: 700px) {
-      .contact-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
 </head>
-
+  
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  
 <body>
-
-  <!-- Top Announcement Bar -->
+  
+  <!-- Top Announcement -->
   <div id="announcement-bar-container"></div>
 
   <!-- Header Section -->
@@ -169,14 +35,23 @@
       <a id="auth-icon" class="login-icon" href="#" title="User Menu">
         <i id="auth-icon-symbol" class="fas fa-user"></i>
       </a>
+
     </div>
-    <div id="basket-preview" class="basket-preview hidden"></div>
+
+    <div id="basket-preview" class="basket-preview hidden">
+      <!-- Basket contents will be injected here -->
+    </div>
+    
+    <!-- 👤 User Dropdown (dynamic) -->
     <div id="logout-dropdown" class="hidden" style="position:absolute; right:1rem; top:4.2rem; background:white; border:1px solid #ccc; padding:1rem; border-radius:8px; z-index:1000; box-shadow:0 4px 12px rgba(0,0,0,0.1); min-width:160px;">
-      <div id="user-dropdown-content"></div>
-    </div>
+      <div id="user-dropdown-content">
+        <!-- Content will be filled in by JS -->
+  </div>
+</div>
+
   </header>
 
-  <!-- Navigation -->
+  <!-- Navigation Bar -->
   <nav class="nav-links">
     <a href="index.html">Home</a>
     <a href="shop.html">Shop</a>
@@ -184,23 +59,38 @@
     <a href="contacts.html">Contact</a>
   </nav>
 
-  <!-- Page Title -->
+  <body>
+    <main>
   <h1 class="page-title">Contact Us</h1>
 
-  <!-- Contact Content -->
   <main class="contact-page">
 
-    <!-- LEFT: Contact Grid -->
+    <!-- LEFT GRID -->
     <div class="contact-grid">
-      <div class="contact-box"><i class="fas fa-phone"></i>+44 1234 567890</div>
-      <div class="contact-box"><i class="fas fa-envelope"></i>hello@youresogolden.com</div>
-      <div class="contact-box"><i class="fab fa-instagram"></i>@youresogolden</div>
-      <div class="contact-box"><i class="fab fa-tiktok"></i>@youresogolden</div>
-      <div class="contact-box"><i class="fab fa-facebook"></i>fb.com/youresogolden</div>
+      <div class="contact-box">
+        <i class="fas fa-phone"></i>
+        +44 1234 567890
+      </div>
+      <div class="contact-box">
+        <i class="fas fa-envelope"></i>
+        hello@youresogolden.com
+      </div>
+      <div class="contact-box">
+        <i class="fab fa-instagram"></i>
+        @youresogolden
+      </div>
+      <div class="contact-box">
+        <i class="fab fa-tiktok"></i>
+        @youresogolden
+      </div>
+      <div class="contact-box">
+        <i class="fab fa-facebook"></i>
+        fb.com/youresogolden
+      </div>
       <div class="contact-box"></div>
     </div>
 
-    <!-- RIGHT: Contact Form -->
+    <!-- RIGHT FORM -->
     <div class="contact-form-wrapper">
       <section class="contact-hero">
         <h2>Get in Touch</h2>
@@ -222,14 +112,25 @@
 
   </main>
 
+</main>
+
   <!-- Footer -->
   <div id="footer-container"></div>
-
-  <!-- Scripts -->
+    
+</body>
+  
+  <!-- Load Page Layout -->
   <script src="layout/load-layout.js" type="module"></script>
+
+  <!-- 'User' Toggle Btn -->
   <script type="module" src="user-toggle.js"></script>
+
+  <!-- Basket Dropdown Btn -->
   <script type="module" src="basket-dropdown.js"></script>
+  
   <script type="module" src="firebase.js"></script>
+
+  <!-- Admin Features -->
   <script type="module" src="admin-auth.js"></script>
 
 </body>
