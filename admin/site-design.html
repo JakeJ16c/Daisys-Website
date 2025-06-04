@@ -149,46 +149,8 @@
 
   <div class="marquee-container">
     <h2>Manage Marquee Images</h2>
-    <div class="marquee-track">
-      <div class="marquee-item">
-        <div class="marquee-image-wrapper">
-          <img src="https://placekitten.com/100/100" alt="Marquee 1">
-          <div class="edit-overlay">
-            <i class="fas fa-pen"></i>
-            <input class="edit-input" type="file" accept="image/*" onchange="alert('Replace image logic goes here');">
-          </div>
-        </div>
-        <input type="text" value="Rose White" onchange="alert('Save name logic goes here')">
-      </div>
-
-      <div class="marquee-item">
-        <div class="marquee-image-wrapper">
-          <img src="https://placekitten.com/101/101" alt="Marquee 2">
-          <div class="edit-overlay">
-            <i class="fas fa-pen"></i>
-            <input class="edit-input" type="file" accept="image/*" onchange="alert('Replace image logic goes here');">
-          </div>
-        </div>
-        <input type="text" value="Spice Mango" onchange="alert('Save name logic goes here')">
-      </div>
-
-      <div class="marquee-item">
-        <div class="marquee-image-wrapper">
-          <img src="https://placekitten.com/102/102" alt="Marquee 3">
-          <div class="edit-overlay">
-            <i class="fas fa-pen"></i>
-            <input class="edit-input" type="file" accept="image/*" onchange="alert('Replace image logic goes here');">
-          </div>
-        </div>
-        <input type="text" value="Sunflower Yellow" onchange="alert('Save name logic goes here')">
-      </div>
-
-      <div class="marquee-item">
-        <div class="marquee-add-wrapper" onclick="alert('Add new circle logic goes here')">
-          <i class="fas fa-plus"></i>
-        </div>
-        <div style="height: 1rem;"></div>
-      </div>
+    <div class="marquee-track" id="marquee-editor">
+      <!-- Items populated by marquee-manager.js -->
     </div>
   </div>
   </main>
