@@ -14,6 +14,7 @@ async function loadAnalytics() {
   let totalOrders = 0;
   let totalRevenue = 0;
   const salesByDate = {};
+  const visitsByDate = {};
 
   orderSnap.forEach(docSnap => {
     totalOrders++;
@@ -34,26 +35,45 @@ async function loadAnalytics() {
   const productSnap = await getDocs(collection(db, 'Products'));
   const totalProducts = productSnap.size;
 
+  const visitSnap = await getDocs(collection(db, 'Visits'));
+  const totalVisits = visitSnap.size;
+  visitSnap.forEach(docSnap => {
+    const data = docSnap.data();
+    const dateObj = data.timestamp?.toDate ? data.timestamp.toDate() : null;
+    const date = dateObj ? dateObj.toLocaleDateString() : 'Unknown';
+    visitsByDate[date] = (visitsByDate[date] || 0) + 1;
+  });
+
   document.getElementById('totalOrders').textContent = totalOrders;
   document.getElementById('totalRevenue').textContent = `£${totalRevenue.toFixed(2)}`;
   document.getElementById('totalProducts').textContent = totalProducts;
+  document.getElementById('totalVisits').textContent = totalVisits;
 
+  const labels = Array.from(new Set([...Object.keys(salesByDate), ...Object.keys(visitsByDate)]));
   const ctx = document.getElementById('salesChart').getContext('2d');
   const chart = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: Object.keys(salesByDate),
+      labels,
       datasets: [{
         label: 'Sales (£)',
-        data: Object.values(salesByDate),
+        data: labels.map(l => salesByDate[l] || 0),
         backgroundColor: 'rgba(32, 78, 207, 0.6)',
         borderColor: 'rgba(32, 78, 207, 1)',
         borderWidth: 1
+      }, {
+        label: 'Visits',
+        data: labels.map(l => visitsByDate[l] || 0),
+        type: 'line',
+        borderColor: 'rgba(255, 99, 132, 1)',
+        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        yAxisID: 'y1'
       }]
     },
     options: {
       scales: {
-        y: { beginAtZero: true }
+        y: { beginAtZero: true, position: 'left' },
+        y1: { beginAtZero: true, position: 'right', grid: { drawOnChartArea: false } }
       }
     }
   });

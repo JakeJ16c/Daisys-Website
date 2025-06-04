@@ -1,3 +1,17 @@
+import { db } from '../firebase.js';
+import { collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+
+async function logVisit() {
+  try {
+    await addDoc(collection(db, 'Visits'), {
+      path: window.location.pathname,
+      timestamp: serverTimestamp()
+    });
+  } catch (error) {
+    console.error('Error logging visit:', error);
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   // Single inject function with callback parameter
   const inject = async (id, file, callback) => {
@@ -42,4 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
   // Inject Footer
     inject("footer-container", "layout/footer.html");
+
+  // Record a website visit
+  logVisit();
 });
