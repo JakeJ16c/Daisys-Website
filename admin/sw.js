@@ -40,7 +40,6 @@ const ASSETS_TO_CACHE = [
   './marquee-manager.js',
   './update-popup.js',
   './manifest.webmanifest',
-  '../icon-512.png',
   '../IMG_8861.png',
   '../favicon_circle.ico'
 ];
