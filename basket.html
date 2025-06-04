@@ -613,18 +613,17 @@
           const itemDiv = document.createElement("div");
           itemDiv.className = "basket-item-row";
 
-          itemDiv.innerHTML = `
-            <img src="${item.image}" alt="${item.name}">
-            <div class="basket-info">
-              <span class="item-name">${item.name}</span>
-              <div class="quantity-controls">
-                <button class="decrease" data-index="${index}">-</button>
-                <span>${item.qty}</span>
-                <button class="increase" data-index="${index}">+</button>
-              </div>
-            </div>
-            <div class="item-price">£${(item.price * item.qty).toFixed(2)}</div>
-          `;
+              itemDiv.innerHTML = `
+                <div class="item-image">
+                  <img src="${item.image}" alt="${item.name}" />
+                </div>
+                <div class="item-qty">
+                  <button class="decrease" data-index="${index}">-</button>
+                  <span>${item.qty}</span>
+                  <button class="increase" data-index="${index}">+</button>
+                </div>
+                <div class="item-price">£${(item.price * item.qty).toFixed(2)}</div>
+              `;
 
           container.appendChild(itemDiv);
         });
