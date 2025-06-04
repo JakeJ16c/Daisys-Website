@@ -387,14 +387,16 @@
   transform: translateY(-50%);
   font-size: 1rem;
   color: #888;
+  pointer-events: none; /* So it doesn't interfere with input clicks */
 }
 
 .input-group input {
+  padding: 0.75rem 0.75rem 0.75rem 48px; /* ✅ Makes space for icon */
   width: 100%;
-  padding: 0.75rem 0.75rem 0.75rem 44px; /* 👈 enough room for the icon */
-  border-radius: 6px;
   border: 1px solid #ccc;
+  border-radius: 6px;
   font-size: 1rem;
+  box-sizing: border-box;
 }
 
     /* ========== Login Error Message ========== */
