@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Inject Navigation Bar
-    inject("footer-container", "layout/navigation-bar.html");
+    inject("navigation-bar-container", "layout/navigation-bar.html");
   });
   
   // Inject Footer
