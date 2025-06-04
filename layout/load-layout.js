@@ -39,8 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Inject Navigation Bar
     inject("navigation-bar-container", "layout/navigation-bar.html");
-  });
   
   // Inject Footer
-  inject("footer-container", "layout/footer.html");
+    inject("footer-container", "layout/footer.html");
 });
