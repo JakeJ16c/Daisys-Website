@@ -49,8 +49,11 @@ form.addEventListener('submit', async (e) => {
 
     // Redirect to account page after successful registration
     window.location.href = "account.html";
+    
+    if (error.code === "auth/email-already-in-use") {
+      showToast("This email is already registered. Try logging in.");
+    } else {
+      showToast("Error: " + error.message);
+    }
 
-  } catch (error) {
-    alert("Error: " + error.message);
-  }
 });
