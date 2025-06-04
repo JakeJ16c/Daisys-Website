@@ -35,6 +35,7 @@ const ASSETS_TO_CACHE = [
   './orders.js',
   './settings.html',
   './analytics.html',
+  './analytics.js',
   './update-popup.js',
   './manifest.webmanifest',
   '../icon-512.png',
