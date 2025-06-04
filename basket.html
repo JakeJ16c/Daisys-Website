@@ -47,104 +47,104 @@
   <div id="navigation-bar-container"></div>
   
   <main>
-
     <div class="basket-page">
-    <div class="basket-content">
-    <p id="basket-empty-message" style="display: none; text-align: center; margin: 3rem 0; font-size: 1.1rem; color: #666;">Your basket is empty.</p>
-    <div class="basket-wrapper">
-      <div class="basket-left" id="basket-left">
-        <!-- JS will populate basket items here -->
-      </div>
-
-      <div class="basket-summary">
-        <div class="checkout-container" id="checkout-container">
-          <!-- Order Summary Box -->
-          <div class="summary-box">
-            <h3>Order Summary</h3>
-            
-            <div class="summary-item"><strong>Estimated Delivery:</strong> Arrives by Friday, June 7</div>
-
-            <div class="promo-code">
-              <input type="text" placeholder="Promo Code">
-              <button>Apply</button>
-            </div>
-
-            <div class="totals">
-              <div class="total-line">
-                <span>Subtotal:</span>
-                <span id="subtotal-display-summary">£0.00</span>
-              </div>
-              <div class="total-line">
-                <span>Shipping:</span>
-                <span>£0.00</span>
-              </div>
-              <div class="total-line final-total">
-                <span>Total:</span>
-                <span id="total-display-summary">£0.00</span>
-              </div>
-            </div>
-
-            <div class="button-row">
-              <button class="summary-btn secondary">Continue Shopping</button>
-              <button class="summary-btn" id="checkout-button">Secure Checkout</button>
-            </div>
+      <div class="basket-content">
+        <p id="basket-empty-message" style="display: none; text-align: center; margin: 3rem 0; font-size: 1.1rem; color: #666;">Your basket is empty.</p>
+        
+        <div class="basket-wrapper">
+          <div class="basket-left" id="basket-left">
+            <!-- JS will populate basket items here -->
           </div>
-          
-          <!-- Secure Checkout Box -->
-          <div class="checkout-box">
-            <button class="back-button" id="back-button">
-              <i class="fas fa-arrow-left"></i> Back to summary
-            </button>
-            
-            <h3>Secure Checkout</h3>
-            
-            <form id="checkout-form">
-              <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" placeholder="your@email.com" required>
-              </div>
-              
-              <div class="form-group">
-                <label for="name">Cardholder Name</label>
-                <input type="text" id="name" placeholder="Name on card" required>
-              </div>
-              
-              <div class="form-group">
-                <label for="card">Card Number</label>
-                <input type="text" id="card" placeholder="1234 5678 9012 3456" required>
-              </div>
-              
-              <div class="card-row">
-                <div class="form-group">
-                  <label for="expiry">Expiry Date</label>
-                  <input type="text" id="expiry" placeholder="MM/YY" required>
+
+          <div class="basket-summary">
+            <div class="checkout-container" id="checkout-container">
+              <!-- Order Summary Box -->
+              <div class="summary-box">
+                <h3>Order Summary</h3>
+                
+                <div class="summary-item"><strong>Estimated Delivery:</strong> <span>Arrives by Friday, June 7</span></div>
+
+                <div class="promo-code">
+                  <input type="text" placeholder="Promo Code">
+                  <button>Apply</button>
                 </div>
-                <div class="form-group">
-                  <label for="cvc">CVC</label>
-                  <input type="text" id="cvc" placeholder="123" required>
+
+                <div class="totals">
+                  <div class="total-line">
+                    <span>Subtotal:</span>
+                    <span id="subtotal-display-summary">£0.00</span>
+                  </div>
+                  <div class="total-line">
+                    <span>Shipping:</span>
+                    <span>£0.00</span>
+                  </div>
+                  <div class="total-line final-total">
+                    <span>Total:</span>
+                    <span id="total-display-summary">£0.00</span>
+                  </div>
                 </div>
-              </div>
-              
-              <div class="totals">
-                <div class="total-line final-total">
-                  <span>Total to pay:</span>
-                  <span id="total-display-checkout">£0.00</span>
+
+                <div class="button-row">
+                  <button class="summary-btn secondary">Continue Shopping</button>
+                  <button class="summary-btn" id="checkout-button">Secure Checkout</button>
                 </div>
               </div>
               
-              <div class="button-row">
-                <button type="submit" class="summary-btn">Complete Payment</button>
+              <!-- Secure Checkout Box -->
+              <div class="checkout-box">
+                <button class="back-button" id="back-button">
+                  <i class="fas fa-arrow-left"></i> Back to summary
+                </button>
+                
+                <h3>Secure Checkout</h3>
+                
+                <form id="checkout-form">
+                  <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="your@email.com" required>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="name">Cardholder Name</label>
+                    <input type="text" id="name" placeholder="Name on card" required>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="card">Card Number</label>
+                    <input type="text" id="card" placeholder="1234 5678 9012 3456" required>
+                  </div>
+                  
+                  <div class="card-row">
+                    <div class="form-group">
+                      <label for="expiry">Expiry Date</label>
+                      <input type="text" id="expiry" placeholder="MM/YY" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="cvc">CVC</label>
+                      <input type="text" id="cvc" placeholder="123" required>
+                    </div>
+                  </div>
+                  
+                  <div class="totals">
+                    <div class="total-line final-total">
+                      <span>Total to pay:</span>
+                      <span id="total-display-checkout">£0.00</span>
+                    </div>
+                  </div>
+                  
+                  <div class="button-row">
+                    <button type="submit" class="summary-btn">Complete Payment</button>
+                  </div>
+                  
+                  <div class="secure-badge">
+                    <i class="fas fa-lock"></i> Secure payment - Your data is protected
+                  </div>
+                </form>
               </div>
-              
-              <div class="secure-badge">
-                <i class="fas fa-lock"></i> Secure payment - Your data is protected
-              </div>
-            </form>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    </div>
     </div>
   </main>
 
