@@ -7,6 +7,296 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Basket Layout Styles */
+    .basket-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      padding: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .basket-left {
+      flex: 2;
+      min-width: 300px;
+    }
+    
+    .basket-summary {
+      flex: 1;
+      min-width: 300px;
+    }
+    
+    .basket-item-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .basket-item-row img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    
+    .basket-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .item-name {
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+    
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .quantity-controls button {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 1px solid #ddd;
+      background: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      line-height: 1;
+    }
+    
+    .item-price {
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: #333;
+    }
+    
+    /* Checkout Animation Styles */
+    .checkout-container {
+      position: relative;
+      width: 100%;
+      height: 450px; /* Fixed height to prevent layout shifts */
+      perspective: 1000px;
+    }
+    
+    .summary-box, .checkout-box {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+      backface-visibility: hidden;
+      transition: transform 0.6s ease-in-out;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .summary-box {
+      transform: rotateY(0deg);
+      z-index: 2;
+    }
+    
+    .checkout-box {
+      transform: rotateY(180deg);
+      z-index: 1;
+    }
+    
+    .flipped .summary-box {
+      transform: rotateY(180deg);
+    }
+    
+    .flipped .checkout-box {
+      transform: rotateY(0deg);
+    }
+    
+    /* Order Summary Styles */
+    .summary-box h3, .checkout-box h3 {
+      color: var(--electric-blue);
+      margin-top: 0;
+      margin-bottom: 1rem;
+      font-size: 1.4rem;
+      text-align: center;
+    }
+    
+    .summary-item {
+      margin: 0.8rem 0;
+      font-size: 0.95rem;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .promo-code {
+      display: flex;
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+    
+    .promo-code input {
+      flex: 1;
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+    
+    .promo-code button {
+      padding: 0.75rem 1rem;
+      background: var(--electric-blue);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    
+    .totals {
+      margin-top: auto;
+      padding-top: 1rem;
+    }
+    
+    .total-line {
+      display: flex;
+      justify-content: space-between;
+      margin: 0.5rem 0;
+      font-size: 0.95rem;
+    }
+    
+    .final-total {
+      font-weight: bold;
+      font-size: 1.1rem;
+      margin-top: 0.8rem;
+      padding-top: 0.8rem;
+      border-top: 1px solid #e0e0e0;
+    }
+    
+    /* Button Styles */
+    .button-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1.5rem;
+      gap: 1rem;
+    }
+    
+    .summary-btn, .action-button {
+      padding: 0.8rem 0;
+      background-color: var(--electric-blue);
+      color: white;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      flex: 1;
+      text-align: center;
+      font-size: 0.95rem;
+      font-family: 'Fredoka', sans-serif;
+    }
+    
+    .summary-btn.secondary, .action-button.secondary {
+      background-color: #e0e0e0;
+      color: #333;
+    }
+    
+    /* Checkout Form Styles */
+    .back-button {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background: none;
+      border: none;
+      color: #666;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      font-size: 0.9rem;
+    }
+    
+    .back-button i {
+      margin-right: 0.8rem; /* Increased spacing between arrow and text */
+    }
+    
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    
+    .checkout-box label {
+      display: block;
+      margin-bottom: 0.4rem;
+      font-size: 0.9rem;
+      color: #555;
+    }
+    
+    .checkout-box input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 0.95rem;
+    }
+    
+    .card-row {
+      display: flex;
+      gap: 1rem;
+    }
+    
+    .card-row .form-group {
+      flex: 1;
+    }
+    
+    .secure-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1rem;
+      color: #666;
+      font-size: 0.85rem;
+    }
+    
+    .secure-badge i {
+      margin-right: 0.5rem;
+      color: #2e7d32;
+    }
+    
+    /* Mobile Responsive Styles */
+    @media (max-width: 768px) {
+      .basket-wrapper {
+        padding: 1rem;
+        gap: 1.5rem;
+      }
+      
+      .basket-item-row img {
+        width: 80px;
+        height: 80px;
+      }
+      
+      .checkout-container {
+        height: 500px; /* Taller on mobile */
+      }
+      
+      .summary-box, .checkout-box {
+        padding: 1rem;
+      }
+      
+      .card-row {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+    }
+  </style>
 </head>
 <body>
   <!-- Top Announcement -->
@@ -44,7 +334,7 @@
   </nav>
   
   <main>
-    <p id="basket-empty-message" style="display: none; text-align: center;">Your basket is empty.</p>
+    <p id="basket-empty-message" style="display: none; text-align: center; margin: 3rem 0; font-size: 1.1rem; color: #666;">Your basket is empty.</p>
     <div class="basket-wrapper">
       <div class="basket-left" id="basket-left">
         <!-- JS will populate basket items here -->
@@ -79,8 +369,8 @@
             </div>
 
             <div class="button-row">
-              <button class="action-button secondary">Continue Shopping</button>
-              <button class="action-button" id="checkout-button">Secure Checkout</button>
+              <button class="summary-btn secondary">Continue Shopping</button>
+              <button class="summary-btn" id="checkout-button">Secure Checkout</button>
             </div>
           </div>
           
@@ -127,7 +417,7 @@
               </div>
               
               <div class="button-row">
-                <button type="submit" class="action-button">Complete Payment</button>
+                <button type="submit" class="summary-btn">Complete Payment</button>
               </div>
               
               <div class="secure-badge">
@@ -167,7 +457,7 @@
       const checkoutContainer = document.getElementById("checkout-container");
       const checkoutButton = document.getElementById("checkout-button");
       const backButton = document.getElementById("back-button");
-      const continueShoppingBtn = document.querySelector(".action-button.secondary");
+      const continueShoppingBtn = document.querySelector(".summary-btn.secondary");
 
       function calculateSubtotal(cart) {
         return cart.reduce((sum, item) => sum + item.qty * item.price, 0);
