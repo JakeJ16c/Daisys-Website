@@ -377,21 +377,25 @@
 
 .input-group {
   position: relative;
-  margin-bottom: 1.2rem;
+  margin-bottom: 1.5rem;
 }
 
 .input-group i {
   position: absolute;
-  left: 12px;
   top: 50%;
+  left: 14px;
   transform: translateY(-50%);
-  color: #999;
+  font-size: 1rem;
+  color: #888;
 }
 
 .input-group input {
-  padding-left: 40px;
+  width: 100%;
+  padding: 0.75rem 0.75rem 0.75rem 44px; /* 👈 enough room for the icon */
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
 }
-
 
     /* ========== Login Error Message ========== */
     #login-error {
