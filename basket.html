@@ -7,7 +7,227 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
-  
+  <style>
+    /* Checkout Animation Styles */
+    :root {
+      --primary-color: #113ccf;
+      --secondary-color: #0d47d9;
+      --accent-color: #2e7d32;
+      --transition-time: 0.5s;
+    }
+    
+    .checkout-container {
+      position: relative;
+      width: 100%;
+      perspective: 1000px;
+    }
+    
+    .summary-box, .checkout-box {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+      backface-visibility: hidden;
+      transition: transform var(--transition-time) ease-in-out, opacity var(--transition-time) ease-in-out;
+    }
+    
+    .summary-box {
+      transform: rotateY(0deg);
+      z-index: 2;
+    }
+    
+    .checkout-box {
+      transform: rotateY(180deg);
+      z-index: 1;
+    }
+    
+    .flipped .summary-box {
+      transform: rotateY(180deg);
+      opacity: 0;
+    }
+    
+    .flipped .checkout-box {
+      transform: rotateY(0deg);
+      opacity: 1;
+    }
+    
+    .summary-item {
+      margin: 0.8rem 0;
+      font-size: 0.95rem;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .promo-code {
+      display: flex;
+      gap: 0.5rem;
+      margin: 1.5rem 0;
+    }
+    
+    .promo-code input {
+      flex: 1;
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      transition: border-color 0.3s;
+    }
+    
+    .promo-code input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+    }
+    
+    .promo-code button {
+      padding: 0.75rem 1.2rem;
+      background: var(--accent-color);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background-color 0.3s;
+    }
+    
+    .promo-code button:hover {
+      background: #236b27;
+    }
+    
+    .totals {
+      margin-top: 1.5rem;
+    }
+    
+    .total-line {
+      display: flex;
+      justify-content: space-between;
+      margin: 0.5rem 0;
+    }
+    
+    .final-total {
+      font-weight: bold;
+      font-size: 1.2rem;
+      margin-top: 0.8rem;
+      padding-top: 0.8rem;
+      border-top: 1px solid #e0e0e0;
+    }
+    
+    .button-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 2rem;
+      gap: 1rem;
+    }
+    
+    .action-button {
+      padding: 0.9rem 0;
+      background: var(--secondary-color);
+      color: white;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      flex: 1;
+      text-align: center;
+      transition: all 0.3s;
+      font-size: 0.95rem;
+    }
+    
+    .action-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+    
+    .action-button.secondary {
+      background: #e0e0e0;
+      color: #333;
+    }
+    
+    .action-button.secondary:hover {
+      background: #d0d0d0;
+    }
+    
+    /* Checkout Form Styles */
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      color: #555;
+    }
+    
+    input[type="text"],
+    input[type="email"] {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      transition: border-color 0.3s;
+    }
+    
+    input[type="text"]:focus,
+    input[type="email"]:focus {
+      outline: none;
+      border-color: var(--primary-color);
+    }
+    
+    .card-row {
+      display: flex;
+      gap: 1rem;
+    }
+    
+    .card-row .form-group {
+      flex: 1;
+    }
+    
+    .secure-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1rem;
+      color: #666;
+      font-size: 0.85rem;
+    }
+    
+    .secure-badge i {
+      margin-right: 0.5rem;
+      color: var(--accent-color);
+    }
+    
+    .back-button {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background: none;
+      border: none;
+      color: #666;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      font-size: 0.9rem;
+    }
+    
+    .back-button:hover {
+      color: var(--primary-color);
+    }
+    
+    /* Increased spacing between arrow and text */
+    .back-button i {
+      margin-right: 0.8rem;
+    }
+    
+    /* Animation for button press */
+    .action-button:active {
+      transform: scale(0.98);
+    }
+  </style>
 </head>
 <body>
   <!-- Top Announcement -->
@@ -26,16 +246,14 @@
       <a id="auth-icon" class="login-icon" href="#" title="User Menu">
         <i id="auth-icon-symbol" class="fas fa-user"></i>
       </a>
-
-</div>
+    </div>
     
     <!-- 👤 User Dropdown (dynamic) -->
     <div id="logout-dropdown" class="hidden" style="position:absolute; right:1rem; top:4.2rem; background:white; border:1px solid #ccc; padding:1rem; border-radius:8px; z-index:1000; box-shadow:0 4px 12px rgba(0,0,0,0.1); min-width:160px;">
       <div id="user-dropdown-content">
         <!-- Content will be filled in by JS -->
-  </div>
-</div>
-
+      </div>
+    </div>
   </header>
 
   <!-- Navigation Bar -->
@@ -45,29 +263,102 @@
     <a href="#">About</a>
     <a href="contacts.html">Contact</a>
   </nav>
-  <main>
   
-  <p id="basket-empty-message" style="display: none; text-align: center;">Your basket is empty.</p>
-  <div class="basket-wrapper">
-  <div class="basket-left" id="basket-left">
-    <!-- JS will populate basket items here -->
-  </div>
-
-  <div class="basket-summary">
-    <div class="summary-box">
-      <h3>Order Summary</h3>
-      <div id="subtotal-display">Subtotal: £0.00</div>
-      <div class="summary-buttons">
-      <a href="shop.html" class="summary-btn secondary">Continue Shopping</a>
-      <button id="checkout-btn" class="summary-btn">Checkout</button>
+  <main>
+    <p id="basket-empty-message" style="display: none; text-align: center;">Your basket is empty.</p>
+    <div class="basket-wrapper">
+      <div class="basket-left" id="basket-left">
+        <!-- JS will populate basket items here -->
       </div>
 
+      <div class="basket-summary">
+        <div class="checkout-container" id="checkout-container">
+          <!-- Order Summary Box -->
+          <div class="summary-box">
+            <h3>Order Summary</h3>
+            
+            <div class="summary-item"><strong>Estimated Delivery:</strong> Arrives by Friday, June 7</div>
+
+            <div class="promo-code">
+              <input type="text" placeholder="Promo Code">
+              <button>Apply</button>
+            </div>
+
+            <div class="totals">
+              <div class="total-line">
+                <span>Subtotal:</span>
+                <span id="subtotal-display-summary">£0.00</span>
+              </div>
+              <div class="total-line">
+                <span>Shipping:</span>
+                <span>£0.00</span>
+              </div>
+              <div class="total-line final-total">
+                <span>Total:</span>
+                <span id="total-display-summary">£0.00</span>
+              </div>
+            </div>
+
+            <div class="button-row">
+              <button class="action-button secondary">Continue Shopping</button>
+              <button class="action-button" id="checkout-button">Secure Checkout</button>
+            </div>
+          </div>
+          
+          <!-- Secure Checkout Box -->
+          <div class="checkout-box">
+            <button class="back-button" id="back-button">
+              <i class="fas fa-arrow-left"></i> Back to summary
+            </button>
+            
+            <h3>Secure Checkout</h3>
+            
+            <form id="checkout-form">
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="your@email.com" required>
+              </div>
+              
+              <div class="form-group">
+                <label for="name">Cardholder Name</label>
+                <input type="text" id="name" placeholder="Name on card" required>
+              </div>
+              
+              <div class="form-group">
+                <label for="card">Card Number</label>
+                <input type="text" id="card" placeholder="1234 5678 9012 3456" required>
+              </div>
+              
+              <div class="card-row">
+                <div class="form-group">
+                  <label for="expiry">Expiry Date</label>
+                  <input type="text" id="expiry" placeholder="MM/YY" required>
+                </div>
+                <div class="form-group">
+                  <label for="cvc">CVC</label>
+                  <input type="text" id="cvc" placeholder="123" required>
+                </div>
+              </div>
+              
+              <div class="totals">
+                <div class="total-line final-total">
+                  <span>Total to pay:</span>
+                  <span id="total-display-checkout">£0.00</span>
+                </div>
+              </div>
+              
+              <div class="button-row">
+                <button type="submit" class="action-button">Complete Payment</button>
+              </div>
+              
+              <div class="secure-badge">
+                <i class="fas fa-lock"></i> Secure payment - Your data is protected
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
-
-
-  </section>
   </main>
 
   <!-- Footer -->
@@ -82,13 +373,22 @@
   <!-- Admin Auth -->
   <script type="module" src="admin-auth.js"></script>
 
+  <!-- Firebase Checkout Integration -->
+  <script type="module" src="basket-checkout.js"></script>
+
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const cartKey = "daisyCart";
       const basket = JSON.parse(localStorage.getItem(cartKey)) || [];
       const container = document.getElementById("basket-left");
       const emptyMessage = document.getElementById("basket-empty-message");
-      const subtotalDisplay = document.getElementById("subtotal-display");
+      const subtotalDisplaySummary = document.getElementById("subtotal-display-summary");
+      const totalDisplaySummary = document.getElementById("total-display-summary");
+      const totalDisplayCheckout = document.getElementById("total-display-checkout");
+      const checkoutContainer = document.getElementById("checkout-container");
+      const checkoutButton = document.getElementById("checkout-button");
+      const backButton = document.getElementById("back-button");
+      const continueShoppingBtn = document.querySelector(".action-button.secondary");
 
       function calculateSubtotal(cart) {
         return cart.reduce((sum, item) => sum + item.qty * item.price, 0);
@@ -97,36 +397,42 @@
       function updateUI() {
         container.innerHTML = "";
         const updatedCart = JSON.parse(localStorage.getItem(cartKey)) || [];
+        const subtotal = calculateSubtotal(updatedCart);
+        const total = subtotal; // Add shipping or discounts here if needed
 
         if (updatedCart.length === 0) {
           emptyMessage.style.display = "block";
-          subtotalDisplay.textContent = "";
+          subtotalDisplaySummary.textContent = "£0.00";
+          totalDisplaySummary.textContent = "£0.00";
+          totalDisplayCheckout.textContent = "£0.00";
           return;
         } else {
           emptyMessage.style.display = "none";
         }
 
         updatedCart.forEach((item, index) => {
-  const itemDiv = document.createElement("div");
-  itemDiv.className = "basket-item-row";
+          const itemDiv = document.createElement("div");
+          itemDiv.className = "basket-item-row";
 
-  itemDiv.innerHTML = `
-  <img src="${item.image}" alt="${item.name}">
-  <div class="basket-info">
-    <span class="item-name">${item.name}</span>
-    <div class="quantity-controls">
-      <button class="decrease" data-index="${index}">-</button>
-      <span>${item.qty}</span>
-      <button class="increase" data-index="${index}">+</button>
-    </div>
-  </div>
-  <div class="item-price">£${(item.price * item.qty).toFixed(2)}</div>
-`;
+          itemDiv.innerHTML = `
+            <img src="${item.image}" alt="${item.name}">
+            <div class="basket-info">
+              <span class="item-name">${item.name}</span>
+              <div class="quantity-controls">
+                <button class="decrease" data-index="${index}">-</button>
+                <span>${item.qty}</span>
+                <button class="increase" data-index="${index}">+</button>
+              </div>
+            </div>
+            <div class="item-price">£${(item.price * item.qty).toFixed(2)}</div>
+          `;
 
-  container.appendChild(itemDiv);
-});
+          container.appendChild(itemDiv);
+        });
 
-        subtotalDisplay.textContent = `Subtotal: £${calculateSubtotal(updatedCart).toFixed(2)}`;
+        subtotalDisplaySummary.textContent = `£${subtotal.toFixed(2)}`;
+        totalDisplaySummary.textContent = `£${total.toFixed(2)}`;
+        totalDisplayCheckout.textContent = `£${total.toFixed(2)}`;
         addButtonHandlers();
       }
 
@@ -156,15 +462,35 @@
         });
       }
 
+      // Initialize UI
       updateUI();
 
-      const checkoutBtn = document.getElementById("checkout-btn");
-if (checkoutBtn) {
-  checkoutBtn.addEventListener("click", () => {
-    window.location.href = "checkout.html"; // Adjust if your checkout page is in a subfolder
-  });
-}
+      // Checkout animation handlers
+      if (checkoutButton) {
+        checkoutButton.addEventListener("click", () => {
+          const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+          if (cart.length === 0) {
+            alert("Your basket is empty. Please add items before proceeding to checkout.");
+            return;
+          }
+          checkoutContainer.classList.add("flipped");
+        });
+      }
+      
+      if (backButton) {
+        backButton.addEventListener("click", () => {
+          checkoutContainer.classList.remove("flipped");
+        });
+      }
+      
+      if (continueShoppingBtn) {
+        continueShoppingBtn.addEventListener("click", () => {
+          window.location.href = "shop.html";
+        });
+      }
 
+      // Note: The checkout form submission is now handled by basket-checkout.js
+      // which includes the Firebase integration for order submission
     });
   </script>
 </body>
