@@ -49,7 +49,19 @@ form.addEventListener('submit', async (e) => {
 
     // Redirect to account page after successful registration
     window.location.href = "account.html";
+
+    function showToast(message, duration = 4000) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.remove("hidden");
+      toast.classList.add("show");
     
+      setTimeout(() => {
+        toast.classList.remove("show");
+        toast.classList.add("hidden");
+      }, duration);
+    }
+
     if (error.code === "auth/email-already-in-use") {
       showToast("This email is already registered. Try logging in.");
     } else {
