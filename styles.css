@@ -698,8 +698,13 @@ input[type="range"] {
     }
     
     .checkout-box {
-      transform: rotateY(180deg);
-      z-index: 1;
+		  transform: rotateY(180deg);
+		  z-index: 1;
+		  max-width: 360px;
+		  margin-left: auto;
+		  margin-right: auto;
+		  width: 100%;
+		  box-sizing: border-box;
     }
     
     .flipped .summary-box {
