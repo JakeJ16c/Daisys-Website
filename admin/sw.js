@@ -35,9 +35,11 @@ const ASSETS_TO_CACHE = [
   './orders.js',
   './settings.html',
   './analytics.html',
+  './analytics.js',
+  './site-design.html',
+  './marquee-manager.js',
   './update-popup.js',
   './manifest.webmanifest',
-  '../icon-512.png',
   '../IMG_8861.png',
   '../favicon_circle.ico'
 ];
