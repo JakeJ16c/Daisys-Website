@@ -36,6 +36,8 @@ const ASSETS_TO_CACHE = [
   './settings.html',
   './analytics.html',
   './analytics.js',
+  './site-design.html',
+  './marquee-manager.js',
   './update-popup.js',
   './manifest.webmanifest',
   '../icon-512.png',
