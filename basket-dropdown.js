@@ -3,6 +3,25 @@ document.addEventListener("DOMContentLoaded", () => {
   const basketPreview = document.getElementById("basket-preview");
   const cartIcon = document.querySelector(".cart-icon");
 
+  // 🔽 Inject basket animation styles
+  const style = document.createElement("style");
+  style.textContent = `
+    #basket-preview {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, opacity 0.3s ease;
+      transform-origin: top;
+      pointer-events: none;
+    }
+    #basket-preview.show {
+      max-height: 1000px;
+      opacity: 1;
+      pointer-events: auto;
+    }
+  `;
+  document.head.appendChild(style);
+
   function updateBasketPreview(keepVisible = false) {
     window.updateBasketPreview = updateBasketPreview;
     const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
@@ -17,26 +36,6 @@ document.addEventListener("DOMContentLoaded", () => {
     basketPreview.style.top = "85px";
     basketPreview.style.right = "20px";
     basketPreview.style.zIndex = "1000";
-    // Inject CSS for slide-down animation
-    const style = document.createElement('style');
-    style.textContent = `
-      #basket-preview {
-        max-height: 0;
-        opacity: 0;
-        overflow: hidden;
-        transition: max-height 0.4s ease, opacity 0.3s ease;
-        transform-origin: top;
-        pointer-events: none;
-      }
-    
-      #basket-preview.show {
-        max-height: 1000px;
-        opacity: 1;
-        pointer-events: auto;
-      }
-    `;
-    document.head.appendChild(style);
-
 
     // Header
     const header = document.createElement("h3");
@@ -48,16 +47,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Divider
     const hr = document.createElement("hr");
-    hr.style.margin = "0.5rem 0";    
+    hr.style.margin = "0.5rem 0";
     basketPreview.appendChild(hr);
 
     if (cart.length === 0) {
-          basketPreview.innerHTML += `
-      <p style="text-align: center; margin-top: 1rem;">
-        <em>Your basket is empty.</em>
-      </p>
-    `;
-
+      basketPreview.innerHTML += `
+        <p style="text-align: center; margin-top: 1rem;">
+          <em>Your basket is empty.</em>
+        </p>
+      `;
+      if (keepVisible) basketPreview.classList.add("show");
       return;
     }
 
@@ -123,7 +122,6 @@ document.addEventListener("DOMContentLoaded", () => {
           cart.splice(index, 1);
         }
         localStorage.setItem(cartKey, JSON.stringify(cart));
-        basketPreview.classList.remove("show");
         updateBasketPreview(true);
       });
 
@@ -141,7 +139,6 @@ document.addEventListener("DOMContentLoaded", () => {
         e.stopPropagation();
         item.qty++;
         localStorage.setItem(cartKey, JSON.stringify(cart));
-        basketPreview.classList.remove("show");
         updateBasketPreview(true);
       });
 
@@ -210,7 +207,12 @@ document.addEventListener("DOMContentLoaded", () => {
     buttonRow.appendChild(checkoutBtn);
     basketPreview.appendChild(buttonRow);
 
-    if (keepVisible) basketPreview.classList.remove("show");
+    // ✅ Toggle visibility based on flag
+    if (keepVisible) {
+      basketPreview.classList.add("show");
+    } else {
+      basketPreview.classList.remove("show");
+    }
   }
 
   if (cartIcon && basketPreview) {
@@ -225,7 +227,7 @@ document.addEventListener("DOMContentLoaded", () => {
         !basketPreview.contains(event.target) &&
         !event.target.classList.contains("add-to-basket")
       ) {
-        basketPreview.classList.add("show");
+        basketPreview.classList.remove("show");
       }
     });
   }
