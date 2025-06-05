@@ -1,34 +1,56 @@
 // login-auth.js
-import { auth } from './firebase.js';
+import { auth, db } from './firebase.js';
 import {
   setPersistence,
   browserLocalPersistence,
-  signInWithEmailAndPassword
+  signInWithEmailAndPassword,
+  signOut
 } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
-const form      = document.getElementById('loginForm');
+import { doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+
+const form = document.getElementById('loginForm');
 const loginError = document.getElementById('login-error');
-// keep the user signed in across refreshes
+
+// Keep the user signed in across refreshes
 setPersistence(auth, browserLocalPersistence);
+
 form.addEventListener('submit', async e => {
   e.preventDefault();
-  const email    = document.getElementById('email').value.trim();
+
+  const email = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value;
+
   try {
     const { user } = await signInWithEmailAndPassword(auth, email, password);
-    if (user.email === 'daisybelle76@gmail.com') {
-      // Set admin flag in localStorage
-      localStorage.setItem('isAdmin', 'true');
-      console.log('✅ Admin status set in localStorage');
-      // admin → dashboard
-      window.location.href = 'admin.html';
-    } else {
-      // Ensure non-admin users don't have admin flag
-      localStorage.setItem('isAdmin', 'false');
-      // everyone else → home
-      window.location.href = 'index.html';
+
+    if (!user.emailVerified) {
+      loginError.textContent = '❌ Please verify your email before logging in.';
+      loginError.style.display = 'block';
+      await signOut(auth);
+      return;
     }
+
+    // ✅ Ensure Firestore user doc exists
+    const docRef = doc(db, 'users', user.uid);
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+      const nameParts = user.displayName ? user.displayName.split(' ') : ['', ''];
+      const [firstName, lastName] = nameParts;
+
+      await setDoc(docRef, {
+        firstName,
+        lastName,
+        email: user.email,
+        createdAt: new Date()
+      });
+    }
+
+    // ✅ Redirect all customers to Their Account Page
+    window.location.href = 'account.html';
+
   } catch (err) {
-    loginError.textContent   = '❌ ' + err.message.replace('Firebase: ', '');
+    loginError.textContent = '❌ ' + err.message.replace('Firebase: ', '');
     loginError.style.display = 'block';
   }
 });
