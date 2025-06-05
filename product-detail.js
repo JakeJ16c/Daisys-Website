@@ -95,5 +95,4 @@ document.querySelector('.add-to-basket').addEventListener('click', () => {
     // Trigger basket open if exists
     const basketIcon = document.querySelector('.cart-icon');
     if (basketIcon) basketIcon.click();
-  });
 });
