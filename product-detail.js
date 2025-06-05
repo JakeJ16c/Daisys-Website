@@ -92,8 +92,14 @@ function setupControls() {
     }
 
     localStorage.setItem("daisyCart", JSON.stringify(basket));
-    alert("✅ Added to basket!");
-  });
+    
+      // 🔄 Show and refresh the basket dropdown
+      const basketDropdown = document.getElementById('basket-preview');
+      if (typeof updateBasketDropdown === 'function') {
+        updateBasketDropdown();
+      }
+      basketDropdown.classList.add('show');
+    });
 }
 
 // Init when DOM fully loaded
