@@ -17,6 +17,26 @@ document.addEventListener("DOMContentLoaded", () => {
     basketPreview.style.top = "85px";
     basketPreview.style.right = "20px";
     basketPreview.style.zIndex = "1000";
+    // Inject CSS for slide-down animation
+    const style = document.createElement('style');
+    style.textContent = `
+      #basket-preview {
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease, opacity 0.3s ease;
+        transform-origin: top;
+        pointer-events: none;
+      }
+    
+      #basket-preview.show {
+        max-height: 1000px;
+        opacity: 1;
+        pointer-events: auto;
+      }
+    `;
+    document.head.appendChild(style);
+
 
     // Header
     const header = document.createElement("h3");
@@ -103,7 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
           cart.splice(index, 1);
         }
         localStorage.setItem(cartKey, JSON.stringify(cart));
-        basketPreview.classList.remove("hidden");
+        basketPreview.classList.remove("show");
         updateBasketPreview(true);
       });
 
@@ -121,7 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
         e.stopPropagation();
         item.qty++;
         localStorage.setItem(cartKey, JSON.stringify(cart));
-        basketPreview.classList.remove("hidden");
+        basketPreview.classList.remove("show");
         updateBasketPreview(true);
       });
 
@@ -190,13 +210,13 @@ document.addEventListener("DOMContentLoaded", () => {
     buttonRow.appendChild(checkoutBtn);
     basketPreview.appendChild(buttonRow);
 
-    if (keepVisible) basketPreview.classList.remove("hidden");
+    if (keepVisible) basketPreview.classList.remove("show");
   }
 
   if (cartIcon && basketPreview) {
     cartIcon.addEventListener("click", (e) => {
       e.preventDefault();
-      basketPreview.classList.toggle("hidden");
+      basketPreview.classList.toggle("show");
     });
 
     document.addEventListener("click", (event) => {
@@ -205,7 +225,7 @@ document.addEventListener("DOMContentLoaded", () => {
         !basketPreview.contains(event.target) &&
         !event.target.classList.contains("add-to-basket")
       ) {
-        basketPreview.classList.add("hidden");
+        basketPreview.classList.add("show");
       }
     });
   }
