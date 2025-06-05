@@ -299,6 +299,40 @@
       color: #555;
     }
 
+		/* ========== Homepage Reviews Section ========== */
+    .reviews-section {
+      padding: 4rem 1.5rem;
+      background: #fdfdff;
+      text-align: center;
+    }
+    .reviews-section h2 {
+      font-size: 2rem;
+      margin-bottom: 2rem;
+      color: #204ECF;
+    }
+    .reviews-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .review-card {
+      flex: 1 1 250px;
+      background: #ffffff;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .review-card p {
+      font-size: 1rem;
+    }
+    .review-card .author {
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+
     /* ========== Login Container ========== */
     .login-container {
       max-width: 400px;
