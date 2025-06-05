@@ -28,13 +28,6 @@ form.addEventListener('submit', async (e) => {
       displayName: `${firstName} ${lastName}`
     });
 
-    await setDoc(doc(db, "users", user.uid), {
-      firstName,
-      lastName,
-      email,
-      createdAt: new Date()
-    });
-
     // ✅ Send email verification
     await sendEmailVerification(user);
 
