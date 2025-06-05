@@ -2,31 +2,25 @@
 import { db } from './firebase.js';
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
-// Get the product ID from the URL
+// Get product ID
 const params = new URLSearchParams(window.location.search);
 const productId = params.get("id");
 
 let currentProduct = null;
 
+// Load Product from Firestore
 async function loadProduct() {
-  if (!productId) {
-    document.querySelector('.product-layout').innerHTML = '<p>Invalid product ID.</p>';
-    return;
-  }
+  if (!productId) return;
 
   try {
     const ref = doc(db, "Products", productId);
     const snap = await getDoc(ref);
 
-    if (!snap.exists()) {
-      document.querySelector('.product-layout').innerHTML = '<p>Product not found.</p>';
-      return;
-    }
+    if (!snap.exists()) return;
 
     const data = snap.data();
-    currentProduct = { ...data, id: productId }; // Store for cart logic
+    currentProduct = { ...data, id: productId };
 
-    // Populate content
     document.querySelector('.product-title').textContent = data.name;
     document.querySelector('.product-description').textContent = data.description || '';
     document.querySelector('.product-price').textContent = `£${parseFloat(data.price).toFixed(2)}`;
@@ -39,24 +33,34 @@ async function loadProduct() {
     mainImg.alt = data.name;
 
     thumbs.forEach((thumb, i) => {
-      thumb.src = images[i] || '';
-      thumb.addEventListener('click', () => {
-        mainImg.src = thumb.src;
-      });
+      if (images[i]) {
+        thumb.src = images[i];
+        thumb.alt = `Thumb ${i + 1}`;
+        thumb.style.display = 'block';
+        thumb.addEventListener('click', () => {
+          mainImg.src = thumb.src;
+        });
+      } else {
+        thumb.style.display = 'none';
+      }
     });
 
   } catch (error) {
     console.error("Error loading product:", error);
-    document.querySelector('.product-layout').innerHTML = '<p>Error loading product.</p>';
   }
 }
 
-// Qty controls
-document.addEventListener('DOMContentLoaded', () => {
+// Setup Quantity and Basket Controls
+function setupControls() {
   const qtySpan = document.querySelector('.quantity-selector span');
   const minusBtn = document.querySelector('.quantity-selector button:first-of-type');
   const plusBtn = document.querySelector('.quantity-selector button:last-of-type');
   const addBtn = document.querySelector('.add-to-basket');
+
+  if (!qtySpan || !minusBtn || !plusBtn || !addBtn) {
+    console.warn("❌ Buttons not found.");
+    return;
+  }
 
   minusBtn.addEventListener('click', () => {
     let qty = parseInt(qtySpan.textContent);
@@ -69,7 +73,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   addBtn.addEventListener('click', () => {
-    if (!currentProduct) return alert("Product not loaded yet.");
+    if (!currentProduct) return alert("Product not ready");
+
     const qty = parseInt(qtySpan.textContent);
     const basket = JSON.parse(localStorage.getItem("basket") || "[]");
 
@@ -87,8 +92,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     localStorage.setItem("basket", JSON.stringify(basket));
-    alert("Added to basket!");
+    alert("✅ Added to basket!");
   });
-});
+}
 
-loadProduct();
+// Init when DOM fully loaded
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadProduct();
+  setupControls();
+});
