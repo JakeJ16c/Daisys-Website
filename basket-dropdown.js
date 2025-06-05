@@ -19,7 +19,6 @@ document.addEventListener("DOMContentLoaded", () => {
       opacity: 1;
       pointer-events: auto;
       background-color: white;
-      top: 67px;
     }
   `;
   document.head.appendChild(style);
@@ -35,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
     basketPreview.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)";
     basketPreview.style.borderRadius = "12px";
     basketPreview.style.position = "fixed";
-    basketPreview.style.top = "67px";
+    basketPreview.style.top = "98px";
     basketPreview.style.right = "20px";
     basketPreview.style.zIndex = "1000";
 
