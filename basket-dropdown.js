@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
       opacity: 1;
       pointer-events: auto;
       background-color: white;
+      top: 67px;
     }
   `;
   document.head.appendChild(style);
