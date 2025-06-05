@@ -26,8 +26,26 @@ async function loadProduct() {
     // Fill in the HTML elements
     document.querySelector('.product-title').textContent = data.name;
     document.querySelector('.product-price').textContent = `£${parseFloat(data.price).toFixed(2)}`;
-    document.querySelector('.product-image img').src = Array.isArray(data.images) ? data.images[0] : data.image;
-    document.querySelector('.product-image img').alt = data.name;
+    const mainImg = document.getElementById('product-image');
+    const thumb1 = document.getElementById('thumb1');
+    const thumb2 = document.getElementById('thumb2');
+    const thumb3 = document.getElementById('thumb3');
+    
+    const images = Array.isArray(data.images) ? data.images : [data.image];
+    
+    mainImg.src = images[0] || '';
+    mainImg.alt = data.name;
+    
+    thumb1.src = images[0] || '';
+    thumb2.src = images[1] || '';
+    thumb3.src = images[2] || '';
+    
+    [thumb1, thumb2, thumb3].forEach(thumb => {
+      thumb.addEventListener('click', () => {
+        mainImg.src = thumb.src;
+      });
+    });
+
     document.querySelector('.product-description').textContent = data.description || '';
 
     // Optional: dynamically render sizes if you have that
