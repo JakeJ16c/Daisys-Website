@@ -767,7 +767,17 @@ input[type="range"] {
     }
 
 	/* ========== Product Page Styling ========== */
-    .product-container {
+		.product-layout {
+		  display: flex;
+		  align-items: flex-start;
+		  gap: 4rem;
+		  max-width: 1200px;
+		  margin: 2rem;
+		  padding: 0 2rem;
+		}
+		    
+		
+		.product-container {
       display: flex;
       flex-wrap: wrap;
       padding: 2rem;
