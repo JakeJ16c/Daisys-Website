@@ -91,7 +91,7 @@ function setupControls() {
       });
     }
 
-    localStorage.setItem("basket", JSON.stringify(basket));
+    localStorage.setItem("daisyCart", JSON.stringify(basket));
     alert("✅ Added to basket!");
   });
 }
