@@ -28,15 +28,16 @@
       text-align: center;
     }
 
-    .marquee-track {
-      display: inline-flex;
-      animation: scroll-left 20s linear infinite;
-      gap: 3rem;
+    .scrollable-track {
+      display: flex;
+      gap: 2rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding-bottom: 1rem;
+      scrollbar-width: none;
     }
-
-    @keyframes scroll-left {
-      from { transform: translateX(0); }
-      to { transform: translateX(-50%); }
+    .scrollable-track::-webkit-scrollbar {
+      display: none;
     }
 
     .marquee-item {
@@ -149,7 +150,7 @@
 
   <div class="marquee-container">
     <h2>Manage Marquee Images</h2>
-    <div class="marquee-track" id="marquee-editor">
+    <div class="scrollable-track" id="marquee-editor">
       <!-- Items populated by marquee-manager.js -->
     </div>
   </div>
