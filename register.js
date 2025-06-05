@@ -66,5 +66,3 @@ function showToast(message, duration = 4000) {
     toast.classList.add("hidden");
   }, duration);
 }
-
-}
