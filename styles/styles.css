@@ -81,7 +81,7 @@
       color: var(--electric-blue);
     }
 
-    .basket-preview {
+    #basket-preview {
       position: absolute;
       top: 100%;
       right: 1rem;
