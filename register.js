@@ -1,14 +1,7 @@
 // Import Firebase setup and needed functions
 import { auth, db } from './firebase.js';
-import {
-  createUserWithEmailAndPassword,
-  updateProfile
-} from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
-
-import {
-  doc,
-  setDoc
-} from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
+import { doc, setDoc } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
 
 // Reference to the form element
 const form = document.getElementById('register-form');
@@ -42,10 +35,20 @@ form.addEventListener('submit', async (e) => {
       createdAt: new Date()
     });
 
-    window.location.href = "account.html";
+    // ✅ Send email verification
+    await sendEmailVerification(user);
+
+    showToast("Verification email sent! Please check your inbox.");
+    
+    // ✅ Redirect after short delay
+    setTimeout(() => {
+      window.location.href = "account.html";
+    }, 2500);
+    
   } catch (error) {
     if (error.code === "auth/email-already-in-use") {
-      showToast("This email is already registered. Try logging in.");
+      showToast("This email is already registered. Redirecting you to Login.");
+      window.location.href = "login.html";
     } else {
       showToast("Error: " + error.message);
     }
@@ -64,4 +67,3 @@ function showToast(message, duration = 4000) {
     toast.classList.add("hidden");
   }, duration);
 }
-
