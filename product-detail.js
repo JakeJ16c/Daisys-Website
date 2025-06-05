@@ -72,7 +72,7 @@ document.querySelector('.quantity-selector button:last-of-type').addEventListene
   quantityDisplay.textContent = quantity;
 });
 
-document.querySelector('.add-to-cart').addEventListener('click', () => {
+document.querySelector('.add-to-basket').addEventListener('click', () => {
   const title = document.querySelector('.product-title').textContent;
   const price = parseFloat(document.querySelector('.product-price').textContent.replace('£', ''));
   const image = document.getElementById('product-image').src;
@@ -85,5 +85,16 @@ document.querySelector('.add-to-cart').addEventListener('click', () => {
     cart.push({ id: productId, name: title, price, image, qty: quantity });
   }
   localStorage.setItem('daisyCart', JSON.stringify(cart));
-  alert(`${title} added to cart!`);
+  
+    // Refresh basket dropdown if available
+    const updateBasketDropdown = window.updateBasketDropdown;
+    if (typeof updateBasketDropdown === 'function') {
+      updateBasketDropdown();
+    }
+
+    // Trigger basket open if exists
+    const basketIcon = document.querySelector('.cart-icon');
+    if (basketIcon) basketIcon.click();
+  });
+}
 });
