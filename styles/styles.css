@@ -891,15 +891,6 @@ input[type="range"] {
       cursor: pointer;
       font-weight: bold;
 	    margin-left: 0;
-    }
-
-    .add-to-cart {
-      background-color: white;
-      color: var(--electric-blue);
-      border: 2px solid var(--electric-blue);
-    }
-
-    .buy-now {
       background-color: var(--electric-blue);
       color: white;
     }
