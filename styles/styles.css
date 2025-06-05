@@ -781,7 +781,6 @@ input[type="range"] {
       display: flex;
       flex-wrap: wrap;
       padding: 2rem;
-      gap: 2rem;
       justify-content: center;
       background-color: var(--light-pink);
     }
