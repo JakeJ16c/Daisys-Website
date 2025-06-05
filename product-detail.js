@@ -58,3 +58,32 @@ async function loadProduct() {
 }
 
 loadProduct();
+
+let quantity = 1;
+const quantityDisplay = document.querySelector('.quantity-selector span');
+
+document.querySelector('.quantity-selector button:first-of-type').addEventListener('click', () => {
+  if (quantity > 1) quantity--;
+  quantityDisplay.textContent = quantity;
+});
+
+document.querySelector('.quantity-selector button:last-of-type').addEventListener('click', () => {
+  quantity++;
+  quantityDisplay.textContent = quantity;
+});
+
+document.querySelector('.add-to-cart').addEventListener('click', () => {
+  const title = document.querySelector('.product-title').textContent;
+  const price = parseFloat(document.querySelector('.product-price').textContent.replace('£', ''));
+  const image = document.getElementById('product-image').src;
+
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const existing = cart.find(item => item.id === productId);
+  if (existing) {
+    existing.qty += quantity;
+  } else {
+    cart.push({ id: productId, name: title, price, image, qty: quantity });
+  }
+  localStorage.setItem('cart', JSON.stringify(cart));
+  alert(`${title} added to cart!`);
+});
