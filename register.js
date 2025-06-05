@@ -47,7 +47,7 @@ form.addEventListener('submit', async (e) => {
     
   } catch (error) {
     if (error.code === "auth/email-already-in-use") {
-      showToast(`This email is already registered.<br><a href="login.html" style="color: var(--primary-color); text-decoration: underline;">Click here to log in.</a>`, 8000);
+      showToast(`This email is already registered. Click <a href="login.html" style="color: var(--primary-color); text-decoration: underline;">here</a> to log in.`, 8000);
     } else {
       showToast("Error: " + error.message);
     }
