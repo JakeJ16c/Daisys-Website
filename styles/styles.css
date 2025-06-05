@@ -795,6 +795,7 @@ input[type="range"] {
 		  display: flex;
 		  gap: 20px;
 		  align-items: flex-start;
+			padding: 2rem;
 		}
 		
 		.thumbnail-stack {
