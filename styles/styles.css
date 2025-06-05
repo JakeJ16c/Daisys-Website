@@ -81,11 +81,7 @@
       color: var(--electric-blue);
     }
 
-    .basket-wrapper {
-		  position: relative;
-		}
-		
-		#basket-preview {
+		.basket-preview {
 		  position: absolute;
 		  top: 100%;
 		  right: 0;
@@ -99,11 +95,6 @@
 		  overflow: hidden;
 		  opacity: 0;
 		  transition: max-height 0.3s ease, opacity 0.3s ease;
-		}
-		
-		#basket-preview.show {
-		  max-height: 800px;
-		  opacity: 1;
 		}
 
     .hidden { display: none; }
