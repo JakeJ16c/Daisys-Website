@@ -77,13 +77,13 @@ document.querySelector('.add-to-cart').addEventListener('click', () => {
   const price = parseFloat(document.querySelector('.product-price').textContent.replace('£', ''));
   const image = document.getElementById('product-image').src;
 
-  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const cart = JSON.parse(localStorage.getItem('daisyCart')) || [];
   const existing = cart.find(item => item.id === productId);
   if (existing) {
     existing.qty += quantity;
   } else {
     cart.push({ id: productId, name: title, price, image, qty: quantity });
   }
-  localStorage.setItem('cart', JSON.stringify(cart));
+  localStorage.setItem('daisyCart', JSON.stringify(cart));
   alert(`${title} added to cart!`);
 });
