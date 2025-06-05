@@ -1,28 +1,37 @@
+// /js/product-detail.js
 import { db } from './firebase.js';
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
+// Get the product ID from the URL
 const params = new URLSearchParams(window.location.search);
 const productId = params.get("id");
 
-let quantity = 1;
+let currentProduct = null;
 
 async function loadProduct() {
-  if (!productId) return;
+  if (!productId) {
+    document.querySelector('.product-layout').innerHTML = '<p>Invalid product ID.</p>';
+    return;
+  }
 
   try {
     const ref = doc(db, "Products", productId);
     const snap = await getDoc(ref);
-    if (!snap.exists()) return;
+
+    if (!snap.exists()) {
+      document.querySelector('.product-layout').innerHTML = '<p>Product not found.</p>';
+      return;
+    }
 
     const data = snap.data();
-    const images = Array.isArray(data.images) ? data.images : [data.image];
+    currentProduct = { ...data, id: productId }; // Store for cart logic
 
     // Populate content
     document.querySelector('.product-title').textContent = data.name;
     document.querySelector('.product-description').textContent = data.description || '';
     document.querySelector('.product-price').textContent = `£${parseFloat(data.price).toFixed(2)}`;
 
-    // Load images
+    const images = Array.isArray(data.images) ? data.images : [data.image];
     const mainImg = document.getElementById('product-image');
     const thumbs = [document.getElementById('thumb1'), document.getElementById('thumb2'), document.getElementById('thumb3')];
 
@@ -30,64 +39,56 @@ async function loadProduct() {
     mainImg.alt = data.name;
 
     thumbs.forEach((thumb, i) => {
-      if (thumb && images[i]) {
-        thumb.src = images[i];
-        thumb.alt = `${data.name} Thumb ${i + 1}`;
-        thumb.addEventListener('click', () => {
-          mainImg.src = images[i];
-        });
-      }
+      thumb.src = images[i] || '';
+      thumb.addEventListener('click', () => {
+        mainImg.src = thumb.src;
+      });
     });
 
-    // Store for cart
-    window.currentProduct = {
-      id: productId,
-      name: data.name,
-      price: parseFloat(data.price),
-      image: images[0] || '',
-    };
-  } catch (err) {
-    console.error('Failed to load product:', err);
+  } catch (error) {
+    console.error("Error loading product:", error);
+    document.querySelector('.product-layout').innerHTML = '<p>Error loading product.</p>';
   }
 }
 
-function setupQuantityControls() {
-  const display = document.querySelector('.quantity-selector span');
-  const minus = document.querySelector('.quantity-selector button:first-of-type');
-  const plus = document.querySelector('.quantity-selector button:last-of-type');
+// Qty controls
+document.addEventListener('DOMContentLoaded', () => {
+  const qtySpan = document.querySelector('.quantity-selector span');
+  const minusBtn = document.querySelector('.quantity-selector button:first-of-type');
+  const plusBtn = document.querySelector('.quantity-selector button:last-of-type');
+  const addBtn = document.querySelector('.add-to-basket');
 
-  minus?.addEventListener('click', () => {
-    if (quantity > 1) {
-      quantity--;
-      display.textContent = quantity;
-    }
+  minusBtn.addEventListener('click', () => {
+    let qty = parseInt(qtySpan.textContent);
+    if (qty > 1) qtySpan.textContent = qty - 1;
   });
 
-  plus?.addEventListener('click', () => {
-    quantity++;
-    display.textContent = quantity;
+  plusBtn.addEventListener('click', () => {
+    let qty = parseInt(qtySpan.textContent);
+    qtySpan.textContent = qty + 1;
   });
-}
 
-function setupAddToCart() {
-  const btn = document.querySelector('.add-to-cart');
-  btn?.addEventListener('click', () => {
-    if (!window.currentProduct) return;
+  addBtn.addEventListener('click', () => {
+    if (!currentProduct) return alert("Product not loaded yet.");
+    const qty = parseInt(qtySpan.textContent);
+    const basket = JSON.parse(localStorage.getItem("basket") || "[]");
 
-    const cart = JSON.parse(localStorage.getItem('cart')) || [];
-    const existing = cart.find(item => item.id === window.currentProduct.id);
-
+    const existing = basket.find(p => p.id === currentProduct.id);
     if (existing) {
-      existing.qty += quantity;
+      existing.qty += qty;
     } else {
-      cart.push({ ...window.currentProduct, qty: quantity });
+      basket.push({
+        id: currentProduct.id,
+        name: currentProduct.name,
+        price: currentProduct.price,
+        image: Array.isArray(currentProduct.images) ? currentProduct.images[0] : currentProduct.image,
+        qty
+      });
     }
 
-    localStorage.setItem('cart', JSON.stringify(cart));
-    alert(`${window.currentProduct.name} added to cart!`);
+    localStorage.setItem("basket", JSON.stringify(basket));
+    alert("Added to basket!");
   });
-}
+});
 
 loadProduct();
-setupQuantityControls();
-setupAddToCart();
