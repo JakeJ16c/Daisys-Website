@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
     basketPreview.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)";
     basketPreview.style.borderRadius = "12px";
     basketPreview.style.position = "absolute";
-    basketPreview.style.top = "100%";
+    basketPreview.style.top = "85px";
     basketPreview.style.right = "20px";
     basketPreview.style.zIndex = "1000";
 
