@@ -82,7 +82,7 @@
     }
 
 		.basket-preview {
-		  position: absolute;
+		  position: fixed;
 		  top: 100%;
 		  right: 0;
 		  background: white;
