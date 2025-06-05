@@ -81,19 +81,30 @@
       color: var(--electric-blue);
     }
 
-    #basket-preview {
-      position: absolute;
-      top: 100%;
-      right: 1rem;
-      margin-top: 0.5rem;
-      background: white;
-      border-radius: 8px;
-      padding: 1rem;
-      width: 220px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      border: 1px solid #ccc;
-      z-index: 999;
-    }
+    .basket-wrapper {
+		  position: relative;
+		}
+		
+		#basket-preview {
+		  position: absolute;
+		  top: 100%;
+		  right: 0;
+		  background: white;
+		  width: 320px;
+		  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+		  border-radius: 12px;
+		  padding: 1rem;
+		  z-index: 1000;
+		  max-height: 0;
+		  overflow: hidden;
+		  opacity: 0;
+		  transition: max-height 0.3s ease, opacity 0.3s ease;
+		}
+		
+		#basket-preview.show {
+		  max-height: 800px;
+		  opacity: 1;
+		}
 
     .hidden { display: none; }
 
