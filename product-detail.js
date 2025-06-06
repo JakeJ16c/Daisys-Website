@@ -77,43 +77,25 @@ document.querySelector('.quantity-selector button:last-of-type').addEventListene
 document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("click", (e) => {
     if (e.target && e.target.classList.contains("add-to-basket")) {
-      const product = e.target.closest(".product-card");
-      console.log("🛒 Add to basket clicked", product);
-      const id = product.dataset.id;
-      const name = product.dataset.name;
-      const price = parseFloat(product.dataset.price);
-      const image = product.querySelector("img")?.src || "placeholder.jpg";
+      const id = productId;
+      const name = document.querySelector(".product-title").textContent;
+      const price = parseFloat(document.querySelector(".product-price").textContent.replace("£", ""));
+      const image = document.getElementById("product-image").src;
+
+      console.log("🛒 Add to basket clicked", { id, name, price });
 
       const cartKey = "daisyCart";
       let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
       const existing = cart.find((item) => item.id === id);
 
       if (existing) {
-        existing.qty++;
+        existing.qty += 1;
       } else {
         cart.push({ id, name, price, qty: 1, image });
       }
 
       localStorage.setItem(cartKey, JSON.stringify(cart));
-      logBasketActivity({ id, name, qty: 1 });
-      document.getElementById("basket-preview")?.classList.remove("hidden");
-      if (typeof updateBasketPreview === "function") {
-        updateBasketPreview(true);
-      }
     }
   });
 });
 
-async function logBasketActivity(product) {
-  try {
-    await addDoc(collection(db, "BasketUpdates"), {
-      name: product.name,
-      productId: product.id,
-      qty: product.qty || 1,
-      timestamp: serverTimestamp()
-    });
-    console.log("📤 Basket activity logged.");
-  } catch (err) {
-    console.error("❌ Error logging basket activity:", err);
-  }
-}
