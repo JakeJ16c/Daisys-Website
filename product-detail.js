@@ -1,5 +1,6 @@
 import { db } from './firebase.js';
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+import { getDocs, getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
 
 // Get the product ID from the URL
 const params = new URLSearchParams(window.location.search);
