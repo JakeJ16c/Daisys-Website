@@ -119,18 +119,18 @@
           color: var(--electric-blue);
         }
       
-        /* ===== Order Summary & Checkout Card Flip (unchanged) ===== */
+        /* ===== Order Summary & Checkout Modal Overlay ===== */
         .checkout-container {
           position: relative;
           width: 100%;
           max-width: 400px;
           perspective: 1000px;
-          min-height: 650px; /* Increased from 500px to accommodate the full form */
-          overflow: visible; /* Changed from hidden to visible to show overflow content */
-          z-index: 1000; /* Added z-index to ensure container appears above other content */
+          min-height: 650px;
+          overflow: visible;
+          z-index: 1000;
         }
         
-        /* Add backdrop when checkout form is displayed */
+        /* Modal backdrop when checkout form is displayed */
         .checkout-container.flipped::before {
           content: '';
           position: fixed;
@@ -166,14 +166,21 @@
       
         .checkout-box {
           transform: rotateY(180deg);
-          z-index: 9999; /* Increased z-index to appear above footer */
-          position: absolute;
+          z-index: 9999;
+          position: fixed; /* Changed to fixed positioning */
+          top: 50%; /* Center vertically */
+          left: 50%; /* Center horizontally */
+          transform: translate(-50%, -50%) rotateY(180deg); /* Center and rotate */
+          width: 400px; /* Fixed width */
+          max-width: 90vw; /* Responsive max width */
+          max-height: 90vh; /* Limit height to viewport */
+          overflow-y: auto; /* Allow scrolling if content is too tall */
         }
         
         .flipped .checkout-box {
-          transform: rotateY(0deg);
+          transform: translate(-50%, -50%) rotateY(0deg); /* Center and show */
           opacity: 1;
-          z-index: 9999; /* Ensure it stays above footer when flipped */
+          z-index: 9999;
         }
       
         .flipped .summary-box {
