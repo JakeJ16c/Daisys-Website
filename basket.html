@@ -127,6 +127,20 @@
           perspective: 1000px;
           min-height: 650px; /* Increased from 500px to accommodate the full form */
           overflow: visible; /* Changed from hidden to visible to show overflow content */
+          z-index: 1000; /* Added z-index to ensure container appears above other content */
+        }
+        
+        /* Add backdrop when checkout form is displayed */
+        .checkout-container.flipped::before {
+          content: '';
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.5);
+          z-index: 9998;
+          pointer-events: none;
         }
       
         .summary-box, .checkout-box {
@@ -152,8 +166,14 @@
       
         .checkout-box {
           transform: rotateY(180deg);
-          z-index: 1;
+          z-index: 9999; /* Increased z-index to appear above footer */
           position: absolute;
+        }
+        
+        .flipped .checkout-box {
+          transform: rotateY(0deg);
+          opacity: 1;
+          z-index: 9999; /* Ensure it stays above footer when flipped */
         }
       
         .flipped .summary-box {
