@@ -95,7 +95,25 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       localStorage.setItem(cartKey, JSON.stringify(cart));
+      logBasketActivity({ id, name, qty: 1 });
+      document.getElementById("basket-preview")?.classList.remove("hidden");
+      if (typeof updateBasketPreview === "function") {
+        updateBasketPreview(true);
+      }
     }
   });
 });
 
+async function logBasketActivity(product) {
+  try {
+    await addDoc(collection(db, "BasketUpdates"), {
+      name: product.name,
+      productId: product.id,
+      qty: product.qty || 1,
+      timestamp: serverTimestamp()
+    });
+    console.log("📤 Basket activity logged.");
+  } catch (err) {
+    console.error("❌ Error logging basket activity:", err);
+  }
+}
