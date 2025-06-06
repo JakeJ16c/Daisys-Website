@@ -46,6 +46,4 @@ document.addEventListener("DOMContentLoaded", () => {
   // Inject Footer
     inject("footer-container", "layout/footer.html");
 
-  // Record a website visit
-  logVisit();
 });
