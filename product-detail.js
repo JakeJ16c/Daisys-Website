@@ -20,7 +20,7 @@ async function loadProduct() {
       return;
     }
 
-    const data = snap.data();
+    const data = doc.data();
 
     // Fill in the HTML elements
     document.querySelector('.product-title').textContent = data.name;
