@@ -155,7 +155,6 @@
           box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
           backface-visibility: hidden;
           transition: transform var(--transition-time) ease-in-out, opacity var(--transition-time) ease-in-out;
-          box-sizing: border-box;
         }
       
         .summary-box {
@@ -169,12 +168,13 @@
           z-index: 9999;
           position: fixed; /* Changed to fixed positioning */
           top: 50%; /* Center vertically */
-          left: 50%; /* Center horizontally */
           transform: translate(-50%, -50%) rotateY(180deg); /* Center and rotate */
           width: 400px; /* Fixed width */
           max-width: 90vw; /* Responsive max width */
           max-height: 90vh; /* Limit height to viewport */
           overflow-y: auto; /* Allow scrolling if content is too tall */
+          padding: 30px;
+          padding-top: 15px;
         }
         
         .flipped .checkout-box {
@@ -315,12 +315,11 @@
           background: none;
           border: none;
           color: var(--electric-blue);
-          font-size: 0.9rem;
+          font-size: 0.8rem;
           cursor: pointer;
           display: flex;
           align-items: center;
           gap: 0.5rem;
-          margin-bottom: 1.5rem;
           padding: 0.5rem;
           border-radius: 4px;
           transition: background-color 0.2s ease;
