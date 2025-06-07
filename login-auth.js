@@ -54,3 +54,16 @@ form.addEventListener('submit', async e => {
     loginError.style.display = 'block';
   }
 });
+
+// Toast helper
+function showToast(message, duration = 4000) {
+  const toast = document.getElementById("toast");
+  toast.innerHTML = message; // allow HTML, not just text
+  toast.classList.remove("hidden");
+  toast.classList.add("show");
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+    toast.classList.add("hidden");
+  }, duration);
+}
