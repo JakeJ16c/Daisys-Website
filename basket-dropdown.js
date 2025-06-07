@@ -1,54 +1,58 @@
-import { auth, db } from './firebase.js';
-import { doc, setDoc, getDocs, deleteDoc, collection } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
-import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
 
+import { auth, db } from './firebase.js';
+import {
+  doc,
+  setDoc,
+  getDocs,
+  deleteDoc,
+  collection
+} from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+import {
+  onAuthStateChanged
+} from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
 
 document.addEventListener("DOMContentLoaded", () => {
   const cartKey = "daisyCart";
   const basketPreview = document.getElementById("basket-preview");
   const cartIcon = document.querySelector(".cart-icon");
 
-  
-      onAuthStateChanged(auth, user => {
-        if (user) {
-          loadBasketFromFirestore(updateBasketPreview);
-        }
-      });
+  async function syncBasketToFirestore(cart) {
+    const user = auth.currentUser;
+    if (!user) return;
 
+    const batchDeletes = await getDocs(collection(db, "Users", user.uid, "Basket"));
+    await Promise.all(batchDeletes.docs.map(doc => deleteDoc(doc.ref)));
 
-      async function syncBasketToFirestore(cart) {
-        const user = auth.currentUser;
-        if (!user) return;
-      
-        const batchDeletes = await getDocs(collection(db, "Users", user.uid, "Basket"));
-        await Promise.all(batchDeletes.docs.map(doc => deleteDoc(doc.ref)));
-      
-        await Promise.all(
-          cart.map(item => {
-            return setDoc(doc(db, "Users", user.uid, "Basket", item.id), {
-              name: item.name,
-              price: item.price,
-              qty: item.qty,
-              image: item.image || ""
-            });
-          })
-        );
-      }
-      
-      async function loadBasketFromFirestore(callback) {
-        const user = auth.currentUser;
-        if (!user) return;
-      
-        const snap = await getDocs(collection(db, "Users", user.uid, "Basket"));
-        const cart = [];
-        snap.forEach(doc => cart.push({ id: doc.id, ...doc.data() }));
-      
-        localStorage.setItem(cartKey, JSON.stringify(cart));
-        if (typeof callback === 'function') callback(cart);
-      }
+    await Promise.all(
+      cart.map(item => {
+        return setDoc(doc(db, "Users", user.uid, "Basket", item.id), {
+          name: item.name,
+          price: item.price,
+          qty: item.qty,
+          image: item.image || ""
+        });
+      })
+    );
+  }
 
+  async function loadBasketFromFirestore(callback) {
+    const user = auth.currentUser;
+    if (!user) return;
 
-  // 🔽 Inject basket animation styles
+    const snap = await getDocs(collection(db, "Users", user.uid, "Basket"));
+    const cart = [];
+    snap.forEach(doc => cart.push({ id: doc.id, ...doc.data() }));
+
+    localStorage.setItem(cartKey, JSON.stringify(cart));
+    if (typeof callback === 'function') callback(cart);
+  }
+
+  onAuthStateChanged(auth, user => {
+    if (user) {
+      loadBasketFromFirestore(updateBasketPreview);
+    }
+  });
+
   const style = document.createElement("style");
   style.textContent = `
     #basket-preview {
@@ -73,7 +77,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
     basketPreview.innerHTML = "";
 
-    // Basket container styling
     basketPreview.style.width = "320px";
     basketPreview.style.padding = "1rem";
     basketPreview.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)";
@@ -83,7 +86,6 @@ document.addEventListener("DOMContentLoaded", () => {
     basketPreview.style.right = "20px";
     basketPreview.style.zIndex = "1000";
 
-    // Header
     const header = document.createElement("h3");
     header.textContent = "Your Basket";
     header.style.textAlign = "center";
@@ -91,7 +93,6 @@ document.addEventListener("DOMContentLoaded", () => {
     header.style.fontWeight = "bold";
     basketPreview.appendChild(header);
 
-    // Divider
     const hr = document.createElement("hr");
     hr.style.margin = "0.5rem 0";
     basketPreview.appendChild(hr);
@@ -130,7 +131,6 @@ document.addEventListener("DOMContentLoaded", () => {
       img.style.height = "60px";
       img.style.objectFit = "cover";
       img.style.borderRadius = "8px";
-
       link.appendChild(img);
 
       const infoWrapper = document.createElement("div");
@@ -159,7 +159,6 @@ document.addEventListener("DOMContentLoaded", () => {
       minus.style.padding = "0.25rem 0.5rem";
       minus.style.fontWeight = "bold";
       minus.style.cursor = "pointer";
-
       minus.addEventListener("click", (e) => {
         e.stopPropagation();
         if (item.qty > 1) {
@@ -168,8 +167,8 @@ document.addEventListener("DOMContentLoaded", () => {
           cart.splice(index, 1);
         }
         localStorage.setItem(cartKey, JSON.stringify(cart));
-          syncBasketToFirestore(cart);
-          updateBasketPreview(true);
+        syncBasketToFirestore(cart);
+        updateBasketPreview(true);
       });
 
       const qty = document.createElement("span");
@@ -181,13 +180,12 @@ document.addEventListener("DOMContentLoaded", () => {
       plus.style.padding = "0.25rem 0.5rem";
       plus.style.fontWeight = "bold";
       plus.style.cursor = "pointer";
-
       plus.addEventListener("click", (e) => {
         e.stopPropagation();
         item.qty++;
         localStorage.setItem(cartKey, JSON.stringify(cart));
-          syncBasketToFirestore(cart);
-          updateBasketPreview(true);
+        syncBasketToFirestore(cart);
+        updateBasketPreview(true);
       });
 
       quantityControls.appendChild(minus);
@@ -255,7 +253,6 @@ document.addEventListener("DOMContentLoaded", () => {
     buttonRow.appendChild(checkoutBtn);
     basketPreview.appendChild(buttonRow);
 
-    // ✅ Toggle visibility based on flag
     if (keepVisible) {
       basketPreview.classList.add("show");
     } else {
