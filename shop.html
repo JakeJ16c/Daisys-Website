@@ -48,9 +48,9 @@
 <h2 class="section-title">All Products</h2>
 <!-- Filter UI Trigger -->
 <div class="filter-bar">
-<div class="border-button sort">
+<div class="border-button sort" id="sortButton">
 <i class="fa-solid fa-sort"></i> Sort
-      <div class="dropdown">
+      <div class="dropdown" id="sortDropdown" style="display: none; position: absolute; background: white; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.2); padding: 0.5rem;">
 <button>Lowest Price</button>
 <button>Highest Price</button>
 <button>Newest</button>
@@ -165,5 +165,25 @@
 <script src="admin-auth.js" type="module"></script>
 <!-- Cookie Banner -->
 <script src="cookie-banner/load-cookie-banner.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const sortBtn = document.getElementById("sortButton");
+  const dropdown = document.getElementById("sortDropdown");
+
+  sortBtn.addEventListener("click", function (e) {
+    e.stopPropagation();
+    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+  });
+
+  document.addEventListener("click", function () {
+    dropdown.style.display = "none";
+  });
+
+  dropdown.addEventListener("click", function (e) {
+    e.stopPropagation(); // allow button clicks inside dropdown
+  });
+});
+</script>
 </body>
 </html>
