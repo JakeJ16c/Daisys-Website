@@ -1,14 +1,16 @@
     @media (max-width: 600px) {
 	/* Safari Marquee Fix */
 	.marquee-container {
-	  overflow: hidden;
-	  position: relative;
-	}
-	    .marquee-track {
-  display: flex;
-  animation: marquee-scroll 20s linear infinite;
-  will-change: transform;
-  backface-visibility: hidden;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  background: #FFF9C4;
+}
+
+.marquee-track {
+  display: inline-block; /* key fix for Safari */
+  white-space: nowrap;
+  animation: marqueeScroll 15s linear infinite;
 }
 
 	    @keyframes scroll-left {
