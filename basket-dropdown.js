@@ -1,12 +1,6 @@
 import { auth, db } from './firebase.js';
-import {
-  doc,
-  setDoc,
-  getDocs,
-  deleteDoc,
-  collection,
-  onAuthStateChanged
-} from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+import { doc, setDoc, getDocs, deleteDoc, collection } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
 
 
 document.addEventListener("DOMContentLoaded", () => {
