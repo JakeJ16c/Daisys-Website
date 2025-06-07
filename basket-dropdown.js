@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
     snap.forEach(doc => cart.push({ id: doc.id, ...doc.data() }));
 
     localStorage.setItem(cartKey, JSON.stringify(cart));
-    if (typeof callback === 'function') callback(cart);
+    if (typeof callback === 'function') callback(false);
   }
 
   onAuthStateChanged(auth, user => {
