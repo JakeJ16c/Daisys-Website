@@ -22,12 +22,33 @@ async function loadMarquee() {
 
   track.innerHTML = items.join('');
 
-  // ✅ Force animation restart for Safari fix
-  setTimeout(() => {
-    track.style.animation = 'none';
-    track.offsetHeight; // Force reflow
-    track.style.animation = ''; // Restart animation
-  }, 100);
+  // ✅ Wait for all images to finish loading before starting animation
+  const images = track.querySelectorAll('img');
+  let loaded = 0;
+
+  images.forEach(img => {
+    if (img.complete) {
+      loaded++;
+    } else {
+      img.onload = img.onerror = () => {
+        loaded++;
+        if (loaded === images.length) {
+          startMarquee();
+        }
+      };
+    }
+  });
+
+  // If all were already loaded (from cache)
+  if (loaded === images.length) {
+    startMarquee();
+  }
+
+  function startMarquee() {
+    track.style.animation = 'none'; // Reset
+    track.offsetHeight;             // Force reflow
+    track.style.animation = '';     // Re-apply animation
+  }
 }
 
 loadMarquee();
