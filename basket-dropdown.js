@@ -35,6 +35,8 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   }
 
+  window.syncBasketToFirestore = syncBasketToFirestore;
+
   async function loadBasketFromFirestore(callback) {
     const user = auth.currentUser;
     if (!user) return;
@@ -279,5 +281,3 @@ document.addEventListener("DOMContentLoaded", () => {
 
   updateBasketPreview(); // Load on page ready
 });
-
-window.syncBasketToFirestore = syncBasketToFirestore;
