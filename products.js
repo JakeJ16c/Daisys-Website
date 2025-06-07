@@ -111,3 +111,36 @@ async function logBasketActivity(product) {
     console.error("❌ Error logging basket activity:", err);
   }
 }
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  const sortMenu = document.querySelector(".sort-dropdown"); // adjust class if needed
+  const productGrid = document.querySelector(".product-grid"); // update selector if necessary
+
+  if (!sortMenu || !productGrid) return;
+
+  function getPrice(element) {
+    const priceText = element.querySelector(".product-price")?.textContent || "";
+    return parseFloat(priceText.replace("£", "")) || 0;
+  }
+
+  function sortProducts(order) {
+    const products = Array.from(productGrid.children);
+    products.sort((a, b) => {
+      const priceA = getPrice(a);
+      const priceB = getPrice(b);
+      return order === "asc" ? priceA - priceB : priceB - priceA;
+    });
+    productGrid.innerHTML = "";
+    products.forEach(p => productGrid.appendChild(p));
+  }
+
+  document.querySelectorAll(".sort-option").forEach(option => {
+    option.addEventListener("click", function () {
+      const val = option.textContent.trim();
+      if (val === "Lowest Price") sortProducts("asc");
+      else if (val === "Highest Price") sortProducts("desc");
+      // Add more cases as needed
+    });
+  });
+});
