@@ -44,7 +44,6 @@ async function loadProduct() {
     images.forEach((imgUrl, index) => {
       const thumb = document.createElement('img');
       thumb.src = imgUrl;
-      thumb.alt = `Thumb ${index + 1}`;
       thumb.className = 'thumb';
       thumb.addEventListener('click', () => {
         mainImg.src = imgUrl;
