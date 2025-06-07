@@ -60,7 +60,6 @@ container.appendChild(pinnedCard); // This goes at the top before all products
   <button class="btn add-to-basket">Add to Basket</button>
 `;
 
-
     container.appendChild(productCard);
   });
 }
@@ -89,6 +88,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       localStorage.setItem(cartKey, JSON.stringify(cart));
+      if (typeof syncBasketToFirestore === "function") {
+        syncBasketToFirestore(cart);
+      }
+      
       logBasketActivity({ id, name, qty: 1 });
       document.getElementById("basket-preview")?.classList.remove("hidden");
       if (typeof updateBasketPreview === "function") {
