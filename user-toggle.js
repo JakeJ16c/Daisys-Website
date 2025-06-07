@@ -54,6 +54,20 @@ document.addEventListener("DOMContentLoaded", () => {
       accountLink.style.textAlign = "center";
       accountLink.style.transition = "background 0.2s";
 
+      // Wishlist link
+      const wishlistLink = document.createElement("a");
+      accountLink.href = "wishlist.html";
+      accountLink.textContent = "My Wishlist";
+      accountLink.style.display = "block";
+      accountLink.style.padding = "0.4rem 0.8rem";
+      accountLink.style.marginBottom = "0.3rem";
+      accountLink.style.borderRadius = "6px";
+      accountLink.style.color = "#204ECF";
+      accountLink.style.textDecoration = "none";
+      accountLink.style.fontWeight = "500";
+      accountLink.style.textAlign = "center";
+      accountLink.style.transition = "background 0.2s";      
+
       // Orders link
       const ordersLink = document.createElement("a");
       ordersLink.href = "orders.html";
@@ -91,7 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
           });
       });
 
-      dropdownContent.append(greeting, hr, accountLink, ordersLink, logoutBtn);
+      dropdownContent.append(greeting, hr, accountLink, wishlistLink, ordersLink, logoutBtn);
 
     } else {
       const loginLink = document.createElement("a");
