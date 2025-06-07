@@ -50,8 +50,7 @@ form.addEventListener('submit', async e => {
     window.location.href = 'account.html';
 
   } catch (err) {
-    loginError.textContent = '❌ ' + err.message.replace('Firebase: ', '');
-    loginError.style.display = 'block';
+    showToast('❌ ' + err.message.replace('Firebase: ', ''));
   }
 });
 
