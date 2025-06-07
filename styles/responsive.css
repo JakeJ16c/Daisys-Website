@@ -6,6 +6,16 @@
 	  -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
 	  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
 	}
+
+	    .marquee-track img {
+  min-width: 100px;  /* or whatever suits your images */
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-right: 1rem;
+}
+
 	    
   .site-header {
     display: flex;
