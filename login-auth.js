@@ -24,10 +24,28 @@ form.addEventListener('submit', async e => {
     const { user } = await signInWithEmailAndPassword(auth, email, password);
 
     if (!user.emailVerified) {
-      showToast('❌ Please verify your email before logging in.');
-      await signOut(auth);
-      return;
-    }
+        showToast(`
+          ❌ Please verify your email.
+          <br><button id="resend-verification" style="margin-top: 0.5rem; background: white; color: black; border: none; padding: 0.3rem 0.8rem; border-radius: 5px; cursor: pointer;">
+            Resend Verification Email
+          </button>
+        `, 8000);
+      
+        document.addEventListener('click', async function resendHandler(e) {
+          if (e.target && e.target.id === 'resend-verification') {
+            try {
+              await user.sendEmailVerification();
+              showToast('📩 Verification email re-sent!');
+            } catch (error) {
+              showToast('⚠️ Error resending email: ' + error.message);
+            }
+            document.removeEventListener('click', resendHandler); // prevent duplicates
+          }
+        });
+      
+        await signOut(auth);
+        return;
+      }
 
     // ✅ Ensure Firestore user doc exists
     const docRef = doc(db, 'users', user.uid);
