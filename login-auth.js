@@ -9,9 +9,6 @@ import {
 } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
 import { doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
 
-await sendEmailVerification(user);
-
-
 const form = document.getElementById('loginForm');
 const loginError = document.getElementById('login-error');
 
