@@ -20,12 +20,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const user = auth.currentUser;
     if (!user) return;
 
-    const batchDeletes = await getDocs(collection(db, "Users", user.uid, "Basket"));
+    const batchDeletes = await getDocs(collection(db, "users", user.uid, "Basket"));
     await Promise.all(batchDeletes.docs.map(doc => deleteDoc(doc.ref)));
 
     await Promise.all(
       cart.map(item => {
-        return setDoc(doc(db, "Users", user.uid, "Basket", item.id), {
+        return setDoc(doc(db, "users", user.uid, "Basket", item.id), {
           name: item.name,
           price: item.price,
           qty: item.qty,
