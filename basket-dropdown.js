@@ -1,7 +1,50 @@
+import { auth, db } from './firebase.js';
+import { doc, setDoc, getDocs, deleteDoc, collection, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+
 document.addEventListener("DOMContentLoaded", () => {
   const cartKey = "daisyCart";
   const basketPreview = document.getElementById("basket-preview");
   const cartIcon = document.querySelector(".cart-icon");
+
+  
+      onAuthStateChanged(auth, user => {
+        if (user) {
+          loadBasketFromFirestore(updateBasketPreview);
+        }
+      });
+
+
+      async function syncBasketToFirestore(cart) {
+        const user = auth.currentUser;
+        if (!user) return;
+      
+        const batchDeletes = await getDocs(collection(db, "Users", user.uid, "Basket"));
+        await Promise.all(batchDeletes.docs.map(doc => deleteDoc(doc.ref)));
+      
+        await Promise.all(
+          cart.map(item => {
+            return setDoc(doc(db, "Users", user.uid, "Basket", item.id), {
+              name: item.name,
+              price: item.price,
+              qty: item.qty,
+              image: item.image || ""
+            });
+          })
+        );
+      }
+      
+      async function loadBasketFromFirestore(callback) {
+        const user = auth.currentUser;
+        if (!user) return;
+      
+        const snap = await getDocs(collection(db, "Users", user.uid, "Basket"));
+        const cart = [];
+        snap.forEach(doc => cart.push({ id: doc.id, ...doc.data() }));
+      
+        localStorage.setItem(cartKey, JSON.stringify(cart));
+        if (typeof callback === 'function') callback(cart);
+      }
+
 
   // 🔽 Inject basket animation styles
   const style = document.createElement("style");
@@ -123,7 +166,8 @@ document.addEventListener("DOMContentLoaded", () => {
           cart.splice(index, 1);
         }
         localStorage.setItem(cartKey, JSON.stringify(cart));
-        updateBasketPreview(true);
+          syncBasketToFirestore(cart);
+          updateBasketPreview(true);
       });
 
       const qty = document.createElement("span");
@@ -140,7 +184,8 @@ document.addEventListener("DOMContentLoaded", () => {
         e.stopPropagation();
         item.qty++;
         localStorage.setItem(cartKey, JSON.stringify(cart));
-        updateBasketPreview(true);
+          syncBasketToFirestore(cart);
+          updateBasketPreview(true);
       });
 
       quantityControls.appendChild(minus);
