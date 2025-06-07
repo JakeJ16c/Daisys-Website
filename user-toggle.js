@@ -56,17 +56,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Wishlist link
       const wishlistLink = document.createElement("a");
-      accountLink.href = "wishlist.html";
-      accountLink.textContent = "My Wishlist";
-      accountLink.style.display = "block";
-      accountLink.style.padding = "0.4rem 0.8rem";
-      accountLink.style.marginBottom = "0.3rem";
-      accountLink.style.borderRadius = "6px";
-      accountLink.style.color = "#204ECF";
-      accountLink.style.textDecoration = "none";
-      accountLink.style.fontWeight = "500";
-      accountLink.style.textAlign = "center";
-      accountLink.style.transition = "background 0.2s";      
+      wishlistLink.href = "wishlist.html";
+      wishlistLink.textContent = "My Wishlist";
+      wishlistLink.style.display = "block";
+      wishlistLink.style.padding = "0.4rem 0.8rem";
+      wishlistLink.style.marginBottom = "0.3rem";
+      wishlistLink.style.borderRadius = "6px";
+      wishlistLink.style.color = "#204ECF";
+      wishlistLink.style.textDecoration = "none";
+      wishlistLink.style.fontWeight = "500";
+      wishlistLink.style.textAlign = "center";
+      wishlistLink.style.transition = "background 0.2s";      
 
       // Orders link
       const ordersLink = document.createElement("a");
