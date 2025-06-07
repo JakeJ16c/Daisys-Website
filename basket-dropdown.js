@@ -279,3 +279,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
   updateBasketPreview(); // Load on page ready
 });
+
+window.syncBasketToFirestore = syncBasketToFirestore;
