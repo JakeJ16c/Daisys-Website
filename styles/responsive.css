@@ -10,6 +10,11 @@
   will-change: transform;
   backface-visibility: hidden;
 }
+
+	    @keyframes scroll-left {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
 	    
   .site-header {
     display: flex;
