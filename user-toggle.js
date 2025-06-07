@@ -105,7 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
           });
       });
 
-      dropdownContent.append(greeting, hr, accountLink, wishlistLink, ordersLink, logoutBtn);
+      dropdownContent.append(greeting, hr, wishlistLink, accountLink, ordersLink, logoutBtn);
 
     } else {
       const loginLink = document.createElement("a");
