@@ -4,9 +4,13 @@ import {
   setPersistence,
   browserLocalPersistence,
   signInWithEmailAndPassword,
+  sendEmailVerification,
   signOut
 } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
 import { doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+
+await sendEmailVerification(user);
+
 
 const form = document.getElementById('loginForm');
 const loginError = document.getElementById('login-error');
@@ -34,7 +38,7 @@ form.addEventListener('submit', async e => {
         document.addEventListener('click', async function resendHandler(e) {
           if (e.target && e.target.id === 'resend-verification') {
             try {
-              await user.sendEmailVerification();
+              await sendEmailVerification(user);
               showToast('📩 Verification email re-sent!');
             } catch (error) {
               showToast('⚠️ Error resending email: ' + error.message);
