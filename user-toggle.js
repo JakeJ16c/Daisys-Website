@@ -96,6 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
       logoutBtn.style.width = "100%";
 
       logoutBtn.addEventListener("click", () => {
+        localStorage.removeItem("daisyCart");
         signOut(auth)
           .then(() => {
             window.location.replace("index.html");
