@@ -6,6 +6,12 @@
 	  -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
 	  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
 	}
+	    .marquee-track {
+  display: flex;
+  animation: marquee-scroll 20s linear infinite;
+  will-change: transform;
+  backface-visibility: hidden;
+}
 	    
   .site-header {
     display: flex;
