@@ -145,22 +145,15 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-
 document.addEventListener("DOMContentLoaded", function () {
   const sortButtons = document.querySelectorAll(".sort .dropdown button");
   const productGrid = document.getElementById("product-grid");
 
-  function getPriceFromCard(card) {
-    const priceEl = card.querySelector(".product-price");
-    if (!priceEl) return 0;
-    return parseFloat(priceEl.textContent.replace("£", "").trim()) || 0;
-  }
-
   function sortCards(order) {
-    const cards = Array.from(productGrid.children);
+    const cards = Array.from(productGrid.querySelectorAll(".product-card"));
     cards.sort((a, b) => {
-      const priceA = getPriceFromCard(a);
-      const priceB = getPriceFromCard(b);
+      const priceA = parseFloat(a.getAttribute("data-price")) || 0;
+      const priceB = parseFloat(b.getAttribute("data-price")) || 0;
       return order === "asc" ? priceA - priceB : priceB - priceA;
     });
 
