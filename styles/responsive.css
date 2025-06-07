@@ -1,6 +1,12 @@
- /* ========== Responsive Fixes ========== */
     @media (max-width: 600px) {
-
+	/* Safari Marquee Fix */
+	.marquee-container {
+	  overflow: hidden;
+	  position: relative;
+	  -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+	  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+	}
+	    
   .site-header {
     display: flex;
     flex-direction: row;
