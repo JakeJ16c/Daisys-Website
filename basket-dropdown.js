@@ -1,11 +1,18 @@
+import { auth, db } from './firebase.js';
+import {
+  doc,
+  setDoc,
+  getDocs,
+  deleteDoc,
+  collection,
+  onAuthStateChanged
+} from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+
+
 document.addEventListener("DOMContentLoaded", () => {
   const cartKey = "daisyCart";
   const basketPreview = document.getElementById("basket-preview");
   const cartIcon = document.querySelector(".cart-icon");
-
-
-  import { auth, db } from './firebase.js';
-  import { doc, setDoc, getDocs, deleteDoc, collection, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
 
   
       onAuthStateChanged(auth, user => {
