@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const user = auth.currentUser;
     if (!user) return;
 
-    const snap = await getDocs(collection(db, "Users", user.uid, "Basket"));
+    const snap = await getDocs(collection(db, "users", user.uid, "Basket"));
     const cart = [];
     snap.forEach(doc => cart.push({ id: doc.id, ...doc.data() }));
 
