@@ -24,8 +24,7 @@ form.addEventListener('submit', async e => {
     const { user } = await signInWithEmailAndPassword(auth, email, password);
 
     if (!user.emailVerified) {
-      loginError.textContent = '❌ Please verify your email before logging in.';
-      loginError.style.display = 'block';
+      showToast('❌ Please verify your email before logging in.');
       await signOut(auth);
       return;
     }
