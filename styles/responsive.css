@@ -1,39 +1,6 @@
  /* ========== Responsive Fixes ========== */
     @media (max-width: 600px) {
 
-			/* Safari Marquee Fix */
-.marquee-container {
-  overflow: hidden;
-  position: relative;
-  -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-}
-
-.marquee-track {
-  display: flex;
-  gap: 1rem;
-  width: max-content;
-  animation: scroll-marquee 20s linear infinite;
-  will-change: transform;
-}
-
-@keyframes scroll-marquee {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-.marquee-container img {
-  flex-shrink: 0;
-  width: 100px; /* or your preferred size */
-  height: 100px;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
   .site-header {
     display: flex;
     flex-direction: row;
