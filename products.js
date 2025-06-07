@@ -144,3 +144,34 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 });
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  const sortButtons = document.querySelectorAll(".sort .dropdown button");
+  const productGrid = document.getElementById("product-grid");
+
+  function getPriceFromCard(card) {
+    const priceEl = card.querySelector(".product-price");
+    if (!priceEl) return 0;
+    return parseFloat(priceEl.textContent.replace("£", "").trim()) || 0;
+  }
+
+  function sortCards(order) {
+    const cards = Array.from(productGrid.children);
+    cards.sort((a, b) => {
+      const priceA = getPriceFromCard(a);
+      const priceB = getPriceFromCard(b);
+      return order === "asc" ? priceA - priceB : priceB - priceA;
+    });
+
+    cards.forEach(card => productGrid.appendChild(card));
+  }
+
+  sortButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const label = btn.textContent.trim();
+      if (label === "Lowest Price") sortCards("asc");
+      if (label === "Highest Price") sortCards("desc");
+    });
+  });
+});
