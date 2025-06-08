@@ -231,6 +231,7 @@
         <h3>Add Promo Code</h3>
         <input type="text" id="promoCode" placeholder="Code (e.g. SUMMER25)" />
         <input type="number" id="promoDiscount" placeholder="Discount (e.g. 25)" />
+        <input type="number" id="promoMinSpend" placeholder="Minimum Spend Required (£)" />
         <select id="promoType">
           <option value="percentage">Percentage (%)</option>
           <option value="fixed">Fixed Amount (£)</option>
@@ -376,7 +377,8 @@ async function loadPromoCodes() {
   snap.forEach(doc => {
     const d = doc.data();
     const li = document.createElement("li");
-    li.innerHTML = `<strong>${d.code}</strong> - ${d.discount}${d.type === "percentage" ? "%" : "£"} off`;
+    li.innerHTML = `<strong>${d.code}</strong> - ${d.discount}${d.type === "percentage" ? "%" : "£"} off` +
+               (d.minSpend ? ` (Min £${d.minSpend})` : "");
     promoList.appendChild(li);
   });
 }
@@ -385,13 +387,15 @@ async function savePromoCode() {
   const code = document.getElementById("promoCode").value.trim();
   const discount = parseFloat(document.getElementById("promoDiscount").value);
   const type = document.getElementById("promoType").value;
+  const minSpend = parseFloat(document.getElementById("promoMinSpend").value) || 0;
 
   if (!code || !discount || isNaN(discount)) return alert("Please enter all fields correctly.");
 
   await addDoc(collection(db, "PromoCodes"), {
     code,
     discount,
-    type
+    type,
+    minSpend
   });
 
   document.getElementById("promoModal").classList.add("hidden");
