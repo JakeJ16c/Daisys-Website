@@ -155,6 +155,28 @@
   }
 </script>
 
+<script type="module">
+  import { auth, db } from './firebase.js';
+  import { getDoc, doc } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+
+  async function enforceMaintenance() {
+    const statusRef = doc(db, "Settings", "siteStatus");
+    const snap = await getDoc(statusRef);
+
+    const maintenanceEnabled = snap.exists() && snap.data().siteMaintenance;
+
+    auth.onAuthStateChanged(user => {
+      const isAdmin = user && user.email === "youradmin@email.com"; // replace with your admin email
+
+      if (maintenanceEnabled && !isAdmin) {
+        window.location.href = "/maintenance.html";
+      }
+    });
+  }
+
+  enforceMaintenance();
+</script>
+
   <!-- Cookie Banner -->
 <script src="cookie-banner/load-cookie-banner.js"></script>
   
