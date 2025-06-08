@@ -1,30 +1,34 @@
 // products.js
 import { db } from './firebase.js';
-import { getDocs, getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+import { getDocs, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
 
 const container = document.getElementById('product-grid');
 
+// 🔁 Show loading spinner
+container.innerHTML = `<div class="spinner-container"><div class="spinner"></div></div>`;
+
 async function loadProducts() {
+  const productCards = [];
 
-// 🔖 Add custom pinned card first
-const pinnedCard = document.createElement("div");
-pinnedCard.className = "product-card pinned-card";
-pinnedCard.setAttribute("data-id", "custom-design");
-pinnedCard.setAttribute("data-name", "Your Personalised Design");
-pinnedCard.setAttribute("data-price", "30");
+  // Add custom pinned card (Personalised Design)
+  const pinnedCard = document.createElement("div");
+  pinnedCard.className = "product-card pinned-card";
+  pinnedCard.setAttribute("data-id", "custom-design");
+  pinnedCard.setAttribute("data-name", "Your Personalised Design");
+  pinnedCard.setAttribute("data-price", "30");
 
-pinnedCard.innerHTML = `
-  <a href="custom-design.html" class="product-link">
-    <img src="IMG_8861.png" alt="Your Personalised Design" />
-    <h3>Your Personalised Design</h3>
-    <p>Want something unique? Send us your idea and we’ll make it real!</p>
-    <p class="price">From £30</p>
-  </a>
-  <button>Start Now</button>
-`;
+  pinnedCard.innerHTML = `
+    <a href="custom-design.html" class="product-link">
+      <img src="IMG_8861.png" alt="Your Personalised Design" />
+      <h3>Your Personalised Design</h3>
+      <p>Want something unique? Send us your idea and we’ll make it real!</p>
+      <p class="price">From £30</p>
+    </a>
+    <button>Start Now</button>
+  `;
+  productCards.push(pinnedCard);
 
-container.appendChild(pinnedCard); // This goes at the top before all products
-  
+  // Load from Firestore
   const querySnapshot = await getDocs(collection(db, "Products"));
 
   if (querySnapshot.empty) {
@@ -40,10 +44,9 @@ container.appendChild(pinnedCard); // This goes at the top before all products
     `;
     return;
   }
-  
+
   querySnapshot.forEach((doc) => {
     const data = doc.data();
-    console.log("📦 Product data:", data);
 
     const productCard = document.createElement("div");
     productCard.className = "product-card";
@@ -52,26 +55,28 @@ container.appendChild(pinnedCard); // This goes at the top before all products
     productCard.setAttribute("data-price", data.price);
 
     productCard.innerHTML = `
-    <a href="product.html?id=${doc.id}" class="product-link">
-    <img src="${Array.isArray(data.images) ? data.images[0] : data.images}" alt="${data.name}" />
-    <h3>${data.name}</h3>
-    <p>£${parseFloat(data.price).toFixed(2)}</p>
-  </a>
-  <button class="btn add-to-basket">Add to Basket</button>
-`;
+      <a href="product.html?id=${doc.id}" class="product-link">
+        <img src="${Array.isArray(data.images) ? data.images[0] : data.images}" alt="${data.name}" />
+        <h3>${data.name}</h3>
+        <p>£${parseFloat(data.price).toFixed(2)}</p>
+      </a>
+      <button class="btn add-to-basket">Add to Basket</button>
+    `;
 
-    container.appendChild(productCard);
+    productCards.push(productCard);
   });
+
+  // 🔁 Hide spinner and show all cards at once
+  container.innerHTML = '';
+  productCards.forEach(card => container.appendChild(card));
 }
 
 loadProducts();
-console.log("Connected to Firestore");
 
 document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("click", (e) => {
     if (e.target && e.target.classList.contains("add-to-basket")) {
       const product = e.target.closest(".product-card");
-      console.log("🛒 Add to basket clicked", product);
       const id = product.dataset.id;
       const name = product.dataset.name;
       const price = parseFloat(product.dataset.price);
@@ -91,7 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (typeof syncBasketToFirestore === "function") {
         syncBasketToFirestore(cart);
       }
-      
+
       logBasketActivity({ id, name, qty: 1 });
       document.getElementById("basket-preview")?.classList.remove("hidden");
       if (typeof updateBasketPreview === "function") {
@@ -115,39 +120,7 @@ async function logBasketActivity(product) {
   }
 }
 
-
-document.addEventListener("DOMContentLoaded", function () {
-  const sortMenu = document.querySelector(".sort-dropdown"); // adjust class if needed
-  const productGrid = document.querySelector(".product-grid"); // update selector if necessary
-
-  if (!sortMenu || !productGrid) return;
-
-  function getPrice(element) {
-    const priceText = element.querySelector(".product-price")?.textContent || "";
-    return parseFloat(priceText.replace("£", "")) || 0;
-  }
-
-  function sortProducts(order) {
-    const products = Array.from(productGrid.children);
-    products.sort((a, b) => {
-      const priceA = getPrice(a);
-      const priceB = getPrice(b);
-      return order === "asc" ? priceA - priceB : priceB - priceA;
-    });
-    productGrid.innerHTML = "";
-    products.forEach(p => productGrid.appendChild(p));
-  }
-
-  document.querySelectorAll(".sort-option").forEach(option => {
-    option.addEventListener("click", function () {
-      const val = option.textContent.trim();
-      if (val === "Lowest Price") sortProducts("asc");
-      else if (val === "Highest Price") sortProducts("desc");
-      // Add more cases as needed
-    });
-  });
-});
-
+// Optional: sort feature (unchanged, you can skip this if not needed)
 document.addEventListener("DOMContentLoaded", function () {
   const sortButtons = document.querySelectorAll(".sort .dropdown button");
   const productGrid = document.getElementById("product-grid");
