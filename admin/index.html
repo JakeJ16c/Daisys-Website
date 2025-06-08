@@ -72,6 +72,11 @@
     .product-list {
       padding: 1.5rem;
     }
+
+    .dashboard-card li.urgent {
+      color: red;
+      font-weight: bold;
+    }
   </style>
 
 </head>
@@ -119,10 +124,11 @@
       
         <!-- My Orders Section -->
         <section class="dashboard-card" id="admin-orders">
+          <div class="products-header">
           <h2>My Orders</h2>
-          <div class="modal-body" id="orderDetailContent">
-          <!-- Order details will be loaded here -->
           </div>
+          <ul id="order-list"></ul>
+          <!-- Order details will be loaded here -->
         </section>
       </div>
   </main>
@@ -207,7 +213,33 @@
     }
   
     loadStockCounter();
+
+    async function loadOrders() {
+    const orderList = document.getElementById("order-list");
+    orderList.innerHTML = "";
+  
+    const snap = await getDocs(collection(db, 'Orders'));
+  
+    const now = new Date();
+  
+    snap.forEach(doc => {
+      const data = doc.data();
+      const orderDate = data.time?.toDate ? data.time.toDate() : new Date(data.time);
+      const timeDiff = Math.floor((now - orderDate) / (1000 * 60 * 60 * 24)); // days since order
+  
+      const li = document.createElement("li");
+      li.innerHTML = `Order for <strong>${data.name || 'Unknown'}</strong> - <em>${timeDiff} day(s) ago</em>`;
+      
+      if (timeDiff >= 3) li.classList.add("urgent"); // highlight if older than 3 days
+  
+      orderList.appendChild(li);
+    });
+  }
+  
+  loadOrders(); 
   </script>
+
+  
 
 </body>
 </html>
