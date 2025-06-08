@@ -231,7 +231,15 @@
         <h3>Add Promo Code</h3>
         <input type="text" id="promoCode" placeholder="Code (e.g. SUMMER25)" />
         <input type="number" id="promoDiscount" placeholder="Discount (e.g. 25)" />
-        <input type="number" id="promoMinSpend" placeholder="Minimum Spend Required (£)" />
+        
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <input type="number" id="promoMinSpend" placeholder="Minimum Spend (£)" style="width: 70%;" />
+          <label style="display: flex; align-items: center; gap: 4px;">
+            <input type="checkbox" id="noMinSpend" checked />
+            No Min
+          </label>
+        </div>
+
         <select id="promoType">
           <option value="percentage">Percentage (%)</option>
           <option value="fixed">Fixed Amount (£)</option>
