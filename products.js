@@ -20,7 +20,7 @@ pinnedCard.innerHTML = `
     <p>Want something unique? Send us your idea and we’ll make it real!</p>
     <p class="price">From £30</p>
   </a>
-  <button href="custom-design.html">Start Now</button>
+  <button>Start Now</button>
 `;
 
 container.appendChild(pinnedCard); // This goes at the top before all products
