@@ -91,49 +91,49 @@
 
      /* ========== Product Page Styling ========== */
 		@media (max-width: 600px) {
+  @media (max-width: 600px) {
   .product-gallery {
+    display: flex;
     flex-direction: row;
     align-items: flex-start;
     justify-content: center;
     gap: 1rem;
-    padding: 0;
+    padding: 0 1rem;
     flex-wrap: nowrap;
   }
 
   .thumbnail-stack {
+    display: flex;
     flex-direction: column;
-    gap: 10px;
     align-items: center;
+    gap: 0.5rem;
   }
 
   .thumbnail-stack img.thumb {
-    width: 60px;
-    height: 60px;
+    width: 48px;
+    height: 48px;
     object-fit: cover;
-    border-radius: 6px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
 
   .main-image-wrapper {
     width: 60vw;
-    height: auto;
     aspect-ratio: 1 / 1;
+    height: auto;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
   }
 
   .main-image-wrapper img {
     width: 100%;
-    height: auto;
-    border-radius: 12px;
+    height: 100%;
+    object-fit: cover;
   }
 
   .product-details {
-    max-width: 100%;
-    padding: 0 1rem;
-    align-items: center;
-    text-align: center;
-  }
-
-  .product-title {
-    font-size: 1.6rem;
+    padding: 1.5rem 1rem 0;
   }
 
   .product-price {
