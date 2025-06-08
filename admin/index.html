@@ -209,6 +209,7 @@
         const item = document.createElement('div');
         item.className = 'product-card';
         item.innerHTML = `
+          <img src="${Array.isArray(data.images) ? data.images[0] : data.images}" alt="${data.name}" />
           <h3>${d.name}</h3>
           <p><strong>Stock:</strong> ${d.stock}</p>
         `;
