@@ -219,40 +219,43 @@
     loadStockCounter();
 
     async function loadOrders() {
-      const orderList = document.getElementById("order-list");
-      orderList.innerHTML = "";
-    
-      const snap = await getDocs(collection(db, 'Orders'));
-      const now = new Date();
-    
-      snap.forEach(doc => {
-        const data = doc.data();
-        const createdAtRaw = data.createdAt;
-    
-        let orderDate;
-        if (typeof createdAtRaw === 'string') {
-          // Clean and attempt to parse the timestamp string
-          orderDate = new Date(createdAtRaw.replace('at ', '').replace(' UTC+1', ''));
-        } else {
-          orderDate = new Date(createdAtRaw);
-        }
-    
-        let timeDiffText = "unknown time";
-        if (orderDate instanceof Date && !isNaN(orderDate.getTime())) {
-          const timeDiff = Math.floor((now - orderDate) / (1000 * 60 * 60 * 24));
-          timeDiffText = `${timeDiff} day(s) ago`;
-        }
-    
-        const li = document.createElement("li");
-        li.innerHTML = `Order for <strong>${data.name || 'Unknown'}</strong> - <em>${timeDiffText}</em>`;
-    
-        if (!isNaN(parseInt(timeDiffText)) && parseInt(timeDiffText) >= 3) {
-          li.classList.add("urgent");
-        }
-    
-        orderList.appendChild(li);
-      });
+  const orderList = document.getElementById("order-list");
+  orderList.innerHTML = "";
+
+  const snap = await getDocs(collection(db, 'Orders'));
+  const now = new Date();
+
+  snap.forEach(doc => {
+    const data = doc.data();
+    const createdAtRaw = data.createdAt; // this is a string like "2 June 2025 at 19:25:49 UTC+1"
+
+    let orderDate;
+
+    // Try to parse if it's a string like "2 June 2025 at 19:25:49 UTC+1"
+    if (typeof createdAtRaw === 'string') {
+      const cleaned = createdAtRaw.replace(" at", "").replace(" UTC+1", "");
+      orderDate = new Date(cleaned);
+    } else {
+      orderDate = new Date(createdAtRaw); // fallback
     }
+
+    let timeDiffText = "unknown time";
+
+    if (orderDate instanceof Date && !isNaN(orderDate.getTime())) {
+      const timeDiff = Math.floor((now - orderDate) / (1000 * 60 * 60 * 24));
+      timeDiffText = `${timeDiff} day(s) ago`;
+    }
+
+    const li = document.createElement("li");
+    li.innerHTML = `Order for <strong>${data.name || 'Unknown'}</strong> - <em>${timeDiffText}</em>`;
+
+    if (!isNaN(parseInt(timeDiffText)) && parseInt(timeDiffText) >= 3) {
+      li.classList.add("urgent");
+    }
+
+    orderList.appendChild(li);
+  });
+}
   
   loadOrders(); 
   </script> 
