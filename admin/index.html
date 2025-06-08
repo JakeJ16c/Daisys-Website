@@ -305,8 +305,8 @@
 
   <script type="module">
     import { db } from '../firebase.js';
-    import { collection, addDoc, getDocs } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
-  
+    import { collection, addDoc, getDocs, deleteDoc, doc } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+
     async function loadStockCounter() {
   const container = document.getElementById('stock-counter-list');
   container.innerHTML = '';
@@ -385,8 +385,14 @@ async function loadPromoCodes() {
   snap.forEach(doc => {
     const d = doc.data();
     const li = document.createElement("li");
-    li.innerHTML = `<strong>${d.code}</strong> - ${d.discount}${d.type === "percentage" ? "%" : "£"} off` +
-               (d.minSpend ? ` (Min £${d.minSpend})` : "");
+    li.innerHTML = `
+      <span>
+        <strong>${d.code}</strong> - ${d.discount}${d.type === "percentage" ? "%" : "£"} off
+      </span>
+      <button class="delete-promo" data-id="${doc.id}" style="background:none;border:none;float:right;cursor:pointer;">
+        <i class="fas fa-trash-alt" style="color:#d9534f;"></i>
+      </button>
+    `;
     promoList.appendChild(li);
   });
 }
@@ -423,6 +429,23 @@ document.getElementById("closePromoModal").addEventListener("click", () => {
 });
 
 document.getElementById("savePromo").addEventListener("click", savePromoCode);
+
+document.addEventListener("click", async (e) => {
+  if (e.target.closest(".delete-promo")) {
+    const id = e.target.closest(".delete-promo").dataset.id;
+    const confirmed = confirm("Are you sure you want to delete this promo code?");
+    if (!confirmed) return;
+
+    try {
+      await deleteDoc(doc(db, "PromoCodes", id));
+      loadPromoCodes();
+    } catch (err) {
+      console.error("❌ Failed to delete promo:", err);
+      alert("Failed to delete promo code.");
+    }
+  }
+});
+
 
 loadPromoCodes();
 </script>
