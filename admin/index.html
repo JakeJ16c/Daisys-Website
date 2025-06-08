@@ -17,88 +17,41 @@
   <link rel="stylesheet" href="styles.css">
 
   <style>
-  .dashboard-sections {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.5rem;
-    padding: 2rem;
-  }
-
-  .dashboard-card {
-    flex: 1 1 300px;
-    background: #fff;
-    border-radius: 10px;
-    padding: 1.5rem;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-  }
-
-  .dashboard-card h2 {
-    color: var(--electric-blue);
-    margin-bottom: 1rem;
-  }
-
-  .dashboard-card ul {
-    list-style: none;
-    padding: 0;
-  }
-
-  .dashboard-card li {
-    padding: 0.5rem 0;
-    border-bottom: 1px solid #eee;
-  }
-
-  .dashboard-card li.urgent {
-    color: red;
-    font-weight: bold;
-  }
-    /* Stock Counter Section */
-    .section-header {
-    background-color: #f9f9f9;
-    padding: 1rem 1.5rem;
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid #eee;
-  }
-
-  .section-title {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .section-title h2 {
-    margin: 0;
-    font-size: 1.4rem;
-    color: #204ECF;
-  }
-
-  .product-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 1rem;
-    padding: 1rem 1.5rem;
-  }
-
-  .product-card {
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-    padding: 1rem;
-    text-align: center;
-  }
-
-  .product-thumb {
-    width: 100%;
-    max-width: 120px;
-    height: 120px;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 0.5rem;
-  }
-</style>
+    .dashboard-sections {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      padding: 2rem;
+    }
+  
+    .dashboard-card {
+      flex: 1 1 300px;
+      background: #fff;
+      border-radius: 10px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+  
+    .dashboard-card h2 {
+      color: var(--electric-blue);
+      margin-bottom: 1rem;
+    }
+  
+    .dashboard-card ul {
+      list-style: none;
+      padding: 0;
+    }
+  
+    .dashboard-card li {
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #eee;
+    }
+  
+    .dashboard-card li.urgent {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
 
 </head>
 <body>
@@ -124,35 +77,35 @@
   <div class="overlay" id="overlay"></div>
 
   <main>
-      <!-- Stock Counter Section HTML -->
-      <div class="section-header" style="background-color: #f8f8f8; padding: 1rem 2rem; display: flex; align-items: center; border-bottom: 1px solid #eee;">
-        <h2 style="margin: 0; color: var(--electric-blue); font-weight: 600; font-size: 1.5rem; display: flex; align-items: center;">
-          <i class="fas fa-warehouse" style="margin-right: 0.5rem;"></i> Stock Counter
-        </h2>
+      <!-- Admin Dashboard Summary Layout -->
+      <div class="dashboard-sections">
+        <!-- Stock Counter Section -->
+        <section class="dashboard-card" id="stock-counter">
+          <h2>Stock Counter</h2>
+          <p>Quick summary of current stock levels and low-stock alerts.</p>
+          <ul id="stock-alerts">
+            <!-- Example: <li>Flower bag charm: 2 left</li> -->
+          </ul>
+        </section>
+      
+        <!-- Messages Section -->
+        <section class="dashboard-card" id="admin-messages">
+          <h2>My Messages</h2>
+          <p>New enquiries or messages from customers.</p>
+          <ul id="message-list">
+            <!-- Example: <li><strong>Ellie:</strong> Can I get a custom crab design?</li> -->
+          </ul>
+        </section>
+      
+        <!-- My Orders Section -->
+        <section class="dashboard-card" id="admin-orders">
+          <h2>My Orders</h2>
+          <p>Outstanding and recent orders. Urgent items are listed first.</p>
+          <ul id="order-list">
+            <!-- Example: <li class="urgent">Order #1234 - not shipped for 3 days</li> -->
+          </ul>
+        </section>
       </div>
-
-      
-        <div id="stock-counter-content" class="product-list"></div>
-      </section>
-      
-      <!-- Messages Section -->
-      <section class="dashboard-card" id="admin-messages">
-        <h2>My Messages</h2>
-        <p>New enquiries or messages from customers.</p>
-        <ul id="message-list">
-          <!-- Example: <li><strong>Ellie:</strong> Can I get a custom crab design?</li> -->
-        </ul>
-      </section>
-    
-      <!-- My Orders Section -->
-      <section class="dashboard-card" id="admin-orders">
-        <h2>My Orders</h2>
-        <p>Outstanding and recent orders. Urgent items are listed first.</p>
-        <ul id="order-list">
-          <!-- Example: <li class="urgent">Order #1234 - not shipped for 3 days</li> -->
-        </ul>
-      </section>
-    </div>
   </main>
 
   <!-- Admin Auth Script (handles login gating) -->
