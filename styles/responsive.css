@@ -101,7 +101,6 @@
     flex-direction: row;
     justify-content: center;
     gap: 1rem;
-    margin-bottom: 1.5rem;
   }
 
   .thumbnail-stack {
@@ -111,8 +110,8 @@
   }
 
   .thumbnail-stack img.thumb {
-    width: 48px;
-    height: 48px;
+    width: 75px;
+    height: 75px;
     object-fit: cover;
     border-radius: 6px;
   }
