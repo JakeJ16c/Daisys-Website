@@ -227,21 +227,21 @@
 
   snap.forEach(doc => {
     const data = doc.data();
-    const createdAtRaw = data.createdAt; // this is a string like "2 June 2025 at 19:25:49 UTC+1"
+    const createdAtRaw = data.createdAt;
 
     let orderDate;
 
-    // Try to parse if it's a string like "2 June 2025 at 19:25:49 UTC+1"
+    // Try to convert "2 June 2025 at 19:25:49 UTC+1" into something Date() can understand
     if (typeof createdAtRaw === 'string') {
-      const cleaned = createdAtRaw.replace(" at", "").replace(" UTC+1", "");
+      const cleaned = createdAtRaw
+        .replace(' at ', ' ')
+        .replace(/ UTC[+-]\d+/, ''); // remove " UTC+1"
       orderDate = new Date(cleaned);
-    } else {
-      orderDate = new Date(createdAtRaw); // fallback
     }
 
-    let timeDiffText = "unknown time";
+    let timeDiffText = 'unknown time';
 
-    if (orderDate instanceof Date && !isNaN(orderDate.getTime())) {
+    if (orderDate instanceof Date && !isNaN(orderDate)) {
       const timeDiff = Math.floor((now - orderDate) / (1000 * 60 * 60 * 24));
       timeDiffText = `${timeDiff} day(s) ago`;
     }
