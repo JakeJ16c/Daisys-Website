@@ -395,7 +395,9 @@ async function savePromoCode() {
   const code = document.getElementById("promoCode").value.trim();
   const discount = parseFloat(document.getElementById("promoDiscount").value);
   const type = document.getElementById("promoType").value;
-  const minSpend = parseFloat(document.getElementById("promoMinSpend").value) || 0;
+  const noMin = document.getElementById("noMinSpend").checked;
+  const minSpendInput = parseFloat(document.getElementById("promoMinSpend").value);
+  const minSpend = noMin ? 0 : (isNaN(minSpendInput) ? 0 : minSpendInput);
 
   if (!code || !discount || isNaN(discount)) return alert("Please enter all fields correctly.");
 
