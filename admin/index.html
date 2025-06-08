@@ -148,15 +148,17 @@
         </section>
 
         <!-- Promo Codes Section -->
-        <section class="dashboard-card" id="admin-messages">
+        <section class="dashboard-card" id="admin-promo">
           <div class="products-header">
             <h2><i class="fa-solid fa-tag"></i> Promo Codes</h2>
-            <button class="add-promo-btn" id="addProductBtn">
+            <button class="add-promo-btn" id="addPromoBtn">
               <i class="fas fa-plus"></i> Promo Code
             </button>
           </div>
           <div class="product-list">
-            <p>No Promo Codes</p>
+            <ul id="promo-list">
+              <li>No Promo Codes</li>
+            </ul>
           </div>
         </section>
 
@@ -305,6 +307,27 @@
 }
   
   loadOrders(); 
+
+    async function loadPromoCodes() {
+    const promoList = document.getElementById("promo-list");
+    promoList.innerHTML = "";
+  
+    const snap = await getDocs(collection(db, 'PromoCodes'));
+    if (snap.empty) {
+      promoList.innerHTML = "<li>No Promo Codes</li>";
+      return;
+    }
+  
+    snap.forEach(doc => {
+      const d = doc.data();
+      const li = document.createElement("li");
+      li.innerHTML = `<strong>${d.code}</strong> - ${d.discount}${d.type === "percentage" ? "%" : "£"} off`;
+      promoList.appendChild(li);
+    });
+  }
+  
+  loadPromoCodes();
+
   </script> 
 
 </body>
