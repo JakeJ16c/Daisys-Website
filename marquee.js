@@ -20,7 +20,7 @@ async function loadMarquee() {
     `);
   });
 
-  track.innerHTML = items.join('');
+  track.innerHTML = items.concat(items).join('');
 
   // ✅ Wait for all images to finish loading before starting animation
   const images = track.querySelectorAll('img');
