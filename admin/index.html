@@ -195,27 +195,27 @@
     import { collection, getDocs } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
   
     async function loadStockCounter() {
-      const container = document.getElementById('stock-counter-list');
-      container.innerHTML = '';
-  
-      const snap = await getDocs(collection(db, 'Products'));
-      if (snap.empty) {
-        container.innerHTML = '<p>No products found.</p>';
-        return;
-      }
-  
-      snap.forEach(doc => {
-        const d = doc.data();
-        const item = document.createElement('div');
-        item.className = 'product-card';
-        item.innerHTML = `
-          <img src="${Array.isArray(data.images) ? data.images[0] : data.images}" alt="${data.name}" />
-          <h3>${d.name}</h3>
-          <p><strong>Stock:</strong> ${d.stock}</p>
-        `;
-        container.appendChild(item);
-      });
-    }
+  const container = document.getElementById('stock-counter-list');
+  container.innerHTML = '';
+
+  const snap = await getDocs(collection(db, 'Products'));
+  if (snap.empty) {
+    container.innerHTML = '<p>No products found.</p>';
+    return;
+  }
+
+  snap.forEach(doc => {
+    const d = doc.data(); // This is your product data
+    const item = document.createElement('div');
+    item.className = 'product-card';
+    item.innerHTML = `
+      <img src="${Array.isArray(d.images) ? d.images[0] : d.images}" alt="${d.name}" class="product-thumb"/>
+      <h3>${d.name}</h3>
+      <p><strong>Stock:</strong> ${d.stock}</p>
+    `;
+    container.appendChild(item);
+  });
+}
   
     loadStockCounter();
 
