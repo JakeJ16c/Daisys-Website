@@ -1,6 +1,7 @@
     @media (max-width: 600px) {
 	.login-container {
-		padding: 20px;
+		margin-left: 40px;
+		margin-right: 40px;
 	}
 	    
   .site-header {
