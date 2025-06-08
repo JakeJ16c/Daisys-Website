@@ -248,7 +248,7 @@ document.addEventListener("DOMContentLoaded", () => {
       flex: "1"
     });
     checkoutBtn.addEventListener("click", () => {
-      window.location.href = "checkout.html";
+      window.location.href = "basket.html";
     });
 
     buttonRow.appendChild(viewBtn);
