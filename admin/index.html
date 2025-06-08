@@ -51,6 +51,15 @@
       color: red;
       font-weight: bold;
     }
+
+    .product-thumb {
+      width: 100%;
+      max-width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+    }
   </style>
 
 </head>
@@ -81,11 +90,12 @@
       <div class="dashboard-sections">
         <!-- Stock Counter Section -->
         <section class="dashboard-card" id="stock-counter">
-          <h2>Stock Counter</h2>
-          <p>Quick summary of current stock levels and low-stock alerts.</p>
-          <ul id="stock-alerts">
-            <!-- Example: <li>Flower bag charm: 2 left</li> -->
-          </ul>
+          <h2><i class="fas fa-warehouse"></i>Stock Counter</h2>
+              <p style="margin: 0; font-size: 0.9rem; color: #333;">
+                Quick summary of current stock levels and low-stock alerts.
+              </p>
+            </div>
+            <div id="stock-counter-list" class="product-list"></div>
         </section>
       
         <!-- Messages Section -->
@@ -162,34 +172,34 @@
   </script>
 
   <script type="module">
-import { db } from '../firebase.js';
-import { collection, getDocs } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
-
-async function loadStockCounter() {
-  const container = document.getElementById('stock-counter-content');
-  container.innerHTML = '';
-
-  const snap = await getDocs(collection(db, 'Products'));
-  if (snap.empty) {
-    container.innerHTML = '<p>No products found.</p>';
-    return;
-  }
-
-  snap.forEach(doc => {
-    const d = doc.data();
-    const item = document.createElement('div');
-    item.className = 'product-card';
-    item.innerHTML = `
-      <img src="${d.imageUrl || 'placeholder.jpg'}" alt="${d.name}" class="product-thumb">
-      <h3>${d.name}</h3>
-      <p><strong>Stock:</strong> ${d.stock}</p>
-    `;
-    container.appendChild(item);
-  });
-}
-
-loadStockCounter();
-</script>
+    import { db } from '../firebase.js';
+    import { collection, getDocs } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+  
+    async function loadStockCounter() {
+      const container = document.getElementById('stock-counter-list');
+      container.innerHTML = '';
+  
+      const snap = await getDocs(collection(db, 'Products'));
+      if (snap.empty) {
+        container.innerHTML = '<p>No products found.</p>';
+        return;
+      }
+  
+      snap.forEach(doc => {
+        const d = doc.data();
+        const item = document.createElement('div');
+        item.className = 'product-card';
+        item.innerHTML = `
+          <img src="${d.imageUrl || '../placeholder.jpg'}" alt="${d.name}" class="product-thumb">
+          <h3>${d.name}</h3>
+          <p><strong>Stock:</strong> ${d.stock}</p>
+        `;
+        container.appendChild(item);
+      });
+    }
+  
+    loadStockCounter();
+  </script>
 
 </body>
 </html>
