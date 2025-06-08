@@ -51,6 +51,53 @@
     color: red;
     font-weight: bold;
   }
+    <!-- Stock Counter Section -->
+    .section-header {
+    background-color: #f9f9f9;
+    padding: 1rem 1.5rem;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #eee;
+  }
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .section-title h2 {
+    margin: 0;
+    font-size: 1.4rem;
+    color: #204ECF;
+  }
+
+  .product-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+  }
+
+  .product-card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    padding: 1rem;
+    text-align: center;
+  }
+
+  .product-thumb {
+    width: 100%;
+    max-width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+  }
 </style>
 
 </head>
@@ -77,18 +124,18 @@
   <div class="overlay" id="overlay"></div>
 
   <main>
-    
-    <!-- Admin Dashboard Summary Layout -->
-    <div class="dashboard-sections">
-      <!-- Stock Counter Section -->
-      <section class="dashboard-card" id="stock-counter">
-        <h2>Stock Counter</h2>
-        <p>Quick summary of current stock levels and low-stock alerts.</p>
-        <ul id="stock-alerts">
-          <!-- Example: <li>Flower bag charm: 2 left</li> -->
-        </ul>
+      <!-- Stock Counter Section HTML -->
+      <section class="dashboard-section">
+        <div class="section-header">
+          <div class="section-title">
+            <i class="fas fa-warehouse"></i>
+            <h2>Stock Counter</h2>
+          </div>
+        </div>
+      
+        <div id="stock-counter-content" class="product-list"></div>
       </section>
-    
+      
       <!-- Messages Section -->
       <section class="dashboard-card" id="admin-messages">
         <h2>My Messages</h2>
@@ -161,6 +208,36 @@
       }
     });
   </script>
+
+  <script type="module">
+import { db } from '../firebase.js';
+import { collection, getDocs } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+
+async function loadStockCounter() {
+  const container = document.getElementById('stock-counter-content');
+  container.innerHTML = '';
+
+  const snap = await getDocs(collection(db, 'Products'));
+  if (snap.empty) {
+    container.innerHTML = '<p>No products found.</p>';
+    return;
+  }
+
+  snap.forEach(doc => {
+    const d = doc.data();
+    const item = document.createElement('div');
+    item.className = 'product-card';
+    item.innerHTML = `
+      <img src="${d.imageUrl || 'placeholder.jpg'}" alt="${d.name}" class="product-thumb">
+      <h3>${d.name}</h3>
+      <p><strong>Stock:</strong> ${d.stock}</p>
+    `;
+    container.appendChild(item);
+  });
+}
+
+loadStockCounter();
+</script>
 
 </body>
 </html>
