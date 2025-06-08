@@ -219,31 +219,43 @@
     loadStockCounter();
 
     async function loadOrders() {
-    const orderList = document.getElementById("order-list");
-    orderList.innerHTML = "";
-  
-    const snap = await getDocs(collection(db, 'Orders'));
-  
-    const now = new Date();
-  
-    snap.forEach(doc => {
-      const data = doc.data();
-      const orderDate = data.time?.toDate ? data.time.toDate() : new Date(data.time);
-      const timeDiff = Math.floor((now - orderDate) / (1000 * 60 * 60 * 24)); // days since order
-  
-      const li = document.createElement("li");
-      li.innerHTML = `Order for <strong>${data.name || 'Unknown'}</strong> - <em>${timeDiff} day(s) ago</em>`;
-      
-      if (timeDiff >= 3) li.classList.add("urgent"); // highlight if older than 3 days
-  
-      orderList.appendChild(li);
-    });
-  }
+      const orderList = document.getElementById("order-list");
+      orderList.innerHTML = "";
+    
+      const snap = await getDocs(collection(db, 'Orders'));
+      const now = new Date();
+    
+      snap.forEach(doc => {
+        const data = doc.data();
+        const createdAtRaw = data.createdAt;
+    
+        let orderDate;
+        if (typeof createdAtRaw === 'string') {
+          // Clean and attempt to parse the timestamp string
+          orderDate = new Date(createdAtRaw.replace('at ', '').replace(' UTC+1', ''));
+        } else {
+          orderDate = new Date(createdAtRaw);
+        }
+    
+        let timeDiffText = "unknown time";
+        if (orderDate instanceof Date && !isNaN(orderDate.getTime())) {
+          const timeDiff = Math.floor((now - orderDate) / (1000 * 60 * 60 * 24));
+          timeDiffText = `${timeDiff} day(s) ago`;
+        }
+    
+        const li = document.createElement("li");
+        li.innerHTML = `Order for <strong>${data.name || 'Unknown'}</strong> - <em>${timeDiffText}</em>`;
+    
+        if (!isNaN(parseInt(timeDiffText)) && parseInt(timeDiffText) >= 3) {
+          li.classList.add("urgent");
+        }
+    
+        orderList.appendChild(li);
+      });
+    }
   
   loadOrders(); 
-  </script>
-
-  
+  </script> 
 
 </body>
 </html>
