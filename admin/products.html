@@ -734,6 +734,27 @@
             <input type="number" id="modalPrice" class="form-control" min="0" step="0.01" required />
           </div>
 
+          <!-- Variant-based Sizes Container -->
+          <div id="variantStockContainer" style="display: none;">
+            <h4>Stock by Size</h4>
+          
+            <!-- Input to define a new size -->
+            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+              <input type="text" id="newSizeInput" class="form-control" placeholder="Enter size (e.g., 6, S, M)" />
+              <button type="button" class="btn btn-outline" id="addSizeBtn">+ Add Size</button>
+            </div>
+          
+            <!-- Where sizes and stock inputs will be added -->
+            <div id="dynamicSizeList"></div>
+          </div>
+          
+          <!-- Fallback: Regular stock input -->
+          <div id="singleStockContainer">
+            <label for="modalStock">Stock Quantity</label>
+            <input type="number" id="modalStock" class="form-control" />
+          </div>
+
+
           <div class="filter-row">
             <!-- Category -->
             <div class="input-group">
@@ -890,6 +911,54 @@ document.addEventListener("DOMContentLoaded", () => {
     modal.style.display = "none";
   });
 });
+
+  const categoryButtons = document.querySelectorAll("#categoryOptions button");
+const sizeContainer = document.getElementById("variantStockContainer");
+const singleStockContainer = document.getElementById("singleStockContainer");
+const addSizeBtn = document.getElementById("addSizeBtn");
+const newSizeInput = document.getElementById("newSizeInput");
+const dynamicSizeList = document.getElementById("dynamicSizeList");
+
+let selectedCategory = ""; // store selected category
+let sizeFields = [];       // e.g. ['6', '8', '10']
+
+// Toggle variant stock based on category
+categoryButtons.forEach(btn => {
+  btn.addEventListener("click", e => {
+    e.preventDefault();
+    categoryButtons.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+
+    selectedCategory = btn.getAttribute("data-value");
+
+    if (selectedCategory === "T-Shirts") {
+      sizeContainer.style.display = "block";
+      singleStockContainer.style.display = "none";
+    } else {
+      sizeContainer.style.display = "none";
+      singleStockContainer.style.display = "block";
+    }
+  });
+});
+
+// Add custom size input row
+addSizeBtn.addEventListener("click", () => {
+  const size = newSizeInput.value.trim();
+  if (!size || sizeFields.includes(size)) return;
+
+  sizeFields.push(size);
+
+  const row = document.createElement("div");
+  row.classList.add("form-group");
+  row.innerHTML = `
+    <label>Size ${size}</label>
+    <input type="number" name="stock_${size}" placeholder="Qty" class="form-control" />
+  `;
+  dynamicSizeList.appendChild(row);
+
+  newSizeInput.value = "";
+});
+
 </script>
 
 </body>
