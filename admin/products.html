@@ -849,48 +849,35 @@
     });
   </script>
 
-  <script>
-  document.addEventListener("DOMContentLoaded", () => {
-  const categoryButtons = document.querySelectorAll("#categoryOptions button");
-  const designButtons = document.querySelectorAll("#designOptions button");
+<script>
+document.addEventListener("DOMContentLoaded", () => {
   const sizeContainer = document.getElementById("sizeStockContainer");
 
-  const hiddenCategory = document.getElementById("hiddenCategoryInput") || createHiddenInput("hiddenCategoryInput");
-  const hiddenDesign = document.getElementById("hiddenDesignInput") || createHiddenInput("hiddenDesignInput");
+  // Listen for Category button clicks
+  const categoryButtons = document.querySelectorAll("#categoryOptions button");
+  categoryButtons.forEach(button => {
+    button.addEventListener("click", () => {
+      // Highlight the selected button
+      categoryButtons.forEach(b => b.classList.remove("selected"));
+      button.classList.add("selected");
 
-  function createHiddenInput(id) {
-    const input = document.createElement("input");
-    input.type = "hidden";
-    input.id = id;
-    document.body.appendChild(input);
-    return input;
-  }
-
-  // Handle Category selection
-  categoryButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      categoryButtons.forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-
-      const selected = btn.dataset.value;
-      hiddenCategory.value = selected;
-
-      // Toggle size inputs for T-Shirts only
-      sizeContainer.style.display = selected === "T-Shirts" ? "block" : "none";
+      // Toggle size fields based on T-Shirts category
+      const isTShirt = button.dataset.value === "T-Shirts";
+      sizeContainer.style.display = isTShirt ? "block" : "none";
     });
   });
 
-  // Handle Design selection
-  designButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      designButtons.forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-
-      hiddenDesign.value = btn.dataset.value;
+  // Listen for Design button clicks (optional highlighting)
+  const designButtons = document.querySelectorAll("#designOptions button");
+  designButtons.forEach(button => {
+    button.addEventListener("click", () => {
+      designButtons.forEach(b => b.classList.remove("selected"));
+      button.classList.add("selected");
     });
   });
 });
-  </script>
+</script>
+
 
 </body>
 </html>
