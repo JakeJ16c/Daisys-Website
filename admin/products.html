@@ -850,24 +850,46 @@
   </script>
 
   <script>
-  let selectedCategory = '';
-  let selectedDesign = '';
-  
-  document.querySelectorAll('#categoryOptions button').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('#categoryOptions button').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      selectedCategory = btn.dataset.value;
+  document.addEventListener("DOMContentLoaded", () => {
+  const categoryButtons = document.querySelectorAll("#categoryOptions button");
+  const designButtons = document.querySelectorAll("#designOptions button");
+  const sizeContainer = document.getElementById("sizeStockContainer");
+
+  const hiddenCategory = document.getElementById("hiddenCategoryInput") || createHiddenInput("hiddenCategoryInput");
+  const hiddenDesign = document.getElementById("hiddenDesignInput") || createHiddenInput("hiddenDesignInput");
+
+  function createHiddenInput(id) {
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.id = id;
+    document.body.appendChild(input);
+    return input;
+  }
+
+  // Handle Category selection
+  categoryButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      categoryButtons.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+
+      const selected = btn.dataset.value;
+      hiddenCategory.value = selected;
+
+      // Toggle size inputs for T-Shirts only
+      sizeContainer.style.display = selected === "T-Shirts" ? "block" : "none";
     });
   });
-  
-  document.querySelectorAll('#designOptions button').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('#designOptions button').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      selectedDesign = btn.dataset.value;
+
+  // Handle Design selection
+  designButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      designButtons.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+
+      hiddenDesign.value = btn.dataset.value;
     });
   });
+});
   </script>
 
 </body>
