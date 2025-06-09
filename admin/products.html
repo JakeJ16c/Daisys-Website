@@ -850,33 +850,46 @@
   </script>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
+function initOptionPillToggles() {
   const sizeContainer = document.getElementById("sizeStockContainer");
 
-  // Listen for Category button clicks
   const categoryButtons = document.querySelectorAll("#categoryOptions button");
   categoryButtons.forEach(button => {
     button.addEventListener("click", () => {
-      // Highlight the selected button
-      categoryButtons.forEach(b => b.classList.remove("selected"));
-      button.classList.add("selected");
+      categoryButtons.forEach(b => b.classList.remove("active"));
+      button.classList.add("active");
 
-      // Toggle size fields based on T-Shirts category
       const isTShirt = button.dataset.value === "T-Shirts";
       sizeContainer.style.display = isTShirt ? "block" : "none";
     });
   });
 
-  // Listen for Design button clicks (optional highlighting)
   const designButtons = document.querySelectorAll("#designOptions button");
   designButtons.forEach(button => {
     button.addEventListener("click", () => {
-      designButtons.forEach(b => b.classList.remove("selected"));
-      button.classList.add("selected");
+      designButtons.forEach(b => b.classList.remove("active"));
+      button.classList.add("active");
     });
+  });
+}
+
+// Attach events every time the modal is opened
+document.addEventListener("DOMContentLoaded", () => {
+  const modal = document.getElementById("productModal");
+  const openBtn = document.getElementById("addProductBtn");
+  const closeBtn = document.getElementById("closeProductModal");
+
+  openBtn.addEventListener("click", () => {
+    modal.style.display = "flex";
+    initOptionPillToggles();
+  });
+
+  closeBtn.addEventListener("click", () => {
+    modal.style.display = "none";
   });
 });
 </script>
+
 
 
 </body>
