@@ -252,6 +252,15 @@
       display: flex;
       flex-direction: column;
       gap: 16px;
+      max-height: 90vh;
+      overflow-y: auto;
+      /* 👇 Hide scrollbar (cross-browser) */
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none;  /* IE/Edge */
+    }
+    
+    .modal-content::-webkit-scrollbar {
+      display: none; /* Chrome, Safari */
     }
 
     .modal-header {
