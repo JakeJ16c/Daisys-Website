@@ -738,7 +738,7 @@
             <!-- Category -->
             <div class="input-group">
               <label>Select Category</label>
-              <div class="option-pills" id="categoryOptions">
+              <div class="pill-options" id="categoryOptions">
                 <button data-value="T-Shirts">T-Shirts</button>
                 <button data-value="Bag Charms">Bag Charms</button>
                 <button data-value="Key Rings">Key Rings</button>
@@ -750,7 +750,7 @@
             <!-- Design -->
             <div class="input-group">
               <label>Select Design</label>
-              <div class="option-pills" id="designOptions">
+              <div class="pill-options" id="designOptions">
                 <button data-value="Animals">Animals</button>
                 <button data-value="Flowers">Flowers</button>
                 <button data-value="Others">Others</button>
@@ -762,7 +762,7 @@
        
           <div class="form-group">
             <label for="modalStock">Stock Quantity</label>
-            <input type="number" id="modalStock" class="form-control" min="0" step="1" />
+            <input type="number" id="sizeStockContainer" class="form-control" min="0" step="1" />
           </div>
           
           <div class="form-group">
@@ -851,46 +851,52 @@
 
 <script>
 function initOptionPillToggles() {
-  const sizeContainer = document.getElementById("sizeStockContainer");
-
   const categoryButtons = document.querySelectorAll("#categoryOptions button");
-  categoryButtons.forEach(button => {
-    button.addEventListener("click", () => {
-      categoryButtons.forEach(b => b.classList.remove("active"));
-      button.classList.add("active");
+  const designButtons = document.querySelectorAll("#designOptions button");
+  const sizeStockContainer = document.getElementById("sizeStockContainer");
 
-      const isTShirt = button.dataset.value === "T-Shirts";
-      sizeContainer.style.display = isTShirt ? "block" : "none";
+  // Handle Category
+  categoryButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      categoryButtons.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+
+      // Show sizeStockContainer only if "T-Shirts" is selected
+      const selected = btn.getAttribute("data-value");
+      if (selected === "T-Shirts") {
+        sizeStockContainer.style.display = "block";
+      } else {
+        sizeStockContainer.style.display = "none";
+      }
     });
   });
 
-  const designButtons = document.querySelectorAll("#designOptions button");
-  designButtons.forEach(button => {
-    button.addEventListener("click", () => {
+  // Handle Design
+  designButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
       designButtons.forEach(b => b.classList.remove("active"));
-      button.classList.add("active");
+      btn.classList.add("active");
     });
   });
 }
 
-// Attach events every time the modal is opened
+// Modal setup
 document.addEventListener("DOMContentLoaded", () => {
   const modal = document.getElementById("productModal");
-  const openBtn = document.getElementById("addProductBtn");
-  const closeBtn = document.getElementById("closeProductModal");
+  const openModal = document.getElementById("addProductBtn");
+  const closeModal = document.getElementById("closeProductModal");
 
-  openBtn.addEventListener("click", () => {
+  openModal.addEventListener("click", () => {
     modal.style.display = "flex";
-    initOptionPillToggles();
+    // Make sure button events attach freshly every time
+    setTimeout(() => initOptionPillToggles(), 50);
   });
 
-  closeBtn.addEventListener("click", () => {
+  closeModal.addEventListener("click", () => {
     modal.style.display = "none";
   });
 });
 </script>
-
-
 
 </body>
 </html>
