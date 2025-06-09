@@ -919,53 +919,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-  const categoryButtons = document.querySelectorAll("#categoryOptions button");
-const sizeContainer = document.getElementById("variantStockContainer");
-const singleStockContainer = document.getElementById("singleStockContainer");
-const addSizeBtn = document.getElementById("addSizeBtn");
-const newSizeInput = document.getElementById("newSizeInput");
-const dynamicSizeList = document.getElementById("dynamicSizeList");
-
-let selectedCategory = ""; // store selected category
-let sizeFields = [];       // e.g. ['6', '8', '10']
-
-// Toggle variant stock based on category
-categoryButtons.forEach(btn => {
-  btn.addEventListener("click", e => {
-    e.preventDefault();
-    categoryButtons.forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-
-    selectedCategory = btn.getAttribute("data-value");
-
-    if (selectedCategory === "T-Shirts") {
-      sizeContainer.style.display = "block";
-      singleStockContainer.style.display = "none";
-    } else {
-      sizeContainer.style.display = "none";
-      singleStockContainer.style.display = "block";
-    }
-  });
-});
-
-// Add custom size input row
-addSizeBtn.addEventListener("click", () => {
-  const size = newSizeInput.value.trim();
-  if (!size || sizeFields.includes(size)) return;
-
-  sizeFields.push(size);
-
-  const row = document.createElement("div");
-  row.classList.add("form-group");
-  row.innerHTML = `
-    <label>Size ${size}</label>
-    <input type="number" name="stock_${size}" placeholder="Qty" class="form-control" />
-  `;
-  dynamicSizeList.appendChild(row);
-
-  newSizeInput.value = "";
-});
-
   const oneSizeYes = document.getElementById("oneSizeYes");
   const oneSizeNo = document.getElementById("oneSizeNo");
   const singleStockContainer = document.getElementById("singleStockContainer");
@@ -1006,8 +959,6 @@ addSizeBtn.addEventListener("click", () => {
   
     newSizeInput.value = "";
   });
-
-
 </script>
 
 </body>
