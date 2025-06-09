@@ -850,18 +850,6 @@
   </script>
 
   <script>
-  // Toggle T-shirt size stock inputs based on category
-  document.addEventListener("DOMContentLoaded", () => {
-    const categorySelect = document.getElementById("newProductCategory");
-    const sizeContainer = document.getElementById("sizeStockContainer");
-  
-    categorySelect.addEventListener("change", () => {
-      sizeContainer.style.display = categorySelect.value === "T-Shirts" ? "block" : "none";
-    });
-  });
-  </script>
-
-  <script>
   let selectedCategory = '';
   let selectedDesign = '';
   
@@ -880,6 +868,19 @@
       selectedDesign = btn.dataset.value;
     });
   });
+
+    // 🧠 Show size stock inputs when T-Shirts is selected
+    document.querySelectorAll('#categoryOptions button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#categoryOptions button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedCategory = btn.dataset.value;
+    
+        // Toggle T-shirt size inputs
+        const sizeContainer = document.getElementById("sizeStockContainer");
+        sizeContainer.style.display = (selectedCategory === "T-Shirts") ? "block" : "none";
+      });
+    });
   </script>
 
 </body>
