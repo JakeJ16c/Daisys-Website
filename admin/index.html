@@ -63,14 +63,6 @@
       border-bottom-left-radius: 0;
       border-bottom-right-radius: 0;
     }
-
-    .product-thumb {
-      width: 75x;
-      height: 75px;
-      object-fit: cover;
-      border-radius: 8px;
-      margin-bottom: 0.5rem;
-    }
     
     .product-list {
       padding: 1.5rem;
@@ -326,7 +318,6 @@
     const item = document.createElement('div');
     item.className = 'product-card';
     item.innerHTML = `
-      <img src="${Array.isArray(d.images) ? d.images[0] : d.images}" alt="${d.name}" class="product-thumb"/>
       <h3>${d.name}</h3>
     `;
     container.appendChild(item);
