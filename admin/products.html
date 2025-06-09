@@ -861,5 +861,26 @@
   });
   </script>
 
+  <script>
+  let selectedCategory = '';
+  let selectedDesign = '';
+  
+  document.querySelectorAll('#categoryOptions button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#categoryOptions button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedCategory = btn.dataset.value;
+    });
+  });
+  
+  document.querySelectorAll('#designOptions button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#designOptions button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedDesign = btn.dataset.value;
+    });
+  });
+  </script>
+
 </body>
 </html>
