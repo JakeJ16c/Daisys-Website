@@ -634,6 +634,19 @@
       color: white;
       border-color: var(--primary-color);
     }
+
+    .centered-checkboxes {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 0.5rem;
+    }
+    .centered-checkboxes label {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-weight: 500;
+    }
   </style>
 </head>
 <body>
@@ -736,12 +749,13 @@
 
           <!-- Variant-based Sizes Container -->
           <div class="form-group">
-            <label>Will this product be available in one size only?</label>
-            <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
+            <label style="display: block; text-align: center;">Will this product be available in one size only?</label>
+            <div class="centered-checkboxes">
               <label><input type="radio" name="oneSizeOnly" id="oneSizeYes" /> Yes</label>
               <label><input type="radio" name="oneSizeOnly" id="oneSizeNo" /> No</label>
             </div>
           </div>
+
           
           <!-- One-size-only input -->
           <div class="form-group" id="singleStockContainer" style="display: none;">
