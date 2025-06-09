@@ -602,6 +602,29 @@
     .image-upload-input {
       display: none;
     }
+
+    .option-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 0.5rem 0;
+    }
+    
+    .option-pills button {
+      padding: 0.4rem 1rem;
+      background-color: #eee;
+      border: 1px solid #ccc;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: 0.3s;
+    }
+    
+    .option-pills button.active {
+      background-color: var(--primary-color);
+      color: white;
+      border-color: var(--primary-color);
+    }
   </style>
 </head>
 <body>
@@ -646,19 +669,12 @@
             <select id="categoryFilter">
               <option value="all">All Categories</option>
               <option value="necklaces">Necklaces</option>
-              <option value="bracelets">Bracelets</option>
-              <option value="earrings">Earrings</option>
-              <option value="rings">Rings</option>
-              <option value="other">Other</option>
             </select>
           </div>
           
           <div class="filter-dropdown" style="margin-left: 10px;">
             <select id="stockFilter">
               <option value="all">All Stock</option>
-              <option value="in">In Stock</option>
-              <option value="low">Low Stock</option>
-              <option value="out">Out of Stock</option>
             </select>
           </div>
           
@@ -710,17 +726,29 @@
           </div>
 
           <div class="filter-row">
-            <div class="form-group">
-              <select id="category" name="category" style="border-radius: 6px; width: 125px; text-align: center;">
-                <option>Select Category</option>
-              </select>
+            <!-- Category -->
+            <div class="input-group">
+              <label>Select Category</label>
+              <div class="option-pills" id="categoryOptions">
+                <button data-value="T-Shirts">T-Shirts</button>
+                <button data-value="Bag Charms">Bag Charms</button>
+                <button data-value="Key Rings">Key Rings</button>
+                <button data-value="Tote Bags">Tote Bags</button>
+                <button data-value="Add new">+ Add New</button>
+              </div>
             </div>
-          
-            <div class="form-group">
-              <select id="design" name="design" style="border-radius: 6px; width: 125px; text-align: center;">
-                <option>Select Design</option>
-              </select>
+            
+            <!-- Design -->
+            <div class="input-group">
+              <label>Select Design</label>
+              <div class="option-pills" id="designOptions">
+                <button data-value="Animals">Animals</button>
+                <button data-value="Flowers">Flowers</button>
+                <button data-value="Others">Others</button>
+                <button data-value="Add new">+ Add New</button>
+              </div>
             </div>
+
           </div>
        
           <div class="form-group">
