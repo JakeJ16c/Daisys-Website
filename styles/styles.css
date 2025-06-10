@@ -1,9 +1,3 @@
-    /* ========== Custom Font ========== */
-    @font-face {
-      font-family: 'Raks';
-      src: url('Raks.otf') format('opentype');
-    }
-
     /* ========== Root Colours ========== */
     :root {
       --light-pink: #F8F3EA;
@@ -252,7 +246,7 @@
 
     .products {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
       gap: 2rem;
       max-width: 1200px;
       margin: 0 auto;
@@ -275,6 +269,7 @@
       object-fit: cover;
       border-radius: 8px;
       margin-bottom: 1rem;
+	    aspect-ratio: 1/1;
       width: 100%;
     }
 
