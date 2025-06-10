@@ -1,7 +1,7 @@
-    @media (max-width: 600px) {
-	.login-container {
-		margin-left: 40px;
-		margin-right: 40px;
+@media (max-width: 600px) {
+.login-container {
+	margin-left: 40px;
+	margin-right: 40px;
 	}
 	    
   .site-header {
@@ -87,10 +87,6 @@
 .product-card button:hover {
   background-color: #82cbc9;
 }
-
-     /* ========== Product Page Styling ========== */
-		@media (max-width: 600px) {
-  @media (max-width: 600px) {
   .product-layout {
     flex-direction: column;
     align-items: center;
@@ -148,24 +144,6 @@
   .product-actions button {
     width: 100%;
   }
-}
-
-#install-btn {
-  display: none;
-  background-color: #204ECF;
-  color: white;
-  font-weight: bold;
-  padding: 8px 14px;
-  border: none;
-  border-radius: 6px;
-  margin-left: 12px;
-  cursor: pointer;
-  z-index: 9999;
-  position: relative;
-}
-#install-btn:hover {
-  background-color: #1839a6;
-}
 
 /* ========== Contact Icons Section ========== */
 h1.page-title {
@@ -274,7 +252,7 @@ h1.page-title {
     .contact-form button:hover {
       background-color: #2e2ed1;
     }
-
+}
     @media (max-width: 1100px) {
       .contact-page {
         flex-direction: column;
