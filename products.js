@@ -24,7 +24,7 @@ async function loadProducts() {
       <p>Want something unique? Send us your idea and we’ll make it real!</p>
       <p class="price">From £30</p>
     </a>
-    <button class="btn">Start Now</button>
+    <button class="btn" href="custom-design.html">Start Now</button>
   `;
   productCards.push(pinnedCard);
 
