@@ -16,7 +16,6 @@
 
   .header-title {
     font-size: 1.8rem;
-    font-family: 'Raks', serif;
     margin: 0 auto;
   }
 
@@ -34,7 +33,7 @@
 /* Product card container (wraps all product cards) */
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 16px;
   padding: 0 16px;
 }
