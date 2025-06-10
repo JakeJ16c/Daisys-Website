@@ -503,41 +503,40 @@
   </script>
 
 <script type="module">
-import { db } from '../firebase.js';
-import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+window.onload = () => {
+  const toggle = document.getElementById("siteMaintenanceToggle");
+  const ipBox = document.getElementById("ipWhitelist");
+  const wrapper = document.getElementById("ipWhitelistWrapper");
+  const docRef = doc(db, "SiteSettings", "maintenance");
 
-const toggle = document.getElementById("siteMaintenanceToggle");
-const ipBox = document.getElementById("ipWhitelist");
-const wrapper = document.getElementById("ipWhitelistWrapper");
-
-const docRef = doc(db, "SiteSettings", "maintenance");
-
-async function loadMaintenanceSettings() {
-  const snap = await getDoc(docRef);
-  if (snap.exists()) {
-    const data = snap.data();
-    toggle.checked = data.enabled;
-    ipBox.value = (data.allowedIPs || []).join(", ");
-    wrapper.style.display = data.enabled ? "block" : "none";
+  async function loadMaintenanceSettings() {
+    const snap = await getDoc(docRef);
+    if (snap.exists()) {
+      const data = snap.data();
+      toggle.checked = data.enabled;
+      ipBox.value = (data.allowedIPs || []).join(", ");
+      wrapper.style.display = data.enabled ? "block" : "none";
+    }
   }
-}
 
-toggle.addEventListener("change", () => {
-  wrapper.style.display = toggle.checked ? "block" : "none";
-  saveSettings();
-});
-
-ipBox.addEventListener("input", saveSettings);
-
-async function saveSettings() {
-  const ips = ipBox.value.split(",").map(ip => ip.trim()).filter(ip => ip);
-  await setDoc(docRef, {
-    enabled: toggle.checked,
-    allowedIPs: ips
+  toggle.addEventListener("change", () => {
+    wrapper.style.display = toggle.checked ? "block" : "none";
+    saveSettings();
   });
-}
 
-loadMaintenanceSettings();
+  ipBox.addEventListener("input", saveSettings);
+
+  async function saveSettings() {
+    const ips = ipBox.value.split(",").map(ip => ip.trim()).filter(ip => ip);
+    await setDoc(docRef, {
+      enabled: toggle.checked,
+      allowedIPs: ips
+    });
+  }
+
+  loadMaintenanceSettings();
+};
+
 </script>
 
 </body>
