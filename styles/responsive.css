@@ -40,18 +40,19 @@
 
 	    .products {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2.5rem;
       max-width: 1200px;
       margin: 0 auto;
-      padding: 2rem 1rem;
+      padding: 3rem 3rem;
     }
 
 /* Individual product cards */
 .product-card {
   background-color: #fff;
   border-radius: 16px;
-  padding: 16px;
+  padding: 30px;
+	padding-bottom: 20px;
   text-align: center;
   box-shadow: 0 4px 10px rgba(0,0,0,0.05);
   display: flex;
