@@ -181,6 +181,7 @@ function loadOrdersLive() {
         data.status === 'dispatched' ? '#0c5460' :
         data.status === 'delivered' ? '#155724' : '#555'
       };
+    `;
     
     orderCard.querySelector('.order-toggle').addEventListener('click', () => {
       const content = orderCard.querySelector('.order-content');
