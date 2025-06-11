@@ -151,11 +151,11 @@ function loadOrdersLive() {
             border-radius: 5px;
             font-size: 0.9rem;
           ">
-            <option value="confirmed" ${data.status === "confirmed" ? "selected" : ""}>Confirmed</option>
-            <option value="cancelled" ${data.status === "cancelled" ? "selected" : ""}>Cancelled</option>
-            <option value="ready" ${data.status === "ready" ? "selected" : ""}>Ready To Ship</option>
-            <option value="dispatched" ${data.status === "dispatched" ? "selected" : ""}>Dispatched</option>
-            <option value="delivered" ${data.status === "delivered" ? "selected" : ""}>Delivered</option>
+            <option value="Confirmed" ${data.status === "Confirmed" ? "selected" : ""}>Confirmed</option>
+            <option value="Cancelled" ${data.status === "Cancelled" ? "selected" : ""}>Cancelled</option>
+            <option value="Ready" ${data.status === "Ready" ? "selected" : ""}>Ready To Ship</option>
+            <option value="Dispatched" ${data.status === "Dispatched" ? "selected" : ""}>Dispatched</option>
+            <option value="Delivered" ${data.status === "Delivered" ? "selected" : ""}>Delivered</option>
           </select>
         </p>
         <ul style="margin: 15px 0; padding: 0; list-style: none;">
