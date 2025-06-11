@@ -3,7 +3,9 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-
 
 (async () => {
   try {
-    // Step 1: Fetch visitor IP (fallback-safe)
+    const isMaintenancePage = window.location.pathname.includes("maintenance.html");
+
+    // Step 1: Fetch visitor IP
     let userIP = "unknown";
     try {
       const res = await fetch("https://checkip.amazonaws.com/");
@@ -12,26 +14,35 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-
       console.error("⚠️ Failed to fetch IP address:", ipErr);
     }
 
-    // Step 2: Get maintenance settings
+    // Step 2: Get Firestore settings
     const snap = await getDoc(doc(db, "SiteSettings", "maintenance"));
     if (!snap.exists()) return;
 
     const data = snap.data();
     const allowed = data.allowedIPs || [];
     const enabled = data.enabled;
-
-    // Step 3: Redirect if enabled and user is not whitelisted
     const isAllowed = allowed.includes(userIP);
     const isAdmin = localStorage.getItem("isAdmin") === "true";
 
-    if (enabled && !isAllowed && !isAdmin) {
-      console.warn("🚧 Maintenance mode active. Blocking user IP:", userIP);
-      window.location.href = "/Daisys-Website/maintenance.html";
-    } else {
-      console.log("✅ Maintenance check passed for IP:", userIP);
+    // Step 3: Logic for normal site pages
+    if (!isMaintenancePage) {
+      if (enabled && !isAllowed && !isAdmin) {
+        console.warn("🚧 Maintenance mode active. Blocking user IP:", userIP);
+        window.location.href = "/Daisys-Website/maintenance.html";
+      } else {
+        console.log("✅ Maintenance check passed for IP:", userIP);
+      }
+    }
+
+    // Step 4: Logic for maintenance.html → auto-unblock
+    else {
+      if (!enabled) {
+        console.log("✅ Maintenance mode is now OFF. Redirecting back to site...");
+        window.location.href = "/Daisys-Website/index.html";
+      }
     }
 
   } catch (err) {
-    console.error("🚨 Error running maintenance check:", err);
+    console.error("🚨 Error in maintenance logic:", err);
   }
 })();
