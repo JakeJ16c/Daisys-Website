@@ -1,19 +1,17 @@
-// Import Firestore setup and tools
+// Import Firestore setup
 import { db } from './firebase.js';
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
-// Run everything inside an async IIFE
 console.log("🛠 maintenance.js loaded");
 
 (async () => {
   try {
     console.log("🔍 Entering async function...");
 
-    // Detect if we're on the maintenance page
     const isMaintenancePage = window.location.pathname.includes("maintenance.html");
     console.log("📍 Page type:", isMaintenancePage ? "Maintenance Page" : "Normal Page");
 
-    // Step 1: Try to get visitor's IP address (fail-safe)
+    // Step 1: Get IP
     let userIP = "unknown";
     try {
       console.log("🌐 Fetching public IP...");
@@ -24,21 +22,20 @@ console.log("🛠 maintenance.js loaded");
       console.error("⚠️ Failed to fetch IP address:", ipErr);
     }
 
-    // Step 2: Load maintenance settings from Firestore
+    // Step 2: Load Firestore settings
     console.log("📡 Getting maintenance settings...");
     const snap = await getDoc(doc(db, "SiteSettings", "maintenance"));
-    if (!snap.exists()) {
-      console.warn("📭 Firestore doc not found: SiteSettings/maintenance");
-      return;
-    }
+    if (!snap.exists()) return;
 
     const data = snap.data();
+    console.log("📦 Firestore raw data:", data);
+
     const allowed = data.allowedIPs || [];
-    const enabled = Boolean(data.enabled);
+    const enabled = Boolean(data.enabled); // ✅ force into true/false
     const isAllowed = allowed.includes(userIP);
     const isAdmin = localStorage.getItem("isAdmin") === "true";
 
-    // Step 3: Logic for all normal pages → redirect to maintenance
+    // Step 3: Block non-whitelisted users
     if (!isMaintenancePage) {
       if (enabled && !isAllowed && !isAdmin) {
         console.warn("🚧 Site is in maintenance mode. Blocking IP:", userIP);
@@ -48,7 +45,7 @@ console.log("🛠 maintenance.js loaded");
       }
     }
 
-    // Step 4: Logic for maintenance page → redirect back if unlocked
+    // Step 4: Auto-redirect from maintenance page if site is live
     else {
       if (!enabled) {
         console.log("✅ Maintenance is OFF. Redirecting to site...");
