@@ -34,7 +34,7 @@ console.log("🛠 maintenance.js loaded");
 
     const data = snap.data();
     const allowed = data.allowedIPs || [];
-    const enabled = data.enabled === true;
+    const enabled = Boolean(data.enabled);
     const isAllowed = allowed.includes(userIP);
     const isAdmin = localStorage.getItem("isAdmin") === "true";
 
