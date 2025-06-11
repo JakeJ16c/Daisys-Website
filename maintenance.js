@@ -32,7 +32,7 @@ console.log("🛠 maintenance.js loaded");
 
     const allowed = data.allowedIPs || [];
     const enabled = Boolean(data.enabled); // ✅ force into true/false
-    const isAllowed = allowed.includes(userIP);
+    const isAllowed = allowed.map(ip => ip.trim()).includes(userIP.trim());
     const isAdmin = localStorage.getItem("isAdmin") === "true";
 
     // Step 3: Block non-whitelisted users
