@@ -146,9 +146,11 @@ function loadOrdersLive() {
             border-radius: 5px;
             font-size: 0.9rem;
           ">
-            <option value="pending" ${data.status === "pending" ? "selected" : ""}>pending</option>
-            <option value="in progress" ${data.status === "in progress" ? "selected" : ""}>in progress</option>
-            <option value="dispatched" ${data.status === "dispatched" ? "selected" : ""}>dispatched</option>
+            <option value="confirmed" ${data.status === "confirmed" ? "selected" : ""}>Confirmed</option>
+            <option value="cancelled" ${data.status === "cancelled" ? "selected" : ""}>Cancelled</option>
+            <option value="ready" ${data.status === "ready" ? "selected" : ""}>Ready To Ship</option>
+            <option value="dispatched" ${data.status === "dispatched" ? "selected" : ""}>Dispatched</option>
+            <option value="delivered" ${data.status === "delivered" ? "selected" : ""}>Delivered</option>
           </select>
         </p>
         <ul style="margin: 15px 0; padding: 0; list-style: none;">
@@ -164,12 +166,21 @@ function loadOrdersLive() {
     `;
       
     orderCard.style.cssText = `
-      background-color: white;
-      border-radius: 12px;
-      margin: 16px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-      overflow: hidden;
-    `;
+      background-color: ${
+        data.status === 'confirmed' ? '#cce5ff' :
+        data.status === 'cancelled' ? '#f8d7da' :
+        data.status === 'ready' ? '#fff3cd' :
+        data.status === 'dispatched' ? '#d1ecf1' :
+        data.status === 'delivered' ? '#d4edda' : '#eee'
+      };
+      
+      color: ${
+        data.status === 'confirmed' ? '#004085' :
+        data.status === 'cancelled' ? '#721c24' :
+        data.status === 'ready' ? '#856404' :
+        data.status === 'dispatched' ? '#0c5460' :
+        data.status === 'delivered' ? '#155724' : '#555'
+      };
     
     orderCard.querySelector('.order-toggle').addEventListener('click', () => {
       const content = orderCard.querySelector('.order-content');
