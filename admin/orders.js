@@ -113,6 +113,12 @@ function loadOrdersLive() {
         border-top-left-radius: 12px;
         border-top-right-radius: 12px;
         cursor: pointer;
+        width: 95%;
+        margin: 12px 0;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
       ">
         <span>${data.name || 'Unnamed'}</span>
         <span class="status-badge" style="
