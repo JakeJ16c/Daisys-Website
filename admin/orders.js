@@ -81,9 +81,22 @@ function loadOrdersLive() {
       const orderCard = document.createElement("div");
       orderCard.className = "order-card";
 
-      const itemHTML = items.map(item => `
-        <li>${item.productName} × ${item.qty} — £${(item.price * item.qty).toFixed(2)}</li>
-      `).join("");
+      // ✅ Dynamic badge + card coloring
+      const bgColor = {
+        confirmed: '#cce5ff',
+        cancelled: '#f8d7da',
+        ready: '#fff3cd',
+        dispatched: '#d1ecf1',
+        delivered: '#d4edda'
+      }[data.status] || '#eee';
+
+      const textColor = {
+        confirmed: '#004085',
+        cancelled: '#721c24',
+        ready: '#856404',
+        dispatched: '#0c5460',
+        delivered: '#155724'
+      }[data.status] || '#555';
 
       orderCard.innerHTML = `
       <button class="order-toggle" style="
@@ -102,23 +115,15 @@ function loadOrdersLive() {
         cursor: pointer;
       ">
         <span>${data.name || 'Unnamed'}</span>
-        <span style="
+        <span class="status-badge" style="
           font-size: 0.85rem;
           padding: 4px 10px;
           border-radius: 15px;
-          background-color: ${
-            data.status === 'pending' ? '#fff3cd' :
-            data.status === 'in progress' ? '#cce5ff' :
-            data.status === 'dispatched' ? '#d4edda' : '#eee'
-          };
-          color: ${
-            data.status === 'pending' ? '#856404' :
-            data.status === 'in progress' ? '#004085' :
-            data.status === 'dispatched' ? '#155724' : '#555'
-          };
+          background-color: ${bgColor};
+          color: ${textColor};
         ">${data.status}</span>
       </button>
-    
+
       <div class="order-content" style="
         display: none;
         background: white;
@@ -164,29 +169,18 @@ function loadOrdersLive() {
         <p><strong>Placed:</strong> ${createdAt}</p>
       </div>
     `;
-      
-    orderCard.style.cssText = `
-      background-color: ${
-        data.status === 'confirmed' ? '#cce5ff' :
-        data.status === 'cancelled' ? '#f8d7da' :
-        data.status === 'ready' ? '#fff3cd' :
-        data.status === 'dispatched' ? '#d1ecf1' :
-        data.status === 'delivered' ? '#d4edda' : '#eee'
-      };
-      
-      color: ${
-        data.status === 'confirmed' ? '#004085' :
-        data.status === 'cancelled' ? '#721c24' :
-        data.status === 'ready' ? '#856404' :
-        data.status === 'dispatched' ? '#0c5460' :
-        data.status === 'delivered' ? '#155724' : '#555'
-      };
-    `;
-    
-    orderCard.querySelector('.order-toggle').addEventListener('click', () => {
-      const content = orderCard.querySelector('.order-content');
-      content.style.display = content.style.display === 'block' ? 'none' : 'block';
-    });
+
+      orderCard.style.cssText = `
+        background-color: ${bgColor};
+        color: ${textColor};
+        margin-bottom: 20px;
+        border-radius: 12px;
+      `;
+
+      orderCard.querySelector('.order-toggle').addEventListener('click', () => {
+        const content = orderCard.querySelector('.order-content');
+        content.style.display = content.style.display === 'block' ? 'none' : 'block';
+      });
 
       container.appendChild(orderCard);
     });
@@ -195,7 +189,7 @@ function loadOrdersLive() {
   });
 }
 
-// ✅ Setup dropdown logic and collapsible toggles
+// ✅ Dropdown logic: change order status and reflect immediately
 function enableUIHandlers() {
   document.querySelectorAll(".collapsible").forEach(btn => {
     btn.addEventListener("click", () => {
@@ -214,8 +208,33 @@ function enableUIHandlers() {
         await updateDoc(orderRef, { status: newStatus });
         alert(`Order updated to "${newStatus}"`);
 
-        const header = e.target.closest('.content').previousElementSibling;
-        header.querySelector('.overview-status').textContent = newStatus;
+        // ✅ Update badge text + colors immediately
+        const card = e.target.closest('.order-card');
+        const badge = card.querySelector('.status-badge');
+
+        badge.textContent = newStatus;
+
+        const bgColor = {
+          confirmed: '#cce5ff',
+          cancelled: '#f8d7da',
+          ready: '#fff3cd',
+          dispatched: '#d1ecf1',
+          delivered: '#d4edda'
+        }[newStatus] || '#eee';
+
+        const textColor = {
+          confirmed: '#004085',
+          cancelled: '#721c24',
+          ready: '#856404',
+          dispatched: '#0c5460',
+          delivered: '#155724'
+        }[newStatus] || '#555';
+
+        badge.style.backgroundColor = bgColor;
+        badge.style.color = textColor;
+        card.style.backgroundColor = bgColor;
+        card.style.color = textColor;
+
       } catch (err) {
         console.error("Failed to update status:", err);
         alert("Failed to update order status.");
