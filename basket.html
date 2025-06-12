@@ -99,6 +99,37 @@
   text-align: right;
 }
 
+  .checkout-container {
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Wrap basket-left + summary so we can move them together */
+#basket-wrapper {
+  transition: transform 0.5s ease;
+  will-change: transform;
+}
+
+.checkout-box {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  width: 100%;
+  max-width: 100%;
+  transition: transform 0.5s ease;
+  transform: translateX(0); /* default state, no slide in */
+  will-change: transform;
+}
+
+/* Triggered when checkout is activated */
+.checkout-container.sliding #basket-wrapper {
+  transform: translateX(-100%);
+}
+
+.checkout-container.sliding .checkout-box {
+  transform: translateX(-100%);
+}
+
 /* === Responsive Fixes === */
 @media (max-width: 768px) {
   .basket-wrapper {
@@ -385,13 +416,13 @@
             alert("Your basket is empty. Please add items before proceeding to checkout.");
             return;
           }
-          checkoutContainer.classList.add("flipped");
+          checkoutContainer.classList.add("sliding");
         });
       }
       
       if (backButton) {
         backButton.addEventListener("click", () => {
-          checkoutContainer.classList.remove("flipped");
+          checkoutContainer.classList.remove("sliding");
         });
       }
       
