@@ -19,8 +19,23 @@
     .basket-page { flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
     .basket-content { flex: 1; display: flex; flex-direction: column; max-width: 1200px; margin: 0 auto; padding: 2rem; width: 100%; }
 
-    .checkout-container { position: relative; overflow-x: hidden; min-height: 700px; }
-    #basket-wrapper { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2rem; transition: transform 0.5s ease; will-change: transform; }
+    .checkout-container {
+      position: relative;
+      overflow: hidden;
+      min-height: 700px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    #basket-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 2rem;
+      transition: transform 0.5s ease;
+      will-change: transform;
+    }
 
     .summary-box {
       background: white;
@@ -40,41 +55,39 @@
 
     .checkout-box {
       position: absolute;
-      top: 0;
-      left: 100%;
-      transform: translateX(0);
+      top: 50%;
+      left: 50%;
+      transform: translate(100%, -50%);
       background: white;
       padding: 1.5rem;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
       transition: transform 0.5s ease, opacity 0.5s ease;
       opacity: 0;
       visibility: hidden;
       max-width: 420px;
       width: 100%;
-      margin: 0 auto;
       border-radius: 16px;
       font-size: 0.92rem;
+    }
+
+    .checkout-container.sliding .checkout-box {
+      transform: translate(-50%, -50%);
+      opacity: 1;
+      visibility: visible;
     }
 
     .checkout-box input {
       padding: 0.5rem;
       font-size: 0.9rem;
       border-radius: 6px;
+      margin-bottom: 1rem;
+      width: 100%;
     }
 
     .checkout-box .summary-btn {
       padding: 0.7rem 1rem;
       font-size: 0.95rem;
-    }
-
-    .checkout-container.sliding #basket-wrapper {
-      transform: translateX(-100%);
-    }
-
-    .checkout-container.sliding .checkout-box {
-      transform: translateX(-100%);
-      opacity: 1;
-      visibility: visible;
+      width: 100%;
     }
 
     .basket-item-row {
@@ -85,18 +98,55 @@
       padding: 1rem 0;
       border-bottom: 1px solid #eee;
     }
-    .basket-item-row img { width: 150px; height: 150px; object-fit: cover; border-radius: 8px; }
+
+    .basket-item-row img {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
     .item-name { flex: 1; font-weight: 500; }
     .item-qty { display: flex; align-items: center; gap: 0.5rem; }
-    .item-qty button { width: 30px; height: 30px; font-weight: bold; border: 1px solid #ccc; background: white; cursor: pointer; border-radius: 6px; }
-    .item-price { font-weight: bold; color: var(--electric-blue); min-width: 60px; text-align: right; }
+    .item-qty button {
+      width: 30px;
+      height: 30px;
+      font-weight: bold;
+      border: 1px solid #ccc;
+      background: white;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+
+    .item-price {
+      font-weight: bold;
+      color: var(--electric-blue);
+      min-width: 60px;
+      text-align: right;
+    }
 
     @media (max-width: 768px) {
-      #basket-wrapper { flex-direction: column; gap: 2rem; }
-      .basket-item-row { flex-direction: column; align-items: center; text-align: center; }
-      .basket-item-row img { width: 120px; height: 120px; }
-      .item-name, .item-qty, .item-price { width: 100%; justify-content: center; }
-      .item-qty { justify-content: center; margin-top: 0.5rem; }
+      #basket-wrapper {
+        flex-direction: column;
+        gap: 2rem;
+      }
+      .basket-item-row {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+      .basket-item-row img {
+        width: 120px;
+        height: 120px;
+      }
+      .item-name, .item-qty, .item-price {
+        width: 100%;
+        justify-content: center;
+      }
+      .item-qty {
+        justify-content: center;
+        margin-top: 0.5rem;
+      }
     }
   </style>
 </head>
