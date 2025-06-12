@@ -1,151 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Basic Setup -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="icon" type="image/x-icon" href="favicon_circle.ico">
+  <link rel="icon" href="favicon_circle.ico">
   <title>You're So Golden - Your Basket</title>
-
-  <!-- Fonts & Styling -->
   <base href="/Daisys-Website/">
-  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="styles/styles.css">
   <link rel="stylesheet" href="styles/responsive.css">
-
   <style>
-    .basket-page { flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
-    .basket-content { flex: 1; display: flex; flex-direction: column; max-width: 1200px; margin: 0 auto; padding: 2rem; width: 100%; }
-
+    :root {
+      --transition-time: 0.4s;
+    }
+    body {
+      font-family: 'Fredoka', sans-serif;
+      background: #fdf6ed;
+    }
+    .basket-content {
+      max-width: 1200px;
+      margin: auto;
+      padding: 2rem;
+    }
     .checkout-container {
+      display: flex;
       position: relative;
       overflow: hidden;
       min-height: 700px;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
     }
-
     #basket-wrapper {
       display: flex;
-      flex-wrap: wrap;
+      flex: 1;
       justify-content: space-between;
       gap: 2rem;
-      transition: transform 0.5s ease;
-      will-change: transform;
+      transition: transform var(--transition-time) ease-in-out;
+      width: 100%;
     }
-
-    .summary-box {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 16px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-      max-width: 400px;
-      margin-left: auto;
-      font-size: 0.95rem;
-    }
-
-    .summary-box h3 {
-      font-size: 1.3rem;
-      color: var(--electric-blue);
-      margin-bottom: 1rem;
-    }
-
     .checkout-box {
       position: absolute;
       top: 50%;
-      left: 50%;
-      transform: translate(100%, -50%);
-      background: white;
-      padding: 1.5rem;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-      transition: transform 0.5s ease, opacity 0.5s ease;
+      left: 100%;
+      transform: translateY(-50%);
       opacity: 0;
-      visibility: hidden;
-      max-width: 420px;
-      width: 100%;
+      transition: transform var(--transition-time) ease-in-out, opacity var(--transition-time) ease-in-out;
+      background: white;
       border-radius: 16px;
-      font-size: 0.92rem;
+      padding: 2rem;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      font-size: 0.95rem;
     }
-
+    .checkout-container.sliding #basket-wrapper {
+      transform: translateX(-100%);
+    }
     .checkout-container.sliding .checkout-box {
       transform: translate(-50%, -50%);
+      left: 50%;
       opacity: 1;
-      visibility: visible;
+      z-index: 2;
     }
-
-    .checkout-box input {
-      padding: 0.5rem;
-      font-size: 0.9rem;
-      border-radius: 6px;
-      margin-bottom: 1rem;
-      width: 100%;
-    }
-
-    .checkout-box .summary-btn {
-      padding: 0.7rem 1rem;
-      font-size: 0.95rem;
-      width: 100%;
-    }
-
-    .basket-item-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1.5rem;
-      padding: 1rem 0;
-      border-bottom: 1px solid #eee;
-    }
-
-    .basket-item-row img {
-      width: 150px;
-      height: 150px;
-      object-fit: cover;
-      border-radius: 8px;
-    }
-
-    .item-name { flex: 1; font-weight: 500; }
-    .item-qty { display: flex; align-items: center; gap: 0.5rem; }
-    .item-qty button {
-      width: 30px;
-      height: 30px;
-      font-weight: bold;
-      border: 1px solid #ccc;
+    .summary-box {
       background: white;
-      cursor: pointer;
+      padding: 1.8rem;
+      border-radius: 16px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      font-size: 0.95rem;
+      min-width: 320px;
+    }
+    .summary-box h3 {
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      color: var(--electric-blue);
+    }
+    .summary-item {
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+    .promo-code {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .promo-code input {
+      flex: 1;
+      padding: 0.5rem;
+      font-size: 0.95rem;
+      border: 1px solid #ccc;
       border-radius: 6px;
     }
-
-    .item-price {
-      font-weight: bold;
-      color: var(--electric-blue);
-      min-width: 60px;
-      text-align: right;
+    .promo-code button {
+      padding: 0.5rem 1rem;
+      background: #236b27;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
     }
-
+    .total-line {
+      display: flex;
+      justify-content: space-between;
+      margin: 0.4rem 0;
+    }
+    .button-row {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .summary-btn {
+      background-color: #80CBC4;
+      color: white;
+      border: none;
+      padding: 0.8rem;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: 0.3s;
+    }
+    .summary-btn:hover {
+      background-color: #68b2a8;
+    }
+    .checkout-box label {
+      font-weight: 500;
+      margin-bottom: 0.3rem;
+      display: block;
+    }
+    .checkout-box input {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .back-button {
+      background: none;
+      border: none;
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+      cursor: pointer;
+      color: var(--electric-blue);
+    }
+    .secure-badge {
+      font-size: 0.85rem;
+      color: #555;
+      margin-top: 1rem;
+    }
     @media (max-width: 768px) {
-      #basket-wrapper {
-        flex-direction: column;
-        gap: 2rem;
-      }
-      .basket-item-row {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-      }
-      .basket-item-row img {
-        width: 120px;
-        height: 120px;
-      }
-      .item-name, .item-qty, .item-price {
+      .checkout-box, .summary-box {
         width: 100%;
-        justify-content: center;
+        max-width: 100%;
+        border-radius: 0;
       }
-      .item-qty {
-        justify-content: center;
-        margin-top: 0.5rem;
+      .checkout-box {
+        padding: 1.5rem;
       }
     }
   </style>
