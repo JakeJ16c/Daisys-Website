@@ -22,21 +22,49 @@
     .checkout-container { position: relative; overflow-x: hidden; min-height: 700px; }
     #basket-wrapper { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2rem; transition: transform 0.5s ease; will-change: transform; }
 
+    .summary-box {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      max-width: 400px;
+      margin-left: auto;
+      font-size: 0.95rem;
+    }
+
+    .summary-box h3 {
+      font-size: 1.3rem;
+      color: var(--electric-blue);
+      margin-bottom: 1rem;
+    }
+
     .checkout-box {
       position: absolute;
       top: 0;
       left: 100%;
       transform: translateX(0);
       background: white;
-      padding: 2rem;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 1.5rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
       transition: transform 0.5s ease, opacity 0.5s ease;
       opacity: 0;
       visibility: hidden;
-      max-width: 500px;
+      max-width: 420px;
       width: 100%;
       margin: 0 auto;
       border-radius: 16px;
+      font-size: 0.92rem;
+    }
+
+    .checkout-box input {
+      padding: 0.5rem;
+      font-size: 0.9rem;
+      border-radius: 6px;
+    }
+
+    .checkout-box .summary-btn {
+      padding: 0.7rem 1rem;
+      font-size: 0.95rem;
     }
 
     .checkout-container.sliding #basket-wrapper {
