@@ -155,61 +155,6 @@
     width: 100%;
   }
 
-/* ========== Basket Section ========== */
-	.basket-item-row img {
-    width: 120px;
-    height: 120px;
-  }
-	
-	.item-name,
-  .item-qty,
-  .item-price {
-    text-align: center;
-    width: 100%;
-  }
-
-  .item-qty {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-  }
-
-  .basket-item-row {
-    align-items: center;
-    gap: 1rem;
-  }
-
-	.checkout-box {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100%;
-    max-width: 100%;
-    height: auto;
-    padding: 1.5rem;
-  }
-
-  .checkout-container {
-    min-height: auto;
-    padding-bottom: 2rem;
-  }
-
-	.summary-box h3 {
-    font-size: 1.2rem;
-  }
-
-  .summary-item,
-  .total-line {
-    font-size: 0.95rem;
-  }
-
-  .basket-content {
-    padding: 1rem;
-  }
-
 /* ========== Contact Icons Section ========== */
 h1.page-title {
       text-align: center;
