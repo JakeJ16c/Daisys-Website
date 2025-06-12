@@ -15,9 +15,124 @@
       <link rel="stylesheet" href="styles/styles.css">
       <link rel="stylesheet" href="styles/responsive.css">
 
-      <style>        
+<style>
+/* === Basket Page Layout === */
+.basket-page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
 
-      </style>
+.basket-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  width: 100%;
+}
+
+.basket-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 4rem;
+  flex: 1;
+  flex-wrap: wrap;
+}
+
+.basket-left {
+  flex: 2;
+  min-width: 300px;
+}
+
+.basket-summary {
+  flex: 1;
+  max-width: 400px;
+  min-width: 280px;
+}
+
+/* === Basket Items === */
+.basket-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.basket-item-row img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.item-name {
+  flex: 1;
+  font-weight: 500;
+}
+
+.item-qty {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.item-qty button {
+  width: 30px;
+  height: 30px;
+  font-weight: bold;
+  border: 1px solid #ccc;
+  background: white;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.item-price {
+  font-weight: bold;
+  color: var(--electric-blue);
+  min-width: 60px;
+  text-align: right;
+}
+
+/* === Responsive Fixes === */
+@media (max-width: 768px) {
+  .basket-wrapper {
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .basket-item-row {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .basket-item-row img {
+    width: 120px;
+    height: 120px;
+  }
+
+  .item-name, .item-qty, .item-price {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .item-qty {
+    justify-content: center;
+    margin-top: 0.5rem;
+  }
+
+  .basket-summary {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+</style>
 
     </head>
   
