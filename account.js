@@ -94,13 +94,13 @@ snapshot.forEach((docSnap) => {
     <div class="order-card">
       <div class="order-summary" onclick="this.nextElementSibling.classList.toggle('open')">
         <div>
-          <strong>${date}</strong><br>
           <span class="order-status ${order.status.toLowerCase()}">Status: ${order.status}</span>
         </div>
         <i class="fa fa-chevron-down"></i>
       </div>
       <div class="order-details">
         <ul>
+        <p class="order-date">Placed on: ${date}</p>
           ${order.items.map(item => `
             <li>${item.productName} × ${item.qty} – £${item.price.toFixed(2)}</li>
           `).join("")}
