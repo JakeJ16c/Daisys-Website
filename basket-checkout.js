@@ -7,26 +7,19 @@ import {
   getDoc,
   getDocs,
   deleteDoc,
-  setDoc,
   runTransaction,
   serverTimestamp
 } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
-import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
 
-async function clearFirestoreBasket(uid) {
-  const basketRef = collection(db, "users", uid, "Basket");
-  const basketSnap = await getDocs(basketRef);
-  const deletions = basketSnap.docs.map(doc => deleteDoc(doc.ref));
-  await Promise.all(deletions);
-}
+import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
 
 let currentUser = {
   name: "Anonymous",
   email: "no@email.com",
-  address: {} // ← must be an object
+  address: {}
 };
 
-// ✅ Load current user info and full address
+// ✅ Load user info and address
 async function loadCurrentUser() {
   return new Promise((resolve, reject) => {
     onAuthStateChanged(auth, async (user) => {
@@ -37,7 +30,7 @@ async function loadCurrentUser() {
 
           if (userDocSnap.exists()) {
             const data = userDocSnap.data();
-            const address = data.address || data.deliveryAddress || {};
+            const address = data.address || {};
 
             currentUser = {
               uid: user.uid,
@@ -46,24 +39,37 @@ async function loadCurrentUser() {
               address: address
             };
 
-            resolve(); // done loading
+            resolve();
           } else {
-            console.warn("User document not found in Firestore.");
+            console.warn("User document not found.");
             resolve();
           }
         } catch (err) {
-          console.error("Error fetching user info:", err);
+          console.error("Error loading user:", err);
           reject(err);
         }
       } else {
-        console.warn("User not authenticated");
+        console.warn("No user authenticated");
         resolve(); // allow guest checkout
       }
     });
   });
 }
 
-// ✅ Submit order to Firebase with a sequential order number
+// ✅ Firestore Basket Clearer (multi-device support)
+async function clearFirestoreBasket(userId) {
+  const basketRef = collection(db, `users/${userId}/Basket`);
+  const snap = await getDocs(basketRef);
+
+  const deletions = snap.docs.map(docSnap =>
+    deleteDoc(doc(db, `users/${userId}/Basket/${docSnap.id}`))
+  );
+
+  await Promise.all(deletions);
+  console.log("✅ Firestore basket cleared.");
+}
+
+// ✅ Place Order with sequential ID and clear cart
 async function submitOrder() {
   const cartKey = "daisyCart";
   const basket = JSON.parse(localStorage.getItem(cartKey)) || [];
@@ -73,7 +79,7 @@ async function submitOrder() {
     return false;
   }
 
-  await loadCurrentUser(); // ensure user info is ready
+  await loadCurrentUser();
 
   const orderPayload = {
     userId: currentUser.uid || "guest",
@@ -88,11 +94,9 @@ async function submitOrder() {
     })),
     status: "Confirmed",
     createdAt: serverTimestamp()
-    // orderNumber will be added below
   };
 
   try {
-    // 🧮 Firestore transaction to assign unique, sequential order number
     const counterRef = doc(db, "meta", "orderCounter");
 
     const orderRef = await runTransaction(db, async (transaction) => {
@@ -112,14 +116,13 @@ async function submitOrder() {
 
     console.log("✅ Order placed with ID:", orderRef.id);
 
-    // ✅ Clear basket (local + Firestore)
-    localStorage.removeItem("daisyCart");
-    
+    // ✅ Clear localStorage cart and Firestore basket
+    localStorage.removeItem(cartKey);
+
     if (currentUser.uid) {
       await clearFirestoreBasket(currentUser.uid);
     }
-    
-    // ✅ Redirect after success
+
     alert("Order placed successfully! 🛒");
     window.location.href = "index.html";
     return true;
@@ -131,12 +134,12 @@ async function submitOrder() {
   }
 }
 
-// ✅ Init checkout on DOM ready
+// ✅ DOM Ready
 document.addEventListener("DOMContentLoaded", async () => {
   await loadCurrentUser();
 
   const emailField = document.getElementById("email");
-  if (emailField && currentUser.email && currentUser.email !== "no@email.com") {
+  if (emailField && currentUser.email !== "no@email.com") {
     emailField.value = currentUser.email;
   }
 
