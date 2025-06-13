@@ -90,34 +90,34 @@ snapshot.forEach((docSnap) => {
   const order = docSnap.data();
   const date = order.createdAt?.toDate().toLocaleString() || "Unknown date";
 
-html += `
-  <div class="order-card">
-    <div class="order-summary" onclick="this.classList.toggle('open'); this.nextElementSibling.classList.toggle('open')">
-      <div class="summary-left">
-        <strong>Order #</strong>
+  html += `
+    <div class="order-card">
+      <div class="order-summary" onclick="this.classList.toggle('open'); this.nextElementSibling.classList.toggle('open')">
+        <div class="summary-left">
+          <strong>Order #</strong>
+        </div>
+        <div class="summary-right">
+          <span class="order-status ${order.status.toLowerCase()}">Status: ${order.status}</span>
+          <i class="fa fa-chevron-down"></i>
+        </div>
       </div>
-      <div class="summary-right">
-        <span class="order-status ${order.status.toLowerCase()}">Status: ${order.status}</span>
-        <i class="fa fa-chevron-down"></i>
+      <div class="order-details">
+        <p class="order-date">Placed on: ${date}</p>
+        <ul>
+          ${
+            Array.isArray(order.items)
+              ? order.items.map(item => {
+                  return `<li>${item.productName} × ${item.qty} – £${item.price.toFixed(2)}</li>`;
+                }).join("")
+              : "<li>No items found in this order.</li>"
+          }
+        </ul>
       </div>
     </div>
-    <div class="order-details">
-      <p class="order-date">Placed on: ${date}</p>
-      <ul>
-        ${
-          Array.isArray(order.items)
-            ? order.items.map(item => {
-                return `<li>${item.productName} × ${item.qty} – £${item.price.toFixed(2)}</li>`;
-              }).join("")
-            : "<li>No items found in this order.</li>"
-        }
-      </ul>
-    </div>
-  </div>
-`;
+  `;
+});
 
-  ordersDiv.innerHTML = html;
-})
+ordersDiv.innerHTML = html;
 
 // =========================
 // 🚪 Logout
