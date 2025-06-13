@@ -104,8 +104,8 @@ async function submitOrder() {
 
     console.log("✅ Order placed with ID:", orderRef.id);
 
-    // 🧹 Clear the cart and redirect
-    localStorage.removeItem(cartKey);
+    // ✅ Clear basket & Redirect once order is placed
+    localStorage.removeItem("daisyCart");
     alert("Order placed successfully! 🛒");
     window.location.href = "index.html";
     return true;
