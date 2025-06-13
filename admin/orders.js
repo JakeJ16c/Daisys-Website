@@ -51,6 +51,8 @@ async function setupPushNotifications() {
 function loadOrdersLive() {
   const ordersRef = collection(db, "Orders");
   const container = document.getElementById("orderList");
+  const urlParams = new URLSearchParams(window.location.search);
+  const selectedOrderId = urlParams.get("orderId");
 
   onSnapshot(ordersRef, (snapshot) => {
     container.innerHTML = "";
@@ -63,6 +65,7 @@ function loadOrdersLive() {
     snapshot.forEach(docSnap => {
       const data = docSnap.data();
       const orderId = docSnap.id;
+      const shouldOpen = selectedOrderId === orderId;
 
       const items = Array.isArray(data.items)
         ? data.items
@@ -125,7 +128,7 @@ function loadOrdersLive() {
       </button>
 
       <div class="order-content" style="
-        display: none;
+        display: ${shouldOpen ? 'block' : 'none'};
         background: white;
         padding: 16px;
         border-bottom-left-radius: 12px;
