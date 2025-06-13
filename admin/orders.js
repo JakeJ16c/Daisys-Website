@@ -114,7 +114,7 @@ function loadOrdersLive() {
         border-top-right-radius: 12px;
         cursor: pointer;
       ">
-        <span>${data.name || 'Unnamed'}</span>
+        <span>${data.name || 'Unnamed'} - ${order.orderNumber || "N/A"}</span>
         <span class="status-badge" style="
           font-size: 0.85rem;
           padding: 4px 10px;
