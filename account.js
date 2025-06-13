@@ -116,9 +116,8 @@ snapshot.forEach((docSnap) => {
     </div>
   `;
 });
-
 ordersDiv.innerHTML = html;
-
+}
 // =========================
 // 🚪 Logout
 // =========================
