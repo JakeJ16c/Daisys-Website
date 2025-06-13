@@ -14,6 +14,62 @@
   <link rel="stylesheet" href="styles/responsive.css">
   
   <style>  
+.order-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.order-card:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.order-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  font-weight: 500;
+  background: #f9f9f9;
+}
+
+.order-details {
+  display: none;
+  padding: 1rem 1.5rem;
+  background: #fff;
+  border-top: 1px solid #eee;
+}
+
+.order-details.open {
+  display: block;
+}
+
+.order-status {
+  display: inline-block;
+  margin-top: 0.25rem;
+  font-size: 0.9rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 6px;
+}
+
+.order-status.pending {
+  background-color: #fff4e5;
+  color: #a96a00;
+}
+
+.order-status.cancelled {
+  background-color: #ffe5e5;
+  color: #b30000;
+}
+
+.order-status.completed {
+  background-color: #e6f9e8;
+  color: #207a3c;
+}
+    
     /* ========== Account Panel ========== */
 @media (max-width: 480px) {
   .account-container {
@@ -153,7 +209,6 @@
       background: #666;
       color: white;
     }
-
   </style>
 </head>
 <body>
