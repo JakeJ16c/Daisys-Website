@@ -5,12 +5,19 @@ import {
   collection,
   doc,
   getDoc,
+  deleteDoc,
   setDoc,
   runTransaction,
   serverTimestamp
 } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
-
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
+
+async function clearFirestoreBasket(uid) {
+  const basketRef = collection(db, "users", uid, "Basket");
+  const basketSnap = await getDocs(basketRef);
+  const deletions = basketSnap.docs.map(doc => deleteDoc(doc.ref));
+  await Promise.all(deletions);
+}
 
 let currentUser = {
   name: "Anonymous",
@@ -104,8 +111,14 @@ async function submitOrder() {
 
     console.log("✅ Order placed with ID:", orderRef.id);
 
-    // ✅ Clear basket & Redirect once order is placed
+    // ✅ Clear basket (local + Firestore)
     localStorage.removeItem("daisyCart");
+    
+    if (currentUser.uid) {
+      await clearFirestoreBasket(currentUser.uid);
+    }
+    
+    // ✅ Redirect after success
     alert("Order placed successfully! 🛒");
     window.location.href = "index.html";
     return true;
