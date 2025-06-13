@@ -363,7 +363,11 @@ async function loadOrders() {
     }
 
     const li = document.createElement("li");
-    li.innerHTML = `Order for <strong>${data.name || 'Unknown'}</strong> – <em>${timeDiffText}</em>`;
+    li.innerHTML = `
+      <a href="orders.html?orderId=${doc.id}" style="text-decoration: none; color: inherit;">
+        Order for <strong>${data.name || 'Unknown'}</strong> – <em>${timeDiffText}</em>
+      </a>
+    `;
 
     if (!isNaN(Date.parse(orderDate)) && (new Date() - orderDate) > 2.5 * 24 * 60 * 60 * 1000) {
       li.classList.add("urgent");
