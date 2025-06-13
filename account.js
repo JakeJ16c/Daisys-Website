@@ -117,7 +117,7 @@ html += `
 `;
 
   ordersDiv.innerHTML = html;
-}
+})
 
 // =========================
 // 🚪 Logout
