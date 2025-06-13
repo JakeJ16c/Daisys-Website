@@ -94,7 +94,7 @@ snapshot.forEach((docSnap) => {
   <div class="order-card">
     <div class="order-summary" onclick="this.classList.toggle('open'); this.nextElementSibling.classList.toggle('open')">
       <div class="summary-left">
-        <strong>Order #${docSnap.id.slice(0, 6).toUpperCase()}</strong>
+        <strong>Order #</strong>
       </div>
       <div class="summary-right">
         <span class="order-status ${order.status.toLowerCase()}">Status: ${order.status}</span>
