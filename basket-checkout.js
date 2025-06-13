@@ -1,10 +1,12 @@
 // basket-checkout.js - Combined checkout functionality for the integrated basket page
+
 import { db, auth } from './firebase.js';
 import {
   collection,
-  addDoc,
   doc,
   getDoc,
+  setDoc,
+  runTransaction,
   serverTimestamp
 } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
 
@@ -53,18 +55,17 @@ async function loadCurrentUser() {
   });
 }
 
-// 🧾 Submit order to Firebase
+// ✅ Submit order to Firebase with a sequential order number
 async function submitOrder() {
   const cartKey = "daisyCart";
   const basket = JSON.parse(localStorage.getItem(cartKey)) || [];
-  
+
   if (basket.length === 0) {
     alert("You have nothing in the basket to checkout!");
     return false;
   }
 
-  // Make sure user data is fully loaded before proceeding
-  await loadCurrentUser();
+  await loadCurrentUser(); // ensure user info is ready
 
   const orderPayload = {
     userId: currentUser.uid || "guest",
@@ -79,58 +80,63 @@ async function submitOrder() {
     })),
     status: "pending",
     createdAt: serverTimestamp()
+    // orderNumber will be added below
   };
 
-  console.log("Submitting order payload:", orderPayload);
-
   try {
-    // Add the order to Firestore
-    const orderRef = await addDoc(collection(db, "Orders"), orderPayload);
-    console.log("Order placed successfully with ID:", orderRef.id);
-    
-    // Clear the cart
+    // 🧮 Firestore transaction to assign unique, sequential order number
+    const counterRef = doc(db, "meta", "orderCounter");
+
+    const orderRef = await runTransaction(db, async (transaction) => {
+      const counterSnap = await transaction.get(counterRef);
+      const currentCount = counterSnap.exists() ? counterSnap.data().count : 0;
+      const newOrderNumber = currentCount + 1;
+
+      const newOrderRef = doc(collection(db, "Orders"));
+      transaction.set(newOrderRef, {
+        ...orderPayload,
+        orderNumber: newOrderNumber
+      });
+
+      transaction.update(counterRef, { count: newOrderNumber });
+      return newOrderRef;
+    });
+
+    console.log("✅ Order placed with ID:", orderRef.id);
+
+    // 🧹 Clear the cart and redirect
     localStorage.removeItem(cartKey);
-    
-    // Show success message
     alert("Order placed successfully! 🛒");
-    
-    // Redirect to home page
     window.location.href = "index.html";
     return true;
+
   } catch (err) {
-    console.error("Error placing order:", err);
+    console.error("❌ Error placing order:", err);
     alert("Failed to place order. Please try again.");
     return false;
   }
 }
 
-// Initialize checkout functionality
+// ✅ Init checkout on DOM ready
 document.addEventListener("DOMContentLoaded", async () => {
-  // Load user data
   await loadCurrentUser();
-  
-  // Pre-fill email field if user is logged in
+
   const emailField = document.getElementById("email");
   if (emailField && currentUser.email && currentUser.email !== "no@email.com") {
     emailField.value = currentUser.email;
   }
-  
-  // Handle checkout form submission
+
   const checkoutForm = document.getElementById("checkout-form");
   if (checkoutForm) {
     checkoutForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      
-      // Show loading state
       const submitButton = checkoutForm.querySelector('button[type="submit"]');
       const originalText = submitButton.textContent;
       submitButton.textContent = "Processing...";
       submitButton.disabled = true;
-      
-      // Submit order to Firebase
+
       const success = await submitOrder();
-      
-      // Reset button if failed
+
       if (!success) {
         submitButton.textContent = originalText;
         submitButton.disabled = false;
