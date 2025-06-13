@@ -91,24 +91,26 @@ snapshot.forEach((docSnap) => {
   const date = order.createdAt?.toDate().toLocaleString() || "Unknown date";
 
   html += `
-    <div class="order-card">
-      <div class="order-summary" onclick="this.nextElementSibling.classList.toggle('open')">
-        <div>
-          <span class="order-status ${order.status.toLowerCase()}">Status: ${order.status}</span>
-        </div>
+  <div class="order-card">
+    <div class="order-summary" onclick="this.classList.toggle('open'); this.nextElementSibling.classList.toggle('open')">
+      <div class="summary-left">
+        <strong>Order #${docSnap.id.slice(0, 6).toUpperCase()}</strong>
+      </div>
+      <div class="summary-right">
+        <span class="order-status ${order.status.toLowerCase()}">Status: ${order.status}</span>
         <i class="fa fa-chevron-down"></i>
       </div>
-      <div class="order-details">
-        <ul>
-        <p class="order-date">Placed on: ${date}</p>
-          ${order.items.map(item => `
-            <li>${item.productName} × ${item.qty} – £${item.price.toFixed(2)}</li>
-          `).join("")}
-        </ul>
-      </div>
     </div>
-  `;
-});
+    <div class="order-details">
+      <p class="order-date">Placed on: ${date}</p>
+      <ul>
+        ${order.items.map(item => `
+          <li>${item.productName} × ${item.qty} – £${item.price.toFixed(2)}</li>
+        `).join("")}
+      </ul>
+    </div>
+  </div>
+`;
 
   ordersDiv.innerHTML = html;
 }
