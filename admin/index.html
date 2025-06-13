@@ -327,38 +327,45 @@
   
     loadStockCounter();
 
-    async function loadOrders() {
+async function loadOrders() {
   const orderList = document.getElementById("order-list");
   orderList.innerHTML = "";
 
   const snap = await getDocs(collection(db, 'Orders'));
   const now = new Date();
 
+  function formatTimeAgo(date) {
+    const seconds = Math.floor((now - date) / 1000);
+    if (seconds < 60) return `${seconds}s ago`;
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes}m ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    return `${days}d ago`;
+  }
+
   snap.forEach(doc => {
     const data = doc.data();
     const createdAtRaw = data.createdAt;
 
     let orderDate;
-
-    // Try to convert "2 June 2025 at 19:25:49 UTC+1" into something Date() can understand
-    if (typeof createdAtRaw === 'string') {
-      const cleaned = createdAtRaw
-        .replace(' at ', ' ')
-        .replace(/ UTC[+-]\d+/, ''); // remove " UTC+1"
+    if (createdAtRaw?.toDate) {
+      orderDate = createdAtRaw.toDate();
+    } else if (typeof createdAtRaw === 'string') {
+      const cleaned = createdAtRaw.replace(' at ', ' ').replace(/ UTC[+-]\d+/, '');
       orderDate = new Date(cleaned);
     }
 
     let timeDiffText = 'unknown time';
-
     if (orderDate instanceof Date && !isNaN(orderDate)) {
-      const timeDiff = Math.floor((now - orderDate) / (1000 * 60 * 60 * 24));
-      timeDiffText = `${timeDiff} day(s) ago`;
+      timeDiffText = formatTimeAgo(orderDate);
     }
 
     const li = document.createElement("li");
-    li.innerHTML = `Order for <strong>${data.name || 'Unknown'}</strong> - <em>${timeDiffText}</em>`;
+    li.innerHTML = `Order for <strong>${data.name || 'Unknown'}</strong> – <em>${timeDiffText}</em>`;
 
-    if (!isNaN(parseInt(timeDiffText)) && parseInt(timeDiffText) >= 3) {
+    if (!isNaN(Date.parse(orderDate)) && (new Date() - orderDate) > 2.5 * 24 * 60 * 60 * 1000) {
       li.classList.add("urgent");
     }
 
