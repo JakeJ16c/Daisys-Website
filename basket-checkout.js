@@ -1,4 +1,4 @@
-// basket-checkout.js - Combined checkout functionality for the integrated basket page
+// basket-checkout.js – Handles checkout logic, promo codes, Firestore order saving and basket clearing
 
 import { db, auth } from './firebase.js';
 import {
@@ -17,13 +17,31 @@ let activePromo = null;
 let discountAmount = 0;
 let finalTotal = 0;
 
+// ✅ UI updater for promo display in order summary
+function updateSummaryUI(subtotal, discount, final) {
+  const discountLine = document.getElementById("discount-line");
+  const finalTotalLine = document.getElementById("final-total-line");
+
+  if (discountLine && finalTotalLine) {
+    if (discount > 0) {
+      discountLine.style.display = "flex";
+      discountLine.querySelector(".summary-label").textContent = `Promo (${activePromo.code})`;
+      discountLine.querySelector(".summary-value").textContent = `−£${discount.toFixed(2)}`;
+    } else {
+      discountLine.style.display = "none";
+    }
+
+    finalTotalLine.querySelector(".summary-value").textContent = `£${final.toFixed(2)}`;
+  }
+}
+
 let currentUser = {
   name: "Anonymous",
   email: "no@email.com",
   address: {}
 };
 
-// ✅ Load user info and address
+// ✅ Load user data including delivery address
 async function loadCurrentUser() {
   return new Promise((resolve, reject) => {
     onAuthStateChanged(auth, async (user) => {
@@ -60,7 +78,7 @@ async function loadCurrentUser() {
   });
 }
 
-// ✅ Firestore Basket Clearer (multi-device support)
+// ✅ Clear Firestore basket for multi-device consistency
 async function clearFirestoreBasket(userId) {
   const basketRef = collection(db, `users/${userId}/Basket`);
   const snap = await getDocs(basketRef);
@@ -73,7 +91,55 @@ async function clearFirestoreBasket(userId) {
   console.log("✅ Firestore basket cleared.");
 }
 
-// ✅ Place Order with sequential ID and clear cart
+// ✅ Apply promo code and calculate discount
+async function applyPromoCode() {
+  const codeInput = document.getElementById("promo-code-input");
+  const summaryTotal = document.getElementById("summary-total");
+
+  const code = codeInput.value.trim().toUpperCase();
+  if (!code) return alert("Enter a promo code.");
+
+  try {
+    const snap = await getDocs(collection(db, "PromoCodes"));
+    let found = false;
+
+    snap.forEach(doc => {
+      const promo = doc.data();
+      if (promo.code.toUpperCase() === code) {
+        found = true;
+        activePromo = { ...promo, code }; // Make sure promo.code is available
+
+        const basket = JSON.parse(localStorage.getItem("daisyCart")) || [];
+        const subtotal = basket.reduce((acc, item) => acc + (item.price * item.qty), 0);
+
+        if (subtotal < (promo.minSpend || 0)) {
+          return alert(`Minimum spend for this promo is £${promo.minSpend}`);
+        }
+
+        if (promo.type === "percentage") {
+          discountAmount = subtotal * (promo.discount / 100);
+        } else {
+          discountAmount = promo.discount;
+        }
+
+        finalTotal = Math.max(0, subtotal - discountAmount);
+
+        updateSummaryUI(subtotal, discountAmount, finalTotal);
+        alert("Promo code applied!");
+      }
+    });
+
+    if (!found) {
+      alert("Promo code not found.");
+    }
+
+  } catch (err) {
+    console.error("Error applying promo:", err);
+    alert("Something went wrong applying the code.");
+  }
+}
+
+// ✅ Place order, generate order number, and clear local + Firestore basket
 async function submitOrder() {
   const cartKey = "daisyCart";
   const basket = JSON.parse(localStorage.getItem(cartKey)) || [];
@@ -85,23 +151,37 @@ async function submitOrder() {
 
   await loadCurrentUser();
 
+  const subtotal = basket.reduce((acc, item) => acc + (item.price * item.qty), 0);
+
+  if (activePromo) {
+    if (activePromo.type === "percentage") {
+      discountAmount = subtotal * (activePromo.discount / 100);
+    } else {
+      discountAmount = activePromo.discount;
+    }
+    finalTotal = Math.max(0, subtotal - discountAmount);
+  } else {
+    discountAmount = 0;
+    finalTotal = subtotal;
+  }
+
   const orderPayload = {
-  userId: currentUser.uid || "guest",
-  name: currentUser.name || "Anonymous",
-  email: currentUser.email || document.getElementById("email").value || "no@email.com",
-  address: currentUser.address || {},
-  items: basket.map(item => ({
-    productId: item.id || "unknown",
-    productName: item.name || "Unnamed",
-    qty: parseInt(item.qty) || 1,
-    price: parseFloat(item.price) || 0,
-  })),
-  status: "Confirmed",
-  createdAt: serverTimestamp(),
-  promoCode: activePromo ? activePromo.code : null,
-  discount: discountAmount,
-  finalTotal: finalTotal
-};
+    userId: currentUser.uid || "guest",
+    name: currentUser.name || "Anonymous",
+    email: currentUser.email || document.getElementById("email").value || "no@email.com",
+    address: currentUser.address || {},
+    items: basket.map(item => ({
+      productId: item.id || "unknown",
+      productName: item.name || "Unnamed",
+      qty: parseInt(item.qty) || 1,
+      price: parseFloat(item.price) || 0,
+    })),
+    status: "Confirmed",
+    createdAt: serverTimestamp(),
+    promoCode: activePromo ? activePromo.code : null,
+    discount: discountAmount,
+    finalTotal: finalTotal
+  };
 
   try {
     const counterRef = doc(db, "meta", "orderCounter");
@@ -123,7 +203,7 @@ async function submitOrder() {
 
     console.log("✅ Order placed with ID:", orderRef.id);
 
-    // ✅ Clear localStorage cart and Firestore basket
+    // ✅ Clear cart in both localStorage and Firestore
     localStorage.removeItem(cartKey);
 
     if (currentUser.uid) {
@@ -141,63 +221,14 @@ async function submitOrder() {
   }
 }
 
-async function applyPromoCode() {
-  const codeInput = document.getElementById("promo-code-input");
-  const summaryTotal = document.getElementById("summary-total");
-  const summaryDiscount = document.getElementById("summary-discount");
-
-  const code = codeInput.value.trim().toUpperCase();
-  if (!code) return alert("Enter a promo code.");
-
-  try {
-    const snap = await getDocs(collection(db, "PromoCodes"));
-    let found = false;
-
-    snap.forEach(doc => {
-      const promo = doc.data();
-      if (promo.code.toUpperCase() === code) {
-        found = true;
-        activePromo = promo;
-
-        const basket = JSON.parse(localStorage.getItem("daisyCart")) || [];
-        const subtotal = basket.reduce((acc, item) => acc + (item.price * item.qty), 0);
-
-        if (subtotal < (promo.minSpend || 0)) {
-          return alert(`Minimum spend for this promo is £${promo.minSpend}`);
-        }
-
-        if (promo.type === "percentage") {
-          discountAmount = subtotal * (promo.discount / 100);
-        } else {
-          discountAmount = promo.discount;
-        }
-
-        finalTotal = subtotal - discountAmount;
-
-        summaryDiscount.textContent = `-£${discountAmount.toFixed(2)}`;
-        summaryTotal.textContent = `£${finalTotal.toFixed(2)}`;
-        alert("Promo code applied!");
-      }
-    });
-
-    if (!found) {
-      alert("Promo code not found.");
-    }
-
-  } catch (err) {
-    console.error("Error applying promo:", err);
-    alert("Something went wrong applying the code.");
-  }
-}
-
-// ✅ DOM Ready
+// ✅ On DOM ready: link events and auto-fill email if logged in
 document.addEventListener("DOMContentLoaded", async () => {
   await loadCurrentUser();
 
   const applyBtn = document.getElementById("apply-promo-btn");
-    if (applyBtn) {
-      applyBtn.addEventListener("click", applyPromoCode);
-    }
+  if (applyBtn) {
+    applyBtn.addEventListener("click", applyPromoCode);
+  }
 
   const emailField = document.getElementById("email");
   if (emailField && currentUser.email !== "no@email.com") {
