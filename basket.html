@@ -27,7 +27,7 @@
       display: flex;
       position: relative;
       overflow: hidden;
-      min-height: 700px;
+      min-height: 600px;
     }
     #basket-wrapper {
       display: flex;
@@ -49,7 +49,7 @@
       padding: 2rem;
       width: 100%;
       max-width: 420px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
       font-size: 0.95rem;
     }
     .checkout-container.sliding #basket-wrapper {
@@ -68,6 +68,7 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.08);
       font-size: 0.95rem;
       min-width: 320px;
+      height: fit-content;
     }
     .summary-box h3 {
       font-size: 1.3rem;
@@ -282,11 +283,13 @@
           itemDiv.className = "basket-item-row";
           itemDiv.innerHTML = `
             <div class="item-image"><img src="${item.image}" alt="${item.name}" /></div>
-            <div class="item-name">${item.name}</div>
-            <div class="item-qty">
-              <button class="decrease" data-index="${index}">-</button>
-              <span>${item.qty}</span>
-              <button class="increase" data-index="${index}">+</button>
+            <div class="item-details">
+              <div class="item-name">${item.name}</div>
+              <div class="item-qty">
+                <button class="decrease" data-index="${index}">-</button>
+                <span>${item.qty}</span>
+                <button class="increase" data-index="${index}">+</button>
+              </div>
             </div>
             <div class="item-price">£${(item.price * item.qty).toFixed(2)}</div>`;
           container.appendChild(itemDiv);
