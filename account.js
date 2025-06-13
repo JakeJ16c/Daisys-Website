@@ -104,9 +104,9 @@ snapshot.forEach((docSnap) => {
     <div class="order-details">
       <p class="order-date">Placed on: ${date}</p>
       <ul>
-        ${order.items.map(item => `
+        ${Array.isArray(order.items) ? order.items.map(item => `
           <li>${item.productName} × ${item.qty} – £${item.price.toFixed(2)}</li>
-        `).join("")}
+        `).join("") : '<li>No items found in this order.</li>'}
       </ul>
     </div>
   </div>
