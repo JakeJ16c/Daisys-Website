@@ -90,7 +90,7 @@ snapshot.forEach((docSnap) => {
   const order = docSnap.data();
   const date = order.createdAt?.toDate().toLocaleString() || "Unknown date";
 
-  html += `
+html += `
   <div class="order-card">
     <div class="order-summary" onclick="this.classList.toggle('open'); this.nextElementSibling.classList.toggle('open')">
       <div class="summary-left">
@@ -106,8 +106,10 @@ snapshot.forEach((docSnap) => {
       <ul>
         ${
           Array.isArray(order.items)
-            ? order.items.map(item => `<li>${item.productName} × ${item.qty} – £${item.price.toFixed(2)}</li>`).join("")
-            : '<li>No items found in this order.</li>'
+            ? order.items.map(item => {
+                return `<li>${item.productName} × ${item.qty} – £${item.price.toFixed(2)}</li>`;
+              }).join("")
+            : "<li>No items found in this order.</li>"
         }
       </ul>
     </div>
