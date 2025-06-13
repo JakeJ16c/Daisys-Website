@@ -78,7 +78,7 @@ async function submitOrder() {
       qty: parseInt(item.qty) || 1,
       price: parseFloat(item.price) || 0,
     })),
-    status: "pending",
+    status: "Confirmed",
     createdAt: serverTimestamp()
     // orderNumber will be added below
   };
