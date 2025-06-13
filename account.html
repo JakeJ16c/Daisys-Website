@@ -16,14 +16,15 @@
   <style>  
 .order-card {
   background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  border-radius: 14px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
   overflow: hidden;
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
+  transition: box-shadow 0.3s ease;
 }
 
 .order-card:hover {
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
 }
 
 .order-summary {
@@ -33,7 +34,22 @@
   padding: 1rem 1.25rem;
   cursor: pointer;
   font-weight: 500;
-  background: #f9f9f9;
+  background: #fefefe;
+  transition: background 0.3s ease;
+}
+
+.order-summary:hover {
+  background: #f5f5f5;
+}
+
+.summary-left {
+  font-size: 1rem;
+}
+
+.summary-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .order-summary i {
@@ -55,12 +71,24 @@
   display: block;
 }
 
+.order-date {
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 0.75rem;
+}
+
+.order-details ul {
+  list-style-type: disc;
+  padding-left: 1.25rem;
+}
+
 .order-status {
-  display: inline-block;
-  margin-top: 0.25rem;
-  font-size: 0.9rem;
-  padding: 0.15rem 0.5rem;
-  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  white-space: nowrap;
+  text-transform: capitalize;
 }
 
 .order-status.pending {
@@ -76,12 +104,6 @@
 .order-status.completed {
   background-color: #e6f9e8;
   color: #207a3c;
-}
-
-.order-date {
-  font-size: 0.85rem;
-  color: #666;
-  margin-top: 0.75rem;
 }
     
     /* ========== Account Panel ========== */
