@@ -1,28 +1,7 @@
-// =========================
-// ✅ Firebase Imports First
-// =========================
-import {
-  getAuth,
-  onAuthStateChanged,
-  signOut,
-} from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
-
-import {
-  getFirestore,
-  doc,
-  getDoc,
-  setDoc,
-  collection,
-  getDocs,
-  query,
-  where,
-} from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
-
+import { getAuth, onAuthStateChanged, signOut, } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, where, } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 import { auth, db } from "./firebase.js";
 
-// =========================
-// 🔐 Global Variables
-// =========================
 let currentUser = null;
 
 // =========================
@@ -106,16 +85,30 @@ async function loadUserOrders(user) {
     return;
   }
 
-  let html = "";
-  snapshot.forEach((docSnap) => {
-    const order = docSnap.data();
-    const date = order.createdAt?.toDate().toLocaleString() || "Unknown date";
-    html += `<div class="order-box"><strong>Date:</strong> ${date}<br><strong>Status:</strong> ${order.status}<ul>`;
-    order.items.forEach(item => {
-      html += `<li>${item.productName} × ${item.qty} – £${item.price.toFixed(2)}</li>`;
-    });
-    html += `</ul></div>`;
-  });
+let html = "";
+snapshot.forEach((docSnap) => {
+  const order = docSnap.data();
+  const date = order.createdAt?.toDate().toLocaleString() || "Unknown date";
+
+  html += `
+    <div class="order-card">
+      <div class="order-summary" onclick="this.nextElementSibling.classList.toggle('open')">
+        <div>
+          <strong>${date}</strong><br>
+          <span class="order-status ${order.status.toLowerCase()}">Status: ${order.status}</span>
+        </div>
+        <i class="fa fa-chevron-down"></i>
+      </div>
+      <div class="order-details">
+        <ul>
+          ${order.items.map(item => `
+            <li>${item.productName} × ${item.qty} – £${item.price.toFixed(2)}</li>
+          `).join("")}
+        </ul>
+      </div>
+    </div>
+  `;
+});
 
   ordersDiv.innerHTML = html;
 }
