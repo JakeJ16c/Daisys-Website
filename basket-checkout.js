@@ -86,19 +86,22 @@ async function submitOrder() {
   await loadCurrentUser();
 
   const orderPayload = {
-    userId: currentUser.uid || "guest",
-    name: currentUser.name || "Anonymous",
-    email: currentUser.email || document.getElementById("email").value || "no@email.com",
-    address: currentUser.address || {},
-    items: basket.map(item => ({
-      productId: item.id || "unknown",
-      productName: item.name || "Unnamed",
-      qty: parseInt(item.qty) || 1,
-      price: parseFloat(item.price) || 0,
-    })),
-    status: "Confirmed",
-    createdAt: serverTimestamp()
-  };
+  userId: currentUser.uid || "guest",
+  name: currentUser.name || "Anonymous",
+  email: currentUser.email || document.getElementById("email").value || "no@email.com",
+  address: currentUser.address || {},
+  items: basket.map(item => ({
+    productId: item.id || "unknown",
+    productName: item.name || "Unnamed",
+    qty: parseInt(item.qty) || 1,
+    price: parseFloat(item.price) || 0,
+  })),
+  status: "Confirmed",
+  createdAt: serverTimestamp(),
+  promoCode: activePromo ? activePromo.code : null,
+  discount: discountAmount,
+  finalTotal: finalTotal
+};
 
   try {
     const counterRef = doc(db, "meta", "orderCounter");
