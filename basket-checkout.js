@@ -13,6 +13,10 @@ import {
 
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
 
+let activePromo = null;
+let discountAmount = 0;
+let finalTotal = 0;
+
 let currentUser = {
   name: "Anonymous",
   email: "no@email.com",
@@ -134,9 +138,63 @@ async function submitOrder() {
   }
 }
 
+async function applyPromoCode() {
+  const codeInput = document.getElementById("promo-code-input");
+  const summaryTotal = document.getElementById("summary-total");
+  const summaryDiscount = document.getElementById("summary-discount");
+
+  const code = codeInput.value.trim().toUpperCase();
+  if (!code) return alert("Enter a promo code.");
+
+  try {
+    const snap = await getDocs(collection(db, "PromoCodes"));
+    let found = false;
+
+    snap.forEach(doc => {
+      const promo = doc.data();
+      if (promo.code.toUpperCase() === code) {
+        found = true;
+        activePromo = promo;
+
+        const basket = JSON.parse(localStorage.getItem("daisyCart")) || [];
+        const subtotal = basket.reduce((acc, item) => acc + (item.price * item.qty), 0);
+
+        if (subtotal < (promo.minSpend || 0)) {
+          return alert(`Minimum spend for this promo is £${promo.minSpend}`);
+        }
+
+        if (promo.type === "percentage") {
+          discountAmount = subtotal * (promo.discount / 100);
+        } else {
+          discountAmount = promo.discount;
+        }
+
+        finalTotal = subtotal - discountAmount;
+
+        summaryDiscount.textContent = `-£${discountAmount.toFixed(2)}`;
+        summaryTotal.textContent = `£${finalTotal.toFixed(2)}`;
+        alert("Promo code applied!");
+      }
+    });
+
+    if (!found) {
+      alert("Promo code not found.");
+    }
+
+  } catch (err) {
+    console.error("Error applying promo:", err);
+    alert("Something went wrong applying the code.");
+  }
+}
+
 // ✅ DOM Ready
 document.addEventListener("DOMContentLoaded", async () => {
   await loadCurrentUser();
+
+  const applyBtn = document.getElementById("apply-promo-btn");
+    if (applyBtn) {
+      applyBtn.addEventListener("click", applyPromoCode);
+    }
 
   const emailField = document.getElementById("email");
   if (emailField && currentUser.email !== "no@email.com") {
