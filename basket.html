@@ -150,15 +150,131 @@
       margin-top: 1rem;
     }
     @media (max-width: 768px) {
-      .checkout-box, .summary-box {
-        width: 100%;
-        max-width: 100%;
-        border-radius: 0;
-      }
-      .checkout-box {
-        padding: 1.5rem;
-      }
-    }
+        .basket-content {
+    padding: 1rem;
+  }
+  
+  .checkout-container {
+    flex-direction: column;
+    min-height: auto;
+    position: relative;
+  }
+  
+  #basket-wrapper {
+    flex-direction: column;
+    gap: 1rem;
+    transform: none !important;
+    transition: none;
+  }
+  
+  .basket-left {
+    order: 1;
+  }
+  
+  .basket-summary {
+    order: 2;
+    position: sticky;
+    bottom: 0;
+    background: #fdf6ed;
+    padding: 1rem 0;
+    z-index: 10;
+  }
+  
+  .summary-box {
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+    margin: 0;
+    min-width: auto;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .summary-box:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 -6px 25px rgba(0,0,0,0.15);
+  }
+  
+  .summary-box h3 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  
+  .summary-box h3::after {
+    content: "👆";
+    font-size: 1.2rem;
+    animation: bounce 2s infinite;
+  }
+  
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-5px); }
+    60% { transform: translateY(-3px); }
+  }
+  
+  /* Mobile checkout overlay */
+  .mobile-checkout-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+  }
+  
+  .mobile-checkout-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .checkout-box {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: auto;
+    transform: translateY(100%);
+    opacity: 1;
+    background: white;
+    border-radius: 20px 20px 0 0;
+    padding: 1.5rem;
+    max-height: 90vh;
+    overflow-y: auto;
+    z-index: 1001;
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 0 -10px 40px rgba(0,0,0,0.2);
+  }
+  
+  .checkout-box.slide-up {
+    transform: translateY(0);
+  }
+  
+  .checkout-box .back-button {
+    position: sticky;
+    top: 0;
+    background: white;
+    padding: 0.5rem 0;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+    z-index: 1;
+  }
+  
+  /* Hide desktop checkout behavior on mobile */
+  .checkout-container.sliding #basket-wrapper {
+    transform: none !important;
+  }
+  
+  .checkout-container.sliding .checkout-box {
+    transform: translateY(100%) !important;
+    left: 0 !important;
+    opacity: 1 !important;
+  }
+}
   </style>
 </head>
 <body>
@@ -235,6 +351,10 @@
         </div>
       </div>
     </div>
+
+    <!-- Mobile checkout overlay -->
+    <div class="mobile-checkout-overlay" id="mobile-checkout-overlay"></div>
+
   </main>
 
   <div id="footer-container"></div>
@@ -344,5 +464,68 @@
       });
     });
   </script>
+
+<script>
+  // Add these variables to your existing script
+const mobileOverlay = document.getElementById("mobile-checkout-overlay");
+const checkoutBox = document.querySelector(".checkout-box");
+const summaryBox = document.querySelector(".summary-box");
+
+// Add this function
+function isMobile() {
+  return window.innerWidth <= 768;
+}
+
+// Update your existing showMobileCheckout function or add this new one
+function showMobileCheckout() {
+  if (isMobile()) {
+    mobileOverlay.classList.add("active");
+    checkoutBox.classList.add("slide-up");
+    document.body.style.overflow = "hidden";
+  } else {
+    checkoutContainer.classList.add("sliding");
+  }
+}
+
+// Update your existing hideMobileCheckout function or add this new one
+function hideMobileCheckout() {
+  if (isMobile()) {
+    mobileOverlay.classList.remove("active");
+    checkoutBox.classList.remove("slide-up");
+    document.body.style.overflow = "";
+  } else {
+    checkoutContainer.classList.remove("sliding");
+  }
+}
+
+// Add mobile summary box click handler
+if (isMobile()) {
+  summaryBox.addEventListener("click", (e) => {
+    // Don't trigger if clicking on buttons
+    if (e.target.tagName === "BUTTON" || e.target.closest("button")) {
+      return;
+    }
+    const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+    if (!cart.length) return alert("Your basket is empty.");
+    showMobileCheckout();
+  });
+}
+
+// Add mobile overlay click to close
+mobileOverlay?.addEventListener("click", () => {
+  hideMobileCheckout();
+});
+
+// Add window resize handler
+window.addEventListener("resize", () => {
+  if (!isMobile()) {
+    // Reset mobile states when switching to desktop
+    mobileOverlay.classList.remove("active");
+    checkoutBox.classList.remove("slide-up");
+    document.body.style.overflow = "";
+  }
+});
+</script>
+  
 </body>
 </html>
