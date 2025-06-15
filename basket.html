@@ -14,10 +14,7 @@
     :root {
       --transition-time: 0.4s;
     }
-    body {
-      font-family: 'Fredoka', sans-serif;
-      background: #fdf6ed;
-    }
+
     .basket-content {
       max-width: 1200px;
       margin: auto;
@@ -112,11 +109,11 @@
       margin-top: 1rem;
     }
     .summary-btn {
-      background-color: #80CBC4;
+      background-color: black;
       color: white;
       border: none;
       padding: 0.8rem;
-      border-radius: 999px;
+      border-radius: 8px;
       cursor: pointer;
       font-weight: 500;
       transition: 0.3s;
@@ -193,10 +190,14 @@
   
   .summary-box h3 {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     margin-bottom: 0.5rem;
   }
+
+      .button-row {
+        flex-direction: row;
+      }
   
   /* Mobile checkout overlay */
   .mobile-checkout-overlay {
