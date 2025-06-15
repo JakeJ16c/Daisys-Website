@@ -171,6 +171,25 @@
       font-weight: 600;
       color: #333;
     }
+
+    .payment-icons {
+      margin: 1.5rem 0 1rem;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      color: #444;
+    }
+    
+    .payment-icons img {
+      height: 24px;
+      object-fit: contain;
+      border-radius: 4px;
+      background: white;
+      padding: 2px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
     
     @media (max-width: 768px) {
       footer {
@@ -394,6 +413,16 @@
             <div class="card-row">
               <div class="form-group"><label for="expiry">Expiry Date</label><input type="text" id="expiry" required></div>
               <div class="form-group"><label for="cvc">CVC</label><input type="text" id="cvc" required></div>
+            </div>
+
+            <!-- Payment Icons -->
+            <div class="payment-icons">
+              <span>We accept:</span>
+              <img src="images/payments/visa.png" alt="Visa" />
+              <img src="images/payments/mastercard.png" alt="Mastercard" />
+              <img src="images/payments/paypal.png" alt="PayPal" />
+              <img src="images/payments/amex.png" alt="Amex" />
+              <img src="images/payments/visa-electron.png" alt="Visa Electron" />
             </div>
           
             <div class="totals">
