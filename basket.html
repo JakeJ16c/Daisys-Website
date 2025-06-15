@@ -348,6 +348,7 @@
           <div id="basket-wrapper">
             <div class="basket-left" id="basket-left">
               <p id="basket-empty-message" style="display: none; text-align: center; margin: 3rem 0; font-size: 1.1rem; color: #666;">Your basket is empty.</p>
+              <div id="bottom-sentinel" style="height: 1px;"></div>
             </div>
             
             <div class="basket-summary collapsed" id="mobile-summary">
@@ -569,19 +570,24 @@ window.addEventListener("resize", () => {
 
   <script>
   const summaryBox = document.getElementById("mobile-summary");
+  const bottomSentinel = document.getElementById("bottom-sentinel");
 
-  window.addEventListener("scroll", () => {
-    const scrollY = window.scrollY;
-    const bodyHeight = document.body.offsetHeight;
-    const windowHeight = window.innerHeight;
+  if ('IntersectionObserver' in window && isMobile()) {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          summaryBox.classList.remove("collapsed");
+        } else {
+          summaryBox.classList.add("collapsed");
+        }
+      });
+    }, {
+      root: null,
+      threshold: 0.1
+    });
 
-    // When the user scrolls to near the bottom
-    if ((scrollY + windowHeight) >= (bodyHeight - 40)) {
-      summaryBox.classList.remove("collapsed");
-    } else {
-      summaryBox.classList.add("collapsed");
-    }
-  });
+    observer.observe(bottomSentinel);
+  }
 </script>
 
   
