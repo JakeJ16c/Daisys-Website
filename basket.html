@@ -568,17 +568,17 @@ window.addEventListener("resize", () => {
 });
 </script>
 
-  <script>
-  const summaryBox = document.getElementById("mobile-summary");
-  const bottomSentinel = document.getElementById("bottom-sentinel");
+<script>
+  const summaryContainer = document.getElementById("mobile-summary");
+  const sentinel = document.getElementById("bottom-sentinel");
 
-  if ('IntersectionObserver' in window && isMobile()) {
+  if ('IntersectionObserver' in window && window.innerWidth <= 768) {
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          summaryBox.classList.remove("collapsed");
+          summaryContainer.classList.remove("collapsed");
         } else {
-          summaryBox.classList.add("collapsed");
+          summaryContainer.classList.add("collapsed");
         }
       });
     }, {
@@ -586,7 +586,7 @@ window.addEventListener("resize", () => {
       threshold: 0.1
     });
 
-    observer.observe(bottomSentinel);
+    observer.observe(sentinel);
   }
 </script>
 
