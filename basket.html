@@ -215,6 +215,28 @@
     .expanded-form {
       display: block;
     }
+
+    .checkout-section {
+      margin-bottom: 2rem;
+    }
+    
+    .radio-option {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .section-summary {
+      background: #f9f9f9;
+      border: 1px solid #ddd;
+      padding: 0.75rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      color: #333;
+    }
     
     @media (max-width: 768px) {
       footer {
@@ -435,22 +457,29 @@
               </div>
             </div>
 
-            <!-- Delivery Options (Collapsible) -->
-            <div class="section-block" id="delivery-section">
-              <div class="section-header">
-                <h4>Delivery Options</h4>
-                <button type="button" class="edit-btn" onclick="toggleSection('delivery')">Edit</button>
+            <!-- Delivery Options Section (Collapsible) -->
+            <div class="checkout-section" id="delivery-options-section">
+              <h4>Delivery Options</h4>
+              <div id="delivery-summary" class="section-summary" style="display: none;"></div>
+            
+              <div class="form-group">
+                <label class="radio-option">
+                  <input type="radio" name="delivery" value="standard" checked>
+                  <span>Standard (Free, 3–5 days)</span>
+                </label>
+                <label class="radio-option">
+                  <input type="radio" name="delivery" value="next-day">
+                  <span>Next Day (£3.99)</span>
+                </label>
+                <label class="radio-option">
+                  <input type="radio" name="delivery" value="choose-date">
+                  <span>Choose a Date (£5.99)</span>
+                </label>
               </div>
-              <div class="summary-text" id="delivery-summary" style="display: none;"></div>
-              <div class="section-content" id="delivery-content">
-                <div class="form-group">
-                  <label><input type="radio" name="delivery" value="standard" checked> Standard (Free, 3–5 days)</label><br>
-                  <label><input type="radio" name="delivery" value="next-day"> Next Day (£3.99)</label><br>
-                  <label><input type="radio" name="delivery" value="choose-date"> Choose a Date (£5.99)</label>
-                </div>
-                <button type="button" class="summary-btn" onclick="saveDelivery()">Save Delivery Option</button>
-              </div>
+            
+              <button type="button" class="summary-btn" onclick="saveDelivery()">Save Delivery Option</button>
             </div>
+
 
           
             <!-- Payment Details -->
@@ -691,23 +720,12 @@ window.addEventListener("resize", () => {
 
     function saveDelivery() {
       const selected = document.querySelector('input[name="delivery"]:checked');
-      if (selected) {
-        document.getElementById("delivery-summary").textContent = selected.nextSibling.textContent.trim();
-        document.getElementById("delivery-content").style.display = "none";
-        document.getElementById("delivery-summary").style.display = "block";
-      }
-    }
+      const summary = document.getElementById("delivery-summary");
+      summary.textContent = selected.nextElementSibling.textContent;
+      summary.style.display = "block";
     
-    function toggleSection(section) {
-      const content = document.getElementById(`${section}-content`);
-      const summary = document.getElementById(`${section}-summary`);
-      if (content.style.display === "none") {
-        content.style.display = "block";
-        summary.style.display = "none";
-      } else {
-        content.style.display = "none";
-        summary.style.display = "block";
-      }
+      // Optionally hide radio buttons after save
+      document.querySelector("#delivery-options-section .form-group").style.display = "none";
     }
     </script>
   
