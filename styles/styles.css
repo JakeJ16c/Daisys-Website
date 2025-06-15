@@ -948,14 +948,6 @@ input[type="range"] {
   margin-bottom: 1.5rem;
 }
 
-.basket-item-row {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-  padding: 1.5rem 0;
-  border-bottom: 1px solid #ddd;
-}
-
 .basket-item-row img {
   width: 100px;
   height: 100px;
@@ -979,12 +971,6 @@ input[type="range"] {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-}
-
-.item-price {
-  font-weight: bold;
-  min-width: 70px;
-  text-align: right;
 }
 
 .summary-buttons {
