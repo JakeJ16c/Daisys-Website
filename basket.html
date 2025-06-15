@@ -434,14 +434,24 @@
                 </div>
               </div>
             </div>
-          
-            <!-- Delivery Options -->
-            <h4>Delivery Options</h4>
-            <div class="form-group">
-              <label><input type="radio" name="delivery" value="standard" checked> Standard (Free, 3–5 days)</label><br>
-              <label><input type="radio" name="delivery" value="next-day"> Next Day (£3.99)</label><br>
-              <label><input type="radio" name="delivery" value="choose-date"> Choose a Date (£5.99)</label>
+
+            <!-- Delivery Options (Collapsible) -->
+            <div class="section-block" id="delivery-section">
+              <div class="section-header">
+                <h4>Delivery Options</h4>
+                <button type="button" class="edit-btn" onclick="toggleSection('delivery')">Edit</button>
+              </div>
+              <div class="summary-text" id="delivery-summary" style="display: none;"></div>
+              <div class="section-content" id="delivery-content">
+                <div class="form-group">
+                  <label><input type="radio" name="delivery" value="standard" checked> Standard (Free, 3–5 days)</label><br>
+                  <label><input type="radio" name="delivery" value="next-day"> Next Day (£3.99)</label><br>
+                  <label><input type="radio" name="delivery" value="choose-date"> Choose a Date (£5.99)</label>
+                </div>
+                <button type="button" class="summary-btn" onclick="saveDelivery()">Save Delivery Option</button>
+              </div>
             </div>
+
           
             <!-- Payment Details -->
             <h4>Payment</h4>
@@ -677,6 +687,27 @@ window.addEventListener("resize", () => {
       document.getElementById("address-summary-text").innerHTML = summaryText;
     
       toggleSection('delivery-address-section');
+    }
+
+    function saveDelivery() {
+      const selected = document.querySelector('input[name="delivery"]:checked');
+      if (selected) {
+        document.getElementById("delivery-summary").textContent = selected.nextSibling.textContent.trim();
+        document.getElementById("delivery-content").style.display = "none";
+        document.getElementById("delivery-summary").style.display = "block";
+      }
+    }
+    
+    function toggleSection(section) {
+      const content = document.getElementById(`${section}-content`);
+      const summary = document.getElementById(`${section}-summary`);
+      if (content.style.display === "none") {
+        content.style.display = "block";
+        summary.style.display = "none";
+      } else {
+        content.style.display = "none";
+        summary.style.display = "block";
+      }
     }
     </script>
   
