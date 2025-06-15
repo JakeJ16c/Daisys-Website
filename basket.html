@@ -204,6 +204,16 @@
       .button-row {
         flex-direction: row;
       }
+
+      #apple-pay-button {
+  -webkit-appearance: -apple-pay-button;
+  appearance: -apple-pay-button;
+  -apple-pay-button-type: buy;
+  -apple-pay-button-style: black;
+  width: 48%;
+  height: 44px;
+  border-radius: 8px;
+}
   
   /* Mobile checkout overlay */
   .mobile-checkout-overlay {
@@ -316,6 +326,7 @@
                 </div>
                 <div class="button-row">
                   <button class="summary-btn" id="checkout-button">Secure Checkout</button>
+                  <div id="apple-pay-button"></div>
                 </div>
               </div>
             </div>
