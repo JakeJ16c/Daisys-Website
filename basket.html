@@ -396,9 +396,9 @@
 
   <script>
     const checkoutContainer = document.getElementById("checkout-container");
+    const cartKey = "daisyCart";
     
     document.addEventListener("DOMContentLoaded", () => {
-      const cartKey = "daisyCart";
       const basket = JSON.parse(localStorage.getItem(cartKey)) || [];
       const container = document.getElementById("basket-left");
       const emptyMessage = document.getElementById("basket-empty-message");
@@ -450,7 +450,6 @@
       }
 
       function addButtonHandlers() {
-        const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
         document.querySelectorAll(".increase").forEach(btn => {
           btn.addEventListener("click", () => {
             const index = parseInt(btn.dataset.index);
