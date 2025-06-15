@@ -188,13 +188,20 @@
   }
   
     .basket-summary {
-    position: fixed;
-    bottom: 0;
-    z-index: 999;
+      position: fixed;
+      bottom: 0;
+      z-index: 999;
       justify-content: center;
       width: 100vw;
       margin: 0;
-  }
+      transition: max-height 0.4s ease;
+      overflow: hidden;
+      max-height: 360px; /* expanded state */
+      }
+      
+.basket-summary.collapsed {
+  max-height: 50px;
+}
 
   .summary-box {
     width: 100%;
@@ -342,7 +349,8 @@
             <div class="basket-left" id="basket-left">
               <p id="basket-empty-message" style="display: none; text-align: center; margin: 3rem 0; font-size: 1.1rem; color: #666;">Your basket is empty.</p>
             </div>
-            <div class="basket-summary">
+            
+            <div class="basket-summary collapsed" id="mobile-summary">
               <div class="summary-box">
                 <h3>Order Summary</h3>
                 <div class="promo-code">
@@ -558,6 +566,24 @@ window.addEventListener("resize", () => {
   }
 });
 </script>
+
+  <script>
+  const summaryBox = document.getElementById("mobile-summary");
+
+  window.addEventListener("scroll", () => {
+    const scrollY = window.scrollY;
+    const bodyHeight = document.body.offsetHeight;
+    const windowHeight = window.innerHeight;
+
+    // When the user scrolls to near the bottom
+    if ((scrollY + windowHeight) >= (bodyHeight - 40)) {
+      summaryBox.classList.remove("collapsed");
+    } else {
+      summaryBox.classList.add("collapsed");
+    }
+  });
+</script>
+
   
 </body>
 </html>
