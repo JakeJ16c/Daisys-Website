@@ -475,7 +475,7 @@
       checkoutButton?.addEventListener("click", () => {
         const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
         if (!cart.length) return alert("Your basket is empty.");
-        checkoutContainer.classList.add("sliding");
+        showMobileCheckout();
       });
 
       // Slide back to basket
