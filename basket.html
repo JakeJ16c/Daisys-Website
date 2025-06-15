@@ -197,7 +197,9 @@
 }
 
 .summary-box {
-  border radius: 8px 0 0;
+  border-radius: 8px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
   box-sizing: border-box;
   max-width: unset;
 }
@@ -393,6 +395,8 @@
   <script type="module" src="maintenance.js"></script>
 
   <script>
+    const checkoutContainer = document.getElementById("checkout-container");
+    
     document.addEventListener("DOMContentLoaded", () => {
       const cartKey = "daisyCart";
       const basket = JSON.parse(localStorage.getItem(cartKey)) || [];
@@ -401,7 +405,7 @@
       const subtotalDisplaySummary = document.getElementById("subtotal-display-summary");
       const totalDisplaySummary = document.getElementById("total-display-summary");
       const totalDisplayCheckout = document.getElementById("total-display-checkout");
-      const checkoutContainer = document.getElementById("checkout-container");
+
       const checkoutButton = document.getElementById("checkout-button");
       const backButton = document.getElementById("back-button");
       const continueShoppingBtn = document.querySelector(".summary-btn.secondary");
