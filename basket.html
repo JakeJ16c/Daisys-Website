@@ -187,6 +187,34 @@
       border-radius: 4px;
       padding: 2px;
     }
+
+    .collapsible-section {
+      border: 1px solid #ccc;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      background: #f9f9f9;
+    }
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .section-content {
+      margin-top: 1rem;
+    }
+    .collapsed-summary {
+      font-size: 0.95rem;
+      color: #333;
+      background: #fff;
+      padding: 0.8rem;
+      border-radius: 6px;
+      border: 1px dashed #ccc;
+    }
+    .expanded-form {
+      display: block;
+    }
     
     @media (max-width: 768px) {
       footer {
@@ -386,14 +414,26 @@
               
             <!-- Delivery Address & Customer Details-->
             <h4>Delivery Address</h4>
-            <div class="form-group"><label for="name">Full Name</label><input type="text" id="name" required></div>
-              
-            <div class="form-group"><label for="address">Address</label><input type="text" id="address" required></div>
-            <div class="form-group"><label for="city">City</label><input type="text" id="city" required></div>
-            <div class="form-group"><label for="postcode">Postcode</label><input type="text" id="postcode" required></div>
-              
-            <div class="form-group"><label for="email">Email</label><input type="email" id="email" required></div>
-            <div class="form-group"><label for="number">Phone Number</label><input type="number" id="number" required></div>
+            <div class="collapsible-section" id="delivery-address-section">
+              <div class="section-header" onclick="toggleSection('delivery-address-section')">
+                <strong>Delivery Address</strong>
+                <span class="arrow">▼</span>
+              </div>
+              <div class="section-content">
+                <div class="collapsed-summary" id="delivery-summary" style="display: none;">
+                  <p id="address-summary-text">Click to enter address</p>
+                </div>
+                <div class="expanded-form">
+                  <div class="form-group"><label for="name">Full Name</label><input type="text" id="name"></div>
+                  <div class="form-group"><label for="address">Address</label><input type="text" id="address"></div>
+                  <div class="form-group"><label for="city">City</label><input type="text" id="city"></div>
+                  <div class="form-group"><label for="postcode">Postcode</label><input type="text" id="postcode"></div>
+                  <div class="form-group"><label for="email">Email</label><input type="email" id="email"></div>
+                  <div class="form-group"><label for="number">Phone Number</label><input type="number" id="number"></div>
+                  <button type="button" onclick="saveAddress()" class="summary-btn">Save Address</button>
+                </div>
+              </div>
+            </div>
           
             <!-- Delivery Options -->
             <h4>Delivery Options</h4>
@@ -610,6 +650,35 @@ window.addEventListener("resize", () => {
   }
 });
 </script>
+
+
+  <script>
+    function toggleSection(id) {
+      const section = document.getElementById(id);
+      const summary = section.querySelector(".collapsed-summary");
+      const form = section.querySelector(".expanded-form");
+    
+      if (summary.style.display === "none") {
+        summary.style.display = "block";
+        form.style.display = "none";
+      } else {
+        summary.style.display = "none";
+        form.style.display = "block";
+      }
+    }
+    
+    function saveAddress() {
+      const name = document.getElementById("name").value;
+      const address = document.getElementById("address").value;
+      const city = document.getElementById("city").value;
+      const postcode = document.getElementById("postcode").value;
+    
+      const summaryText = `${name}<br>${address}<br>${city}<br>${postcode}`;
+      document.getElementById("address-summary-text").innerHTML = summaryText;
+    
+      toggleSection('delivery-address-section');
+    }
+    </script>
   
 </body>
 </html>
