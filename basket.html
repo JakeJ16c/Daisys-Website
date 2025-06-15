@@ -170,23 +170,20 @@
     order: 1;
   }
   
-  .basket-summary {
-    order: 2;
-    position: sticky;
-    bottom: 0;
-    background: #fdf6ed;
-    padding: 1rem 0;
-    z-index: 10;
-  }
-
-    .summary-box {
+    .basket-summary {
     position: fixed;
     bottom: 0;
     left: 0;
-    width: 100%;
-    border-radius: 16px 16px 0 0;
-    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.15);
+    width: 100vw;
+    background: white;
+    padding: 1rem;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
     z-index: 999;
+  }
+
+  .summary-box {
+    width: 100%;
+    margin: 0 auto;
   }
 
   .checkout-container {
