@@ -249,6 +249,12 @@
     .card-row .form-group {
       flex: 1;
     }
+
+    .section-summary hr {
+      margin: 0;
+      border: none;
+      border-top: 1px solid #eee;
+    }
     
     @media (max-width: 768px) {
       footer {
@@ -480,10 +486,12 @@
                   <input type="radio" name="delivery" value="standard" checked>
                   <span>Standard Delivery</span>
                 </label>
+                <hr>
                 <label class="radio-option">
                   <input type="radio" name="delivery" value="next-day">
                   <span>Next Day Delivery</span>
                 </label>
+                <hr>
                 <label class="radio-option">
                   <input type="radio" name="delivery" value="choose-date">
                   <span>Choose a Date</span>
