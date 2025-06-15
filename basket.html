@@ -571,26 +571,32 @@ window.addEventListener("resize", () => {
 
 <script>
   const summaryContainer = document.getElementById("mobile-summary");
-  const sentinel = document.getElementById("bottom-sentinel");
 
-  if ('IntersectionObserver' in window && window.innerWidth <= 768) {
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          summaryContainer.classList.remove("collapsed");
-        } else {
-          summaryContainer.classList.add("collapsed");
-        }
-      });
-    }, {
-      root: null,
-      threshold: 0.1
-    });
+  function updateSummaryHeight() {
+    if (window.innerWidth > 768) return;
 
-    observer.observe(sentinel);
+    const scrollTop = window.scrollY;
+    const windowHeight = window.innerHeight;
+    const docHeight = document.documentElement.scrollHeight;
+
+    // Distance from bottom
+    const distanceFromBottom = docHeight - (scrollTop + windowHeight);
+
+    // Calculate how expanded the summary should be (0px to 360px)
+    const maxExpand = 360;
+    const minExpand = 50;
+    const revealThreshold = 200; // Start expanding when this close to bottom
+
+    const progress = Math.min(1, Math.max(0, (revealThreshold - distanceFromBottom) / revealThreshold));
+    const height = minExpand + progress * (maxExpand - minExpand);
+
+    summaryContainer.style.maxHeight = `${height}px`;
   }
-</script>
 
+  window.addEventListener("scroll", updateSummaryHeight);
+  window.addEventListener("resize", updateSummaryHeight);
+  window.addEventListener("load", updateSummaryHeight);
+</script>
   
 </body>
 </html>
