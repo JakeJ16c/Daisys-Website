@@ -198,9 +198,6 @@
 }
 
 .summary-box {
-  pointer-events: all; /* Re-enable interactions inside */
-  transform: translateY(60%); /* Start hidden */
-  transition: transform 0.4s ease;
   border radius: 8px 0 0;
   box-sizing: border-box;
   max-width: unset;
@@ -208,11 +205,6 @@
 
   .checkout-container {
     padding-bottom: 200px; /* give scroll space above fixed box */
-  }
-  
-  .summary-box:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 -6px 25px rgba(0,0,0,0.15);
   }
   
   .summary-box h3 {
