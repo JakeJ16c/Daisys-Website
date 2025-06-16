@@ -1,9 +1,11 @@
+// Import Firebase database and storage utilities
 import { db, storage } from '../firebase.js';
 import {
   collection,
   getDocs,
   addDoc,
   updateDoc,
+  deleteDoc,
   doc
 } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
 import {
@@ -12,33 +14,37 @@ import {
   getDownloadURL
 } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-storage.js';
 
+// Reference to the marquee container
 const container = document.getElementById('marquee-editor');
 
+// Load existing marquee items from Firestore
 async function loadMarqueeImages() {
   container.innerHTML = '';
   const snap = await getDocs(collection(db, 'marqueeImages'));
+
   snap.forEach(docSnap => {
     const data = docSnap.data();
     const div = document.createElement('div');
     div.classList.add('marquee-item');
     div.innerHTML = `
-    <div class="marquee-image-wrapper">
-      <img src="${data.imageUrl}" alt="${data.name}">
-      <div class="edit-overlay">
-        <i class="fas fa-pen"></i>
-        <input class="edit-input" type="file" accept="image/*" data-id="${docSnap.id}">
+      <div class="marquee-image-wrapper">
+        <img src="${data.imageUrl}" alt="${data.name}">
+        <div class="edit-overlay">
+          <i class="fas fa-pen"></i>
+          <input class="edit-input" type="file" accept="image/*" data-id="${docSnap.id}">
+        </div>
       </div>
-    </div>
-    <div class="marquee-meta">
-      <input type="text" value="${data.name}" data-id="${docSnap.id}">
-      <button class="delete-btn" data-id="${docSnap.id}" title="Delete">
-        <i class="fas fa-trash"></i>
-      </button>
-    </div>
-  `;
+      <div class="marquee-meta">
+        <input type="text" value="${data.name}" data-id="${docSnap.id}">
+        <button class="delete-btn" data-id="${docSnap.id}" title="Delete">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    `;
     container.appendChild(div);
   });
 
+  // Add the + item for creating new marquee images
   const addDiv = document.createElement('div');
   addDiv.className = 'marquee-item';
   addDiv.innerHTML = `
@@ -50,6 +56,7 @@ async function loadMarqueeImages() {
   container.appendChild(addDiv);
 }
 
+// Create a new empty marquee image document
 async function addMarqueeItem() {
   await addDoc(collection(db, 'marqueeImages'), {
     name: 'New Item',
@@ -59,6 +66,7 @@ async function addMarqueeItem() {
   loadMarqueeImages();
 }
 
+// Listen for file/image or text input changes
 container.addEventListener('change', async (e) => {
   if (e.target.classList.contains('edit-input')) {
     const id = e.target.dataset.id;
@@ -78,15 +86,24 @@ container.addEventListener('change', async (e) => {
   }
 });
 
+// Handle click actions (Add or Delete buttons)
 container.addEventListener('click', (e) => {
   if (e.target.closest('#add-marquee')) {
     addMarqueeItem();
   }
+
+  if (e.target.closest('.delete-btn')) {
+    const id = e.target.closest('.delete-btn').dataset.id;
+    const modal = document.getElementById('confirm-modal');
+    modal.classList.add('active');
+    document.getElementById('confirm-delete').dataset.id = id;
+  }
 });
 
+// Load images when script is initialized
 loadMarqueeImages();
 
-// Inject confirmation modal into body
+// Inject confirmation modal HTML into body
 const modal = document.createElement('div');
 modal.id = 'confirm-modal';
 modal.className = 'confirm-modal';
@@ -101,3 +118,18 @@ modal.innerHTML = `
 `;
 document.body.appendChild(modal);
 
+// Confirm deletion logic
+const confirmDeleteBtn = document.getElementById('confirm-delete');
+const cancelDeleteBtn = document.getElementById('cancel-delete');
+
+confirmDeleteBtn.addEventListener('click', async (e) => {
+  const id = e.target.dataset.id;
+  if (!id) return;
+  await deleteDoc(doc(db, 'marqueeImages', id));
+  document.getElementById('confirm-modal').classList.remove('active');
+  loadMarqueeImages();
+});
+
+cancelDeleteBtn.addEventListener('click', () => {
+  document.getElementById('confirm-modal').classList.remove('active');
+});
