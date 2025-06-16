@@ -140,6 +140,19 @@
       font-size: 1.5rem;
       color: #444;
     }
+
+    @media (max-width: 768px) {
+  .order-swipe {
+    touch-action: pan-y;
+    transition: transform 0.2s ease;
+    will-change: transform;
+    position: relative;
+  }
+
+  .order-swipe.swiping {
+    transition: none;
+  }
+}
   </style>
 
 </head>
@@ -411,7 +424,47 @@ async function loadOrders() {
   });
 }
   
-  loadOrders(); 
+  loadOrders().then(() => {
+  enableMobileSwipePreview('#order-list li');
+});
+
+  function enableMobileSwipePreview(selector) {
+  const elements = document.querySelectorAll(selector);
+  elements.forEach(el => {
+    let startX = 0;
+    let currentX = 0;
+    let swiping = false;
+
+    el.classList.add('order-swipe');
+
+    el.addEventListener('touchstart', e => {
+      startX = e.touches[0].clientX;
+      swiping = true;
+      el.classList.add('swiping');
+    });
+
+    el.addEventListener('touchmove', e => {
+      if (!swiping) return;
+      currentX = e.touches[0].clientX;
+      const deltaX = currentX - startX;
+      if (deltaX > 0) {
+        el.style.transform = `translateX(${deltaX}px)`;
+      }
+    });
+
+    el.addEventListener('touchend', () => {
+      el.style.transform = '';
+      el.classList.remove('swiping');
+      swiping = false;
+    });
+
+    el.addEventListener('touchcancel', () => {
+      el.style.transform = '';
+      el.classList.remove('swiping');
+      swiping = false;
+    });
+  });
+}
 
 async function loadPromoCodes() {
   const promoList = document.getElementById("promo-list");
