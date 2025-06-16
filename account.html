@@ -261,12 +261,12 @@
     }
     
     .logout-container {
-      margin-top: 40px;
-      padding-bottom: 40px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      whitespace: nowrap;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      padding: 1.5rem;
+      flex: 1 1 400px;
+      max-width: 400px;
+      box-sizing: border-box;
     }
   </style>
 </head>
@@ -360,7 +360,7 @@
       <h3><i class="fas fa-gear"></i> My Settings</h3>
     </div>    
     
-    <div class="form-container">
+    <div class="logout-container">
     <button id="logoutBtn" class="logout-btn">Log Out</button>
     </div>
 
