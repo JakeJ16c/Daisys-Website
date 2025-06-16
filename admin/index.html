@@ -367,7 +367,7 @@ async function loadOrders() {
     const li = document.createElement("li");
     li.innerHTML = `
       <a href="orders.html?orderId=${doc.id}" style="text-decoration: none; color: inherit;">
-        Order for <strong>${data.name || 'Unknown'}</strong> – <em>${timeDiffText}</em>
+        Order No. <strong>${data.orderNumber || 'Unknown'}</strong> – <em>${timeDiffText}</em>
       </a>
     `;
 
