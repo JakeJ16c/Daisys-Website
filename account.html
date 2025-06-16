@@ -166,7 +166,6 @@
     text-align: center;
   }
 }
-    
     .account-container {
       display: flex;
       justify-content: center;
@@ -243,10 +242,29 @@
     }
     
     .logout-btn {
-      display: flex;
-      background: #666;
+      width: 100%;
+      background-color: #204ECF; /* Electric blue */
       color: white;
-      margin: 1rem;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      font-family: 'Fredoka', sans-serif;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-top: 20px;
+    }
+    
+    .logout-btn:hover {
+      background-color: #163aad;
+    }
+    
+    .logout-container {
+      margin-top: 40px;
+      padding-bottom: 40px;
+      display: flex;
+      justify-content: center;
     }
   </style>
 </head>
@@ -340,7 +358,9 @@
       <h3><i class="fas fa-gear"></i> My Settings</h3>
     </div>    
     
+    <div class="logout-container">
     <button id="logoutBtn" class="logout-btn">Log Out</button>
+    </div>
 
   </main>
 
