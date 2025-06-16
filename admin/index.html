@@ -391,7 +391,7 @@ async function loadOrders() {
         <a href="orders.html?orderId=${doc.id}" style="text-decoration: none; color: inherit;">
           Order No. <strong>${data.orderNumber || 'Unknown'}</strong> – <em>${timeDiffText}</em>
         </a>
-        <span class="order-status-pill">${(data.status || 'Pending')}</span>
+        <span class="order-status-pill" style="background-color: ${bgColor};>${(data.status || 'N/A')}</span>        
       </div>
     `;
 
