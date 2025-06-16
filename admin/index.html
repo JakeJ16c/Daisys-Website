@@ -385,13 +385,21 @@ async function loadOrders() {
         Delivered: '#d4edda'
       }[data.status] || '#eee';
 
+        const textColor = {
+          confirmed: '#004085',
+          cancelled: '#721c24',
+          ready: '#856404',
+          dispatched: '#0c5460',
+          delivered: '#155724'
+        }[newStatus] || '#555';
+
     const li = document.createElement("li");
     li.innerHTML = `
       <div style="display: flex; justify-content: space-between; align-items: center;">
         <a href="orders.html?orderId=${doc.id}" style="text-decoration: none; color: inherit;">
           Order No. <strong>${data.orderNumber || 'Unknown'}</strong> – <em>${timeDiffText}</em>
         </a>
-        <span class="order-status-pill" style="background-color: ${bgColor};>${(data.status || 'N/A')}</span>        
+        <span class="order-status-pill" style="background-color: ${bgColor}; color: ${textColor};">${(data.status || 'N/A')}</span>        
       </div>
     `;
 
