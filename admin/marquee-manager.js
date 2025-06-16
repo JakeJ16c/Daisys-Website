@@ -29,7 +29,10 @@ async function loadMarqueeImages() {
           <input class="edit-input" type="file" accept="image/*" data-id="${docSnap.id}">
         </div>
       </div>
-      <input type="text" value="${data.name}" data-id="${docSnap.id}">
+      <div class="marquee-meta">
+        <input type="text" value="${data.name}" data-id="${docSnap.id}">
+        <button class="delete-btn" data-id="${docSnap.id}"><i class="fas fa-trash"></i></button>
+      </div>
     `;
     container.appendChild(div);
   });
@@ -80,3 +83,19 @@ container.addEventListener('click', (e) => {
 });
 
 loadMarqueeImages();
+
+// Inject confirmation modal into body
+const modal = document.createElement('div');
+modal.id = 'confirm-modal';
+modal.className = 'confirm-modal';
+modal.innerHTML = `
+  <div class="modal-content">
+    <p>Are you sure you want to delete this image?</p>
+    <div class="modal-actions">
+      <button id="confirm-delete" class="confirm">Yes, Delete</button>
+      <button id="cancel-delete" class="cancel">Cancel</button>
+    </div>
+  </div>
+`;
+document.body.appendChild(modal);
+
