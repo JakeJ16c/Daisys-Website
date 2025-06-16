@@ -368,7 +368,13 @@ async function loadOrders() {
     li.innerHTML = `
       <a href="orders.html?orderId=${doc.id}" style="text-decoration: none; color: inherit;">
         Order No. <strong>${data.orderNumber || 'Unknown'}</strong> – <em>${timeDiffText}</em>
-        <span style="font-weight: 600; color: #204ECF;">(${data.status || 'N/A'})</span>
+        <span class="status-badge" style="
+          font-size: 0.85rem;
+          padding: 4px 10px;
+          border-radius: 15px;
+          background-color: ${bgColor};
+          color: ${textColor};
+        ">${data.status}</span>
       </a>
     `;
 
