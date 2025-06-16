@@ -364,6 +364,15 @@ async function loadOrders() {
       timeDiffText = formatTimeAgo(orderDate);
     }
 
+    // ✅ Dynamic badge + card coloring
+      const bgColor = {
+        confirmed: '#cce5ff',
+        cancelled: '#f8d7da',
+        ready: '#fff3cd',
+        dispatched: '#d1ecf1',
+        delivered: '#d4edda'
+      }[data.status] || '#eee';
+
     const li = document.createElement("li");
     li.innerHTML = `
       <a href="orders.html?orderId=${doc.id}" style="text-decoration: none; color: inherit;">
