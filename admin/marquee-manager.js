@@ -22,18 +22,20 @@ async function loadMarqueeImages() {
     const div = document.createElement('div');
     div.classList.add('marquee-item');
     div.innerHTML = `
-      <div class="marquee-image-wrapper">
-        <img src="${data.imageUrl}" alt="${data.name}">
-        <div class="edit-overlay">
-          <i class="fas fa-pen"></i>
-          <input class="edit-input" type="file" accept="image/*" data-id="${docSnap.id}">
-        </div>
+    <div class="marquee-image-wrapper">
+      <img src="${data.imageUrl}" alt="${data.name}">
+      <div class="edit-overlay">
+        <i class="fas fa-pen"></i>
+        <input class="edit-input" type="file" accept="image/*" data-id="${docSnap.id}">
       </div>
-      <div class="marquee-meta">
-        <input type="text" value="${data.name}" data-id="${docSnap.id}">
-        <button class="delete-btn" data-id="${docSnap.id}"><i class="fas fa-trash"></i></button>
-      </div>
-    `;
+    </div>
+    <div class="marquee-meta">
+      <input type="text" value="${data.name}" data-id="${docSnap.id}">
+      <button class="delete-btn" data-id="${docSnap.id}" title="Delete">
+        <i class="fas fa-trash"></i>
+      </button>
+    </div>
+  `;
     container.appendChild(div);
   });
 
