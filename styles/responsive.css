@@ -162,6 +162,23 @@
     width: 100%;
   }
 
+	#apple-pay-button apple-pay-button {
+	  display: inline-block;
+	  width: 100%;
+	  height: 42px;
+	  border-radius: 6px;
+	  font-size: 1rem;
+	  cursor: pointer;
+	  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+	  transition: background-color 0.3s ease;
+	}
+	
+	#apple-pay-button {
+	  width: 100%;
+	  max-width: 180px;
+	}
+
+
 /* ========== Contact Icons Section ========== */
 h1.page-title {
       text-align: center;
