@@ -831,7 +831,16 @@ input[type="range"] {
 			overflow-y: hidden;
 			scrollbar-width: thin;
 			padding-left: 4px;
+			padding-right: 6px;
 			direction: rtl;
+		}
+
+
+		/* Always reserve space for scrollbar using padding + transparent thumb */
+		.thumbnail-stack::before {
+		  content: "";
+		  width: 6px;
+		  flex-shrink: 0;
 		}
 
 		.thumbnail-stack:hover {
