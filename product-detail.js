@@ -104,6 +104,18 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+function showApplePayButtonIfAvailable() {
+  if (window.ApplePaySession && ApplePaySession.canMakePayments()) {
+    document.getElementById('apple-pay-button').style.display = 'inline-block';
+    document.getElementById('buy-now-button').style.display = 'none';
+  }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  // Small delay ensures layout and buttons are rendered
+  setTimeout(showApplePayButtonIfAvailable, 100);
+});
+
 async function logBasketActivity(product) {
   try {
     await addDoc(collection(db, "BasketUpdates"), {
