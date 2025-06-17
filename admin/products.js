@@ -1,15 +1,8 @@
 // admin/products.js – Full Product Management UI with Add + Image Upload + Description
 import { auth, db } from '../firebase.js';
-import {
-  onAuthStateChanged, signOut
-} from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
-import {
-  collection, getDocs, doc, getDoc, setDoc, addDoc, deleteDoc, updateDoc,
-  query, orderBy, limit, startAfter, endBefore, limitToLast
-} from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
-import {
-  getStorage, ref, uploadBytes, getDownloadURL
-} from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-storage.js';
+import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
+import { collection, getDocs, doc, getDoc, setDoc, addDoc, deleteDoc, updateDoc, query, orderBy, limit, startAfter, endBefore, limitToLast} from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-storage.js';
 
 // DOM elements
 const container = document.getElementById("productsTableContainer");
@@ -27,6 +20,9 @@ const modalName = document.getElementById("modalName");
 const modalPrice = document.getElementById("modalPrice");
 const modalStock = document.getElementById("modalStock");
 const modalDescription = document.getElementById("modalDescription");
+const oneSizeYes = document.getElementById("oneSizeYes");
+const oneSizeNo = document.getElementById("oneSizeNo");
+const dynamicSizeList = document.getElementById("dynamicSizeList");
 let imageUpload = null;
 const imageUploadInput = document.getElementById("imageUpload");
 const imagePreviewContainer = document.getElementById("imagePreviewContainer");
@@ -109,10 +105,24 @@ window.addEventListener("click", e => {
 
 if (saveProductChanges) {
   saveProductChanges.onclick = async () => {
+    const oneSize = oneSizeYes.checked;
+    const stock = oneSize
+      ? parseInt(modalStock.value || "0")
+      : (() => {
+          const sizeInputs = document.querySelectorAll("#dynamicSizeList input[name^='stock_']");
+          const stockObj = {};
+          sizeInputs.forEach(input => {
+            const size = input.name.replace("stock_", "");
+            const qty = parseInt(input.value || "0");
+            if (!isNaN(qty)) stockObj[size] = qty;
+          });
+          return stockObj;
+        })();
+
     const data = {
       name: modalName.value.trim(),
       price: parseFloat(modalPrice.value),
-      stock: parseInt(modalStock.value),
+      stock,
       description: modalDescription.value.trim(),
       images: uploadedImages,
       updatedAt: new Date()
@@ -120,6 +130,10 @@ if (saveProductChanges) {
 
     if (!data.name || isNaN(data.price)) {
       alert("Please fill all required fields.");
+      return;
+    }
+    if (!oneSize && Object.keys(data.stock).length === 0) {
+      alert("Please add at least one size with stock.");
       return;
     }
 
@@ -238,7 +252,7 @@ function renderProducts(products) {
         border-radius: 50%; margin-bottom: 12px;">
       <h3 style="font-size: 1.1rem; margin: 8px 0;">${product.name}</h3>
       <p style="margin: 4px 0;"><strong>£${Number(product.price).toFixed(2)}</strong></p>
-      <p style="margin: 4px 0; color: #777;">Stock: ${product.stock ?? 0}</p>
+      <p style="margin: 4px 0; color: #777;">Stock: ${typeof product.stock === 'object' ? Object.values(product.stock).reduce((a,b)=>a+b,0) : product.stock ?? 0}</p>
       <div style="margin-top: 10px; display: flex; gap: 10px;">
         <button class="edit-btn" data-id="${product.id}" style="
           padding: 6px 12px; border-radius: 6px;
@@ -255,7 +269,7 @@ function renderProducts(products) {
           selectedProductId = product.id;
           modalName.value = product.name || "";
           modalPrice.value = product.price || "";
-          modalStock.value = product.stock || "";
+          modalStock.value = typeof product.stock === 'number' ? product.stock : "";
           modalDescription.value = product.description || "";
           uploadedImages = product.images || [];
           imagePreviewContainer.innerHTML = "";
