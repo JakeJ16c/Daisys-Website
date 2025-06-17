@@ -30,6 +30,8 @@ async function loadProduct() {
 
     const mainImg = document.getElementById('product-image');
     const thumbStack = document.querySelector('.thumbnail-stack');
+    const sizeContainer = document.getElementById('size-container');
+    const sizeDropdown = document.getElementById('size-dropdown');
 
     const images = Array.isArray(data.images) ? data.images : [data.image];
 
@@ -41,7 +43,7 @@ async function loadProduct() {
     thumbStack.innerHTML = '';
 
     // Add thumbnails dynamically
-    images.forEach((imgUrl, index) => {
+    images.forEach((imgUrl) => {
       const thumb = document.createElement('img');
       thumb.src = imgUrl;
       thumb.className = 'thumb';
@@ -50,6 +52,24 @@ async function loadProduct() {
       });
       thumbStack.appendChild(thumb);
     });
+
+    // Handle size logic
+    if (typeof data.stock === 'object' && data.stock !== null) {
+      // Multi-size
+      sizeContainer.style.display = 'block';
+      sizeDropdown.innerHTML = '';
+      Object.entries(data.stock).forEach(([size, qty]) => {
+        if (qty > 0) {
+          const option = document.createElement('option');
+          option.value = size;
+          option.textContent = `${size} (${qty} available)`;
+          sizeDropdown.appendChild(option);
+        }
+      });
+    } else {
+      // One size only or undefined
+      sizeContainer.style.display = 'none';
+    }
 
   } catch (error) {
     console.error("Error loading product:", error);
@@ -81,21 +101,22 @@ document.addEventListener("DOMContentLoaded", () => {
       const name = document.querySelector(".product-title").textContent;
       const price = parseFloat(document.querySelector(".product-price").textContent.replace("£", ""));
       const image = document.getElementById("product-image").src;
-
-      console.log("🛒 Add to basket clicked", { id, name, price });
+      const sizeDropdown = document.getElementById("size-dropdown");
+      const selectedSize = sizeDropdown && sizeDropdown.value ? sizeDropdown.value : null;
 
       const cartKey = "daisyCart";
       let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
-      const existing = cart.find((item) => item.id === id);
+
+      const existing = cart.find((item) => item.id === id && item.size === selectedSize);
 
       if (existing) {
-        existing.qty += 1;
+        existing.qty += quantity;
       } else {
-        cart.push({ id, name, price, qty: 1, image });
+        cart.push({ id, name, price, qty: quantity, image, size: selectedSize });
       }
 
       localStorage.setItem(cartKey, JSON.stringify(cart));
-      logBasketActivity({ id, name, qty: 1 });
+      logBasketActivity({ id, name, qty: quantity });
       document.getElementById("basket-preview")?.classList.remove("hidden");
       if (typeof updateBasketPreview === "function") {
         updateBasketPreview(true);
@@ -112,7 +133,6 @@ function showApplePayButtonIfAvailable() {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-  // Small delay ensures layout and buttons are rendered
   setTimeout(showApplePayButtonIfAvailable, 100);
 });
 
