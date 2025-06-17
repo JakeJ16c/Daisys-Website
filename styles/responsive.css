@@ -116,7 +116,7 @@
     flex-direction: column;
     gap: 20px;
     align-items: center;
-	  max-height: 65vw;
+	  max-height: 70vw;
 		overflow-y: scroll;
 		padding-left: 6px;
 		direction: rtl;
@@ -130,7 +130,7 @@
   }
 
   .main-image-wrapper {
-    width: 65vw;
+    width: 70vw;
     aspect-ratio: 1 / 1;
     height: auto;
     border-radius: 12px;
