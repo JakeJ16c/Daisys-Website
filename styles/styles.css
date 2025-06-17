@@ -828,27 +828,11 @@ input[type="range"] {
 		  flex-direction: column;
 		  gap: 20px;
 			max-height: 400px;
-			overflow-y: hidden;
+			overflow-y: scroll;
 			scrollbar-width: thin;
 			padding-left: 4px;
 			padding-right: 6px;
 			direction: rtl;
-		}
-
-
-		/* Always reserve space for scrollbar using padding + transparent thumb */
-		.thumbnail-stack::before {
-		  content: "";
-		  width: 6px;
-		  flex-shrink: 0;
-		}
-
-		.thumbnail-stack:hover {
-		  overflow-y: auto;            /* Show scrollbar on hover */
-		}
-
-		.thumbnail-stack > * {
-		  direction: ltr;
 		}
 		
 		.thumbnail-stack::-webkit-scrollbar {
