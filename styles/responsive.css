@@ -160,8 +160,6 @@
 	
 	.product-actions button,
 	#apple-pay-button {
-	  width: 80%;
-	  max-width: 280px;
 	  padding: 12px;
 	  font-size: 1rem;
 	  font-weight: 600;
