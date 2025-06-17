@@ -827,6 +827,29 @@ input[type="range"] {
 		  display: flex;
 		  flex-direction: column;
 		  gap: 20px;
+			max-height: 400px;
+			overflow-y: hidden;
+			scrollbar-width: thin;
+			padding-left: 4px;
+			direction: rtl;
+		}
+
+		.thumbnail-stack:hover {
+		  overflow-y: auto;            /* Show scrollbar on hover */
+		}
+
+		.thumbnail-stack > * {
+		  direction: ltr;
+		}
+		
+		.thumbnail-stack::-webkit-scrollbar {
+		  width: 6px;
+		  background: transparent;
+		}
+		
+		.thumbnail-stack::-webkit-scrollbar-thumb {
+		  background-color: rgba(0, 0, 0, 0.3);
+		  border-radius: 4px;
 		}
 		
 		.thumbnail-stack img.thumb {
