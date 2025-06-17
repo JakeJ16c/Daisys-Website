@@ -160,16 +160,26 @@
 	
 	.product-actions button,
 	#apple-pay-button {
-	  padding: 12px;
-	  font-size: 1rem;
+	  background-color: #000;
+	  color: white;
 	  font-weight: 600;
+	  font-size: 0.9rem;
 	  border: none;
-	  border-radius: 8px;
-	  text-align: center;
+	  border-radius: 6px;
+	  padding: 12px 18px;
+	  cursor: pointer;
+	  transition: background 0.2s ease;
+	  display: none; /* shown via JS if ApplePay is supported */
+	  height: 44px;
+	  line-height: 1;
+	  display: inline-flex;
+	  align-items: center;
+	  justify-content: center;
+	  gap: 6px;
 	}
 	
-	#apple-pay-button {
-	  display: none; /* JS reveals it if Apple Pay is available */
+	#apple-pay-button:hover {
+	  background-color: #111;
 	}
 
 /* ========== Contact Icons Section ========== */
