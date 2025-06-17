@@ -106,7 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function showApplePayButtonIfAvailable() {
   if (window.ApplePaySession && ApplePaySession.canMakePayments()) {
-    document.getElementById('apple-pay-button').style.display = 'inline-block';
+    document.getElementById('apple-pay-button').style.display = 'flex';
     document.getElementById('buy-now-button').style.display = 'none';
   }
 }
