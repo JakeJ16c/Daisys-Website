@@ -1,15 +1,6 @@
-
 import { auth, db } from './firebase.js';
-import {
-  doc,
-  setDoc,
-  getDocs,
-  deleteDoc,
-  collection
-} from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
-import {
-  onAuthStateChanged
-} from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
+import { doc, setDoc, getDocs, deleteDoc, collection } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
 
 document.addEventListener("DOMContentLoaded", () => {
   const cartKey = "daisyCart";
@@ -145,12 +136,26 @@ document.addEventListener("DOMContentLoaded", () => {
       nameQtyWrapper.style.flexDirection = "column";
 
       const name = document.createElement("strong");
-      name.textContent = item.name;
+      name.innerHTML = item.name;
       name.style.marginBottom = "0.5rem";
       name.style.cursor = "pointer";
       name.onclick = () => {
         window.location.href = `product.html?id=${item.id}`;
       };
+
+      // Add size badge if item has a size
+      if (item.size) {
+        const sizeBadge = document.createElement("span");
+        sizeBadge.textContent = item.size;
+        sizeBadge.style.fontSize = "0.7rem";
+        sizeBadge.style.background = "#eee";
+        sizeBadge.style.padding = "2px 6px";
+        sizeBadge.style.borderRadius = "6px";
+        sizeBadge.style.marginLeft = "6px";
+        sizeBadge.style.color = "#444";
+        name.appendChild(sizeBadge);
+      }
+
 
       const quantityControls = document.createElement("div");
       quantityControls.style.display = "flex";
