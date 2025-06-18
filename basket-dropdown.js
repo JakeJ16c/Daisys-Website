@@ -1,12 +1,22 @@
 import { auth, db } from './firebase.js';
-import { doc, setDoc, getDocs, deleteDoc, collection } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
-import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
+import {
+  doc,
+  setDoc,
+  getDocs,
+  deleteDoc,
+  collection
+} from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+
+import {
+  onAuthStateChanged
+} from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
 
 document.addEventListener("DOMContentLoaded", () => {
   const cartKey = "daisyCart";
   const basketPreview = document.getElementById("basket-preview");
   const cartIcon = document.querySelector(".cart-icon");
 
+  // ✅ Firestore Sync Function
   async function syncBasketToFirestore(cart) {
     const user = auth.currentUser;
     if (!user) return;
@@ -21,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
           price: item.price,
           qty: item.qty,
           image: item.image || "",
-          size: item.size || null
+          size: item.size || null // ✅ Make sure size is stored in Firestore
         });
       })
     );
@@ -29,6 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   window.syncBasketToFirestore = syncBasketToFirestore;
 
+  // ✅ Firestore Load Function
   async function loadBasketFromFirestore(callback) {
     const user = auth.currentUser;
     if (!user) return;
@@ -41,12 +52,14 @@ document.addEventListener("DOMContentLoaded", () => {
     if (typeof callback === 'function') callback(false);
   }
 
+  // ✅ Auth trigger: Load from Firestore on login
   onAuthStateChanged(auth, user => {
     if (user) {
       loadBasketFromFirestore(updateBasketPreview);
     }
   });
 
+  // ✅ Dropdown Reveal Animation Styles
   const style = document.createElement("style");
   style.textContent = `
     #basket-preview {
@@ -66,6 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
   `;
   document.head.appendChild(style);
 
+  // ✅ Basket UI Renderer
   function updateBasketPreview(keepVisible = false) {
     window.updateBasketPreview = updateBasketPreview;
     const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
@@ -136,20 +150,21 @@ document.addEventListener("DOMContentLoaded", () => {
       nameQtyWrapper.style.display = "flex";
       nameQtyWrapper.style.flexDirection = "column";
 
+      // ✅ Line to contain both name + size badge
       const nameLine = document.createElement("div");
       nameLine.style.display = "flex";
       nameLine.style.alignItems = "center";
       nameLine.style.flexWrap = "wrap";
-      
+
       const name = document.createElement("strong");
       name.textContent = item.name;
       name.style.cursor = "pointer";
       name.onclick = () => {
         window.location.href = `product.html?id=${item.id}`;
       };
-      
       nameLine.appendChild(name);
-      
+
+      // ✅ Size badge
       if (item.size) {
         const sizeBadge = document.createElement("span");
         sizeBadge.textContent = item.size;
@@ -161,10 +176,8 @@ document.addEventListener("DOMContentLoaded", () => {
         sizeBadge.style.color = "#444";
         nameLine.appendChild(sizeBadge);
       }
-      
-      nameQtyWrapper.appendChild(nameLine); // instead of name directly
 
-
+      nameQtyWrapper.appendChild(nameLine);
 
       const quantityControls = document.createElement("div");
       quantityControls.style.display = "flex";
@@ -208,7 +221,6 @@ document.addEventListener("DOMContentLoaded", () => {
       quantityControls.appendChild(qty);
       quantityControls.appendChild(plus);
 
-      nameQtyWrapper.appendChild(name);
       nameQtyWrapper.appendChild(quantityControls);
       infoWrapper.appendChild(link);
       infoWrapper.appendChild(nameQtyWrapper);
@@ -293,5 +305,5 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  updateBasketPreview(); // Load on page ready
+  updateBasketPreview(); // ✅ Initial trigger
 });
