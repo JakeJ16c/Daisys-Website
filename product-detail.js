@@ -1,5 +1,11 @@
 import { db } from './firebase.js';
-import { doc, getDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+import {
+  doc,
+  getDoc,
+  addDoc,
+  collection,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
 // Get the product ID from the URL
 const params = new URLSearchParams(window.location.search);
@@ -7,7 +13,8 @@ const productId = params.get("id");
 
 async function loadProduct() {
   if (!productId) {
-    document.querySelector('.product-container').innerHTML = '<p>Invalid product ID.</p>';
+    const container = document.querySelector('.product-container');
+    if (container) container.innerHTML = '<p>Invalid product ID.</p>';
     return;
   }
 
@@ -16,84 +23,92 @@ async function loadProduct() {
     const snap = await getDoc(ref);
 
     if (!snap.exists()) {
-      document.querySelector('.product-container').innerHTML = '<p>Product not found.</p>';
+      const container = document.querySelector('.product-container');
+      if (container) container.innerHTML = '<p>Product not found.</p>';
       return;
     }
 
     const data = snap.data();
 
-    // Fill in product text
-    document.querySelector('.product-title').textContent = data.name;
-    document.querySelector('.product-price').textContent = `£${parseFloat(data.price).toFixed(2)}`;
-    document.querySelector('.product-description').textContent = data.description || '';
-
-    // Image handling
+    // Fill in content
+    const titleEl = document.querySelector('.product-title');
+    const priceEl = document.querySelector('.product-price');
+    const descEl = document.querySelector('.product-description');
     const mainImg = document.getElementById('product-image');
     const thumbStack = document.querySelector('.thumbnail-stack');
+    const sizeContainer = document.getElementById('size-container');
+    const sizeDropdown = document.getElementById('size-dropdown');
+
+    if (titleEl) titleEl.textContent = data.name;
+    if (priceEl) priceEl.textContent = `£${parseFloat(data.price).toFixed(2)}`;
+    if (descEl) descEl.textContent = data.description || '';
+
     const images = Array.isArray(data.images) ? data.images : [data.image];
+    if (mainImg) {
+      mainImg.src = images[0] || '';
+      mainImg.alt = data.name;
+    }
 
-    mainImg.src = images[0] || '';
-    mainImg.alt = data.name;
-    thumbStack.innerHTML = '';
-
-    images.forEach((imgUrl) => {
-      const thumb = document.createElement('img');
-      thumb.src = imgUrl;
-      thumb.className = 'thumb';
-      thumb.addEventListener('click', () => {
-        mainImg.src = imgUrl;
+    if (thumbStack) {
+      thumbStack.innerHTML = '';
+      images.forEach((imgUrl) => {
+        const thumb = document.createElement('img');
+        thumb.src = imgUrl;
+        thumb.className = 'thumb';
+        thumb.addEventListener('click', () => {
+          if (mainImg) mainImg.src = imgUrl;
+        });
+        thumbStack.appendChild(thumb);
       });
-      thumbStack.appendChild(thumb);
-    });
+    }
 
-    // Handle size dropdown logic
-    const sizeContainer = document.getElementById("size-container");
-    const sizeDropdown = document.getElementById("size-dropdown");
-
+    // Handle sizes
     if (!data.oneSizeOnly && typeof data.stock === "object") {
-      sizeContainer.style.display = "block";
-      sizeDropdown.innerHTML = '';
+      if (sizeContainer) sizeContainer.style.display = "block";
+      if (sizeDropdown) {
+        sizeDropdown.innerHTML = "";
+        Object.entries(data.stock).forEach(([size, qty]) => {
+          if (qty > 0) {
+            const option = document.createElement("option");
+            option.value = size;
+            option.textContent = `${size} (${qty} left)`;
+            sizeDropdown.appendChild(option);
+          }
+        });
 
-      Object.entries(data.stock).forEach(([size, qty]) => {
-        if (qty > 0) {
+        if (sizeDropdown.options.length === 0) {
           const option = document.createElement("option");
-          option.value = size;
-          option.textContent = `${size} (${qty} available)`;
+          option.textContent = "Out of stock";
+          option.disabled = true;
           sizeDropdown.appendChild(option);
+          sizeDropdown.disabled = true;
+        } else {
+          sizeDropdown.disabled = false;
         }
-      });
-
-      if (sizeDropdown.options.length === 0) {
-        const option = document.createElement("option");
-        option.textContent = "Out of stock";
-        option.disabled = true;
-        sizeDropdown.appendChild(option);
-        sizeDropdown.disabled = true;
-      } else {
-        sizeDropdown.disabled = false;
       }
     } else {
-      sizeContainer.style.display = "none";
+      if (sizeContainer) sizeContainer.style.display = "none";
     }
 
   } catch (error) {
     console.error("Error loading product:", error);
-    document.querySelector('.product-container').innerHTML = '<p>Error loading product.</p>';
+    const container = document.querySelector('.product-container');
+    if (container) container.innerHTML = '<p>Error loading product.</p>';
   }
 }
 
-loadProduct();
+window.addEventListener("DOMContentLoaded", loadProduct);
 
 // ========== Quantity Controls ==========
 let quantity = 1;
 const quantityDisplay = document.querySelector('.quantity-selector span');
 
-document.querySelector('.quantity-selector button:first-of-type').addEventListener('click', () => {
+document.querySelector('.quantity-selector button:first-of-type')?.addEventListener('click', () => {
   if (quantity > 1) quantity--;
   quantityDisplay.textContent = quantity;
 });
 
-document.querySelector('.quantity-selector button:last-of-type').addEventListener('click', () => {
+document.querySelector('.quantity-selector button:last-of-type')?.addEventListener('click', () => {
   quantity++;
   quantityDisplay.textContent = quantity;
 });
@@ -103,22 +118,16 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("click", (e) => {
     if (e.target && e.target.classList.contains("add-to-basket")) {
       const id = productId;
-      const name = document.querySelector(".product-title").textContent;
-      const price = parseFloat(document.querySelector(".product-price").textContent.replace("£", ""));
-      const image = document.getElementById("product-image").src;
+      const name = document.querySelector(".product-title")?.textContent || '';
+      const price = parseFloat(document.querySelector(".product-price")?.textContent.replace("£", "") || "0");
+      const image = document.getElementById("product-image")?.src || '';
       const sizeDropdown = document.getElementById("size-dropdown");
       const selectedSize = sizeDropdown && sizeDropdown.value ? sizeDropdown.value : null;
-
-      if (!selectedSize && document.getElementById("size-container").style.display !== "none") {
-        alert("Please select a size before adding to basket.");
-        return;
-      }
 
       const cartKey = "daisyCart";
       let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
 
       const existing = cart.find((item) => item.id === id && item.size === selectedSize);
-
       if (existing) {
         existing.qty += quantity;
       } else {
@@ -135,10 +144,11 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+// Apple Pay Button (optional)
 function showApplePayButtonIfAvailable() {
   if (window.ApplePaySession && ApplePaySession.canMakePayments()) {
-    document.getElementById('apple-pay-button').style.display = 'flex';
-    document.getElementById('buy-now-button').style.display = 'none';
+    document.getElementById('apple-pay-button')?.style?.display = 'flex';
+    document.getElementById('buy-now-button')?.style?.display = 'none';
   }
 }
 
@@ -146,6 +156,7 @@ window.addEventListener('DOMContentLoaded', () => {
   setTimeout(showApplePayButtonIfAvailable, 100);
 });
 
+// Log basket activity to Firestore
 async function logBasketActivity(product) {
   try {
     await addDoc(collection(db, "BasketUpdates"), {
@@ -154,7 +165,6 @@ async function logBasketActivity(product) {
       qty: product.qty || 1,
       timestamp: serverTimestamp()
     });
-    console.log("📤 Basket activity logged.");
   } catch (err) {
     console.error("❌ Error logging basket activity:", err);
   }
