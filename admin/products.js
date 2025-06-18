@@ -123,6 +123,7 @@ if (saveProductChanges) {
       name: modalName.value.trim(),
       price: parseFloat(modalPrice.value),
       stock,
+      oneSizeOnly: oneSize, // ✅ This is the missing key
       description: modalDescription.value.trim(),
       images: uploadedImages,
       updatedAt: new Date()
@@ -269,7 +270,6 @@ function renderProducts(products) {
           selectedProductId = product.id;
           modalName.value = product.name || "";
           modalPrice.value = product.price || "";
-          modalStock.value = typeof product.stock === 'number' ? product.stock : "";
           modalDescription.value = product.description || "";
           uploadedImages = product.images || [];
           imagePreviewContainer.innerHTML = "";
@@ -279,6 +279,27 @@ function renderProducts(products) {
             img.style.cssText = "width:60px;height:60px;margin-right:8px;border-radius:6px;";
             imagePreviewContainer.appendChild(img);
           });
+          
+          // NEW: Toggle size UI
+          if (product.oneSizeOnly) {
+            document.getElementById("oneSizeYes").checked = true;
+            document.getElementById("oneSizeYes").dispatchEvent(new Event("change"));
+            modalStock.value = typeof product.stock === 'number' ? product.stock : "";
+          } else {
+            document.getElementById("oneSizeNo").checked = true;
+            document.getElementById("oneSizeNo").dispatchEvent(new Event("change"));
+            document.getElementById("dynamicSizeList").innerHTML = '';
+          
+            Object.entries(product.stock || {}).forEach(([size, qty]) => {
+              const row = document.createElement("div");
+              row.classList.add("form-group");
+              row.innerHTML = `
+                <label>Size ${size}</label>
+                <input type="number" name="stock_${size}" value="${qty}" placeholder="Qty" class="form-control" />
+              `;
+              document.getElementById("dynamicSizeList").appendChild(row);
+            });
+          } 
           productModal.style.display = "flex";
         };
       }
