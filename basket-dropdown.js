@@ -136,15 +136,20 @@ document.addEventListener("DOMContentLoaded", () => {
       nameQtyWrapper.style.display = "flex";
       nameQtyWrapper.style.flexDirection = "column";
 
+      const nameLine = document.createElement("div");
+      nameLine.style.display = "flex";
+      nameLine.style.alignItems = "center";
+      nameLine.style.flexWrap = "wrap";
+      
       const name = document.createElement("strong");
-      name.innerHTML = item.name;
-      name.style.marginBottom = "0.5rem";
+      name.textContent = item.name;
       name.style.cursor = "pointer";
       name.onclick = () => {
         window.location.href = `product.html?id=${item.id}`;
       };
-
-      // Add size badge if item has a size
+      
+      nameLine.appendChild(name);
+      
       if (item.size) {
         const sizeBadge = document.createElement("span");
         sizeBadge.textContent = item.size;
@@ -154,8 +159,11 @@ document.addEventListener("DOMContentLoaded", () => {
         sizeBadge.style.borderRadius = "6px";
         sizeBadge.style.marginLeft = "6px";
         sizeBadge.style.color = "#444";
-        name.appendChild(sizeBadge);
+        nameLine.appendChild(sizeBadge);
       }
+      
+      nameQtyWrapper.appendChild(nameLine); // instead of name directly
+
 
 
       const quantityControls = document.createElement("div");
