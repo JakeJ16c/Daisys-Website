@@ -122,10 +122,11 @@ exports.notifyOnBasketUpdate = functions.firestore
       // Send to each token individually instead of using multicast
       for (const token of tokens) {
         try {
+          const sizeInfo = update.size ? ` (Size: ${update.size})` : "";
           const message = {
             notification: {
               title: "You\'re So Golden",
-              body: `Someone added ${update.qty || 1} ${update.name || 'a product'} to their basket.`,
+              body: `Someone added ${update.qty || 1} ${update.name || 'a product'} ${sizeInfo} to their basket.`,
             },
             data: {
               category: "basket",
