@@ -898,11 +898,6 @@ input[type="range"] {
       font-family: 'Fredoka', sans-serif;
     }
 
-    .product-sizes button.active {
-      background-color: var(--electric-blue);
-      color: white;
-    }
-
     .quantity-selector {
       display: flex;
       align-items: center;
