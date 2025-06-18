@@ -1,6 +1,5 @@
 import { db } from './firebase.js';
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
-import { getDocs, getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+import { doc, getDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
 // Get the product ID from the URL
 const params = new URLSearchParams(window.location.search);
@@ -23,26 +22,20 @@ async function loadProduct() {
 
     const data = snap.data();
 
-    // Fill in the HTML elements
+    // Fill in product text
     document.querySelector('.product-title').textContent = data.name;
     document.querySelector('.product-price').textContent = `£${parseFloat(data.price).toFixed(2)}`;
     document.querySelector('.product-description').textContent = data.description || '';
 
+    // Image handling
     const mainImg = document.getElementById('product-image');
     const thumbStack = document.querySelector('.thumbnail-stack');
-    const sizeContainer = document.getElementById('size-container');
-    const sizeDropdown = document.getElementById('size-dropdown');
-
     const images = Array.isArray(data.images) ? data.images : [data.image];
 
-    // Set main image
     mainImg.src = images[0] || '';
     mainImg.alt = data.name;
-
-    // Clear any existing thumbnails
     thumbStack.innerHTML = '';
 
-    // Add thumbnails dynamically
     images.forEach((imgUrl) => {
       const thumb = document.createElement('img');
       thumb.src = imgUrl;
@@ -53,22 +46,34 @@ async function loadProduct() {
       thumbStack.appendChild(thumb);
     });
 
-    // Handle size logic
-    if (typeof data.stock === 'object' && data.stock !== null) {
-      // Multi-size
-      sizeContainer.style.display = 'block';
+    // Handle size dropdown logic
+    const sizeContainer = document.getElementById("size-container");
+    const sizeDropdown = document.getElementById("size-dropdown");
+
+    if (!data.oneSizeOnly && typeof data.stock === "object") {
+      sizeContainer.style.display = "block";
       sizeDropdown.innerHTML = '';
+
       Object.entries(data.stock).forEach(([size, qty]) => {
         if (qty > 0) {
-          const option = document.createElement('option');
+          const option = document.createElement("option");
           option.value = size;
           option.textContent = `${size} (${qty} available)`;
           sizeDropdown.appendChild(option);
         }
       });
+
+      if (sizeDropdown.options.length === 0) {
+        const option = document.createElement("option");
+        option.textContent = "Out of stock";
+        option.disabled = true;
+        sizeDropdown.appendChild(option);
+        sizeDropdown.disabled = true;
+      } else {
+        sizeDropdown.disabled = false;
+      }
     } else {
-      // One size only or undefined
-      sizeContainer.style.display = 'none';
+      sizeContainer.style.display = "none";
     }
 
   } catch (error) {
@@ -103,6 +108,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const image = document.getElementById("product-image").src;
       const sizeDropdown = document.getElementById("size-dropdown");
       const selectedSize = sizeDropdown && sizeDropdown.value ? sizeDropdown.value : null;
+
+      if (!selectedSize && document.getElementById("size-container").style.display !== "none") {
+        alert("Please select a size before adding to basket.");
+        return;
+      }
 
       const cartKey = "daisyCart";
       let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
