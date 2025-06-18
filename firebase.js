@@ -21,6 +21,7 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
 const messaging = getMessaging(app);
+export const functions = getFunctions(app);
 
 // Export instances to use elsewhere
 export { app, auth, db, storage, messaging };
