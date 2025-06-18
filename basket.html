@@ -552,7 +552,11 @@
               <div class="total-line final-total"><span>Total to pay:</span><span id="total-display-checkout">£0.00</span></div>
             </div>
           
-            <div class="button-row"><button type="submit" class="summary-btn">Complete Payment</button></div>
+            <div class="button-row">
+              <button type="submit" class="summary-btn">Complete Payment</button>
+              <button type="button" id="stripeCheckoutBtn" class="summary-btn">Pay with Card (Stripe)</button>
+            </div>
+              
             <div class="secure-badge"><i class="fas fa-lock"></i> Secure payment - Your data is protected</div>
           </form>
           </div>
