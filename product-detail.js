@@ -86,6 +86,9 @@ async function loadProduct() {
       sizeContainer.style.display = 'none';
     }
 
+    // ✅ Hide loader when all product data is rendered
+    document.getElementById("page-loader")?.remove();
+
   } catch (error) {
     console.error("Error loading product:", error);
     document.querySelector('.product-container').innerHTML = '<p>Error loading product.</p>';
