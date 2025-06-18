@@ -4,6 +4,7 @@ import { getAuth } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth
 import { getFirestore } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 import { getStorage } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-storage.js"; // 
 import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-messaging.js";
+import { getFunctions } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-functions.js";
 
 // Your Firebase config (real values from your console)
 const firebaseConfig = {
