@@ -6,7 +6,6 @@ import {
   deleteDoc,
   collection
 } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
-
 import {
   onAuthStateChanged
 } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
@@ -16,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const basketPreview = document.getElementById("basket-preview");
   const cartIcon = document.querySelector(".cart-icon");
 
-  // ✅ Firestore Sync Function
+  // Sync cart to Firestore when logged in
   async function syncBasketToFirestore(cart) {
     const user = auth.currentUser;
     if (!user) return;
@@ -26,40 +25,38 @@ document.addEventListener("DOMContentLoaded", () => {
 
     await Promise.all(
       cart.map(item => {
-        return setDoc(doc(db, "users", user.uid, "Basket", item.id), {
+        return setDoc(doc(db, "users", user.uid, "Basket", item.id + (item.size || "")), {
           name: item.name,
           price: item.price,
           qty: item.qty,
           image: item.image || "",
-          size: item.size || null // ✅ Make sure size is stored in Firestore
+          size: item.size || null
         });
       })
     );
   }
-
   window.syncBasketToFirestore = syncBasketToFirestore;
 
-  // ✅ Firestore Load Function
+  // Load from Firestore -> set localStorage
   async function loadBasketFromFirestore(callback) {
     const user = auth.currentUser;
     if (!user) return;
 
     const snap = await getDocs(collection(db, "users", user.uid, "Basket"));
     const cart = [];
-    snap.forEach(doc => cart.push({ id: doc.id, ...doc.data() }));
+    snap.forEach(doc => cart.push({ id: doc.id.replace(/(S|M|L)?$/, ""), ...doc.data() }));
 
     localStorage.setItem(cartKey, JSON.stringify(cart));
     if (typeof callback === 'function') callback(false);
   }
 
-  // ✅ Auth trigger: Load from Firestore on login
   onAuthStateChanged(auth, user => {
     if (user) {
       loadBasketFromFirestore(updateBasketPreview);
     }
   });
 
-  // ✅ Dropdown Reveal Animation Styles
+  // Basket dropdown open/close animation
   const style = document.createElement("style");
   style.textContent = `
     #basket-preview {
@@ -79,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
   `;
   document.head.appendChild(style);
 
-  // ✅ Basket UI Renderer
+  // Main render function for the dropdown
   function updateBasketPreview(keepVisible = false) {
     window.updateBasketPreview = updateBasketPreview;
     const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
@@ -150,21 +147,20 @@ document.addEventListener("DOMContentLoaded", () => {
       nameQtyWrapper.style.display = "flex";
       nameQtyWrapper.style.flexDirection = "column";
 
-      // ✅ Line to contain both name + size badge
-      const nameLine = document.createElement("div");
-      nameLine.style.display = "flex";
-      nameLine.style.alignItems = "center";
-      nameLine.style.flexWrap = "wrap";
-
-      const name = document.createElement("strong");
-      name.textContent = item.name;
+      // Build product name and size badge safely
+      const name = document.createElement("div");
+      name.style.display = "flex";
+      name.style.alignItems = "center";
       name.style.cursor = "pointer";
+      name.style.marginBottom = "0.5rem";
       name.onclick = () => {
         window.location.href = `product.html?id=${item.id}`;
       };
-      nameLine.appendChild(name);
 
-      // ✅ Size badge
+      const nameText = document.createElement("strong");
+      nameText.textContent = item.name;
+      name.appendChild(nameText);
+
       if (item.size) {
         const sizeBadge = document.createElement("span");
         sizeBadge.textContent = item.size;
@@ -174,11 +170,10 @@ document.addEventListener("DOMContentLoaded", () => {
         sizeBadge.style.borderRadius = "6px";
         sizeBadge.style.marginLeft = "6px";
         sizeBadge.style.color = "#444";
-        nameLine.appendChild(sizeBadge);
+        name.appendChild(sizeBadge);
       }
 
-      nameQtyWrapper.appendChild(nameLine);
-
+      // Quantity Controls
       const quantityControls = document.createElement("div");
       quantityControls.style.display = "flex";
       quantityControls.style.alignItems = "center";
@@ -221,6 +216,7 @@ document.addEventListener("DOMContentLoaded", () => {
       quantityControls.appendChild(qty);
       quantityControls.appendChild(plus);
 
+      nameQtyWrapper.appendChild(name);
       nameQtyWrapper.appendChild(quantityControls);
       infoWrapper.appendChild(link);
       infoWrapper.appendChild(nameQtyWrapper);
@@ -288,6 +284,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // Toggle behavior
   if (cartIcon && basketPreview) {
     cartIcon.addEventListener("click", (e) => {
       e.preventDefault();
@@ -305,5 +302,5 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  updateBasketPreview(); // ✅ Initial trigger
+  updateBasketPreview(); // Initial render
 });
