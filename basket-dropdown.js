@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
           name: item.name,
           price: item.price,
           qty: item.qty,
-          image: item.image || ""
+          image: item.image || "",
           size: item.size || null
         });
       })
