@@ -133,7 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
         syncBasketToFirestore(cart);
       }
 
-      logBasketActivity({ id: productId, name, qty: quantity });
+      logBasketActivity({ id: productId, name, qty: quantity, size: selectedSize });
       document.getElementById("basket-preview")?.classList.remove("hidden");
       if (typeof updateBasketPreview === "function") {
         updateBasketPreview(true);
