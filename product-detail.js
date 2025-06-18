@@ -1,11 +1,5 @@
 import { db } from './firebase.js';
-import {
-  doc,
-  getDoc,
-  addDoc,
-  collection,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+import { doc, getDoc, addDoc, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
 const params = new URLSearchParams(window.location.search);
 const productId = params.get("id");
@@ -119,12 +113,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const price = parseFloat(document.querySelector(".product-price").textContent.replace("£", ""));
       const image = document.getElementById("product-image").src;
       const sizeDropdown = document.getElementById("size-dropdown");
-      const selectedSize = sizeDropdown && sizeDropdown.value ? sizeDropdown.value : null;
+      const selectedSize = sizeDropdown && sizeDropdown.value ? sizeDropdown.value : "OneSize";
 
       const cartKey = "daisyCart";
       let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
 
-      const existing = cart.find((item) => item.id === productId && item.size === selectedSize);
+      const existing = cart.find(item => item.id === productId && item.size === selectedSize);
 
       if (existing) {
         existing.qty += quantity;
@@ -133,6 +127,12 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       localStorage.setItem(cartKey, JSON.stringify(cart));
+
+      // 🔁 Sync to Firestore if defined
+      if (typeof syncBasketToFirestore === "function") {
+        syncBasketToFirestore(cart);
+      }
+
       logBasketActivity({ id: productId, name, qty: quantity });
       document.getElementById("basket-preview")?.classList.remove("hidden");
       if (typeof updateBasketPreview === "function") {
