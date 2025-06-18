@@ -7,14 +7,12 @@ import {
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
-// Get the product ID from the URL
 const params = new URLSearchParams(window.location.search);
 const productId = params.get("id");
 
 async function loadProduct() {
   if (!productId) {
-    const container = document.querySelector('.product-container');
-    if (container) container.innerHTML = '<p>Invalid product ID.</p>';
+    document.querySelector('.product-container')?.innerHTML = '<p>Invalid product ID.</p>';
     return;
   }
 
@@ -23,14 +21,13 @@ async function loadProduct() {
     const snap = await getDoc(ref);
 
     if (!snap.exists()) {
-      const container = document.querySelector('.product-container');
-      if (container) container.innerHTML = '<p>Product not found.</p>';
+      document.querySelector('.product-container')?.innerHTML = '<p>Product not found.</p>';
       return;
     }
 
     const data = snap.data();
 
-    // Fill in content
+    // DOM elements
     const titleEl = document.querySelector('.product-title');
     const priceEl = document.querySelector('.product-price');
     const descEl = document.querySelector('.product-description');
@@ -62,62 +59,57 @@ async function loadProduct() {
       });
     }
 
-    // Handle sizes
     if (!data.oneSizeOnly && typeof data.stock === "object") {
-      if (sizeContainer) sizeContainer.style.display = "block";
-      if (sizeDropdown) {
-        sizeDropdown.innerHTML = "";
-        Object.entries(data.stock).forEach(([size, qty]) => {
-          if (qty > 0) {
-            const option = document.createElement("option");
-            option.value = size;
-            option.textContent = `${size} (${qty} left)`;
-            sizeDropdown.appendChild(option);
-          }
-        });
-
-        if (sizeDropdown.options.length === 0) {
+      sizeContainer.style.display = "block";
+      sizeDropdown.innerHTML = "";
+      Object.entries(data.stock).forEach(([size, qty]) => {
+        if (qty > 0) {
           const option = document.createElement("option");
-          option.textContent = "Out of stock";
-          option.disabled = true;
+          option.value = size;
+          option.textContent = `${size} (${qty} left)`;
           sizeDropdown.appendChild(option);
-          sizeDropdown.disabled = true;
-        } else {
-          sizeDropdown.disabled = false;
         }
+      });
+
+      if (sizeDropdown.options.length === 0) {
+        const option = document.createElement("option");
+        option.textContent = "Out of stock";
+        option.disabled = true;
+        sizeDropdown.appendChild(option);
+        sizeDropdown.disabled = true;
+      } else {
+        sizeDropdown.disabled = false;
       }
     } else {
-      if (sizeContainer) sizeContainer.style.display = "none";
+      sizeContainer.style.display = "none";
     }
 
   } catch (error) {
     console.error("Error loading product:", error);
-    const container = document.querySelector('.product-container');
-    if (container) container.innerHTML = '<p>Error loading product.</p>';
+    document.querySelector('.product-container')?.innerHTML = '<p>Error loading product.</p>';
   }
 }
 
-window.addEventListener("DOMContentLoaded", loadProduct);
+window.addEventListener("DOMContentLoaded", () => {
+  loadProduct();
 
-// ========== Quantity Controls ==========
-let quantity = 1;
-const quantityDisplay = document.querySelector('.quantity-selector span');
+  // Quantity controls
+  let quantity = 1;
+  const quantityDisplay = document.querySelector('.quantity-selector span');
 
-document.querySelector('.quantity-selector button:first-of-type')?.addEventListener('click', () => {
-  if (quantity > 1) quantity--;
-  quantityDisplay.textContent = quantity;
-});
+  document.querySelector('.quantity-selector button:first-of-type')?.addEventListener('click', () => {
+    if (quantity > 1) quantity--;
+    quantityDisplay.textContent = quantity;
+  });
 
-document.querySelector('.quantity-selector button:last-of-type')?.addEventListener('click', () => {
-  quantity++;
-  quantityDisplay.textContent = quantity;
-});
+  document.querySelector('.quantity-selector button:last-of-type')?.addEventListener('click', () => {
+    quantity++;
+    quantityDisplay.textContent = quantity;
+  });
 
-// ========== Add to Basket ==========
-document.addEventListener("DOMContentLoaded", () => {
+  // Add to basket
   document.addEventListener("click", (e) => {
     if (e.target && e.target.classList.contains("add-to-basket")) {
-      const id = productId;
       const name = document.querySelector(".product-title")?.textContent || '';
       const price = parseFloat(document.querySelector(".product-price")?.textContent.replace("£", "") || "0");
       const image = document.getElementById("product-image")?.src || '';
@@ -126,37 +118,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const cartKey = "daisyCart";
       let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+      const existing = cart.find((item) => item.id === productId && item.size === selectedSize);
 
-      const existing = cart.find((item) => item.id === id && item.size === selectedSize);
       if (existing) {
         existing.qty += quantity;
       } else {
-        cart.push({ id, name, price, qty: quantity, image, size: selectedSize });
+        cart.push({ id: productId, name, price, qty: quantity, image, size: selectedSize });
       }
 
       localStorage.setItem(cartKey, JSON.stringify(cart));
-      logBasketActivity({ id, name, qty: quantity });
+      logBasketActivity({ id: productId, name, qty: quantity });
+
       document.getElementById("basket-preview")?.classList.remove("hidden");
       if (typeof updateBasketPreview === "function") {
         updateBasketPreview(true);
       }
     }
   });
+
+  // Apple Pay check
+  setTimeout(() => {
+    if (window.ApplePaySession && ApplePaySession.canMakePayments()) {
+      document.getElementById('apple-pay-button')?.style?.display = 'flex';
+      document.getElementById('buy-now-button')?.style?.display = 'none';
+    }
+  }, 100);
 });
 
-// Apple Pay Button (optional)
-function showApplePayButtonIfAvailable() {
-  if (window.ApplePaySession && ApplePaySession.canMakePayments()) {
-    document.getElementById('apple-pay-button')?.style?.display = 'flex';
-    document.getElementById('buy-now-button')?.style?.display = 'none';
-  }
-}
-
-window.addEventListener('DOMContentLoaded', () => {
-  setTimeout(showApplePayButtonIfAvailable, 100);
-});
-
-// Log basket activity to Firestore
+// Log basket activity
 async function logBasketActivity(product) {
   try {
     await addDoc(collection(db, "BasketUpdates"), {
