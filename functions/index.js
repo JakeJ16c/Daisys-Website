@@ -1,5 +1,6 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
+const stripe = require('stripe')(functions.config().stripe.secret);
 
 admin.initializeApp();
 
@@ -149,4 +150,33 @@ exports.notifyOnBasketUpdate = functions.firestore
     }
 
     return null;
+  });
+
+  exports.createStripeCheckout = functions.https.onCall(async (data, context) => {
+    try {
+      const line_items = data.items.map(item => ({
+        price_data: {
+          currency: 'gbp',
+          product_data: {
+            name: item.name + (item.size ? ` (${item.size})` : ''),
+            images: item.image ? [item.image] : [],
+          },
+          unit_amount: Math.round(item.price * 100),
+        },
+        quantity: item.qty,
+      }));
+  
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        mode: 'payment',
+        line_items,
+        success_url: 'https://jakej16c.github.io/Daisys-Website/success.html',
+        cancel_url: 'https://jakej16c.github.io/Daisys-Website/cancel.html',
+      });
+  
+      return { url: session.url };
+    } catch (err) {
+      console.error("❌ Stripe Checkout error:", err.message);
+      throw new functions.https.HttpsError('internal', err.message);
+    }
   });
