@@ -221,6 +221,8 @@ async function handleStripeCheckout() {
 
 // ✅ On DOM load – wire up buttons and autofill
 document.addEventListener("DOMContentLoaded", async () => {
+  // 🔄 Reset Stripe submission flag when user reopens basket
+  localStorage.removeItem("orderSubmitted");
   await loadCurrentUser();
 
   const applyBtn = document.getElementById("apply-promo-btn");
