@@ -1,9 +1,5 @@
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
-import {
-  getFirestore, doc, getDoc, setDoc,
-  collection, getDocs, query, where
-} from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
-
+import { doc, getDoc, setDoc, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 import { auth, db } from "./firebase.js";
 
 let currentUser = null;
@@ -14,7 +10,7 @@ let currentUser = null;
 async function loadUserProfile() {
   return new Promise((resolve) => {
     onAuthStateChanged(auth, async (user) => {
-      if (!user) return resolve(); // not logged in
+      if (!user) return resolve();
 
       currentUser = user;
 
@@ -28,13 +24,15 @@ async function loadUserProfile() {
 
           document.getElementById("first-name").value = data.firstName || "";
           document.getElementById("last-name").value = data.lastName || "";
-          document.getElementById("phone-number").value = data.phone || "";
+          document.getElementById("phone").value = data.phone || "";
 
           document.getElementById("house-number").value = addr.houseNumber || "";
           document.getElementById("street").value = addr.street || "";
           document.getElementById("city").value = addr.city || "";
           document.getElementById("county").value = addr.county || "";
           document.getElementById("postcode").value = addr.postcode || "";
+
+          updateSummary(data.firstName, data.lastName, addr);
         }
       } catch (err) {
         console.error("Error loading profile:", err);
@@ -46,16 +44,24 @@ async function loadUserProfile() {
 }
 
 // =========================
+// 📄 Update Summary Display
+// =========================
+function updateSummary(first, last, addr) {
+  document.getElementById("summary-name").textContent = `${first || ""} ${last || ""}`;
+  document.getElementById("summary-address").textContent = `${addr.houseNumber || ""} ${addr.street || ""}, ${addr.city || ""}, ${addr.county || ""}, ${addr.postcode || ""}`;
+}
+
+// =========================
 // 💾 Save Profile Info
 // =========================
 async function saveProfile(e) {
   e.preventDefault();
+
   if (!currentUser) return alert("You must be logged in to save your profile.");
 
   const firstName = document.getElementById("first-name").value.trim();
   const lastName = document.getElementById("last-name").value.trim();
-  const phone = document.getElementById("phone-number").value.trim();
-
+  const phone = document.getElementById("phone").value.trim();
   const address = {
     houseNumber: document.getElementById("house-number").value.trim(),
     street: document.getElementById("street").value.trim(),
@@ -69,15 +75,25 @@ async function saveProfile(e) {
       firstName,
       lastName,
       phone,
-      address
+      address,
     });
 
+    updateSummary(firstName, lastName, address);
+    toggleEdit(); // Close edit view
     alert("Profile updated successfully!");
   } catch (err) {
-    console.error("❌ Failed to save profile:", err);
+    console.error("Failed to save profile:", err);
     alert("There was an error saving your profile.");
   }
 }
+
+// =========================
+// 🧠 Toggle Edit Mode
+// =========================
+window.toggleEdit = () => {
+  document.getElementById("profile-summary").classList.toggle("hidden");
+  document.getElementById("profile-form").classList.toggle("hidden");
+};
 
 // =========================
 // 📦 Load User Orders
@@ -112,9 +128,7 @@ async function loadUserOrders(user) {
           <ul>
             ${
               Array.isArray(order.items)
-                ? order.items.map(item =>
-                    `<li>${item.productName} × ${item.qty} – £${item.price.toFixed(2)}</li>`
-                  ).join("")
+                ? order.items.map(item => `<li>${item.productName} × ${item.qty} – £${item.price.toFixed(2)}</li>`).join("")
                 : "<li>No items found in this order.</li>"
             }
           </ul>
