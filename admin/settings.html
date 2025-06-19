@@ -519,12 +519,12 @@ window.onload = () => {
       toggle.checked = data.enabled;
       ipBox.value = (data.allowedIPs || []).join(", ");
       wrapper.style.display = data.enabled ? "block" : "none";
+      document.getElementById("siteMaintenanceStatus").textContent = data.enabled ? "Enabled" : "Disabled";
     }
   }
 
   toggle.addEventListener("change", () => {
     wrapper.style.display = toggle.checked ? "block" : "none";
-    document.getElementById("siteMaintenanceStatus").textContent = toggle.checked ? "Enabled" : "Disabled";
     saveSettings();
   });
 
