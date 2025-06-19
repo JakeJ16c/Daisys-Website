@@ -76,6 +76,23 @@
 
   <!-- Maintenance Page If Toggled In Dashboard -->
   <script type="module" src="maintenance.js"></script>
+  
+  <!-- Saves New Order Recieved -->
+  <script type="module">
+      import { submitOrder, loadCurrentUser } from './basket-checkout.js';
+    
+      document.addEventListener("DOMContentLoaded", async () => {
+        await loadCurrentUser();
+        const success = await submitOrder();
+    
+        if (success) {
+          console.log("✅ Stripe order saved and admin notified");
+        } else {
+          console.error("❌ Failed to save Stripe order");
+        }
+      });
+    </script>
+
 
 </body>
 </html>
