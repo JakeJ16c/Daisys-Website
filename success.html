@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- ========== Basic Setup ========== -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" type="image/x-icon" href="favicon_circle.ico">
+  <title>You're So Golden - Custom Design</title>
+
+  <!-- ========== Fonts, Icons & Styling ========== -->
+  <base href="/Daisys-Website/">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="styles/styles.css">
+  <link rel="stylesheet" href="styles/responsive.css">
+</head>
+  
+<body>
+
+  <!-- Top Announcement -->
+  <div id="announcement-bar-container"></div>
+
+  <!-- Header Section -->
+  <header class="site-header">
+    <div class="header-left">
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-facebook-f"></i></a>
+      <a href="#"><i class="fas fa-phone"></i></a>
+      <a href="#"><i class="fas fa-envelope"></i></a>
+    </div>
+    <h1 class="header-title"><a href="index.html" class="logo-link">You're So Golden</a></h1>
+    <div class="header-right">
+      <a href="#cart" class="cart-icon"><i class="fas fa-basket-shopping"></i></a>
+      <a id="auth-icon" class="login-icon" href="#" title="User Menu">
+        <i id="auth-icon-symbol" class="fas fa-user"></i>
+      </a>
+    </div>
+
+    <!-- Basket Dropdown -->
+    <div id="basket-preview"></div>
+    
+    <!-- 👤 User Dropdown (dynamic) -->
+    <div id="logout-dropdown" class="hidden" style="position:absolute; right:1rem; top:4.2rem; background:white; border:1px solid #ccc; padding:1rem; border-radius:8px; z-index:1000; box-shadow:0 4px 12px rgba(0,0,0,0.1); min-width:160px;">
+      <div id="user-dropdown-content">
+        <!-- Content will be filled in by JS -->
+  </div>
+</div>
+
+  </header>
+
+  <!-- Navigation Bar -->
+  <div id="navigation-bar-container"></div>
+
+  <!-- Main Product Content -->
+  <main>
+
+  </main>
+  
+  <!-- Footer -->
+  <div id="footer-container"></div>
+  
+  <!-- Load Page Layout -->
+  <script src="layout/load-layout.js" type="module"></script>
+
+  <!-- 'User' Toggle Btn -->
+  <script type="module" src="user-toggle.js"></script>
+
+  <!-- Basket Dropdown Btn -->
+  <script type="module" src="basket-dropdown.js"></script>
+
+  <!-- Firebase -->
+  <script type="module" src="firebase.js"></script>
+
+  <!-- Admin Features -->
+  <script type="module" src="admin-auth.js"></script>
+
+  <!-- Maintenance Page If Toggled In Dashboard -->
+  <script type="module" src="maintenance.js"></script>
+
+</body>
+</html>
