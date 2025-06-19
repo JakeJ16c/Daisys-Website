@@ -1,11 +1,11 @@
-import { getAuth, onAuthStateChanged, signOut, } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, where, } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 import { auth, db } from "./firebase.js";
 
 let currentUser = null;
 
 // =========================
-// 👤 Load User Profile
+// 👤 Load User Profile from Firestore
 // =========================
 async function loadUserProfile() {
   return new Promise((resolve) => {
@@ -22,6 +22,7 @@ async function loadUserProfile() {
           const data = userSnap.data();
           const addr = data.address || {};
 
+          // ✅ Fill editable form fields
           document.getElementById("first-name").value = data.firstName || "";
           document.getElementById("last-name").value = data.lastName || "";
           document.getElementById("house-number").value = addr.houseNumber || "";
@@ -29,6 +30,9 @@ async function loadUserProfile() {
           document.getElementById("city").value = addr.city || "";
           document.getElementById("county").value = addr.county || "";
           document.getElementById("postcode").value = addr.postcode || "";
+
+          // ✅ Update the view mode display
+          updateViewMode(data);
         }
       } catch (err) {
         console.error("Error loading profile:", err);
@@ -40,7 +44,33 @@ async function loadUserProfile() {
 }
 
 // =========================
-// 💾 Save Profile Info
+// 🪪 Update view-only display section
+// =========================
+function updateViewMode(data) {
+  const nameText = `${data.firstName || ""} ${data.lastName || ""}`.trim();
+  const address = data.address || {};
+  const addressParts = [
+    address.houseNumber,
+    address.street,
+    address.city,
+    address.county,
+    address.postcode
+  ].filter(Boolean).join(", ");
+
+  document.getElementById("view-name").textContent = nameText || "Not provided";
+  document.getElementById("view-address").textContent = addressParts || "No address on file";
+}
+
+// =========================
+// 🖊️ Toggle between edit and view mode
+// =========================
+window.toggleEdit = function (toEdit) {
+  document.getElementById("account-edit").style.display = toEdit ? "block" : "none";
+  document.getElementById("account-view").style.display = toEdit ? "none" : "block";
+};
+
+// =========================
+// 💾 Save Profile Info to Firestore
 // =========================
 async function saveProfile(e) {
   e.preventDefault();
@@ -58,6 +88,7 @@ async function saveProfile(e) {
   };
 
   try {
+    // ✅ Save user profile
     await setDoc(doc(db, "users", currentUser.uid), {
       firstName,
       lastName,
@@ -65,6 +96,10 @@ async function saveProfile(e) {
     });
 
     alert("Profile updated successfully!");
+
+    // ✅ Refresh view display
+    updateViewMode({ firstName, lastName, address });
+    toggleEdit(false); // Hide form after saving
   } catch (err) {
     console.error("Failed to save profile:", err);
     alert("There was an error saving your profile.");
@@ -85,39 +120,41 @@ async function loadUserOrders(user) {
     return;
   }
 
-let html = "";
-snapshot.forEach((docSnap) => {
-  const order = docSnap.data();
-  const date = order.createdAt?.toDate().toLocaleString() || "Unknown date";
+  let html = "";
+  snapshot.forEach((docSnap) => {
+    const order = docSnap.data();
+    const date = order.createdAt?.toDate().toLocaleString() || "Unknown date";
 
-  html += `
-    <div class="order-card">
-      <div class="order-summary" onclick="this.classList.toggle('open'); this.nextElementSibling.classList.toggle('open')">
-        <div class="summary-left">
-            <strong>Order No.${order.orderNumber || "N/A"}</strong>
+    html += `
+      <div class="order-card">
+        <div class="order-summary" onclick="this.classList.toggle('open'); this.nextElementSibling.classList.toggle('open')">
+          <div class="summary-left">
+              <strong>Order No.${order.orderNumber || "N/A"}</strong>
+          </div>
+          <div class="summary-right">
+            <span class="order-status ${order.status.toLowerCase()}">Status: ${order.status}</span>
+            <i class="fa fa-chevron-down"></i>
+          </div>
         </div>
-        <div class="summary-right">
-          <span class="order-status ${order.status.toLowerCase()}">Status: ${order.status}</span>
-          <i class="fa fa-chevron-down"></i>
+        <div class="order-details">
+          <p class="order-date">Placed on: ${date}</p>
+          <ul>
+            ${
+              Array.isArray(order.items)
+                ? order.items.map(item => {
+                    return `<li>${item.productName} × ${item.qty} – £${item.price.toFixed(2)}</li>`;
+                  }).join("")
+                : "<li>No items found in this order.</li>"
+            }
+          </ul>
         </div>
       </div>
-      <div class="order-details">
-        <p class="order-date">Placed on: ${date}</p>
-        <ul>
-          ${
-            Array.isArray(order.items)
-              ? order.items.map(item => {
-                  return `<li>${item.productName} × ${item.qty} – £${item.price.toFixed(2)}</li>`;
-                }).join("")
-              : "<li>No items found in this order.</li>"
-          }
-        </ul>
-      </div>
-    </div>
-  `;
-});
-ordersDiv.innerHTML = html;
+    `;
+  });
+
+  ordersDiv.innerHTML = html;
 }
+
 // =========================
 // 🚪 Logout
 // =========================
