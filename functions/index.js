@@ -50,17 +50,22 @@ exports.notifyOnNewOrder = functions.firestore
       // Send to each token individually instead of using multicast
       for (const token of tokens) {
         try {
+
+          // Format item summary string
+          const itemSummary = order.items.map(item => `${item.qty} ${item.productName}`).join(', ');
+          const totalAmount = `£${(order.finalTotal || 0).toFixed(2)}`;
+          
           const message = {
             notification: {
-              title: "New Order Received!",
-              body: `From ${order.name || 'a customer'}`,
+              title: "New Order Recieved!",
+              body: `${order.name || 'A customer'} ordered ${itemSummary} worth ${totalAmount}`,
             },
             data: {
               category: "orders",
               orderId: context.params.orderId,
               timestamp: new Date().toISOString()
             },
-            token: token // Send to one token at a time
+            token: token
           };
           
           const response = await admin.messaging().send(message);
