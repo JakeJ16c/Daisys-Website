@@ -1,5 +1,19 @@
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
-import { doc, getDoc, setDoc, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+// account.js
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut,
+} from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  collection,
+  getDocs,
+  query,
+  where,
+} from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 import { auth, db } from "./firebase.js";
 
 let currentUser = null;
@@ -22,17 +36,18 @@ async function loadUserProfile() {
           const data = userSnap.data();
           const addr = data.address || {};
 
+          // Update form fields
           document.getElementById("first-name").value = data.firstName || "";
           document.getElementById("last-name").value = data.lastName || "";
           document.getElementById("phone").value = data.phone || "";
-
           document.getElementById("house-number").value = addr.houseNumber || "";
           document.getElementById("street").value = addr.street || "";
           document.getElementById("city").value = addr.city || "";
           document.getElementById("county").value = addr.county || "";
           document.getElementById("postcode").value = addr.postcode || "";
 
-          updateSummary(data.firstName, data.lastName, addr);
+          // Update summary display
+          updateSummary(data.firstName, data.lastName, data.phone, addr);
         }
       } catch (err) {
         console.error("Error loading profile:", err);
@@ -44,11 +59,13 @@ async function loadUserProfile() {
 }
 
 // =========================
-// 📄 Update Summary Display
+// 📝 Update summary text
 // =========================
-function updateSummary(first, last, addr) {
-  document.getElementById("summary-name").textContent = `${first || ""} ${last || ""}`;
-  document.getElementById("summary-address").textContent = `${addr.houseNumber || ""} ${addr.street || ""}, ${addr.city || ""}, ${addr.county || ""}, ${addr.postcode || ""}`;
+function updateSummary(firstName, lastName, phone, address) {
+  document.getElementById("summary-name").textContent = `${firstName || "-"} ${lastName || ""}`;
+  document.getElementById("summary-phone").textContent = phone || "-";
+  document.getElementById("summary-address").textContent =
+    `${address.houseNumber || ""} ${address.street || ""}, ${address.city || ""}, ${address.county || ""}, ${address.postcode || ""}`.trim() || "-";
 }
 
 // =========================
@@ -56,7 +73,6 @@ function updateSummary(first, last, addr) {
 // =========================
 async function saveProfile(e) {
   e.preventDefault();
-
   if (!currentUser) return alert("You must be logged in to save your profile.");
 
   const firstName = document.getElementById("first-name").value.trim();
@@ -78,22 +94,14 @@ async function saveProfile(e) {
       address,
     });
 
-    updateSummary(firstName, lastName, address);
-    toggleEdit(); // Close edit view
     alert("Profile updated successfully!");
+    updateSummary(firstName, lastName, phone, address);
+    toggleEdit();
   } catch (err) {
     console.error("Failed to save profile:", err);
     alert("There was an error saving your profile.");
   }
 }
-
-// =========================
-// 🧠 Toggle Edit Mode
-// =========================
-window.toggleEdit = () => {
-  document.getElementById("profile-summary").classList.toggle("hidden");
-  document.getElementById("profile-form").classList.toggle("hidden");
-};
 
 // =========================
 // 📦 Load User Orders
@@ -117,7 +125,9 @@ async function loadUserOrders(user) {
     html += `
       <div class="order-card">
         <div class="order-summary" onclick="this.classList.toggle('open'); this.nextElementSibling.classList.toggle('open')">
-          <div class="summary-left"><strong>Order No.${order.orderNumber || "N/A"}</strong></div>
+          <div class="summary-left">
+              <strong>Order No.${order.orderNumber || "N/A"}</strong>
+          </div>
           <div class="summary-right">
             <span class="order-status ${order.status.toLowerCase()}">Status: ${order.status}</span>
             <i class="fa fa-chevron-down"></i>
@@ -141,6 +151,14 @@ async function loadUserOrders(user) {
 }
 
 // =========================
+// ✏️ Toggle Edit Mode
+// =========================
+function toggleEdit() {
+  document.getElementById("summary-block").classList.toggle("hidden");
+  document.getElementById("form-block").classList.toggle("hidden");
+}
+
+// =========================
 // 🚪 Logout
 // =========================
 function setupLogout() {
@@ -161,6 +179,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const saveBtn = document.getElementById("saveBtn");
   if (saveBtn) saveBtn.addEventListener("click", saveProfile);
+
+  const editBtn = document.getElementById("editBtn");
+  if (editBtn) editBtn.addEventListener("click", toggleEdit);
 
   if (currentUser) {
     loadUserOrders(currentUser);
