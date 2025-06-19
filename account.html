@@ -306,38 +306,49 @@
     <div class="form-container">
       <form id="profileForm">
       <h3><i class="fas fa-user"></i>Account Info</h3>
-
-      <!-- Name Fields -->
-      <label for="firstName">First Name</label>
-      <input id="first-name" type="text" placeholder="Please enter your First Name">
-
-      <label for="lastName">Last Name</label>
-      <input id="last-name" type="text" placeholder="Enter your Last Name">
-
-      <!-- Delivery Address Block -->
-      <div class="address-block">
-        <label class="account-label">Delivery Address</label>
-
-        <label for="houseNumber">House Number</label>
-        <input id="house-number" type="text" placeholder="e.g. 42">
-
-        <label for="street">Street</label>
-        <input id="street" type="text" placeholder="e.g. Acacia Avenue">
-
-        <label for="city">City</label>
-        <input id="city" type="text" placeholder="e.g. London">
-
-        <label for="county">County</label>
-        <input id="county" type="text" placeholder="e.g. Greater London">
-
-        <label for="postcode">Postcode</label>
-        <input id="postcode" type="text" placeholder="e.g. SW1A 1AA">
+        
+      <!-- View Mode -->
+      <div id="account-view" style="line-height: 1.8;">
+        <p><strong>Name:</strong> <span id="view-name">Loading...</span></p>
+        <p><strong>Address:</strong> <span id="view-address">Loading...</span></p>
+        <div class="account-actions">
+          <button type="button" class="btn-submit" onclick="toggleEdit(true)">Edit Profile</button>
+        </div>
+      </div>
+      
+      <!-- Edit Mode -->
+      <div id="account-edit" style="display: none;">
+        <label for="firstName">First Name</label>
+        <input id="first-name" type="text" placeholder="Please enter your First Name" />
+      
+        <label for="lastName">Last Name</label>
+        <input id="last-name" type="text" placeholder="Enter your Last Name" />
+      
+        <div class="address-block">
+          <label class="account-label">Delivery Address</label>
+      
+          <label for="houseNumber">House Number</label>
+          <input id="house-number" type="text" placeholder="e.g. 42" />
+      
+          <label for="street">Street</label>
+          <input id="street" type="text" placeholder="e.g. Acacia Avenue" />
+      
+          <label for="city">City</label>
+          <input id="city" type="text" placeholder="e.g. London" />
+      
+          <label for="county">County</label>
+          <input id="county" type="text" placeholder="e.g. Greater London" />
+      
+          <label for="postcode">Postcode</label>
+          <input id="postcode" type="text" placeholder="e.g. SW1A 1AA" />
+        </div>
+      
+        <div class="account-actions">
+          <button type="submit" class="btn-submit">Save Profile</button>
+          <button type="button" class="btn-secondary" onclick="toggleEdit(false)">Cancel</button>
+        </div>
       </div>
 
-      <!-- Save / Log Out Buttons -->
-      <div class="account-actions">
-        <button type="submit" id="saveBtn" class="btn-submit">Save Profile</button>
-      </div>
       </form>
     </div>
 
