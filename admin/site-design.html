@@ -355,6 +355,7 @@
 
 .welcome-modal-full {
   position: fixed;
+  display: none;
   top: 0;
   left: 0;
   z-index: 10000;
@@ -364,6 +365,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.welcome-modal-full.show {
+  display: flex;
 }
 
 .welcome-modal-content {
