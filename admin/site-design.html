@@ -452,6 +452,51 @@
   color: #333;
   cursor: pointer;
 }
+
+.welcome-modal-preview .preview-inner {
+  width: 100%;
+  transform: scale(0.65);
+  transform-origin: center;
+}
+
+.welcome-modal-preview .modal-image-preview {
+  width: 50%;
+  background: #f9f9f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.welcome-modal-preview .modal-image-preview img {
+  max-width: 100%;
+  height: auto;
+}
+
+.welcome-modal-preview .modal-text {
+  width: 50%;
+  padding: 1rem;
+  text-align: left;
+}
+
+.welcome-modal-preview .modal-text h2 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.welcome-modal-preview .modal-text p {
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.welcome-modal-preview .modal-cta {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  background-color: #204ECF;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
   </style>
 
 </head>
@@ -499,11 +544,18 @@
       <div class="edit-icon">
         <i class="fas fa-pencil-alt"></i>
       </div>
-      <div class="preview-content">
+      
+      <div class="modal-grid preview-inner">
+      <div class="modal-image-preview">
+        <img id="previewImage" src="" alt="Modal Preview Image" />
+      </div>
+      <div class="modal-text">
         <h2 id="preview-headline">Welcome to You're So Golden!</h2>
         <p id="preview-message">Explore our handcrafted bead collections and unique gifts.</p>
-        <button id="preview-cta">Shop Now</button>
+        <button class="modal-cta" id="preview-cta">Shop Now</button>
       </div>
+    </div>
+
     </div>
   </div>
 
@@ -619,6 +671,7 @@
       reader.onload = () => {
         document.getElementById('welcomePreviewBox').style.backgroundImage = `url('${reader.result}')`;
         document.getElementById('welcomePreviewBox').style.backgroundSize = 'cover';
+        document.getElementById('previewImage').src = reader.result;
       };
       reader.readAsDataURL(file);
     }
