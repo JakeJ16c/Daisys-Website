@@ -538,45 +538,11 @@
     </div>
   </div>
 
-  <!-- ✨ Welcome Modal Preview -->
-  <div class="welcome-modal-preview-wrapper">
-    <div class="welcome-modal-preview" id="welcomePreviewBox">
-      <div class="edit-icon">
-        <i class="fas fa-pencil-alt"></i>
-      </div>
-      
-      <div class="modal-grid preview-inner">
-      <div class="modal-image-preview">
-        <img id="previewImage" src="" alt="Modal Preview Image" />
-      </div>
-      <div class="modal-text">
-        <h2 id="preview-headline">Welcome to You're So Golden!</h2>
-        <p id="preview-message">Explore our handcrafted bead collections and unique gifts.</p>
-        <button class="modal-cta" id="preview-cta">Shop Now</button>
-      </div>
-    </div>
-
-    </div>
-  </div>
-
-  <!-- Full Welcome Modal (Hidden by Default) -->
-  <div id="welcomeModalFull" class="welcome-modal-full hidden">
-    <div class="welcome-modal-content">
-      <span class="close-modal" onclick="closeFullModal()">×</span>
-      <div class="modal-grid">
-        <div class="modal-image-preview" id="modalImagePreview">
-          <img id="modalPreviewImage" src="" alt="Modal Preview Image" />
-        </div>
-        <div class="modal-text">
-          <h2 class="modal-title" id="modalTitle">Welcome to You're So Golden!</h2>
-          <p class="modal-subtitle" id="modalSubtitle">Unlock 10% off your first order</p>
-          <input type="email" placeholder="Email Address" class="modal-input" />
-          <button class="modal-cta" id="modalCTA">Continue</button>
-          <button class="modal-skip" onclick="closeFullModal()">No thanks</button>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- Welcome Modal Preview (Rendered by JS) -->
+  <div class="welcome-modal-preview-wrapper" id="welcomeModalPreviewWrapper"></div>
+    
+  <!-- Full Modal Editor (Injected by JS) -->
+  <div id="welcomeModalEditorContainer"></div>
     
   </main>
 
@@ -585,6 +551,9 @@
 
   <!-- Marquee Manager Script -->
   <script type="module" src="./marquee-manager.js"></script>
+
+  <!-- Welcome Modal Script -->
+  <script type="module" src="./welcome-modal.js"></script>
 
   <!-- PWA Service Worker Registration -->
   <script>
