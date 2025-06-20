@@ -487,8 +487,9 @@
   <script>
   // Show modal editor on click
   document.getElementById('welcomePreviewBox')?.addEventListener('click', () => {
-    document.getElementById('welcomeModalEditor').classList.remove('hidden');
-  });  
+  document.getElementById('welcomeModalFull').classList.remove('hidden');
+});
+ 
   // Close modal
   function closeModalEditor() {
     document.getElementById('welcomeModalEditor').classList.add('hidden');
