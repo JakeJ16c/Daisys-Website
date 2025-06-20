@@ -329,7 +329,7 @@
 
   <script type="module">
     import { db } from '../firebase.js';
-    import { collection, addDoc, getDocs, deleteDoc, doc } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+    import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
 
     async function loadStockCounter() {
   const container = document.getElementById('stock-counter-list');
@@ -374,6 +374,8 @@ async function loadOrders() {
 
   snap.forEach(doc => {
     const data = doc.data();
+
+      if (data.dashboardHidden) return; // ❌ Skip if hidden on dashboard
     const createdAtRaw = data.createdAt;
 
     let orderDate;
@@ -430,10 +432,33 @@ async function loadOrders() {
 
   function enableMobileSwipePreview(selector) {
   const elements = document.querySelectorAll(selector);
-  elements.forEach(el => {
-    let startX = 0;
-    let currentX = 0;
-    let swiping = false;
+  el.addEventListener('touchend', async () => {
+  const deltaX = currentX - startX;
+  swiping = false;
+  el.classList.remove('swiping');
+
+  if (deltaX > 100) {
+    el.style.transition = 'transform 0.3s ease';
+    el.style.transform = 'translateX(100%)';
+
+    const orderText = el.querySelector("a")?.href || "";
+    const orderIdMatch = orderText.match(/orderId=([^&]+)/);
+    const orderId = orderIdMatch?.[1];
+
+    if (orderId) {
+      try {
+        await updateDoc(doc(db, "Orders", orderId), {
+          dashboardHidden: true
+        });
+        el.remove(); // Remove from DOM immediately
+      } catch (err) {
+        console.error("❌ Failed to hide order on dashboard", err);
+      }
+    }
+  } else {
+    el.style.transform = '';
+  }
+});
 
     el.classList.add('order-swipe');
 
