@@ -407,29 +407,21 @@
     </div>
   </div>
 
-  <!-- 🔧 Welcome Modal Editor (Hidden by Default) -->
-  <div id="welcomeModalEditor" class="modal-editor-backdrop hidden">
-    <div class="modal-editor">
-      <div class="modal-header">
-        <h2>Edit Welcome Modal</h2>
-        <span class="close-btn" onclick="closeModalEditor()">&times;</span>
-      </div>
-      <div class="modal-editor-body">
-        <label>Headline</label>
-        <input id="headlineInput" type="text" placeholder="Welcome to You're So Golden!">
-  
-        <label>Message</label>
-        <textarea id="messageInput" placeholder="Enter welcome message here..."></textarea>
-  
-        <label>Button Text</label>
-        <input id="ctaInput" type="text" placeholder="Shop Now">
-  
-        <label>Background</label>
-        <input type="color" id="bgColorInput">
-        <p style="margin: 0.5rem 0;">or upload image:</p>
-        <input type="file" id="bgImageInput" accept="image/*">
-  
-        <button class="btn-submit" onclick="saveWelcomeModal()">Save Modal</button>
+  <!-- Full Welcome Modal (Hidden by Default) -->
+  <div id="welcomeModalFull" class="welcome-modal-full hidden">
+    <div class="welcome-modal-content">
+      <span class="close-modal" onclick="closeFullModal()">×</span>
+      <div class="modal-grid">
+        <div class="modal-image-preview" id="modalImagePreview">
+          <img id="modalPreviewImage" src="" alt="Modal Preview Image" />
+        </div>
+        <div class="modal-text">
+          <h2 class="modal-title" id="modalTitle">Welcome to You're So Golden!</h2>
+          <p class="modal-subtitle" id="modalSubtitle">Unlock 10% off your first order</p>
+          <input type="email" placeholder="Email Address" class="modal-input" />
+          <button class="modal-cta" id="modalCTA">Continue</button>
+          <button class="modal-skip" onclick="closeFullModal()">No thanks</button>
+        </div>
       </div>
     </div>
   </div>
@@ -496,30 +488,24 @@
   // Show modal editor on click
   document.getElementById('welcomePreviewBox')?.addEventListener('click', () => {
     document.getElementById('welcomeModalEditor').classList.remove('hidden');
-  });
-  
+  });  
   // Close modal
   function closeModalEditor() {
     document.getElementById('welcomeModalEditor').classList.add('hidden');
   }
-  
   // Live update the preview
   document.getElementById('headlineInput')?.addEventListener('input', e => {
     document.getElementById('preview-headline').textContent = e.target.value;
-  });
-  
+  });  
   document.getElementById('messageInput')?.addEventListener('input', e => {
     document.getElementById('preview-message').textContent = e.target.value;
-  });
-  
+  }); 
   document.getElementById('ctaInput')?.addEventListener('input', e => {
     document.getElementById('preview-cta').textContent = e.target.value;
-  });
-  
+  }); 
   document.getElementById('bgColorInput')?.addEventListener('input', e => {
     document.getElementById('welcomePreviewBox').style.backgroundColor = e.target.value;
   });
-  
   document.getElementById('bgImageInput')?.addEventListener('change', e => {
     const file = e.target.files[0];
     if (file) {
@@ -527,6 +513,27 @@
       reader.onload = () => {
         document.getElementById('welcomePreviewBox').style.backgroundImage = `url('${reader.result}')`;
         document.getElementById('welcomePreviewBox').style.backgroundSize = 'cover';
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // Also update full modal live
+  document.getElementById('headlineInput')?.addEventListener('input', e => {
+    document.getElementById('modalTitle').textContent = e.target.value;
+  });
+  document.getElementById('messageInput')?.addEventListener('input', e => {
+    document.getElementById('modalSubtitle').textContent = e.target.value;
+  });
+  document.getElementById('ctaInput')?.addEventListener('input', e => {
+    document.getElementById('modalCTA').textContent = e.target.value;
+  });
+  document.getElementById('bgImageInput')?.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        document.getElementById('modalPreviewImage').src = reader.result;
       };
       reader.readAsDataURL(file);
     }
