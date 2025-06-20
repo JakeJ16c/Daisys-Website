@@ -1,171 +1,99 @@
-// Inject welcome modal CSS
-const style = document.createElement('style');
-style.textContent = `
-/* === Welcome Modal Styles === */
-.welcome-modal-preview-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 2rem;
+import { db } from "../firebase.js";
+import {
+  doc,
+  getDoc,
+  setDoc
+} from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+
+// Load saved modal from Firestore and render the preview
+async function renderWelcomeModalPreview() {
+  const ref = doc(db, "SiteSettings", "WelcomeModal");
+  const snap = await getDoc(ref);
+  if (!snap.exists()) return;
+
+  const data = snap.data();
+  const previewBox = document.getElementById("welcomePreviewBox");
+  const img = document.getElementById("previewImage");
+  const headline = document.getElementById("preview-headline");
+  const message = document.getElementById("preview-message");
+  const cta = document.getElementById("preview-cta");
+
+  previewBox.style.backgroundColor = data.backgroundColor || "#fff3cd";
+  previewBox.style.backgroundImage = data.backgroundImage ? `url(${data.backgroundImage})` : "";
+  previewBox.style.backgroundSize = "cover";
+  img.src = data.image || "";
+  headline.textContent = data.headline || "Welcome to You're So Golden!";
+  message.textContent = data.message || "Explore our handcrafted bead collections and unique gifts.";
+  cta.textContent = data.cta || "Shop Now";
+  cta.style.backgroundColor = data.ctaColor || "#204ECF";
 }
 
-.welcome-modal-preview {
-  position: relative;
-  width: 90%;
-  max-width: 400px;
-  padding: 2rem;
-  border-radius: 12px;
-  background-color: #fff3cd;
-  opacity: 0.6;
-  transition: transform 0.3s ease, opacity 0.3s ease;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-  text-align: center;
-  cursor: pointer;
-}
-
-.welcome-modal-preview:hover {
-  opacity: 1;
-  transform: scale(1.03);
-}
-
-.welcome-modal-preview .edit-icon {
-  position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-  background: white;
-  padding: 6px 8px;
-  border-radius: 50%;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.welcome-modal-preview:hover .edit-icon {
-  opacity: 1;
-}
-
-.modal-grid {
-  display: flex;
-  width: 100%;
-}
-
-.modal-image-preview {
-  width: 50%;
-  background: #f9f9f9;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.modal-image-preview img {
-  max-width: 100%;
-  height: auto;
-}
-
-.modal-text {
-  width: 50%;
-  padding: 1rem;
-  text-align: left;
-}
-
-.modal-text h2, .modal-text p, .modal-text button {
-  margin: 0.5rem 0;
-}
-
-.modal-cta {
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-  background-color: #204ECF;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.welcome-modal-full {
-  position: fixed;
-  display: none;
-  top: 0;
-  left: 0;
-  z-index: 10000;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0,0,0,0.4);
-  justify-content: center;
-  align-items: center;
-}
-
-.welcome-modal-full.show {
-  display: flex;
-}
-
-.welcome-modal-content {
-  background: white;
-  border-radius: 12px;
-  max-width: 700px;
-  width: 95%;
-  display: flex;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-}
-
-.close-modal {
-  position: absolute;
-  top: 0.75rem;
-  right: 1rem;
-  font-size: 2rem;
-  font-weight: bold;
-  color: #333;
-  cursor: pointer;
-}
-`;
-document.head.appendChild(style);
-
-// Handle edit icon click
-document.querySelector('.welcome-modal-preview .edit-icon')?.addEventListener('click', () => {
-  document.getElementById('welcomeModalFull').classList.add('show');
-  document.getElementById('welcomeModalFull').classList.remove('hidden');
+// Open full modal editor
+document.querySelector(".welcome-modal-preview .edit-icon")?.addEventListener("click", (e) => {
+  e.stopPropagation();
+  document.getElementById("welcomeModalFull").classList.remove("hidden");
 });
 
-// Handle close modal
+// Close modal editor
 window.closeFullModal = function () {
-  document.getElementById('welcomeModalFull').classList.remove('show');
-  document.getElementById('welcomeModalFull').classList.add('hidden');
+  document.getElementById("welcomeModalFull").classList.add("hidden");
 };
 
-// Inline editing
-function makeTextEditable(selector, previewSelector, modalSelector) {
-  const el = document.querySelector(selector);
+// Live edit logic (updates full modal editor in real time)
+["headlineInput", "messageInput", "ctaInput", "bgColorInput", "ctaColorInput"].forEach(id => {
+  const el = document.getElementById(id);
   if (!el) return;
 
-  el.setAttribute('contenteditable', true);
-  el.addEventListener('input', () => {
-    const val = el.textContent;
-    document.querySelector(previewSelector).textContent = val;
-    document.querySelector(modalSelector).textContent = val;
-  });
-}
-
-makeTextEditable('#modalTitle', '#preview-headline', '#modalTitle');
-makeTextEditable('#modalSubtitle', '#preview-message', '#modalSubtitle');
-makeTextEditable('#modalCTA', '#preview-cta', '#modalCTA');
-
-// Image upload and preview
-const imageInput = document.getElementById('bgImageInput');
-if (imageInput) {
-  imageInput.addEventListener('change', e => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const result = reader.result;
-        document.getElementById('modalPreviewImage').src = result;
-        document.getElementById('previewImage').src = result;
-      };
-      reader.readAsDataURL(file);
+  el.addEventListener("input", () => {
+    const val = el.value;
+    switch (id) {
+      case "headlineInput":
+        document.getElementById("modalTitle").textContent = val;
+        break;
+      case "messageInput":
+        document.getElementById("modalSubtitle").textContent = val;
+        break;
+      case "ctaInput":
+        document.getElementById("modalCTA").textContent = val;
+        break;
+      case "bgColorInput":
+        document.getElementById("welcomeModalFull").style.backgroundColor = val;
+        break;
+      case "ctaColorInput":
+        document.getElementById("modalCTA").style.backgroundColor = val;
+        break;
     }
   });
-}
+});
 
-// Optional: Hook up a Save button to write changes to Firestore
-// (will add this step-by-step once your inline setup is complete)
+// Image upload
+document.getElementById("bgImageInput")?.addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    document.getElementById("modalPreviewImage").src = reader.result;
+    document.getElementById("welcomeModalFull").style.backgroundImage = `url('${reader.result}')`;
+  };
+  reader.readAsDataURL(file);
+});
+
+// Save to Firestore
+document.getElementById("saveModalBtn")?.addEventListener("click", async () => {
+  const ref = doc(db, "SiteSettings", "WelcomeModal");
+  const modalData = {
+    headline: document.getElementById("headlineInput").value,
+    message: document.getElementById("messageInput").value,
+    cta: document.getElementById("ctaInput").value,
+    backgroundColor: document.getElementById("bgColorInput").value,
+    ctaColor: document.getElementById("ctaColorInput").value,
+    backgroundImage: document.getElementById("modalPreviewImage").src,
+    image: document.getElementById("modalPreviewImage").src
+  };
+  await setDoc(ref, modalData);
+  alert("✅ Modal saved!");
+  renderWelcomeModalPreview(); // Optional: to refresh preview after save
+});
+
+// Initial load
+renderWelcomeModalPreview();
