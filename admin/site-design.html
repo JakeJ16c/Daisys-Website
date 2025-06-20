@@ -485,11 +485,12 @@
   </script>
 
   <script>
-  // Show modal editor on click
-  document.getElementById('welcomePreviewBox')?.addEventListener('click', () => {
-  document.getElementById('welcomeModalFull').classList.remove('hidden');
-});
- 
+  // Attach click only to the pencil icon inside the preview box
+  document.querySelector('.welcome-modal-preview .edit-icon')?.addEventListener('click', (e) => {
+    e.stopPropagation(); // Prevent bubbling
+    document.getElementById('welcomeModalFull').classList.remove('hidden');
+  });
+
   // Close modal
   function closeFullModal() {
     document.getElementById('welcomeModalFull').classList.add('hidden');
