@@ -398,28 +398,6 @@
 
   <!-- Maintenance Page If Toggled In Dashboard -->
   <script type="module" src="maintenance.js"></script>
-
-  <script>
-    // Add the missing toggleEdit function and cancel button handler
-    function toggleEdit() {
-      document.getElementById("summary-block").classList.toggle("hidden");
-      document.getElementById("form-block").classList.toggle("hidden");
-    }
-
-    // Add event listeners when DOM is loaded
-    document.addEventListener("DOMContentLoaded", function() {
-      const editBtn = document.getElementById("editBtn");
-      const cancelBtn = document.getElementById("cancelBtn");
-      
-      if (editBtn) {
-        editBtn.addEventListener("click", toggleEdit);
-      }
-      
-      if (cancelBtn) {
-        cancelBtn.addEventListener("click", toggleEdit);
-      }
-    });
-  </script>
   
 </body>
 </html>
