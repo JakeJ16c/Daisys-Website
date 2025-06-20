@@ -497,6 +497,360 @@
   border-radius: 6px;
   cursor: pointer;
 }
+
+.welcome-modal-preview-wrapper {
+  margin: 2rem 0;
+}
+
+.welcome-modal-preview {
+  position: relative;
+  background: #fff3cd;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  overflow: hidden;
+  max-width: 600px;
+  margin: 0 auto;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.welcome-modal-preview:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.welcome-modal-preview .edit-overlay {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  background: rgba(0,0,0,0.7);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 10;
+}
+
+.welcome-modal-preview:hover .edit-overlay {
+  opacity: 1;
+}
+
+.welcome-modal-preview .edit-overlay i {
+  color: white;
+  font-size: 1rem;
+}
+
+.welcome-modal-preview .modal-grid {
+  display: flex;
+  width: 100%;
+}
+
+.welcome-modal-preview .modal-image-preview {
+  width: 50%;
+  background: #f9f9f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.welcome-modal-preview .modal-image-preview img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.welcome-modal-preview .modal-text {
+  width: 50%;
+  padding: 1rem;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.welcome-modal-preview .modal-text h2 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.welcome-modal-preview .modal-text p {
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  color: #666;
+}
+
+.welcome-modal-preview .modal-cta {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  background-color: #204ECF;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  max-width: 120px;
+}
+
+/* Full-Screen Customer Modal Styles */
+.fullscreen-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+}
+
+.fullscreen-modal-backdrop.hidden {
+  display: none;
+}
+
+.fullscreen-modal {
+  background: #fff3cd;
+  width: 90vw;
+  max-width: 900px;
+  height: 80vh;
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  background: rgba(0,0,0,0.5);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 100;
+  transition: background 0.2s;
+}
+
+.modal-close-btn:hover {
+  background: rgba(0,0,0,0.7);
+}
+
+.modal-close-btn i {
+  color: white;
+  font-size: 1.2rem;
+}
+
+.modal-content-grid {
+  display: flex;
+  height: 100%;
+}
+
+.modal-image-section {
+  width: 50%;
+  position: relative;
+  background: #f9f9f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-image-section img {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.image-edit-overlay {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 50px;
+  height: 50px;
+  background: rgba(0,0,0,0.6);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.image-edit-overlay:hover {
+  opacity: 1;
+}
+
+.image-edit-overlay i {
+  color: white;
+  font-size: 1.2rem;
+}
+
+.hidden-file-input {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.modal-text-section {
+  width: 50%;
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+.modal-logo {
+  margin-bottom: 2rem;
+}
+
+.logo-img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.editable-headline {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 1rem;
+  border: 2px solid transparent;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.editable-headline:hover,
+.editable-headline:focus {
+  border-color: #204ECF;
+  background: rgba(255,255,255,0.5);
+  outline: none;
+}
+
+.editable-message {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 2rem;
+  line-height: 1.5;
+  border: 2px solid transparent;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.editable-message:hover,
+.editable-message:focus {
+  border-color: #204ECF;
+  background: rgba(255,255,255,0.5);
+  outline: none;
+}
+
+.email-signup {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  align-items: center;
+}
+
+.email-input {
+  flex: 1;
+  padding: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.editable-cta {
+  padding: 1rem 2rem;
+  background-color: #204ECF;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+}
+
+.editable-cta:hover,
+.editable-cta:focus {
+  background-color: #1a3fb8;
+  outline: none;
+  border-color: #fff;
+}
+
+.skip-btn {
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-bottom: 2rem;
+  text-decoration: underline;
+}
+
+.admin-controls {
+  border-top: 2px solid rgba(0,0,0,0.1);
+  padding-top: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.color-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.color-controls label {
+  font-size: 0.9rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.color-controls input[type="color"] {
+  width: 50px;
+  height: 40px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.save-changes-btn {
+  width: 100%;
+  padding: 1rem;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.save-changes-btn:hover {
+  background: #218838;
+}
   </style>
 
 </head>
@@ -538,11 +892,65 @@
     </div>
   </div>
 
-  <!-- Welcome Modal Preview (Rendered by JS) -->
-  <div class="welcome-modal-preview-wrapper" id="welcomeModalPreviewWrapper"></div>
-    
-  <!-- Full Modal Editor (Injected by JS) -->
-  <div id="welcomeModalEditorContainer"></div>
+  <!-- Welcome Modal Preview (like marquee manager) -->
+<div class="welcome-modal-preview-wrapper" id="welcomeModalPreviewWrapper">
+    <div class="welcome-modal-preview" id="welcomePreviewBox">
+      <div class="edit-overlay">
+        <i class="fas fa-pen"></i>
+      </div>
+      <div class="preview-content">
+        <div class="modal-grid">
+          <div class="modal-image-preview">
+            <img id="previewImage" src="../image0.jpeg" alt="Welcome Image">
+          </div>
+          <div class="modal-text">
+            <h2 id="preview-headline">Welcome to You're So Golden!</h2>
+            <p id="preview-message">Explore our handcrafted bead collections and unique gifts.</p>
+            <button id="preview-cta" class="modal-cta">Shop Now</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Full-Screen Customer Modal (for editing) -->
+  <div class="fullscreen-modal-backdrop hidden" id="fullscreenModalBackdrop">
+    <div class="fullscreen-modal" id="fullscreenModal">
+      <div class="modal-close-btn" id="modalCloseBtn">
+        <i class="fas fa-times"></i>
+      </div>
+      <div class="modal-content-grid">
+        <div class="modal-image-section">
+          <img id="fullscreenModalImage" src="../image0.jpeg" alt="Welcome Image">
+          <div class="image-edit-overlay">
+            <i class="fas fa-camera"></i>
+            <input type="file" accept="image/*" id="fullscreenImageUpload" class="hidden-file-input">
+          </div>
+        </div>
+        <div class="modal-text-section">
+          <div class="modal-logo">
+            <img src="../image0.jpeg" alt="Logo" class="logo-img">
+          </div>
+          <h1 id="fullscreenHeadline" class="editable-headline" contenteditable="true">Welcome to You're So Golden!</h1>
+          <p id="fullscreenMessage" class="editable-message" contenteditable="true">Explore our handcrafted bead collections and unique gifts.</p>
+          <div class="email-signup">
+            <input type="email" placeholder="Enter your email" class="email-input">
+            <button id="fullscreenCTA" class="editable-cta" contenteditable="true">Shop Now</button>
+          </div>
+          <button class="skip-btn">Skip for now</button>
+          <div class="admin-controls">
+            <div class="color-controls">
+              <label>Background Color:</label>
+              <input type="color" id="fullscreenBgColor" value="#fff3cd">
+              <label>Button Color:</label>
+              <input type="color" id="fullscreenCtaColor" value="#204ECF">
+            </div>
+            <button class="save-changes-btn" id="saveChangesBtn">Save Changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
     
   </main>
 
