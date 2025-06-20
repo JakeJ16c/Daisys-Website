@@ -589,12 +589,16 @@
   // Attach click only to the pencil icon inside the preview box
   document.querySelector('.welcome-modal-preview .edit-icon')?.addEventListener('click', (e) => {
     e.stopPropagation(); // Prevent bubbling
-    document.getElementById('welcomeModalFull').classList.remove('hidden');
+    const modal = document.getElementById('welcomeModalFull');
+    modal.classList.add('show');
+    modal.classList.remove('hidden');
   });
 
   // Close modal
   function closeFullModal() {
-    document.getElementById('welcomeModalFull').classList.add('hidden');
+    const modal = document.getElementById('welcomeModalFull');
+    modal.classList.add('hidden');        // Hide it
+    modal.classList.remove('show');       // Remove visible state
   }
   // Live update the preview
   document.getElementById('headlineInput')?.addEventListener('input', e => {
