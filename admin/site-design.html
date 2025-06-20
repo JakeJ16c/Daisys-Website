@@ -284,6 +284,74 @@
   font-size: 0.9rem;
   cursor: pointer;
 }    
+
+.modal-editor-backdrop {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-editor {
+  background: white;
+  width: 95%;
+  max-width: 480px;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+  position: relative;
+}
+
+.modal-editor .modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.modal-editor .close-btn {
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.modal-editor-body label {
+  font-weight: 600;
+  margin-top: 1rem;
+  display: block;
+}
+
+.modal-editor-body input,
+.modal-editor-body textarea {
+  width: 100%;
+  padding: 0.6rem;
+  font-size: 0.95rem;
+  margin-bottom: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.modal-editor .btn-submit {
+  width: 100%;
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background-color: var(--electric-blue, #204ECF);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.hidden {
+  display: none;
+}
   </style>
 
 </head>
@@ -338,9 +406,35 @@
       </div>
     </div>
   </div>
+
+  <!-- 🔧 Welcome Modal Editor (Hidden by Default) -->
+  <div id="welcomeModalEditor" class="modal-editor-backdrop hidden">
+    <div class="modal-editor">
+      <div class="modal-header">
+        <h2>Edit Welcome Modal</h2>
+        <span class="close-btn" onclick="closeModalEditor()">&times;</span>
+      </div>
+      <div class="modal-editor-body">
+        <label>Headline</label>
+        <input id="headlineInput" type="text" placeholder="Welcome to You're So Golden!">
+  
+        <label>Message</label>
+        <textarea id="messageInput" placeholder="Enter welcome message here..."></textarea>
+  
+        <label>Button Text</label>
+        <input id="ctaInput" type="text" placeholder="Shop Now">
+  
+        <label>Background</label>
+        <input type="color" id="bgColorInput">
+        <p style="margin: 0.5rem 0;">or upload image:</p>
+        <input type="file" id="bgImageInput" accept="image/*">
+  
+        <button class="btn-submit" onclick="saveWelcomeModal()">Save Modal</button>
+      </div>
+    </div>
+  </div>
     
   </main>
-
 
   <!-- Admin Auth Script (handles login gating) -->
   <script type="module" src="admin-auth.js"></script>
@@ -396,6 +490,47 @@
         document.head.appendChild(link);
       }
     });
+  </script>
+
+  <script>
+  // Show modal editor on click
+  document.getElementById('welcomePreviewBox')?.addEventListener('click', () => {
+    document.getElementById('welcomeModalEditor').classList.remove('hidden');
+  });
+  
+  // Close modal
+  function closeModalEditor() {
+    document.getElementById('welcomeModalEditor').classList.add('hidden');
+  }
+  
+  // Live update the preview
+  document.getElementById('headlineInput')?.addEventListener('input', e => {
+    document.getElementById('preview-headline').textContent = e.target.value;
+  });
+  
+  document.getElementById('messageInput')?.addEventListener('input', e => {
+    document.getElementById('preview-message').textContent = e.target.value;
+  });
+  
+  document.getElementById('ctaInput')?.addEventListener('input', e => {
+    document.getElementById('preview-cta').textContent = e.target.value;
+  });
+  
+  document.getElementById('bgColorInput')?.addEventListener('input', e => {
+    document.getElementById('welcomePreviewBox').style.backgroundColor = e.target.value;
+  });
+  
+  document.getElementById('bgImageInput')?.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        document.getElementById('welcomePreviewBox').style.backgroundImage = `url('${reader.result}')`;
+        document.getElementById('welcomePreviewBox').style.backgroundSize = 'cover';
+      };
+      reader.readAsDataURL(file);
+    }
+  });
   </script>
 
 </body>
