@@ -432,33 +432,10 @@ async function loadOrders() {
 
   function enableMobileSwipePreview(selector) {
   const elements = document.querySelectorAll(selector);
-  el.addEventListener('touchend', async () => {
-  const deltaX = currentX - startX;
-  swiping = false;
-  el.classList.remove('swiping');
-
-  if (deltaX > 100) {
-    el.style.transition = 'transform 0.3s ease';
-    el.style.transform = 'translateX(100%)';
-
-    const orderText = el.querySelector("a")?.href || "";
-    const orderIdMatch = orderText.match(/orderId=([^&]+)/);
-    const orderId = orderIdMatch?.[1];
-
-    if (orderId) {
-      try {
-        await updateDoc(doc(db, "Orders", orderId), {
-          dashboardHidden: true
-        });
-        el.remove(); // Remove from DOM immediately
-      } catch (err) {
-        console.error("❌ Failed to hide order on dashboard", err);
-      }
-    }
-  } else {
-    el.style.transform = '';
-  }
-});
+  elements.forEach((el) => {
+    let startX = 0;
+    let currentX = 0;
+    let swiping = false;
 
     el.classList.add('order-swipe');
 
@@ -477,10 +454,32 @@ async function loadOrders() {
       }
     });
 
-    el.addEventListener('touchend', () => {
-      el.style.transform = '';
-      el.classList.remove('swiping');
+    el.addEventListener('touchend', async () => {
+      const deltaX = currentX - startX;
       swiping = false;
+      el.classList.remove('swiping');
+
+      if (deltaX > 100) {
+        el.style.transition = 'transform 0.3s ease';
+        el.style.transform = 'translateX(100%)';
+
+        const orderText = el.querySelector("a")?.href || "";
+        const orderIdMatch = orderText.match(/orderId=([^&]+)/);
+        const orderId = orderIdMatch?.[1];
+
+        if (orderId) {
+          try {
+            await updateDoc(doc(db, "Orders", orderId), {
+              dashboardHidden: true
+            });
+            el.remove(); // Remove visually
+          } catch (err) {
+            console.error("❌ Failed to hide order on dashboard", err);
+          }
+        }
+      } else {
+        el.style.transform = '';
+      }
     });
 
     el.addEventListener('touchcancel', () => {
