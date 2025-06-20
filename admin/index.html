@@ -344,7 +344,7 @@
     snap.forEach(doc => {
       const d = doc.data();
       const stock = d.stock || {};
-      const imageUrl = d.image || 'https://via.placeholder.com/60'; // Fallback
+      const imageUrl = d.images?.[0];
   
       const item = document.createElement('div');
       item.style.display = 'flex';
