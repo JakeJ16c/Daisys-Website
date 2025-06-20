@@ -105,6 +105,10 @@
   background-color: #e6f9e8;
   color: #207a3c;
 }
+
+.hidden {
+  display: none;
+}
     
     /* ========== Account Panel ========== */
 @media (max-width: 480px) {
@@ -165,6 +169,11 @@
     padding: 0.75rem 0;
     text-align: center;
   }
+}
+
+/* Ensure main takes full height to push footer down */
+main {
+  min-height: calc(100vh - 200px); /* Adjust based on header/nav height */
 }
 
 .account-container {
@@ -312,17 +321,17 @@
       <h3><i class="fas fa-user"></i>Account Info</h3>
         
       <!-- View Mode -->
-      <div id="account-view" style="line-height: 1.8;">
-        <p><strong>Name:</strong> <span id="view-name">Loading...</span></p>
-        <p><strong>Phone:</strong> <span id="view-phone">Loading...</span></p>
-        <p><strong>Address:</strong> <span id="view-address">Loading...</span></p>
+      <div id="summary-block" style="line-height: 1.8;">
+        <p><strong>Name:</strong> <span id="summary-name">Loading...</span></p>
+        <p><strong>Phone:</strong> <span id="summary-phone">Loading...</span></p>
+        <p><strong>Address:</strong> <span id="summary-address">Loading...</span></p>
         <div class="account-actions">
-          <button type="button" class="btn-submit" onclick="toggleEdit(true)">Edit Profile</button>
+          <button type="button" id="editBtn" class="btn-submit">Edit Profile</button>
         </div>
       </div>
       
       <!-- Edit Mode -->
-      <div id="account-edit" style="display: none;">
+      <div id="form-block" class="hidden">
         <label for="firstName">First Name</label>
         <input id="first-name" type="text" placeholder="Please enter your First Name" />
       
@@ -352,8 +361,8 @@
         </div>
       
         <div class="account-actions">
-          <button type="submit" class="btn-submit">Save Profile</button>
-          <button type="button" class="btn-secondary" onclick="toggleEdit(false)">Cancel</button>
+          <button type="button" id="saveBtn" class="btn-submit">Save Profile</button>
+          <button type="button" id="cancelBtn" class="btn-secondary">Cancel</button>
         </div>
       </div>
 
@@ -400,6 +409,28 @@
 
   <!-- Maintenance Page If Toggled In Dashboard -->
   <script type="module" src="maintenance.js"></script>
+
+  <script>
+    // Add the missing toggleEdit function and cancel button handler
+    function toggleEdit() {
+      document.getElementById("summary-block").classList.toggle("hidden");
+      document.getElementById("form-block").classList.toggle("hidden");
+    }
+
+    // Add event listeners when DOM is loaded
+    document.addEventListener("DOMContentLoaded", function() {
+      const editBtn = document.getElementById("editBtn");
+      const cancelBtn = document.getElementById("cancelBtn");
+      
+      if (editBtn) {
+        editBtn.addEventListener("click", toggleEdit);
+      }
+      
+      if (cancelBtn) {
+        cancelBtn.addEventListener("click", toggleEdit);
+      }
+    });
+  </script>
   
 </body>
 </html>
