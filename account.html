@@ -111,19 +111,18 @@
 }
 
   .logout-container {
-    width: 100%;                     /* Makes it span full width of the parent */
-    display: flex;                   /* Enables centering via justify-content */
-    justify-content: center;        /* Centers the button inside */
-    margin-top: 2rem;               /* Adds space above it */
+    position: relative;
+    width: 100%;
+    grid-column: 1 / -1; /* Forces the logout container to span all columns */
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
   }
 
   .logout-btn {
-    position: relative;             /* Reset any odd positioning */
-    left: auto;                     /* Makes sure it's not pushed sideways */
-    margin: 0 auto;                 /* Centers it horizontally */
-    display: block;
     max-width: 300px;
     width: 100%;
+    margin: 0 auto;
   }
     
     /* ========== Account Panel ========== */
