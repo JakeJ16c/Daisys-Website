@@ -109,8 +109,24 @@
 .hidden {
   display: none;
 }
+
+.logout-container {
+  width: 100%;                     /* Makes it span full width of the parent */
+  display: flex;                   /* Enables centering via justify-content */
+  justify-content: center;        /* Centers the button inside */
+  margin-top: 2rem;               /* Adds space above it */
+}
+
+.logout-btn {
+  position: relative;             /* Reset any odd positioning */
+  left: auto;                     /* Makes sure it's not pushed sideways */
+  margin: 0 auto;                 /* Centers it horizontally */
+  display: block;
+  max-width: 300px;
+  width: 100%;
+}
     
-    /* ========== Account Panel ========== */
+/* ========== Account Panel ========== */
 @media (max-width: 480px) {
   .account-container {
     display: flex;
@@ -167,10 +183,18 @@
 
 .account-container {
   display: flex;
-  justify-content: center;
+  flex-direction: column; /* Changed to column to ensure logout is below */
+  align-items: center;
   gap: 2rem;
-  flex-wrap: nowrap;
   padding: 2rem 1rem;
+}
+
+.account-cards-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 2rem;
+  width: 100%;
 }
 
 /* Reuse the same card base as your form */
@@ -262,6 +286,7 @@
   justify-content: center;
   align-items: center;
   width: 100%;
+  max-width: 300px;
 }
   </style>
 </head>
@@ -303,78 +328,79 @@
   <!-- ========== Main Account Area ========== -->
   <main>
     <div class="account-container">
+      <!-- Cards Container -->
+      <div class="account-cards-container">
+        <!-- 👤 Account Info Form -->
+        <div class="form-container">
+          <form id="profileForm">
+          <h3><i class="fas fa-user"></i>Account Info</h3>
+            
+          <!-- View Mode -->
+          <div id="summary-block" style="line-height: 1.8;">
+            <p><strong>Name:</strong> <span id="summary-name">Loading...</span></p>
+            <p><strong>Phone:</strong> <span id="summary-phone">Loading...</span></p>
+            <p><strong>Address:</strong> <span id="summary-address">Loading...</span></p>
+            <div class="account-actions">
+              <button type="button" id="editBtn" class="btn-submit">Edit Profile</button>
+            </div>
+          </div>
+          
+          <!-- Edit Mode -->
+          <div id="form-block" class="hidden">
+            <label for="firstName">First Name</label>
+            <input id="first-name" type="text" placeholder="Please enter your First Name" />
+          
+            <label for="lastName">Last Name</label>
+            <input id="last-name" type="text" placeholder="Enter your Last Name" />
 
-    <!-- 👤 Account Info Form -->
-    <div class="form-container">
-      <form id="profileForm">
-      <h3><i class="fas fa-user"></i>Account Info</h3>
-        
-      <!-- View Mode -->
-      <div id="summary-block" style="line-height: 1.8;">
-        <p><strong>Name:</strong> <span id="summary-name">Loading...</span></p>
-        <p><strong>Phone:</strong> <span id="summary-phone">Loading...</span></p>
-        <p><strong>Address:</strong> <span id="summary-address">Loading...</span></p>
-        <div class="account-actions">
-          <button type="button" id="editBtn" class="btn-submit">Edit Profile</button>
+            <label for="phone">Phone Number</label>
+            <input id="phone" type="text" placeholder="e.g. 07123456789">
+          
+            <div class="address-block">
+              <label class="account-label">Delivery Address</label>
+          
+              <label for="houseNumber">House Number</label>
+              <input id="house-number" type="text" placeholder="e.g. 42" />
+          
+              <label for="street">Street</label>
+              <input id="street" type="text" placeholder="e.g. Acacia Avenue" />
+          
+              <label for="city">City</label>
+              <input id="city" type="text" placeholder="e.g. London" />
+          
+              <label for="county">County</label>
+              <input id="county" type="text" placeholder="e.g. Greater London" />
+          
+              <label for="postcode">Postcode</label>
+              <input id="postcode" type="text" placeholder="e.g. SW1A 1AA" />
+            </div>
+          
+            <div class="account-actions">
+              <button type="button" id="saveBtn" class="btn-submit">Save Profile</button>
+              <button type="button" id="cancelBtn" class="btn-secondary">Cancel</button>
+            </div>
+          </div>
+          </form>
+        </div>
+
+        <!-- 📦 My Orders -->
+        <div class="form-container">
+          <h3><i class="fas fa-box"></i> My Orders</h3>
+          <div id="user-orders">
+            <p>Loading your orders.</p>
+          </div>
+        </div>
+
+        <!-- 📦 My Settings -->
+        <div class="form-container">
+          <h3><i class="fas fa-gear"></i> My Settings</h3>
         </div>
       </div>
       
-      <!-- Edit Mode -->
-      <div id="form-block" class="hidden">
-        <label for="firstName">First Name</label>
-        <input id="first-name" type="text" placeholder="Please enter your First Name" />
-      
-        <label for="lastName">Last Name</label>
-        <input id="last-name" type="text" placeholder="Enter your Last Name" />
-
-        <label for="phone">Phone Number</label>
-        <input id="phone" type="text" placeholder="e.g. 07123456789">
-      
-        <div class="address-block">
-          <label class="account-label">Delivery Address</label>
-      
-          <label for="houseNumber">House Number</label>
-          <input id="house-number" type="text" placeholder="e.g. 42" />
-      
-          <label for="street">Street</label>
-          <input id="street" type="text" placeholder="e.g. Acacia Avenue" />
-      
-          <label for="city">City</label>
-          <input id="city" type="text" placeholder="e.g. London" />
-      
-          <label for="county">County</label>
-          <input id="county" type="text" placeholder="e.g. Greater London" />
-      
-          <label for="postcode">Postcode</label>
-          <input id="postcode" type="text" placeholder="e.g. SW1A 1AA" />
-        </div>
-      
-        <div class="account-actions">
-          <button type="button" id="saveBtn" class="btn-submit">Save Profile</button>
-          <button type="button" id="cancelBtn" class="btn-secondary">Cancel</button>
-        </div>
+      <!-- Logout Button (now outside the cards container) -->
+      <div class="logout-container">
+        <button id="logoutBtn" class="logout-btn">Log Out</button>
       </div>
-
-      </form>
-    </div>
-
-    <!-- 📦 My Orders -->
-    <div class="form-container">
-      <h3><i class="fas fa-box"></i> My Orders</h3>
-      <div id="user-orders">
-        <p>Loading your orders.</p>
-      </div>
-    </div>
-
-    <!-- 📦 My Settings -->
-    <div class="form-container">
-      <h3><i class="fas fa-gear"></i> My Settings</h3>
-    </div>    
-    
-    <div class="logout-container">
-    <button id="logoutBtn" class="logout-btn">Log Out</button>
-    </div>
-
     </div>
   </main>
 
