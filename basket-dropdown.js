@@ -160,7 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const sizeInfo = document.createElement("div");
       sizeInfo.style.fontSize = "0.8rem";
       sizeInfo.style.color = "#666";
-      sizeInfo.style.marginTop = "2px";
+      sizeInfo.style.marginTop = "9px";
       
       if (item.size) {
         sizeInfo.textContent = "Size: ";
