@@ -196,6 +196,15 @@
       status.textContent = "❌ " + error.message;
     }
   }
+
+    // Clear status message on input
+    document.getElementById('resetEmail').addEventListener('input', () => {
+      const status = document.getElementById('resetStatus');
+      if (status.textContent !== "") {
+        status.textContent = "";
+      }
+    });
+
   window.sendPasswordReset = sendPasswordReset;
   
     // Background click closes modal
