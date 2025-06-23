@@ -1,17 +1,7 @@
 // Import Firebase setup and needed functions
 import { auth, db } from './firebase.js';
-import {
-  createUserWithEmailAndPassword,
-  updateProfile,
-  sendEmailVerification
-} from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
-import {
-  doc,
-  setDoc,
-  collection,
-  addDoc,
-  getCountFromServer
-} from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
+import { doc, setDoc, collection, addDoc, getCountFromServer } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
 
 // Reference to the form element
 const form = document.getElementById('register-form');
@@ -66,23 +56,6 @@ form.addEventListener('submit', async (e) => {
 
     // ✅ Send email verification
     await sendEmailVerification(user);
-
-    // ✅ Admin notification
-    try {
-      const userCountSnap = await getCountFromServer(collection(db, "users"));
-      const userCount = userCountSnap.data().count;
-
-      await addDoc(collection(db, "AdminNotifications"), {
-        type: "new_account",
-        message: `${firstName} ${lastName} just signed up from ${city || 'an unknown location'}.`,
-        userEmail: email,
-        userCount: userCount,
-        city,
-        createdAt: new Date()
-      });
-    } catch (notifyErr) {
-      console.error("Admin notification failed:", notifyErr.message || notifyErr);
-    }
 
     // ✅ Success toast + redirect
     showToast("Verification email sent! Please check your inbox.");
