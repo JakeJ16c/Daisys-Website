@@ -1,14 +1,6 @@
 import { auth, db } from './firebase.js';
-import {
-  doc,
-  setDoc,
-  getDocs,
-  deleteDoc,
-  collection
-} from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
-import {
-  onAuthStateChanged
-} from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
+import { doc, setDoc, getDocs, deleteDoc,collection } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
 
 document.addEventListener("DOMContentLoaded", () => {
   const cartKey = "daisyCart";
@@ -140,15 +132,18 @@ document.addEventListener("DOMContentLoaded", () => {
     
       const infoWrapper = document.createElement("div");
       infoWrapper.style.display = "flex";
-      infoWrapper.style.alignItems = "center";
+      infoWrapper.style.alignItems = "flex-start"; // 👈 aligns name block with top of image
+      infoWrapper.style.justifyContent = "space-between";
       infoWrapper.style.flex = "1";
-      infoWrapper.style.justifyContent = "space-between"; // Evenly space the three elements
+      infoWrapper.style.gap = "10px";
     
       // Product info container (name and size)
       const productInfo = document.createElement("div");
       productInfo.style.display = "flex";
       productInfo.style.flexDirection = "column";
       productInfo.style.maxWidth = "100px"; // Limit width for long product names
+      productInfo.style.flex = "1"; // Allows it to wrap naturally
+      productInfo.style.wordBreak = "break-word"; // Break long names cleanly     
       
       const name = document.createElement("strong");
       name.textContent = item.name;
