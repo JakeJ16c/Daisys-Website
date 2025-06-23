@@ -16,7 +16,7 @@ const NOTIFICATION_CATEGORIES = [
   { id: 'visits', name: 'Website Visits', icon: 'fa-globe' },
   { id: 'basket', name: 'Basket Updates', icon: 'fa-shopping-cart' },
   { id: 'reviews', name: 'New Reviews', icon: 'fa-star' },
-  { id: 'accounts', name: 'New Accounts', icon: 'fa-user-plus' } // ✅ New category added
+  { id: 'accounts', name: 'New Accounts', icon: 'fa-user-plus' }
 ];
 
 // 🔔 Request permission and retrieve FCM token
@@ -250,6 +250,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (enabled) {
     initializeAdminNotifications();
-    listenForNewAccountNotifications(); // ✅ Enable new account alert listener
   }
 });
