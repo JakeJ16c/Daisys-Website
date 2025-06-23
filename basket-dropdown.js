@@ -238,6 +238,7 @@ document.addEventListener("DOMContentLoaded", () => {
       rightSide.style.display = "flex";
       rightSide.style.alignItems = "center"; // ✅ centers vertically
       rightSide.style.gap = "12px";
+      rightSide.style.marginTop = "20px";
       rightSide.appendChild(quantityControls);
       rightSide.appendChild(price);
       
