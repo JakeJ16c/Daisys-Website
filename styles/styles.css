@@ -755,11 +755,12 @@ input[type="range"] {
     }
 
     .form-card h3 {
-      font-size: 1.4rem;
+      font-size: 27px;
       color: #4338ca;
       font-weight: 600;
       margin-bottom: 1.5rem;
-      text-align: left;
+      margin-top: 0;
+      text-align: center;
     }
 
     .form-card label {
