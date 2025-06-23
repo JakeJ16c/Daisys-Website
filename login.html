@@ -149,65 +149,6 @@
 
   <!-- Maintenance Page If Toggled In Dashboard -->
   <script type="module" src="maintenance.js"></script>
-
-  <!-- Forgot Password Modal -->
-  <script type="module">
-    import { getAuth, sendPasswordResetEmail, fetchSignInMethodsForEmail } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
-    import { app } from './firebase.js';
-    const auth = getAuth(app);
-  
-    // Send password reset email
-    window.sendPasswordReset = async () => {
-      const emailInput = document.getElementById('resetEmail');
-      const email = emailInput.value.trim();
-      const status = document.getElementById('resetStatus');
-  
-      if (!email) {
-        status.style.color = 'red';
-        status.innerHTML = "<i class='fa-solid fa-xmark'></i> Please enter an email address.";
-        return;
-      }
-  
-      try {
-        const methods = await fetchSignInMethodsForEmail(auth, email);
-        if (methods.length === 0) {
-          status.style.color = 'red';
-          status.innerHTML = "<i class='fa-solid fa-xmark'></i> No account found with that email.";
-        } else {
-          await sendPasswordResetEmail(auth, email);
-          status.style.color = 'green';
-          status.innerHTML = "<i class='fa-solid fa-check'></i> Reset email sent!";
-          setTimeout(closeForgotModal, 2000);
-        }
-      } catch (error) {
-        status.style.color = 'red';
-        status.innerHTML = "<i class='fa-solid fa-xmark'></i> " + error.message;
-      }
-    };
-  
-    // Close the modal
-    window.closeForgotModal = () => {
-      document.getElementById('forgotPasswordModal').style.display = 'none';
-      document.getElementById('resetEmail').value = '';
-      document.getElementById('resetStatus').textContent = '';
-    };
-  
-    // Close modal when background is clicked
-    window.onclick = function (event) {
-      const modal = document.getElementById('forgotPasswordModal');
-      if (event.target === modal) {
-        closeForgotModal();
-      }
-    };
-  
-    // Clear status message when user types again
-    document.getElementById('resetEmail').addEventListener('input', () => {
-      const status = document.getElementById('resetStatus');
-      if (status.textContent !== "") {
-        status.textContent = "";
-      }
-    });
-  </script>
  
 </body>
 </html>
