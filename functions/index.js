@@ -185,3 +185,67 @@ exports.notifyOnBasketUpdate = functions.firestore
       throw new functions.https.HttpsError('internal', err.message);
     }
   });
+
+exports.notifyOnNewUserAccount = functions.firestore
+  .document("AdminNotifications/{notifId}")
+  .onCreate(async (snap, context) => {
+    const notif = snap.data();
+
+    if (notif.type !== 'new_account') {
+      console.log("ℹ️ Skipping notification: type is not 'new_account'");
+      return null;
+    }
+
+    console.log("👤 New user registered:", notif);
+
+    try {
+      const snapshot = await admin.firestore().collection('adminTokens').get();
+
+      if (snapshot.empty) {
+        console.log("❌ No admin tokens found.");
+        return null;
+      }
+
+      const tokens = [];
+      snapshot.docs.forEach(doc => {
+        const data = doc.data();
+
+        if (data.categories?.reviews !== false && data.token) {
+          tokens.push(data.token);
+          console.log(`✅ Token added: ${data.token.substring(0, 10)}...`);
+        } else {
+          console.log(`⛔ Skipped token ${doc.id}`);
+        }
+      });
+
+      if (tokens.length === 0) {
+        console.log("❌ No eligible tokens after filtering.");
+        return null;
+      }
+
+      for (const token of tokens) {
+        const message = {
+          notification: {
+            title: "New Account Created!",
+            body: `${notif.userName || 'A user'} just signed up. Total users: ${notif.userCount || '?'}`,
+          },
+          data: {
+            category: "reviews", // ✅ Uses reviews toggle
+            timestamp: new Date().toISOString()
+          },
+          token: token
+        };
+
+        try {
+          const response = await admin.messaging().send(message);
+          console.log(`✅ Notification sent to: ${token.substring(0, 10)}...`, response);
+        } catch (error) {
+          console.error(`❌ Error sending to token: ${token.substring(0, 10)}...`, error.message || error);
+        }
+      }
+    } catch (error) {
+      console.error("❌ Error notifying new user registration:", error.message || error);
+    }
+
+    return null;
+  });
