@@ -13,7 +13,59 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="styles/styles.css">
   <link rel="stylesheet" href="styles/responsive.css">
-  
+  <style>
+    .modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 400px;
+  margin: 10% auto;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-around;
+}
+
+.modal-buttons button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: #4f46e5;
+  color: white;
+}
+
+.modal-buttons button:last-child {
+  background-color: #ccc;
+  color: #333;
+}
+
+.status-message {
+  margin-top: 10px;
+  color: green;
+}
+  </style>
 </head>
 
 <body>
@@ -53,11 +105,26 @@
       </button>
 
       <div class="login-links">
-        <a href="reset.html">Forgot your password?</a><br />
+        <p><a href="#" onclick="document.getElementById('forgotPasswordModal').style.display = 'block'; return false;">Forgot your password?</a></p><br />
         Don’t have an account? <a href="register.html">Create one</a>
       </div>
     </form>
   </div>
+
+    <!-- Forgot Password Modal -->
+    <div id="forgotPasswordModal" class="modal">
+      <div class="modal-content">
+        <h3><i class="fa-solid fa-key"></i> Reset Password</h3>
+        <p>Enter your email address to receive a password reset link.</p>
+        <input type="email" id="resetEmail" placeholder="Email address" required />
+        <div class="modal-buttons">
+          <button onclick="sendPasswordReset()">Send</button>
+          <button onclick="closeForgotModal()">Cancel</button>
+        </div>
+        <p id="resetStatus" class="status-message"></p>
+      </div>
+    </div>
+
 </main>
     
   <!-- Footer -->
@@ -74,6 +141,50 @@
 
   <!-- Maintenance Page If Toggled In Dashboard -->
   <script type="module" src="maintenance.js"></script>
+
+  <!-- Forgot Password Modal -->
+  <script type="module">
+    import { getAuth, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+    import { app } from './firebase.js';
+    const auth = getAuth(app);
+  
+    // Show modal
+    document.querySelector('a[href="#forgot-password"]').addEventListener('click', (e) => {
+      e.preventDefault();
+      document.getElementById('forgotPasswordModal').style.display = 'block';
+    });
+  
+    // Close modal
+    window.closeForgotModal = () => {
+      document.getElementById('forgotPasswordModal').style.display = 'none';
+      document.getElementById('resetEmail').value = '';
+      document.getElementById('resetStatus').textContent = '';
+    };
+  
+    // Send reset email
+    window.sendPasswordReset = async () => {
+      const email = document.getElementById('resetEmail').value;
+      const status = document.getElementById('resetStatus');
+      try {
+        await sendPasswordResetEmail(auth, email);
+        status.style.color = 'green';
+        status.textContent = "✅ Reset email sent!";
+        setTimeout(closeForgotModal, 2000);
+      } catch (error) {
+        status.style.color = 'red';
+        status.textContent = "❌ " + error.message;
+      }
+    };
+    
+    // Close modal if background is clicked
+    window.onclick = function(event) {
+      const modal = document.getElementById('forgotPasswordModal');
+      if (event.target === modal) {
+        closeForgotModal();
+      }
+    };
+  </script>
+
   
 </body>
 </html>
