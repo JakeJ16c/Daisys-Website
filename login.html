@@ -152,7 +152,7 @@
 
   <!-- Forgot Password Modal -->
   <script type="module">
-    import { getAuth, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+    import { getAuth, sendPasswordResetEmail, fetchSignInMethodsForEmail } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
     import { app } from './firebase.js';
     const auth = getAuth(app);
   
@@ -166,19 +166,37 @@
   
     // Send password reset
     async function sendPasswordReset() {
-      const email = document.getElementById('resetEmail').value;
-      const status = document.getElementById('resetStatus');
-      try {
-        await sendPasswordResetEmail(auth, email);
-        status.style.color = 'green';
-        status.textContent = "✅ Reset email sent!";
-        setTimeout(closeForgotModal, 2000);
-      } catch (error) {
-        status.style.color = 'red';
-        status.textContent = "❌ " + error.message;
-      }
+    const email = document.getElementById('resetEmail').value.trim();
+    const status = document.getElementById('resetStatus');
+  
+    if (!email) {
+      status.style.color = 'red';
+      status.textContent = "❌ Please enter an email address.";
+      return;
     }
-    window.sendPasswordReset = sendPasswordReset;
+  
+    try {
+      const methods = await fetchSignInMethodsForEmail(auth, email);
+  
+      if (methods.length === 0) {
+        // No account exists
+        status.style.color = 'red';
+        status.textContent = "❌ No account found with that email.";
+        return;
+      }
+  
+      // Account exists – send reset email
+      await sendPasswordResetEmail(auth, email);
+      status.style.color = 'green';
+      status.textContent = "✅ Reset email sent!";
+      setTimeout(closeForgotModal, 2000);
+  
+    } catch (error) {
+      status.style.color = 'red';
+      status.textContent = "❌ " + error.message;
+    }
+  }
+  window.sendPasswordReset = sendPasswordReset;
   
     // Background click closes modal
     window.onclick = function(event) {
