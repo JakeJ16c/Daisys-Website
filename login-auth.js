@@ -101,7 +101,9 @@ window.sendPasswordReset = async () => {
   }
 
   try {
-    const methods = await fetchSignInMethodsForEmail(auth, email);
+      console.log("Looking up methods for:", email); // 👈 DEBUG
+      const methods = await fetchSignInMethodsForEmail(auth, email);
+      console.log("Methods returned:", methods);      // 👈 DEBUG
     if (methods.length === 0) {
       status.style.color = 'red';
       status.innerHTML = "<i class='fa-solid fa-xmark'></i> No account found with that email.";
