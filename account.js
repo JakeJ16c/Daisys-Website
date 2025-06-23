@@ -1,317 +1,191 @@
-import { auth, db } from './firebase.js';
+// account.js
 import {
+  getAuth,
+  onAuthStateChanged,
+  signOut,
+} from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+import {
+  getFirestore,
   doc,
+  getDoc,
   setDoc,
+  collection,
   getDocs,
-  deleteDoc,
-  collection
-} from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
-import {
-  onAuthStateChanged
-} from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
+  query,
+  where,
+} from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+import { auth, db } from "./firebase.js";
 
-document.addEventListener("DOMContentLoaded", () => {
-  const cartKey = "daisyCart";
-  const basketPreview = document.getElementById("basket-preview");
-  const cartIcon = document.querySelector(".cart-icon");
+let currentUser = null;
 
-  // Sync cart to Firestore when logged in
-  async function syncBasketToFirestore(cart) {
-    const user = auth.currentUser;
-    if (!user) return;
+// =========================
+// 👤 Load User Profile
+// =========================
+async function loadUserProfile() {
+  return new Promise((resolve) => {
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) return resolve();
 
-    const batchDeletes = await getDocs(collection(db, "users", user.uid, "Basket"));
-    await Promise.all(batchDeletes.docs.map(doc => deleteDoc(doc.ref)));
+      currentUser = user;
 
-    await Promise.all(
-      cart.map(item => {
-        return setDoc(doc(db, "users", user.uid, "Basket", item.id + (item.size || "")), {
-          name: item.name,
-          price: item.price,
-          qty: item.qty,
-          image: item.image || "",
-          size: item.size || null
-        });
-      })
-    );
+      try {
+        const userRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userRef);
+
+        if (userSnap.exists()) {
+          const data = userSnap.data();
+          const addr = data.address || {};
+
+          // Update form fields
+          document.getElementById("first-name").value = data.firstName || "";
+          document.getElementById("last-name").value = data.lastName || "";
+          document.getElementById("phone").value = data.phone || "";
+          document.getElementById("house-number").value = addr.houseNumber || "";
+          document.getElementById("street").value = addr.street || "";
+          document.getElementById("city").value = addr.city || "";
+          document.getElementById("county").value = addr.county || "";
+          document.getElementById("postcode").value = addr.postcode || "";
+
+          // Update summary display
+          updateSummary(data.firstName, data.lastName, data.phone, addr);
+        }
+      } catch (err) {
+        console.error("Error loading profile:", err);
+      }
+
+      resolve();
+    });
+  });
+}
+
+// =========================
+// 📝 Update summary text
+// =========================
+function updateSummary(firstName, lastName, phone, address) {
+  document.getElementById("summary-name").textContent = `${firstName || "-"} ${lastName || ""}`;
+  document.getElementById("summary-phone").textContent = phone || "-";
+  document.getElementById("summary-address").textContent =
+    `${address.houseNumber || ""} ${address.street || ""}, ${address.city || ""}, ${address.county || ""}, ${address.postcode || ""}`.trim() || "-";
+}
+
+// =========================
+// 💾 Save Profile Info
+// =========================
+async function saveProfile(e) {
+  e.preventDefault();
+  if (!currentUser) return alert("You must be logged in to save your profile.");
+
+  const firstName = document.getElementById("first-name").value.trim();
+  const lastName = document.getElementById("last-name").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const address = {
+    houseNumber: document.getElementById("house-number").value.trim(),
+    street: document.getElementById("street").value.trim(),
+    city: document.getElementById("city").value.trim(),
+    county: document.getElementById("county").value.trim(),
+    postcode: document.getElementById("postcode").value.trim(),
+  };
+
+  try {
+    await setDoc(doc(db, "users", currentUser.uid), {
+      firstName,
+      lastName,
+      phone,
+      address,
+    });
+
+    alert("Profile updated successfully!");
+    updateSummary(firstName, lastName, phone, address);
+    toggleEdit();
+  } catch (err) {
+    console.error("Failed to save profile:", err);
+    alert("There was an error saving your profile.");
   }
-  window.syncBasketToFirestore = syncBasketToFirestore;
+}
 
-  // Load from Firestore -> set localStorage
-  async function loadBasketFromFirestore(callback) {
-    const user = auth.currentUser;
-    if (!user) return;
+// =========================
+// 📦 Load User Orders
+// =========================
+async function loadUserOrders(user) {
+  const ordersRef = collection(db, "Orders");
+  const q = query(ordersRef, where("userId", "==", user.uid));
+  const snapshot = await getDocs(q);
 
-    const snap = await getDocs(collection(db, "users", user.uid, "Basket"));
-    const cart = [];
-    snap.forEach(doc => cart.push({ id: doc.id.replace(/(S|M|L)?$/, ""), ...doc.data() }));
-
-    localStorage.setItem(cartKey, JSON.stringify(cart));
-    if (typeof callback === 'function') callback(false);
+  const ordersDiv = document.getElementById("user-orders");
+  if (snapshot.empty) {
+    ordersDiv.innerHTML = `<p>You haven't placed any orders yet.</p>`;
+    return;
   }
 
-  onAuthStateChanged(auth, user => {
-    if (user) {
-      loadBasketFromFirestore(updateBasketPreview);
-    }
+  let html = "";
+  snapshot.forEach((docSnap) => {
+    const order = docSnap.data();
+    const date = order.createdAt?.toDate().toLocaleString() || "Unknown date";
+
+    html += `
+      <div class="order-card">
+        <div class="order-summary" onclick="this.classList.toggle('open'); this.nextElementSibling.classList.toggle('open')">
+          <div class="summary-left">
+              <strong>Order No.${order.orderNumber || "N/A"}</strong>
+          </div>
+          <div class="summary-right">
+            <span class="order-status ${order.status.toLowerCase()}">Status: ${order.status}</span>
+            <i class="fa fa-chevron-down"></i>
+          </div>
+        </div>
+        <div class="order-details">
+          <p class="order-date">Placed on: ${date}</p>
+          <ul>
+            ${
+              Array.isArray(order.items)
+                ? order.items.map(item => `<li>${item.productName} × ${item.qty} – £${item.price.toFixed(2)}</li>`).join("")
+                : "<li>No items found in this order.</li>"
+            }
+          </ul>
+        </div>
+      </div>
+    `;
   });
 
-  // Basket dropdown open/close animation
-  const style = document.createElement("style");
-  style.textContent = `
-    #basket-preview {
-      max-height: 0;
-      opacity: 0;
-      overflow: hidden;
-      transition: max-height 0.4s ease, opacity 0.3s ease;
-      transform-origin: top;
-      pointer-events: none;
-    }
-    #basket-preview.show {
-      max-height: 1000px;
-      opacity: 1;
-      pointer-events: auto;
-      background-color: white;
-    }
-  `;
-  document.head.appendChild(style);
+  ordersDiv.innerHTML = html;
+}
 
-  // Main render function for the dropdown
-  function updateBasketPreview(keepVisible = false) {
-    window.updateBasketPreview = updateBasketPreview;
-    const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
-    basketPreview.innerHTML = "";
+// =========================
+// ✏️ Toggle Edit Mode
+// =========================
+function toggleEdit() {
+  document.getElementById("summary-block").classList.toggle("hidden");
+  document.getElementById("form-block").classList.toggle("hidden");
+}
 
-    basketPreview.style.width = "320px";
-    basketPreview.style.padding = "1rem";
-    basketPreview.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)";
-    basketPreview.style.borderRadius = "12px";
-    basketPreview.style.position = "fixed";
-    basketPreview.style.top = "98px";
-    basketPreview.style.right = "20px";
-    basketPreview.style.zIndex = "1000";
-
-    const header = document.createElement("h3");
-    header.textContent = "Your Basket";
-    header.style.textAlign = "center";
-    header.style.marginBottom = "1rem";
-    header.style.fontWeight = "bold";
-    basketPreview.appendChild(header);
-
-    const hr = document.createElement("hr");
-    hr.style.margin = "0.5rem 0";
-    basketPreview.appendChild(hr);
-
-    if (cart.length === 0) {
-      basketPreview.innerHTML += `
-        <p style="text-align: center; margin-top: 1rem;">
-          <em>Your basket is empty.</em>
-        </p>
-      `;
-      if (keepVisible) basketPreview.classList.add("show");
-      return;
-    }
-
-    let subtotal = 0;
-
-    cart.forEach((item, index) => {
-      subtotal += item.price * item.qty;
-    
-      const itemRow = document.createElement("div");
-      itemRow.style.display = "flex";
-      itemRow.style.justifyContent = "space-between";
-      itemRow.style.alignItems = "center";
-      itemRow.style.marginBottom = "1rem";
-    
-      const link = document.createElement("a");
-      link.href = `product.html?id=${item.id}`;
-      link.style.display = "flex";
-      link.style.alignItems = "center";
-      link.style.marginRight = "0.75rem";
-    
-      const img = document.createElement("img");
-      img.src = item.image || "placeholder.jpg";
-      img.alt = item.name;
-      img.style.width = "60px";
-      img.style.height = "60px";
-      img.style.objectFit = "cover";
-      img.style.borderRadius = "8px";
-      link.appendChild(img);
-    
-      const infoWrapper = document.createElement("div");
-      infoWrapper.style.flex = "1";
-      infoWrapper.style.display = "flex";
-      infoWrapper.style.alignItems = "center";
-    
-      const nameQtyWrapper = document.createElement("div");
-      nameQtyWrapper.style.display = "flex";
-      nameQtyWrapper.style.flexDirection = "column";
-      nameQtyWrapper.style.flex = "1"; // Added to ensure proper spacing
-    
-      const nameLine = document.createElement("div");
-      nameLine.style.display = "flex";
-      nameLine.style.alignItems = "center";
-      nameLine.style.justifyContent = "space-between"; // Added to push quantity to right
-    
-      const name = document.createElement("strong");
-      name.textContent = item.name;
-      name.style.cursor = "pointer";
-      name.onclick = () => {
-        window.location.href = `product.html?id=${item.id}`;
-      };
-      nameLine.appendChild(name);
-    
-      // Quantity Controls - now added to nameLine
-      const quantityControls = document.createElement("div");
-      quantityControls.style.display = "flex";
-      quantityControls.style.alignItems = "center";
-    
-      const minus = document.createElement("button");
-      minus.textContent = "−";
-      minus.style.padding = "0.25rem 0.5rem";
-      minus.style.fontWeight = "bold";
-      minus.style.cursor = "pointer";
-      minus.addEventListener("click", (e) => {
-        e.stopPropagation();
-        if (item.qty > 1) {
-          item.qty--;
-        } else {
-          cart.splice(index, 1);
-        }
-        localStorage.setItem(cartKey, JSON.stringify(cart));
-        syncBasketToFirestore(cart);
-        updateBasketPreview(true);
-      });
-    
-      const qty = document.createElement("span");
-      qty.textContent = item.qty;
-      qty.style.margin = "0 0.5rem";
-    
-      const plus = document.createElement("button");
-      plus.textContent = "+";
-      plus.style.padding = "0.25rem 0.5rem";
-      plus.style.fontWeight = "bold";
-      plus.style.cursor = "pointer";
-      plus.addEventListener("click", (e) => {
-        e.stopPropagation();
-        item.qty++;
-        localStorage.setItem(cartKey, JSON.stringify(cart));
-        syncBasketToFirestore(cart);
-        updateBasketPreview(true);
-      });
-    
-      quantityControls.appendChild(minus);
-      quantityControls.appendChild(qty);
-      quantityControls.appendChild(plus);
-      
-      // Add quantity controls to nameLine (next to product name)
-      nameLine.appendChild(quantityControls);
-      
-      // Size info now goes below the product name
-      const sizeInfo = document.createElement("div");
-      sizeInfo.style.fontSize = "0.8rem";
-      sizeInfo.style.color = "#666";
-      sizeInfo.style.marginTop = "4px";
-      
-      if (item.size) {
-        sizeInfo.textContent = "Size: ";
-        const sizeBadge = document.createElement("span");
-        sizeBadge.textContent = item.size;
-        sizeBadge.style.fontSize = "0.7rem";
-        sizeBadge.style.background = "#eee";
-        sizeBadge.style.padding = "2px 6px";
-        sizeBadge.style.borderRadius = "6px";
-        sizeBadge.style.color = "#444";
-        sizeInfo.appendChild(sizeBadge);
-      }
-      
-      // Add elements to their containers
-      nameQtyWrapper.appendChild(nameLine);
-      nameQtyWrapper.appendChild(sizeInfo);
-      
-      infoWrapper.appendChild(link);
-      infoWrapper.appendChild(nameQtyWrapper);
-    
-      const price = document.createElement("span");
-      price.textContent = `£${(item.price * item.qty).toFixed(2)}`;
-      price.style.fontWeight = "bold";
-      price.style.marginLeft = "1rem";
-    
-      itemRow.appendChild(infoWrapper);
-      itemRow.appendChild(price);
-      basketPreview.appendChild(itemRow);
-    });
-
-    const subtotalEl = document.createElement("div");
-    subtotalEl.textContent = `Subtotal: £${subtotal.toFixed(2)}`;
-    subtotalEl.style.textAlign = "right";
-    subtotalEl.style.fontWeight = "bold";
-    subtotalEl.style.margin = "0.5rem 0 1rem 0";
-    basketPreview.appendChild(subtotalEl);
-
-    const buttonRow = document.createElement("div");
-    buttonRow.style.display = "flex";
-    buttonRow.style.gap = "1rem";
-    buttonRow.style.justifyContent = "center";
-
-    const viewBtn = document.createElement("button");
-    viewBtn.textContent = "View Basket";
-    Object.assign(viewBtn.style, {
-      background: "#3F51B5",
-      color: "white",
-      border: "none",
-      padding: "0.5rem 1rem",
-      borderRadius: "6px",
-      cursor: "pointer",
-      flex: "1"
-    });
-    viewBtn.addEventListener("click", () => {
-      window.location.href = "basket.html";
-    });
-
-    const checkoutBtn = document.createElement("button");
-    checkoutBtn.textContent = "Checkout";
-    Object.assign(checkoutBtn.style, {
-      background: "#000",
-      color: "white",
-      border: "none",
-      padding: "0.5rem 1rem",
-      borderRadius: "6px",
-      cursor: "pointer",
-      flex: "1"
-    });
-    checkoutBtn.addEventListener("click", () => {
-      window.location.href = "basket.html";
-    });
-
-    buttonRow.appendChild(viewBtn);
-    buttonRow.appendChild(checkoutBtn);
-    basketPreview.appendChild(buttonRow);
-
-    if (keepVisible) {
-      basketPreview.classList.add("show");
-    } else {
-      basketPreview.classList.remove("show");
-    }
-  }
-
-  // Toggle behavior
-  if (cartIcon && basketPreview) {
-    cartIcon.addEventListener("click", (e) => {
-      e.preventDefault();
-      basketPreview.classList.toggle("show");
-    });
-
-    document.addEventListener("click", (event) => {
-      if (
-        !cartIcon.contains(event.target) &&
-        !basketPreview.contains(event.target) &&
-        !event.target.classList.contains("add-to-basket")
-      ) {
-        basketPreview.classList.remove("show");
-      }
+// =========================
+// 🚪 Logout
+// =========================
+function setupLogout() {
+  const btn = document.getElementById("logoutBtn");
+  if (btn) {
+    btn.addEventListener("click", async () => {
+      await signOut(auth);
+      window.location.href = "index.html";
     });
   }
+}
 
-  updateBasketPreview(); // Initial render
+// =========================
+// 🚀 Init Page
+// =========================
+document.addEventListener("DOMContentLoaded", async () => {
+  await loadUserProfile();
+
+  const saveBtn = document.getElementById("saveBtn");
+  if (saveBtn) saveBtn.addEventListener("click", saveProfile);
+
+  const editBtn = document.getElementById("editBtn");
+  if (editBtn) editBtn.addEventListener("click", toggleEdit);
+
+  if (currentUser) {
+    loadUserOrders(currentUser);
+  }
+
+  setupLogout();
 });
