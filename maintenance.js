@@ -3,11 +3,11 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-
 
 (async () => {
   try {
-
     const isMaintenancePage = window.location.pathname.includes("maintenance.html");
 
     // Step 1: Get IP
     let userIP = "unknown";
+    try {
       const res = await fetch("https://checkip.amazonaws.com/");
       userIP = (await res.text()).trim();
       console.log("✅ IP fetched:", userIP);
@@ -16,12 +16,10 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-
     }
 
     // Step 2: Load Firestore settings
-    console.log("📡 Getting maintenance settings...");
     const snap = await getDoc(doc(db, "SiteSettings", "maintenance"));
     if (!snap.exists()) return;
 
     const data = snap.data();
-    console.log("📦 Firestore raw data:", data);
 
     const allowed = data.allowedIPs || [];
     const enabled = Boolean(data.enabled); // ✅ force into true/false
