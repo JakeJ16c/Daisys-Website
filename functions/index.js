@@ -186,7 +186,7 @@ exports.notifyOnNewUserAccount = functions.firestore
       for (const token of tokens) {
         const firstName = user.firstName || "";
         const lastName = user.lastName || "";
-        const city = user.address?.city || "";
+        const city = user.address?.city || user.city || "";
 
         const message = {
           notification: {
