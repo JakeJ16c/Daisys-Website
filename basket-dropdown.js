@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const itemRow = document.createElement("div");
       itemRow.style.display = "flex";
       itemRow.style.justifyContent = "space-between";
-      itemRow.style.alignItems = "center";
+      itemRow.style.alignItems = "flex-start";
       itemRow.style.marginBottom = "1rem";
     
       const link = document.createElement("a");
