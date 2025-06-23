@@ -309,10 +309,10 @@
             </div>
             <div>
               <label class="switch">
-                <input type="checkbox" id="category-toggle-reviews">
+                <input type="checkbox" id="category-toggle-newaccount">
                 <span class="slider"></span>
-              </label>
-              <div id="category-status-reviews" class="status-enabled">Enabled</div>
+                </label>
+                <div id="category-status-newaccount" class="status-enabled">Enabled</div>
             </div>
           </div>
         </div>
@@ -436,7 +436,7 @@
       }
       
       // Category toggles
-      const categoryIds = ['orders', 'visits', 'basket', 'reviews'];
+      const categoryIds = ['orders', 'visits', 'basket', 'reviews', 'newaccount'];
       categoryIds.forEach(categoryId => {
         const toggle = document.getElementById(`category-toggle-${categoryId}`);
         if (toggle) {
