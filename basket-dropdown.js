@@ -148,9 +148,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const name = document.createElement("strong");
       name.textContent = item.name;
       name.style.cursor = "pointer";
-      name.style.whiteSpace = "nowrap";
-      name.style.overflow = "hidden";
-      name.style.textOverflow = "ellipsis"; // Add ellipsis for long names
+      name.style.wordWrap = "break-word";
+      name.style.lineHeight = "1.2";
       name.style.fontSize = "0.9rem"; // Slightly smaller font for product name
       name.onclick = () => {
         window.location.href = `product.html?id=${item.id}`;
