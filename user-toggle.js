@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       const loginLink = document.createElement("a");
       loginLink.href = "login.html";
-      loginLink.textContent = "Log In / Create Account";
+      loginLink.textContent = "Log In / Sign Up";
       loginLink.style.display = "block";
       loginLink.style.textAlign = "center";
       loginLink.style.backgroundColor = "#204ECF";
