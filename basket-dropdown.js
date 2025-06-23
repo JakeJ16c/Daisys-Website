@@ -234,7 +234,6 @@ document.addEventListener("DOMContentLoaded", () => {
       price.style.whiteSpace = "nowrap"; // Prevent price from wrapping
       
       // Add elements to their containers
-      infoWrapper.appendChild(productInfo);
       const rightSide = document.createElement("div");
       rightSide.style.display = "flex";
       rightSide.style.alignItems = "center"; // ✅ centers vertically
