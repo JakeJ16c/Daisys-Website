@@ -235,8 +235,15 @@ document.addEventListener("DOMContentLoaded", () => {
       
       // Add elements to their containers
       infoWrapper.appendChild(productInfo);
-      infoWrapper.appendChild(quantityControls);
-      infoWrapper.appendChild(price);
+      const rightSide = document.createElement("div");
+      rightSide.style.display = "flex";
+      rightSide.style.alignItems = "center"; // ✅ centers vertically
+      rightSide.style.gap = "12px";
+      rightSide.appendChild(quantityControls);
+      rightSide.appendChild(price);
+      
+      infoWrapper.appendChild(productInfo);
+      infoWrapper.appendChild(rightSide);
       
       itemRow.appendChild(link);
       itemRow.appendChild(infoWrapper);
