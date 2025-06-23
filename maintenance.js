@@ -3,14 +3,11 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-
 
 (async () => {
   try {
-    console.log("🔍 Entering async function...");
 
     const isMaintenancePage = window.location.pathname.includes("maintenance.html");
 
     // Step 1: Get IP
     let userIP = "unknown";
-    try {
-      console.log("🌐 Fetching public IP...");
       const res = await fetch("https://checkip.amazonaws.com/");
       userIP = (await res.text()).trim();
       console.log("✅ IP fetched:", userIP);
