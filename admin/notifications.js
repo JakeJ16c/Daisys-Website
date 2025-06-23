@@ -216,28 +216,6 @@ function shouldShowNotification(title) {
   return true;
 }
 
-// 🔴 NEW: Firestore listener for new account registrations
-function listenForNewAccountNotifications() {
-  const notifRef = collection(db, "AdminNotifications");
-
-  onSnapshot(notifRef, (snapshot) => {
-    snapshot.docChanges().forEach((change) => {
-      const data = change.doc.data();
-
-      if (
-        change.type === "added" &&
-        data.type === "new_account" &&
-        shouldShowNotification("New Account Registered")
-      ) {
-        new Notification("New Account Registered", {
-          body: `${data.message} Total users: ${data.userCount}`,
-          icon: "../icon-512.png"
-        });
-      }
-    });
-  });
-}
-
 // 🚀 INIT on page load
 document.addEventListener('DOMContentLoaded', () => {
   const enabled = localStorage.getItem('adminNotificationsEnabled') === 'true';
