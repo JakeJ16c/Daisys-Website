@@ -1,7 +1,17 @@
 // Import Firebase setup and needed functions
 import { auth, db } from './firebase.js';
-import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
-import { doc, setDoc, collection, addDoc, getCountFromServer } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+import {
+  createUserWithEmailAndPassword,
+  updateProfile,
+  sendEmailVerification
+} from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
+import {
+  doc,
+  setDoc,
+  collection,
+  addDoc,
+  getCountFromServer
+} from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
 
 // Reference to the form element
 const form = document.getElementById('register-form');
@@ -21,31 +31,44 @@ form.addEventListener('submit', async (e) => {
   }
 
   try {
+    // ✅ Create user in Firebase Auth
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
+    // ✅ Set display name for account
     await updateProfile(user, {
       displayName: `${firstName} ${lastName}`
+    });
+
+    // ✅ Save user info in Firestore under correct structure (by UID)
+    await setDoc(doc(db, "users", user.uid), {
+      firstName,
+      lastName,
+      email
     });
 
     // ✅ Send email verification
     await sendEmailVerification(user);
 
-    // ✅ Fire admin notification with user count
-    const userCountSnap = await getCountFromServer(collection(db, "Users"));
-    const userCount = userCountSnap.data().count;
+    // ✅ Send admin notification (non-breaking addition)
+    try {
+      const userCountSnap = await getCountFromServer(collection(db, "users"));
+      const userCount = userCountSnap.data().count;
 
-    await addDoc(collection(db, "AdminNotifications"), {
-      type: "new_account",
-      message: `${firstName} ${lastName} has just made an account.`,
-      userEmail: email,
-      userCount: userCount,
-      createdAt: new Date()
-    });
+      await addDoc(collection(db, "AdminNotifications"), {
+        type: "new_account",
+        message: `${firstName} ${lastName} has just made an account.`,
+        userEmail: email,
+        userCount: userCount,
+        createdAt: new Date()
+      });
+    } catch (notifyErr) {
+      console.error("Admin notification failed:", notifyErr.message || notifyErr);
+      // Silent fail – doesn't affect user experience
+    }
 
+    // ✅ Success toast + redirect
     showToast("Verification email sent! Please check your inbox.");
-
-    // ✅ Redirect after short delay
     setTimeout(() => {
       window.location.href = "account.html";
     }, 2500);
