@@ -224,28 +224,33 @@ exports.notifyOnNewUserAccount = functions.firestore
       }
 
       for (const token of tokens) {
-        const message = {
-          notification: {
-            title: "New Account Created!",
-            body: `${notif.userName || 'A user'} just signed up. Total users: ${notif.userCount || '?'}`,
-          },
-          data: {
-            category: "reviews", // ✅ Uses reviews toggle
-            timestamp: new Date().toISOString()
-          },
-          token: token
-        };
-
-        try {
-          const response = await admin.messaging().send(message);
-          console.log(`✅ Notification sent to: ${token.substring(0, 10)}...`, response);
-        } catch (error) {
-          console.error(`❌ Error sending to token: ${token.substring(0, 10)}...`, error.message || error);
-        }
+      // Extract values from the notification document
+      const firstName = notif.firstName || "";
+      const lastName = notif.lastName || "";
+      const city = notif.city || ""; // ✅ Extract city safely (optional fallback)
+    
+      // Construct the notification message
+      const message = {
+        notification: {
+          title: "New Account Created!",
+          body: `${(firstName + " " + lastName).trim() || 'A customer'} just signed up${city ? ` from ${city}` : ""}. Total users: ${notif.userCount || '?'}.`,
+        },
+        data: {
+          category: "reviews", // ✅ This lets frontend toggle based on category
+          timestamp: new Date().toISOString()
+        },
+        token: token
+      };
+    
+      try {
+        // Send the message to the individual device token
+        const response = await admin.messaging().send(message);
+        console.log(`✅ Notification sent to token: ${token.substring(0, 10)}...`, response);
+      } catch (error) {
+        console.error(`❌ Error sending to token ${token.substring(0, 10)}...`, error.message || error);
+        // Continue loop to try other tokens even if one fails
       }
-    } catch (error) {
-      console.error("❌ Error notifying new user registration:", error.message || error);
     }
-
+      
     return null;
   });
