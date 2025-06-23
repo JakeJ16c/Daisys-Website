@@ -139,38 +139,62 @@ document.addEventListener("DOMContentLoaded", () => {
       link.appendChild(img);
     
       const infoWrapper = document.createElement("div");
-      infoWrapper.style.flex = "1";
       infoWrapper.style.display = "flex";
       infoWrapper.style.alignItems = "center";
+      infoWrapper.style.flex = "1";
+      infoWrapper.style.justifyContent = "space-between"; // Evenly space the three elements
     
-      const nameQtyWrapper = document.createElement("div");
-      nameQtyWrapper.style.display = "flex";
-      nameQtyWrapper.style.flexDirection = "column";
-      nameQtyWrapper.style.flex = "1"; // Added to ensure proper spacing
-    
-      const nameLine = document.createElement("div");
-      nameLine.style.display = "flex";
-      nameLine.style.alignItems = "center";
-      nameLine.style.justifyContent = "space-between"; // Added to push quantity to right
-    
+      // Product info container (name and size)
+      const productInfo = document.createElement("div");
+      productInfo.style.display = "flex";
+      productInfo.style.flexDirection = "column";
+      productInfo.style.maxWidth = "100px"; // Limit width for long product names
+      
       const name = document.createElement("strong");
       name.textContent = item.name;
       name.style.cursor = "pointer";
+      name.style.whiteSpace = "nowrap";
+      name.style.overflow = "hidden";
+      name.style.textOverflow = "ellipsis"; // Add ellipsis for long names
+      name.style.fontSize = "0.9rem"; // Slightly smaller font for product name
       name.onclick = () => {
         window.location.href = `product.html?id=${item.id}`;
       };
-      nameLine.appendChild(name);
-    
-      // Quantity Controls - now added to nameLine
+      productInfo.appendChild(name);
+      
+      // Size info now goes below the product name
+      const sizeInfo = document.createElement("div");
+      sizeInfo.style.fontSize = "0.8rem";
+      sizeInfo.style.color = "#666";
+      sizeInfo.style.marginTop = "2px";
+      
+      if (item.size) {
+        sizeInfo.textContent = "Size: ";
+        const sizeBadge = document.createElement("span");
+        sizeBadge.textContent = item.size;
+        sizeBadge.style.fontSize = "0.7rem";
+        sizeBadge.style.background = "#eee";
+        sizeBadge.style.padding = "2px 6px";
+        sizeBadge.style.borderRadius = "6px";
+        sizeBadge.style.color = "#444";
+        sizeInfo.appendChild(sizeBadge);
+      }
+      productInfo.appendChild(sizeInfo);
+      
+      // Quantity Controls - now in the middle with smaller size
       const quantityControls = document.createElement("div");
       quantityControls.style.display = "flex";
       quantityControls.style.alignItems = "center";
+      quantityControls.style.margin = "0 10px"; // Add margin on both sides for spacing
     
       const minus = document.createElement("button");
       minus.textContent = "−";
-      minus.style.padding = "0.25rem 0.5rem";
+      minus.style.padding = "0.15rem 0.35rem"; // Smaller padding
       minus.style.fontWeight = "bold";
       minus.style.cursor = "pointer";
+      minus.style.fontSize = "0.8rem"; // Smaller font size
+      minus.style.border = "1px solid #ddd";
+      minus.style.borderRadius = "4px";
       minus.addEventListener("click", (e) => {
         e.stopPropagation();
         if (item.qty > 1) {
@@ -185,13 +209,17 @@ document.addEventListener("DOMContentLoaded", () => {
     
       const qty = document.createElement("span");
       qty.textContent = item.qty;
-      qty.style.margin = "0 0.5rem";
+      qty.style.margin = "0 0.3rem"; // Smaller margin
+      qty.style.fontSize = "0.8rem"; // Smaller font size
     
       const plus = document.createElement("button");
       plus.textContent = "+";
-      plus.style.padding = "0.25rem 0.5rem";
+      plus.style.padding = "0.15rem 0.35rem"; // Smaller padding
       plus.style.fontWeight = "bold";
       plus.style.cursor = "pointer";
+      plus.style.fontSize = "0.8rem"; // Smaller font size
+      plus.style.border = "1px solid #ddd";
+      plus.style.borderRadius = "4px";
       plus.addEventListener("click", (e) => {
         e.stopPropagation();
         item.qty++;
@@ -204,41 +232,20 @@ document.addEventListener("DOMContentLoaded", () => {
       quantityControls.appendChild(qty);
       quantityControls.appendChild(plus);
       
-      // Add quantity controls to nameLine (next to product name)
-      nameLine.appendChild(quantityControls);
-      
-      // Size info now goes below the product name
-      const sizeInfo = document.createElement("div");
-      sizeInfo.style.fontSize = "0.8rem";
-      sizeInfo.style.color = "#666";
-      sizeInfo.style.marginTop = "4px";
-      
-      if (item.size) {
-        sizeInfo.textContent = "Size: ";
-        const sizeBadge = document.createElement("span");
-        sizeBadge.textContent = item.size;
-        sizeBadge.style.fontSize = "0.7rem";
-        sizeBadge.style.background = "#eee";
-        sizeBadge.style.padding = "2px 6px";
-        sizeBadge.style.borderRadius = "6px";
-        sizeBadge.style.color = "#444";
-        sizeInfo.appendChild(sizeBadge);
-      }
-      
-      // Add elements to their containers
-      nameQtyWrapper.appendChild(nameLine);
-      nameQtyWrapper.appendChild(sizeInfo);
-      
-      infoWrapper.appendChild(link);
-      infoWrapper.appendChild(nameQtyWrapper);
-    
+      // Price element
       const price = document.createElement("span");
       price.textContent = `£${(item.price * item.qty).toFixed(2)}`;
       price.style.fontWeight = "bold";
-      price.style.marginLeft = "1rem";
-    
+      price.style.fontSize = "0.9rem"; // Slightly smaller font for price
+      price.style.whiteSpace = "nowrap"; // Prevent price from wrapping
+      
+      // Add elements to their containers
+      infoWrapper.appendChild(productInfo);
+      infoWrapper.appendChild(quantityControls);
+      infoWrapper.appendChild(price);
+      
+      itemRow.appendChild(link);
       itemRow.appendChild(infoWrapper);
-      itemRow.appendChild(price);
       basketPreview.appendChild(itemRow);
     });
 
