@@ -1,15 +1,11 @@
-// Import Firestore setup
 import { db } from './firebase.js';
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
-
-console.log("🛠 maintenance.js loaded");
 
 (async () => {
   try {
     console.log("🔍 Entering async function...");
 
     const isMaintenancePage = window.location.pathname.includes("maintenance.html");
-    console.log("📍 Page type:", isMaintenancePage ? "Maintenance Page" : "Normal Page");
 
     // Step 1: Get IP
     let userIP = "unknown";
