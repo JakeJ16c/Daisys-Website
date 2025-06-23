@@ -154,16 +154,16 @@ exports.createStripeCheckout = functions.https.onCall(async (data, context) => {
 
 // 🔔 Notify on new account creation (now with city support)
 exports.notifyOnNewUserAccount = functions.firestore
-  .document("AdminNotifications/{notifId}")
+  .document("users/{userId}")
   .onCreate(async (snap, context) => {
-    const notif = snap.data();
-
-    if (notif.type !== 'new_account') {
-      console.log("ℹ️ Not a new_account notification.");
-      return null;
-    }
+    const user = snap.data();
 
     try {
+      // Count total users
+      const totalSnap = await admin.firestore().collection("users").get();
+      const totalUsers = totalSnap.size;
+
+      // Get admin tokens
       const snapshot = await admin.firestore().collection('adminTokens').get();
       if (snapshot.empty) {
         console.log("❌ No admin tokens.");
@@ -184,17 +184,17 @@ exports.notifyOnNewUserAccount = functions.firestore
       }
 
       for (const token of tokens) {
-        const firstName = notif.firstName || "";
-        const lastName = notif.lastName || "";
-        const city = notif.city || "";
+        const firstName = user.firstName || "";
+        const lastName = user.lastName || "";
+        const city = user.address?.city || "";
 
         const message = {
           notification: {
             title: "New Account Created!",
-            body: `${(firstName + " " + lastName).trim() || 'A customer'} just signed up${city ? ` from ${city}` : ""}. Total users: ${notif.userCount || '?'}.`,
+            body: `${(firstName + " " + lastName).trim() || 'A customer'} just signed up${city ? ` from ${city}` : ""}. Total users: ${totalUsers}.`,
           },
           data: {
-            category: "reviews",
+            category: "accounts",
             timestamp: new Date().toISOString()
           },
           token: token
@@ -202,13 +202,13 @@ exports.notifyOnNewUserAccount = functions.firestore
 
         try {
           const response = await admin.messaging().send(message);
-          console.log(`✅ New user notif sent to token: ${token.substring(0, 10)}...`, response);
+          console.log(`✅ New user notif sent to token: ${token.substring(0, 10)}...`);
         } catch (error) {
-          console.error(`❌ Error sending user notif to ${token.substring(0, 10)}:`, error.message || error);
+          console.error(`❌ Error sending notif to ${token.substring(0, 10)}:`, error.message || error);
         }
       }
     } catch (error) {
-      console.error("❌ Error notifying new user registration:", error.message || error);
+      console.error("❌ Error in notifyOnNewUserAccount:", error.message || error);
     }
 
     return null;
