@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="styles/responsive.css">
   <style>
     .modal {
+  .modal {
   display: none;
   position: fixed;
   z-index: 1000;
@@ -24,9 +25,10 @@
 }
 
 .modal-content {
+  position: relative;
   background-color: #fff;
   border-radius: 12px;
-  padding: 20px;
+  padding: 20px 30px;
   max-width: 400px;
   margin: 10% auto;
   text-align: center;
@@ -34,21 +36,20 @@
 }
 
 .modal-content input {
-  width: 100%;
+  width: calc(100% - 20px); /* Ensures even spacing left and right */
   padding: 10px;
-  margin-top: 10px;
-  margin-bottom: 15px;
+  margin: 15px 10px 25px 10px;
   border-radius: 8px;
   border: 1px solid #ccc;
 }
 
 .modal-buttons {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
 }
 
 .modal-buttons button {
-  padding: 8px 16px;
+  padding: 8px 20px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -56,9 +57,17 @@
   color: white;
 }
 
-.modal-buttons button:last-child {
-  background-color: #ccc;
-  color: #333;
+/* Close (X) icon */
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  font-size: 20px;
+  cursor: pointer;
+  color: #888;
+}
+.modal-close:hover {
+  color: #000;
 }
 
 .status-message {
@@ -114,12 +123,12 @@
     <!-- Forgot Password Modal -->
     <div id="forgotPasswordModal" class="modal">
       <div class="modal-content">
+        <span class="modal-close" onclick="closeForgotModal()">&times;</span>
         <h3><i class="fa-solid fa-key"></i> Reset Password</h3>
         <p>Enter your email address to receive a password reset link.</p>
         <input type="email" id="resetEmail" placeholder="Email address" required />
         <div class="modal-buttons">
           <button onclick="sendPasswordReset()">Send</button>
-          <button onclick="closeForgotModal()">Cancel</button>
         </div>
         <p id="resetStatus" class="status-message"></p>
       </div>
