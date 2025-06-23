@@ -16,6 +16,18 @@ import {
 // Reference to the form element
 const form = document.getElementById('register-form');
 
+// 🌍 Get city from IP (non-blocking, but awaited)
+async function getUserCity() {
+  try {
+    const res = await fetch('https://ipapi.co/json/');
+    const data = await res.json();
+    return data.city || "";
+  } catch (err) {
+    console.warn("Could not fetch city from IP:", err);
+    return "";
+  }
+}
+
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -31,6 +43,9 @@ form.addEventListener('submit', async (e) => {
   }
 
   try {
+    // 🌍 Get user location
+    const city = await getUserCity();
+
     // ✅ Create user in Firebase Auth
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
@@ -44,27 +59,29 @@ form.addEventListener('submit', async (e) => {
     await setDoc(doc(db, "users", user.uid), {
       firstName,
       lastName,
-      email
+      email,
+      city,
+      createdAt: new Date()
     });
 
     // ✅ Send email verification
     await sendEmailVerification(user);
 
-    // ✅ Send admin notification (non-breaking addition)
+    // ✅ Admin notification
     try {
       const userCountSnap = await getCountFromServer(collection(db, "users"));
       const userCount = userCountSnap.data().count;
 
       await addDoc(collection(db, "AdminNotifications"), {
         type: "new_account",
-        message: `${firstName} ${lastName} has just made an account.`,
+        message: `${firstName} ${lastName} just signed up from ${city || 'an unknown location'}.`,
         userEmail: email,
         userCount: userCount,
+        city,
         createdAt: new Date()
       });
     } catch (notifyErr) {
       console.error("Admin notification failed:", notifyErr.message || notifyErr);
-      // Silent fail – doesn't affect user experience
     }
 
     // ✅ Success toast + redirect
