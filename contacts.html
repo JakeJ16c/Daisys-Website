@@ -13,152 +13,101 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link rel="stylesheet" href="styles/styles.css">
   <link rel="stylesheet" href="styles/responsive.css">
-
-</style>
-
-</head>
-  
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
   <style>
-  .contact-box {
-    background-color: #f1f3ff;
-    padding: 0.8rem;              /* smaller padding */
-    border-radius: 10px;
-    text-align: center;
-    color: var(--electric-blue);
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;  /* aligns icon to top */
-    align-items: center;
-    font-size: 20px;           /* smaller text */
-    aspect-ratio: 1 / 1;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  }
-
-  .contact-box i {
-    font-size: 30px;
-    margin-bottom: 20px;
-    margin-top: 85px;
-    display: block;
-    text-align: center;
-  }
-</style>
-
-  
+    body {
+      font-family: 'Fredoka', sans-serif;
+      background-color: #f8f8ff;
+    }
+    .contact-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      max-width: 1100px;
+      margin: 3rem auto;
+      padding: 1rem;
+      gap: 2rem;
+    }
+    .contact-form, .contact-info {
+      flex: 1 1 450px;
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+    }
+    .contact-form h2, .contact-info h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: #1e40af;
+    }
+    .contact-form input, .contact-form textarea {
+      width: 100%;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+    .contact-form button {
+      background: #1e40af;
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .contact-form button:hover {
+      background: #374fc7;
+    }
+    .info-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+      color: #333;
+    }
+    .info-item i {
+      margin-right: 1rem;
+      color: #1e40af;
+      font-size: 1.2rem;
+    }
+    iframe {
+      width: 100%;
+      height: 250px;
+      border: none;
+      border-radius: 12px;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
 <body>
-  
-  <!-- Top Announcement -->
+
   <div id="announcement-bar-container"></div>
+  <div id="header-container"></div>
+  <div id="navigation-container"></div>
 
-  <!-- Header Section -->
-  <header class="site-header">
-    <div class="header-left">
-      <a href="#"><i class="fab fa-instagram"></i></a>
-      <a href="#"><i class="fab fa-facebook-f"></i></a>
-      <a href="#"><i class="fas fa-phone"></i></a>
-      <a href="#"><i class="fas fa-envelope"></i></a>
+  <main>
+    <div class="contact-wrapper">
+      <div class="contact-form">
+        <h2>Send Us a Message</h2>
+        <input type="text" placeholder="Your Name" required>
+        <input type="email" placeholder="Your Email" required>
+        <textarea rows="5" placeholder="Your Message" required></textarea>
+        <button>Send Message</button>
+      </div>
+
+      <div class="contact-info">
+        <h2>Contact Details</h2>
+        <div class="info-item"><i class="fas fa-phone-alt"></i> +44 1234 567890</div>
+        <div class="info-item"><i class="fas fa-envelope"></i> info@yoursogolden.com</div>
+        <div class="info-item"><i class="fas fa-map-marker-alt"></i> 123 Golden Lane, London, UK</div>
+        <iframe src="https://maps.google.com/maps?q=London&t=&z=13&ie=UTF8&iwloc=&output=embed"></iframe>
+      </div>
     </div>
-    <h1 class="header-title"><a href="index.html" class="logo-link">You're So Golden</a></h1>
-    <div class="header-right">
-      <a href="#cart" class="cart-icon"><i class="fas fa-basket-shopping"></i></a>
-      <a id="auth-icon" class="login-icon" href="#" title="User Menu">
-        <i id="auth-icon-symbol" class="fas fa-user"></i>
-      </a>
-
-    </div>
-
-    <!-- Basket Dropdown -->
-    <div id="basket-preview"></div>
-    
-    <!-- 👤 User Dropdown (dynamic) -->
-    <div id="logout-dropdown" class="hidden" style="position:absolute; right:1rem; top:4.2rem; background:white; border:1px solid #ccc; padding:1rem; border-radius:8px; z-index:1000; box-shadow:0 4px 12px rgba(0,0,0,0.1); min-width:160px;">
-      <div id="user-dropdown-content">
-        <!-- Content will be filled in by JS -->
-  </div>
-</div>
-
-  </header>
-
-  <!-- Navigation Bar -->
-  <div id="navigation-bar-container"></div>
-
-  <body>
-    <main>
-  <h1 class="page-title">Contact Us</h1>
-
-  <main class="contact-page">
-
-    <!-- LEFT GRID -->
-    <div class="contact-grid">
-      <div class="contact-box">
-        <i class="fas fa-phone"></i>
-        +44 1234 567890
-      </div>
-      <div class="contact-box">
-        <i class="fas fa-envelope"></i>
-        hello@youresogolden.com
-      </div>
-      <div class="contact-box">
-        <i class="fab fa-instagram"></i>
-        @youresogolden
-      </div>
-      <div class="contact-box">
-        <i class="fab fa-tiktok"></i>
-        @youresogolden
-      </div>
-      <div class="contact-box">
-        <i class="fab fa-facebook"></i>
-        fb.com/youresogolden
-      </div>
-      <div class="contact-box"></div>
-    </div>
-
-    <!-- RIGHT FORM -->
-    <div class="contact-form-wrapper">
-      <section class="contact-hero">
-        <h2>Get in Touch</h2>
-        <p>Let us know how we can help. We'll get back to you within 24 hours.</p>
-      </section>
-      <section class="contact-form">
-        <form>
-          <div class="form-row">
-            <input type="text" placeholder="Name" required>
-            <input type="email" placeholder="Email" required>
-          </div>
-          <input type="text" placeholder="Subject" required>
-          <textarea rows="5" placeholder="Message" required></textarea>
-          <input type="file" accept="image/*">
-          <button type="submit">Submit</button>
-        </form>
-      </section>
-    </div>
-
   </main>
 
-</main>
-
-  <!-- Footer -->
   <div id="footer-container"></div>
-    
-</body>
-  
-  <!-- Load Page Layout -->
+
   <script src="layout/load-layout.js" type="module"></script>
-
-  <!-- 'User' Toggle Btn -->
-  <script type="module" src="user-toggle.js"></script>
-
-  <!-- Basket Dropdown Btn -->
-  <script type="module" src="basket-dropdown.js"></script>
-  
-  <script type="module" src="firebase.js"></script>
-
-  <!-- Admin Features -->
-  <script type="module" src="admin-auth.js"></script>
-
-  <!-- Maintenance Page If Toggled In Dashboard -->
-  <script type="module" src="maintenance.js"></script>
-
 </body>
 </html>
