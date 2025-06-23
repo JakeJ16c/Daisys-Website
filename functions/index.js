@@ -210,6 +210,20 @@ exports.notifyOnNewUserAccount = functions.firestore
     } catch (error) {
       console.error("❌ Error in notifyOnNewUserAccount:", error.message || error);
     }
-
     return null;
   });
+
+    exports.cleanupDeletedUsers = functions.auth.user().onDelete(async (user) => {
+      const uid = user.uid;
+      console.log(`🧹 Cleaning up data for deleted user: ${uid}`);
+    
+      try {
+        // Delete from Firestore users collection
+        await admin.firestore().collection('users').doc(uid).delete();
+        console.log(`✅ Deleted user data from Firestore for UID: ${uid}`);
+      } catch (error) {
+        console.error(`❌ Error deleting user data from Firestore for UID: ${uid}`, error.message || error);
+      }
+    
+      return null;
+    });
