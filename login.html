@@ -124,7 +124,7 @@
       <div class="modal-content">
         <span class="modal-close" onclick="closeForgotModal()">&times;</span>
         <h3><i class="fa-solid fa-key"></i> Reset Password</h3>
-        <p>Enter your email address to receive a password reset link.</p>
+        <p>Enter your email address to receive a reset password link.</p>
         <input type="email" id="resetEmail" placeholder="Email address" required />
         <div class="modal-buttons">
           <button onclick="sendPasswordReset()">Send</button>
@@ -163,14 +163,15 @@
     });
   
     // Close modal
-    window.closeForgotModal = () => {
+    function closeForgotModal() {
       document.getElementById('forgotPasswordModal').style.display = 'none';
       document.getElementById('resetEmail').value = '';
       document.getElementById('resetStatus').textContent = '';
-    };
+    }
+    window.closeForgotModal = closeForgotModal;
   
     // Send reset email
-    window.sendPasswordReset = async () => {
+    async function sendPasswordReset() {
       const email = document.getElementById('resetEmail').value;
       const status = document.getElementById('resetStatus');
       try {
@@ -182,8 +183,9 @@
         status.style.color = 'red';
         status.textContent = "❌ " + error.message;
       }
-    };
-    
+    }
+    window.sendPasswordReset = sendPasswordReset;
+  
     // Close modal if background is clicked
     window.onclick = function(event) {
       const modal = document.getElementById('forgotPasswordModal');
@@ -191,8 +193,6 @@
         closeForgotModal();
       }
     };
-  </script>
-
-  
+  </script>  
 </body>
 </html>
