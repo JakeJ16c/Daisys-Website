@@ -114,7 +114,7 @@ async function loadUserOrders(user) {
   const productMap = {};
   productSnapshot.forEach(doc => {
     const data = doc.data();
-    productMap[data.name] = data.image || "https://via.placeholder.com/40";
+    productMap[data.name.trim().toLowerCase()] = data.image || "https://via.placeholder.com/40";
   });
 
   const orders = snapshot.docs.map(docSnap => ({
@@ -157,7 +157,7 @@ async function loadUserOrders(user) {
               <div class="order-images">
                 ${Array.isArray(order.items)
                   ? order.items.slice(0, 5).map(item => `
-                      <img src="${productMap[item.productName] || 'https://via.placeholder.com/40'}" class="product-thumb" />
+                      <img src="${productMap[item.productName?.trim().toLowerCase()] || 'https://via.placeholder.com/40'}" class="product-thumb" />
                     `).join('')
                   : ''
                 }
