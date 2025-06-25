@@ -85,7 +85,7 @@ async function loadProducts() {
       images[i].style.opacity = 0;
       i = (i + 1) % images.length;
       images[i].style.opacity = 1;
-    }, 2500);
+    }, 5000);
   });
 
 }
