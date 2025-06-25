@@ -17,7 +17,7 @@ import { doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/11.8.1/f
 // ======================
 // 🔐 Apple Login Logic
 // ======================
-const appleBtn = document.querySelector('#appleSignIn');
+const appleBtn = document.querySelector('#appleBtn');
 if (appleBtn) {
   appleBtn.addEventListener('click', async () => {
     try {
