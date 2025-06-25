@@ -8,10 +8,46 @@ import {
   fetchSignInMethodsForEmail,
   signInWithPopup,
   GoogleAuthProvider,
+  OAuthProvider,
   signOut
 } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
 
 import { doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+
+// ======================
+// 🔐 Apple Login Logic
+// ======================
+const appleBtn = document.querySelector('#appleSignIn');
+if (appleBtn) {
+  appleBtn.addEventListener('click', async () => {
+    try {
+      const provider = new OAuthProvider('apple.com');
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      const userDocRef = doc(db, 'users', user.uid);
+      const docSnap = await getDoc(userDocRef);
+
+      if (!docSnap.exists()) {
+        await setDoc(userDocRef, {
+          uid: user.uid,
+          email: user.email || '',
+          name: user.displayName || '',
+          createdAt: new Date(),
+          provider: 'apple',
+        });
+        console.log('🆕 New Apple user added to Firestore');
+      } else {
+        console.log('✅ Apple user already exists');
+      }
+
+      window.location.href = 'account.html';
+    } catch (err) {
+      console.error('❌ Apple sign-in failed:', err);
+      showToast('Apple login failed. Please try again.');
+    }
+  });
+}
 
 // ======================
 // 🔐 Google Login Logic
@@ -25,7 +61,7 @@ if (googleBtn) {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
-      const userRef = doc(db, "Users", user.uid);
+      const userRef = doc(db, "users", user.uid);
       const userSnap = await getDoc(userRef);
 
       if (!userSnap.exists()) {
