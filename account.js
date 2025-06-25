@@ -111,43 +111,75 @@ async function loadUserOrders(user) {
   const q = query(ordersRef, where("userId", "==", user.uid));
   const snapshot = await getDocs(q);
 
-  const ordersDiv = document.getElementById("user-orders");
-  if (snapshot.empty) {
-    ordersDiv.innerHTML = `<p>You haven't placed any orders yet.</p>`;
-    return;
+  const orders = snapshot.docs.map(docSnap => ({
+    id: docSnap.id,
+    ...docSnap.data(),
+  }));
+
+  // Store in chunks
+  const ordersPerPage = 6;
+  let currentPage = 1;
+  const totalPages = Math.ceil(orders.length / ordersPerPage);
+
+  function renderPage(page) {
+    const wrapper = document.getElementById("orders-wrapper");
+    const pagination = document.getElementById("pagination-controls");
+    wrapper.innerHTML = "";
+
+    const start = (page - 1) * ordersPerPage;
+    const end = start + ordersPerPage;
+    const pageOrders = orders.slice(start, end);
+
+    if (pageOrders.length === 0) {
+      wrapper.innerHTML = "<p>You haven't placed any orders yet.</p>";
+      return;
+    }
+
+    pageOrders.forEach(order => {
+      const date = order.createdAt?.toDate?.().toLocaleString() || "Unknown date";
+      const itemsList = Array.isArray(order.items)
+        ? order.items.map(item => `<li>${item.productName} × ${item.qty} – £${item.price.toFixed(2)}</li>`).join("")
+        : "<li>No items found in this order.</li>";
+
+      wrapper.innerHTML += `
+        <div class="order-card">
+          <div class="order-summary" onclick="this.classList.toggle('open'); this.nextElementSibling.classList.toggle('open')">
+            <div class="summary-left">
+              <strong>Order No.${order.orderNumber || "N/A"}</strong>
+            </div>
+            <div class="summary-right">
+              <span class="order-status ${order.status.toLowerCase()}">Status: ${order.status}</span>
+              <i class="fa fa-chevron-down"></i>
+            </div>
+          </div>
+          <div class="order-details">
+            <p class="order-date">Placed on: ${date}</p>
+            <ul>${itemsList}</ul>
+          </div>
+        </div>
+      `;
+    });
+
+    // Pagination buttons
+    pagination.innerHTML = "";
+    for (let i = 1; i <= totalPages; i++) {
+      const btn = document.createElement("button");
+      btn.textContent = i;
+      btn.style.margin = "0 5px";
+      btn.style.padding = "6px 10px";
+      btn.style.borderRadius = "6px";
+      btn.style.border = "1px solid #ccc";
+      btn.style.backgroundColor = i === page ? "#204ECF" : "#f0f0f0";
+      btn.style.color = i === page ? "#fff" : "#000";
+      btn.addEventListener("click", () => {
+        currentPage = i;
+        renderPage(currentPage);
+      });
+      pagination.appendChild(btn);
+    }
   }
 
-  let html = "";
-  snapshot.forEach((docSnap) => {
-    const order = docSnap.data();
-    const date = order.createdAt?.toDate().toLocaleString() || "Unknown date";
-
-    html += `
-      <div class="order-card">
-        <div class="order-summary" onclick="this.classList.toggle('open'); this.nextElementSibling.classList.toggle('open')">
-          <div class="summary-left">
-              <strong>Order No.${order.orderNumber || "N/A"}</strong>
-          </div>
-          <div class="summary-right">
-            <span class="order-status ${order.status.toLowerCase()}">Status: ${order.status}</span>
-            <i class="fa fa-chevron-down"></i>
-          </div>
-        </div>
-        <div class="order-details">
-          <p class="order-date">Placed on: ${date}</p>
-          <ul>
-            ${
-              Array.isArray(order.items)
-                ? order.items.map(item => `<li>${item.productName} × ${item.qty} – £${item.price.toFixed(2)}</li>`).join("")
-                : "<li>No items found in this order.</li>"
-            }
-          </ul>
-        </div>
-      </div>
-    `;
-  });
-
-  ordersDiv.innerHTML = html;
+  renderPage(currentPage);
 }
 
 // =========================
