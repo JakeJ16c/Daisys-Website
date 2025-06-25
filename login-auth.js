@@ -1,4 +1,3 @@
-// login-auth.js
 import { auth, db } from './firebase.js';
 import {
   setPersistence,
@@ -7,10 +6,52 @@ import {
   sendEmailVerification,
   sendPasswordResetEmail,
   fetchSignInMethodsForEmail,
+  signInWithPopup,
+  GoogleAuthProvider,
   signOut
 } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
 
 import { doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+
+// ======================
+// 🔐 Google Login Logic
+// ======================
+const googleBtn = document.querySelector(".google-login");
+if (googleBtn) {
+  googleBtn.addEventListener("click", async () => {
+    const provider = new GoogleAuthProvider();
+
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      const userRef = doc(db, "Users", user.uid);
+      const userSnap = await getDoc(userRef);
+
+      if (!userSnap.exists()) {
+        // Create new user document
+        await setDoc(userRef, {
+          uid: user.uid,
+          name: user.displayName || "",
+          email: user.email || "",
+          createdAt: new Date(),
+          photoURL: user.photoURL || "",
+          role: "customer"
+        });
+        console.log("✅ New user created in Firestore");
+      } else {
+        console.log("👤 Existing user logged in");
+      }
+
+      // Redirect
+      window.location.href = "index.html";
+
+    } catch (error) {
+      console.error("❌ Google sign-in error:", error);
+      alert("Google sign-in failed. Please try again.");
+    }
+  });
+}
 
 // ========== Login Handling ==========
 const form = document.getElementById('loginForm');
