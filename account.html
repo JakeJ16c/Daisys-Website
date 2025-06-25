@@ -143,6 +143,41 @@
 .product-thumb:first-child {
   margin-left: 0;
 }
+
+.status-timeline {
+  display: flex;
+  align-items: center;
+  margin-top: 1rem;
+  gap: 8px;
+  overflow-x: auto;
+}
+
+.status-step {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  background-color: #e0e0e0;
+  color: #555;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+}
+
+.status-step.completed {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.status-step.active {
+  background-color: #204ECF;
+  color: white;
+}
+
+.status-line {
+  width: 30px;
+  height: 2px;
+  background-color: #ccc;
+  flex-shrink: 0;
+}
     
 /* ========== Account Panel ========== */
 @media (max-width: 480px) {
