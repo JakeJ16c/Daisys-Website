@@ -178,6 +178,30 @@
   background-color: #ccc;
   flex-shrink: 0;
 }
+
+#address-results {
+  position: absolute;
+  z-index: 999;
+  width: 100%;
+  background: #fff;
+  border: 1px solid #ccc;
+  max-height: 200px;
+  overflow-y: auto;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-top: 4px;
+}
+
+.address-option {
+  padding: 10px 14px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s ease;
+}
+
+.address-option:hover {
+  background: #f0f0f0;
+}
     
 /* ========== Account Panel ========== */
 @media (max-width: 480px) {
