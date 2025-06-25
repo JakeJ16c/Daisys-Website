@@ -56,7 +56,14 @@ async function loadProducts() {
 
     productCard.innerHTML = `
       <a href="product.html?id=${doc.id}" class="product-link">
-        <img src="${Array.isArray(data.images) ? data.images[0] : data.images}" alt="${data.name}" />
+        <div class="multi-image-wrapper">
+          ${Array.isArray(data.images) && data.images.length > 1
+            ? data.images.map((img, i) =>
+                `<img src="${img}" alt="${data.name}" class="fade-img" style="opacity:${i === 0 ? 1 : 0};">`
+              ).join('')
+            : `<img src="${Array.isArray(data.images) ? data.images[0] : data.images}" alt="${data.name}" class="fade-img">`
+          }
+        </div>
         <h3>${data.name}</h3>
         <p>£${parseFloat(data.price).toFixed(2)}</p>
       </a>
@@ -69,6 +76,18 @@ async function loadProducts() {
   // 🔁 Hide spinner and show all cards at once
   container.innerHTML = '';
   productCards.forEach(card => container.appendChild(card));
+  document.querySelectorAll('.multi-image-wrapper').forEach(wrapper => {
+    const images = wrapper.querySelectorAll('.fade-img');
+    if (images.length <= 1) return;
+  
+    let i = 0;
+    setInterval(() => {
+      images[i].style.opacity = 0;
+      i = (i + 1) % images.length;
+      images[i].style.opacity = 1;
+    }, 2500);
+  });
+
 }
 
 loadProducts();
