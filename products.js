@@ -1,17 +1,15 @@
-// products.js
 import { db } from './firebase.js';
 import { getDocs, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
 
 const container = document.getElementById('product-grid');
 
-// 🔁 Show loading spinner while products are loading
+// 🔁 Show loading spinner
 container.innerHTML = `<div class="spinner-container"><div class="spinner"></div></div>`;
 
-// Main product loader
 async function loadProducts() {
   const productCards = [];
 
-  // ✅ Add custom pinned card (Personalised Design)
+  // Custom pinned card
   const pinnedCard = document.createElement("div");
   pinnedCard.className = "product-card pinned-card";
   pinnedCard.setAttribute("data-id", "custom-design");
@@ -29,25 +27,12 @@ async function loadProducts() {
   `;
   productCards.push(pinnedCard);
 
-  // 🔄 Load products from Firestore
   const querySnapshot = await getDocs(collection(db, "Products"));
-
-  // Empty state if no products found
   if (querySnapshot.empty) {
-    container.innerHTML = `
-      <p class="no-products">
-        <strong>Sorry, we’re currently out of stock!</strong><br/>
-        We’re busy restocking—follow us on 
-        <a href="https://instagram.com/shop.youre.so.golden">Instagram</a> 
-        or 
-        <a href="">Facebook</a> 
-        to catch the next drop. ✨
-      </p>
-    `;
+    container.innerHTML = `<p class="no-products">Sorry, we're out of stock. Follow us on Instagram for updates ✨</p>`;
     return;
   }
 
-  // 🔁 Loop through each product
   querySnapshot.forEach((doc) => {
     const data = doc.data();
 
@@ -56,90 +41,88 @@ async function loadProducts() {
     productCard.setAttribute("data-id", doc.id);
     productCard.setAttribute("data-name", data.name);
     productCard.setAttribute("data-price", data.price);
+    productCard.setAttribute("data-onesize", data.oneSizeOnly ? "true" : "false");
+    productCard.setAttribute("data-stock", JSON.stringify(data.stock || {}));
 
-    // 📦 Set product HTML
+    const imagesHTML = Array.isArray(data.images) && data.images.length > 1
+      ? data.images.map((img, i) =>
+          `<img src="${img}" class="fade-img" style="opacity:${i === 0 ? 1 : 0};">`).join('')
+      : `<img src="${Array.isArray(data.images) ? data.images[0] : data.images}" class="fade-img">`;
+
     productCard.innerHTML = `
       <a href="product.html?id=${doc.id}" class="product-link">
-        <div class="multi-image-wrapper">
-          ${Array.isArray(data.images) && data.images.length > 1
-            ? data.images.map((img, i) =>
-                `<img src="${img}" alt="${data.name}" class="fade-img" style="opacity:${i === 0 ? 1 : 0}; transition: opacity 1.5s ease;">`
-              ).join('')
-            : `<img src="${Array.isArray(data.images) ? data.images[0] : data.images}" alt="${data.name}" class="fade-img">`
-          }
-        </div>
+        <div class="multi-image-wrapper">${imagesHTML}</div>
         <h3>${data.name}</h3>
         <p>£${parseFloat(data.price).toFixed(2)}</p>
       </a>
-      <div class="size-popup hidden">
-        <p>Select a size:</p>
-        <div class="size-options"></div>
-      </div>
+      <div class="size-popup hidden"></div>
       <button class="btn add-to-basket">Add to Basket</button>
     `;
-
-    // ✅ Populate size buttons if sizes exist
-    if (data.sizes && Array.isArray(data.sizes) && data.sizes.length > 0) {
-      const sizeOptions = productCard.querySelector('.size-options');
-      data.sizes.forEach(size => {
-        const btn = document.createElement('button');
-        btn.textContent = size;
-        btn.className = 'size-btn';
-        btn.addEventListener('click', () => {
-          addToCart(doc.id, data.name, parseFloat(data.price), size, productCard.querySelector("img")?.src || "placeholder.jpg");
-          productCard.querySelector('.size-popup')?.classList.add('hidden');
-        });
-        sizeOptions.appendChild(btn);
-      });
-    }
 
     productCards.push(productCard);
   });
 
-  // ✅ Add products to DOM
   container.innerHTML = '';
   productCards.forEach(card => container.appendChild(card));
 
-  // 🎞️ Handle image fading
+  // Handle fading product images
   document.querySelectorAll('.multi-image-wrapper').forEach(wrapper => {
     const images = wrapper.querySelectorAll('.fade-img');
     if (images.length <= 1) return;
-
     let i = 0;
     setInterval(() => {
       images[i].style.opacity = 0;
       i = (i + 1) % images.length;
       images[i].style.opacity = 1;
-    }, 6000); // Slower cycle
+    }, 5000);
   });
 }
 
 loadProducts();
 
-// 🛒 Add-to-basket button logic
-document.addEventListener("DOMContentLoaded", () => {
-  document.addEventListener("click", (e) => {
-    if (e.target && e.target.classList.contains("add-to-basket")) {
-      const product = e.target.closest(".product-card");
-      const id = product.dataset.id;
-      const name = product.dataset.name;
-      const price = parseFloat(product.dataset.price);
-      const image = product.querySelector("img")?.src || "placeholder.jpg";
+document.addEventListener("click", (e) => {
+  // Add to Basket clicked
+  if (e.target.classList.contains("add-to-basket")) {
+    const card = e.target.closest(".product-card");
+    const id = card.dataset.id;
+    const name = card.dataset.name;
+    const price = parseFloat(card.dataset.price);
+    const image = card.querySelector("img")?.src || "placeholder.jpg";
+    const oneSize = card.dataset.onesize === "true";
+    const stock = JSON.parse(card.dataset.stock || "{}");
+    const sizePopup = card.querySelector(".size-popup");
 
-      const sizePopup = product.querySelector('.size-popup');
-      const hasSizes = sizePopup && sizePopup.querySelector('.size-options')?.children.length > 0;
-
-      if (hasSizes) {
-        sizePopup.classList.remove('hidden');
-      } else {
-        addToCart(id, name, price, null, image);
+    if (!oneSize && Object.keys(stock).length > 0) {
+      // Show size popup if not already visible
+      if (sizePopup.classList.contains("hidden")) {
+        sizePopup.innerHTML = `<p>Select a size:</p>` + Object.entries(stock).map(([size, qty]) => {
+          return qty > 0 ? `<button class="size-option" data-size="${size}">${size}</button>` : '';
+        }).join('');
+        sizePopup.classList.remove("hidden");
+        return;
       }
+    } else {
+      addToCart(id, name, price, image, "OneSize");
     }
-  });
+  }
+
+  // Size option clicked
+  if (e.target.classList.contains("size-option")) {
+    const size = e.target.dataset.size;
+    const card = e.target.closest(".product-card");
+    const id = card.dataset.id;
+    const name = card.dataset.name;
+    const price = parseFloat(card.dataset.price);
+    const image = card.querySelector("img")?.src || "placeholder.jpg";
+
+    // Hide the popup after selection
+    card.querySelector(".size-popup").classList.add("hidden");
+
+    addToCart(id, name, price, image, size);
+  }
 });
 
-// 🧠 Helper: Add to cart logic with size support
-function addToCart(id, name, price, size, image) {
+function addToCart(id, name, price, image, size = "OneSize") {
   const cartKey = "daisyCart";
   let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
   const existing = cart.find(item => item.id === id && item.size === size);
@@ -147,17 +130,23 @@ function addToCart(id, name, price, size, image) {
   if (existing) {
     existing.qty++;
   } else {
-    cart.push({ id, name, price, qty: 1, size, image });
+    cart.push({ id, name, price, qty: 1, image, size });
   }
 
   localStorage.setItem(cartKey, JSON.stringify(cart));
-  if (typeof syncBasketToFirestore === "function") syncBasketToFirestore(cart);
+
+  if (typeof syncBasketToFirestore === "function") {
+    syncBasketToFirestore(cart);
+  }
+
   logBasketActivity({ id, name, qty: 1, size });
+
   document.getElementById("basket-preview")?.classList.remove("hidden");
-  if (typeof updateBasketPreview === "function") updateBasketPreview(true);
+  if (typeof updateBasketPreview === "function") {
+    updateBasketPreview(true);
+  }
 }
 
-// 🧾 Firestore log (for admin tracking)
 async function logBasketActivity(product) {
   try {
     await addDoc(collection(db, "BasketUpdates"), {
@@ -172,28 +161,3 @@ async function logBasketActivity(product) {
     console.error("❌ Error logging basket activity:", err);
   }
 }
-
-// 🔃 Optional: Price sorting buttons
-document.addEventListener("DOMContentLoaded", function () {
-  const sortButtons = document.querySelectorAll(".sort .dropdown button");
-  const productGrid = document.getElementById("product-grid");
-
-  function sortCards(order) {
-    const cards = Array.from(productGrid.querySelectorAll(".product-card"));
-    cards.sort((a, b) => {
-      const priceA = parseFloat(a.getAttribute("data-price")) || 0;
-      const priceB = parseFloat(b.getAttribute("data-price")) || 0;
-      return order === "asc" ? priceA - priceB : priceB - priceA;
-    });
-
-    cards.forEach(card => productGrid.appendChild(card));
-  }
-
-  sortButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      const label = btn.textContent.trim();
-      if (label === "Lowest Price") sortCards("asc");
-      if (label === "Highest Price") sortCards("desc");
-    });
-  });
-});
