@@ -973,6 +973,70 @@ input[type="range"] {
       color: white;
     }
 
+.product-right-info {
+  max-width: 500px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+.accordion {
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}
+
+.accordion-item {
+  border-bottom: 1px solid #eee;
+}
+
+.accordion-toggle {
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  padding: 1rem;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  position: relative;
+}
+
+.accordion-toggle::after {
+  content: '+';
+  position: absolute;
+  right: 1rem;
+  font-weight: bold;
+}
+
+.accordion-item.active .accordion-toggle::after {
+  content: '−';
+}
+
+.accordion-content {
+  max-height: 0;
+  overflow: hidden;
+  padding: 0 1rem;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+  color: #444;
+}
+
+.accordion-item.active .accordion-content {
+  max-height: 200px;
+  padding: 1rem;
+}
+
+.similar-products {
+  margin-top: 2rem;
+  padding: 0 1rem;
+}
+
+.similar-products h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  border-top: 1px solid #ddd;
+  padding-top: 1rem;
+}
+
 /* ========== Basket Page ========== */
 .basket-wrapper {
   display: flex;
