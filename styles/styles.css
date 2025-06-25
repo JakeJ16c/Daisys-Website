@@ -839,7 +839,6 @@ input[type="range"] {
 		  display: flex;
 		  align-items: flex-start;
 		  gap: 1rem;
-		  max-width: 1200px;
 		  padding: 0 2rem;
 		}
 		    
