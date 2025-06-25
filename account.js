@@ -162,7 +162,7 @@ async function loadUserOrders(user) {
               <div class="order-images">
                 ${Array.isArray(order.items)
                   ? order.items.slice(0, 5).map(item => `
-                      <img src="${productMap[item.productName?.trim().toLowerCase()] || 'https://via.placeholder.com/40'}" class="product-thumb" />
+                      <img src="${productMap[item.productName?.trim().toLowerCase()] || 'favicon_circle.ico'}" class="product-thumb" />
                     `).join('')
                   : ''
                 }
