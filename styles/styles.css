@@ -304,10 +304,13 @@
   background: white;
   border: 1px solid #ccc;
   border-radius: 10px;
-  padding: 10px;
+  padding: 2px;
   margin-top: 10px;
   text-align: center;
   box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+.size-popup p {
+	margin: 0;
 }
 .size-popup.hidden {
   display: none;
@@ -317,7 +320,7 @@
   border: 1px solid #ccc;
   padding: 6px 12px;
   margin: 4px;
-  border-radius: 6px;
+  border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
