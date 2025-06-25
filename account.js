@@ -148,7 +148,11 @@ async function loadUserOrders(user) {
               <strong>Order No.${order.orderNumber || "N/A"}</strong>
             </div>
             <div class="summary-right">
-              <span class="order-status ${order.status.toLowerCase()}">Status: ${order.status}</span>
+              <div class="order-images">
+                ${Array.isArray(order.items) ? order.items.slice(0, 5).map(item => `
+                  <img src="${item.image || 'https://via.placeholder.com/40'}" class="product-thumb" />
+                `).join('') : ''}
+              </div>
               <i class="fa fa-chevron-down"></i>
             </div>
           </div>
