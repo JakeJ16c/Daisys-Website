@@ -311,7 +311,7 @@
 }
 .size-popup p {
 	margin: 0;
-	font-weight: 900;
+	font-weight: 600;
 }
 .size-popup.hidden {
   display: none;
