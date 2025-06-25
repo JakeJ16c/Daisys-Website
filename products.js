@@ -95,7 +95,7 @@ document.addEventListener("click", (e) => {
     if (!oneSize && Object.keys(stock).length > 0) {
       // Show size popup if not already visible
       if (sizePopup.classList.contains("hidden")) {
-        sizePopup.innerHTML = `<p>Select a size:</p>` + Object.entries(stock).map(([size, qty]) => {
+        sizePopup.innerHTML = `<p>Please select a size below</p>` + Object.entries(stock).map(([size, qty]) => {
           return qty > 0 ? `<button class="size-option" data-size="${size}">${size}</button>` : '';
         }).join('');
         sizePopup.classList.remove("hidden");
