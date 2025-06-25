@@ -326,6 +326,10 @@
   transition: all 0.2s ease;
 }
 
+.size-option:hover {
+  border-color: black;
+}
+
     /* ========== Hover Jump Animation ========== */
     .circle-card:hover,
     .product-card:hover {
