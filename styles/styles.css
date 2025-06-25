@@ -838,7 +838,7 @@ input[type="range"] {
 		.product-layout {
 		  display: flex;
 		  align-items: flex-start;
-		  gap: 4rem;
+		  gap: 1rem;
 		  max-width: 1200px;
 		  padding: 0 2rem;
 		}
@@ -930,6 +930,7 @@ input[type="range"] {
       font-size: 2rem;
       font-weight: 600;
       color: var(--electric-blue);
+	    margin-top: 2rem;
     }
 
     .product-price {
