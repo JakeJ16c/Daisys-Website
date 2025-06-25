@@ -1,19 +1,5 @@
-// account.js
-import {
-  getAuth,
-  onAuthStateChanged,
-  signOut,
-} from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
-import {
-  getFirestore,
-  doc,
-  getDoc,
-  setDoc,
-  collection,
-  getDocs,
-  query,
-  where,
-} from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut, } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, where, } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 import { auth, db } from "./firebase.js";
 
 let currentUser = null;
@@ -173,6 +159,20 @@ async function loadUserOrders(user) {
           <div class="order-details">
             <p class="order-date">Placed on: ${date}</p>
             <ul>${itemsList}</ul>
+
+            <div class="status-timeline">
+              ${["Confirmed", "Ready to Ship", "Dispatched", "Delivered"].map((stage, index, arr) => {
+                const currentIndex = arr.indexOf(order.status || "Confirmed");
+                const isCompleted = index < currentIndex;
+                const isActive = index === currentIndex;
+            
+                return `
+                  <div class="status-step ${isCompleted ? "completed" : isActive ? "active" : ""}">${stage}</div>
+                  ${index < arr.length - 1 ? '<div class="status-line"></div>' : ""}
+                `;
+              }).join("")}
+            </div>
+
           </div>
         </div>
       `;
