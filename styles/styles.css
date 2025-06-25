@@ -311,6 +311,7 @@
 }
 .size-popup p {
 	margin: 0;
+	font-weight: 900;
 }
 .size-popup.hidden {
   display: none;
@@ -323,9 +324,6 @@
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease;
-}
-.size-option:hover {
-  border: black;
 }
 
     /* ========== Hover Jump Animation ========== */
