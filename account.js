@@ -89,6 +89,59 @@ async function saveProfile(e) {
   }
 }
 
+const apiKey = "E5XUL7BVtEieVDcUjtuFsw46674";
+const postcodeInput = document.getElementById("postcode-search");
+const resultsDropdown = document.getElementById("address-results");
+
+// Debounce typing
+let debounceTimeout;
+postcodeInput.addEventListener("input", () => {
+  clearTimeout(debounceTimeout);
+  debounceTimeout = setTimeout(fetchPostcodeSuggestions, 400);
+});
+
+async function fetchPostcodeSuggestions() {
+  const term = postcodeInput.value.trim();
+  if (term.length < 3) return (resultsDropdown.innerHTML = "");
+
+  try {
+    const res = await fetch(`https://api.getAddress.io/autocomplete/${term}?api-key=${apiKey}`);
+    const data = await res.json();
+
+    if (!data || !data.suggestions) return;
+
+    resultsDropdown.innerHTML = data.suggestions
+      .map(s => `<div class="address-option" data-id="${s.id}">${s.address}</div>`)
+      .join("");
+
+    document.querySelectorAll(".address-option").forEach(option => {
+      option.addEventListener("click", () => {
+        fetchFullAddress(option.dataset.id);
+        resultsDropdown.innerHTML = "";
+      });
+    });
+  } catch (err) {
+    console.error("Postcode lookup failed", err);
+    resultsDropdown.innerHTML = "<div class='error'>Error fetching results</div>";
+  }
+}
+
+async function fetchFullAddress(id) {
+  try {
+    const res = await fetch(`https://api.getAddress.io/get/${id}?api-key=${apiKey}`);
+    const data = await res.json();
+    const addr = data.address;
+
+    document.getElementById("house-number").value = addr.building_number || addr.building_name || "";
+    document.getElementById("street").value = addr.line_1 || "";
+    document.getElementById("city").value = addr.town_or_city || "";
+    document.getElementById("county").value = addr.county || "";
+    document.getElementById("postcode").value = addr.postcode || "";
+  } catch (err) {
+    console.error("Address fetch failed:", err);
+  }
+}
+
 // =========================
 // 📦 Load User Orders
 // =========================
