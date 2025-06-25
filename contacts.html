@@ -92,8 +92,12 @@
     <div class="header-right">
       <a id="auth-icon" class="login-icon" href="#" title="User Menu"><i id="auth-icon-symbol" class="fas fa-user"></i></a>
     </div>
+    
+    <!-- 👤 User Dropdown (dynamic) -->
     <div id="logout-dropdown" class="hidden" style="position:absolute; right:1rem; top:4.2rem; background:white; border:1px solid #ccc; padding:1rem; border-radius:8px; z-index:1000; box-shadow:0 4px 12px rgba(0,0,0,0.1); min-width:160px;">
-      <div id="user-dropdown-content"></div>
+          <div id="user-dropdown-content">
+            <!-- Content will be filled in by JS -->
+      </div>
     </div>
   </header>
   <div id="navigation-bar-container"></div>
