@@ -312,7 +312,7 @@
 .size-popup.hidden {
   display: none;
 }
-.size-btn {
+.size-option {
   background: white;
   border: 1px solid #ccc;
   padding: 6px 12px;
@@ -321,7 +321,7 @@
   cursor: pointer;
   transition: all 0.2s ease;
 }
-.size-btn:hover {
+.size-option:hover {
   border: black;
 }
 
