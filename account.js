@@ -110,6 +110,12 @@ async function loadUserOrders(user) {
   const ordersRef = collection(db, "Orders");
   const q = query(ordersRef, where("userId", "==", user.uid));
   const snapshot = await getDocs(q);
+  const productSnapshot = await getDocs(collection(db, "Products"));
+  const productMap = {};
+  productSnapshot.forEach(doc => {
+    const data = doc.data();
+    productMap[data.name] = data.image || "https://via.placeholder.com/40";
+  });
 
   const orders = snapshot.docs.map(docSnap => ({
     id: docSnap.id,
@@ -149,9 +155,12 @@ async function loadUserOrders(user) {
             </div>
             <div class="summary-right">
               <div class="order-images">
-                ${Array.isArray(order.items) ? order.items.slice(0, 5).map(item => `
-                  <img src="${item.image || 'https://via.placeholder.com/40'}" class="product-thumb" />
-                `).join('') : ''}
+                ${Array.isArray(order.items)
+                  ? order.items.slice(0, 5).map(item => `
+                      <img src="${productMap[item.productName] || 'https://via.placeholder.com/40'}" class="product-thumb" />
+                    `).join('')
+                  : ''
+                }
               </div>
               <i class="fa fa-chevron-down"></i>
             </div>
