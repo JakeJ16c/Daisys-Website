@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Realistic Beads</title>
+  <title>Real Beads - Refined</title>
   <style>
     body {
       margin: 0;
@@ -26,56 +26,61 @@
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
 
-  // Light
-  scene.add(new THREE.AmbientLight(0xffffff, 0.6));
-  const dirLight = new THREE.DirectionalLight(0xffffff, 1);
-  dirLight.position.set(30, 30, 30);
+  scene.add(new THREE.AmbientLight(0xffffff, 0.65));
+  const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+  dirLight.position.set(20, 30, 10);
   scene.add(dirLight);
 
   const pastelColors = [0xffc0cb, 0xa7d3a6, 0xd4a5ff, 0xb0e0e6, 0xf8d9a0];
 
-  // Bead shape using LatheGeometry
   function createBeadGeometry() {
-    const points = [];
-    const outerRadius = 3.75;
-    const holeRadius = 1;
+    const profile = [];
+    const outerRadius = 3.5;
+    const holeRadius = 1.2;
+    const thickness = 1.2;
 
-    for (let i = 0; i <= 20; i++) {
-      const t = i / 20;
-      const r = outerRadius - (outerRadius - holeRadius) * Math.pow(Math.sin(t * Math.PI), 2);
-      const y = (t - 0.5) * 2; // Flattens the bead vertically
-      points.push(new THREE.Vector2(r, y));
+    for (let i = 0; i <= 30; i++) {
+      const t = i / 30;
+      const r = holeRadius + (outerRadius - holeRadius) * Math.sin(t * Math.PI);
+      const y = (t - 0.5) * thickness;
+      profile.push(new THREE.Vector2(r, y));
     }
 
-    return new THREE.LatheGeometry(points, 60);
+    return new THREE.LatheGeometry(profile, 100);
   }
 
-  // Create multiple beads
   for (let i = 0; i < 40; i++) {
     const color = new THREE.Color(pastelColors[Math.floor(Math.random() * pastelColors.length)]);
     const mat = new THREE.MeshPhysicalMaterial({
       color,
-      roughness: 0.2,
-      metalness: 0.2,
+      roughness: 0.1,
+      metalness: 0.15,
       clearcoat: 1,
       clearcoatRoughness: 0.05
     });
 
     const bead = new THREE.Mesh(createBeadGeometry(), mat);
     bead.position.set(
-      (Math.random() - 0.5) * 50,
-      (Math.random() - 0.5) * 50,
-      (Math.random() - 0.5) * 50
+      (Math.random() - 0.5) * 40,
+      (Math.random() - 0.5) * 40,
+      (Math.random() - 0.5) * 40
     );
-    bead.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
+    bead.rotation.set(
+      Math.random() * Math.PI,
+      Math.random() * Math.PI,
+      Math.random() * Math.PI
+    );
+    const scale = 0.4 + Math.random() * 0.3;
+    bead.scale.set(scale, scale, scale);
     scene.add(bead);
   }
 
   function animate() {
     requestAnimationFrame(animate);
-    scene.rotation.y += 0.001;
+    scene.rotation.y += 0.002;
     renderer.render(scene, camera);
   }
+
   animate();
 
   window.addEventListener('resize', () => {
