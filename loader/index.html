@@ -36,7 +36,6 @@
   <canvas id="loaderCanvas"></canvas>
   <img id="logo" src="logo.jpeg" alt="You're So Golden Logo" />
 
-  <!-- Load Three.js -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
 
   <script>
@@ -53,14 +52,26 @@
     light.position.set(5, 10, 7.5);
     scene.add(light);
 
-    const ambient = new THREE.AmbientLight(0xffffff, 0.5);
+    const ambient = new THREE.AmbientLight(0xffffff, 0.4);
     scene.add(ambient);
 
     const beads = [];
 
     const loader = new THREE.TextureLoader();
     loader.load('beads.jpeg', function(texture) {
-      const beadMaterial = new THREE.MeshStandardMaterial({ map: texture });
+      // Make texture less repetitive
+      texture.wrapS = THREE.ClampToEdgeWrapping;
+      texture.wrapT = THREE.ClampToEdgeWrapping;
+      texture.repeat.set(1, 1);
+
+      // Glossy material with reflectivity
+      const beadMaterial = new THREE.MeshPhysicalMaterial({
+        map: texture,
+        metalness: 0.3,
+        roughness: 0.2,
+        clearcoat: 1.0,
+        clearcoatRoughness: 0.1,
+      });
 
       for (let i = 0; i < 15; i++) {
         const bead = new THREE.Mesh(
@@ -98,11 +109,11 @@
       document.body.style.transition = 'opacity 1s ease-out';
       document.body.style.opacity = '0';
       setTimeout(() => {
-        window.location.href = "index.html"; // or your app's home
+        window.location.href = "index.html"; // Or your real PWA route
       }, 1000);
     };
 
-    // Fallback timeout
+    // Fallback exit after 10s
     setTimeout(() => {
       if (typeof window.loaderDone === 'function') window.loaderDone();
     }, 10000);
