@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>You're So Golden – Bead Simulation</title>
+  <title>You're So Golden – Realistic Beads</title>
   <style>
     body {
       margin: 0;
@@ -21,20 +21,19 @@
       z-index: 2;
     }
     .center-logo img {
-      width: 80px;
+      width: 90px;
     }
   </style>
 </head>
 <body>
   <div class="center-logo">
-    <img src="logo.png" alt="Logo">
+    <img src="logo.png" alt="Logo" />
   </div>
   <canvas id="beadsCanvas"></canvas>
 
   <script>
     const canvas = document.getElementById('beadsCanvas');
     const ctx = canvas.getContext('2d');
-
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
@@ -46,30 +45,44 @@
       reset() {
         this.x = Math.random() * canvas.width;
         this.y = Math.random() * -canvas.height;
-        this.radius = 6 + Math.random() * 10;
-        this.speed = 0.3 + Math.random() * 1.2;
-        this.color = this.getRandomColor();
-      }
-
-      getRandomColor() {
-        const blueShades = ['#AEE3F8', '#7BC6F9', '#5EAEF1'];
-        const greenShades = ['#A2E3B1', '#78C48C', '#6EDDAA'];
-        const mix = [...blueShades, ...greenShades];
-        return mix[Math.floor(Math.random() * mix.length)];
+        this.radius = 8 + Math.random() * 10;
+        this.speed = 0.3 + Math.random() * 0.8;
+        this.hue = Math.random() > 0.5 ? 180 + Math.random() * 50 : 120 + Math.random() * 30;
+        this.opacity = 0.6 + Math.random() * 0.4;
       }
 
       draw(ctx) {
-        const gradient = ctx.createRadialGradient(
-          this.x - this.radius * 0.3, this.y - this.radius * 0.3, this.radius * 0.2,
-          this.x, this.y, this.radius
-        );
-        gradient.addColorStop(0, '#ffffffcc');
-        gradient.addColorStop(0.4, this.color);
-        gradient.addColorStop(1, '#00000020');
+        const { x, y, radius, hue, opacity } = this;
 
+        // Outer glow for translucent feel
+        const glow = ctx.createRadialGradient(x, y, radius * 0.4, x, y, radius);
+        glow.addColorStop(0, `hsla(${hue}, 80%, 80%, ${opacity})`);
+        glow.addColorStop(1, `hsla(${hue}, 80%, 40%, 0)`);
+
+        // Inner light and highlight
+        const gloss = ctx.createRadialGradient(
+          x - radius * 0.2,
+          y - radius * 0.2,
+          radius * 0.1,
+          x,
+          y,
+          radius
+        );
+        gloss.addColorStop(0, `white`);
+        gloss.addColorStop(0.2, `hsla(${hue}, 90%, 85%, 0.8)`);
+        gloss.addColorStop(0.6, `hsla(${hue}, 90%, 40%, ${opacity})`);
+        gloss.addColorStop(1, `hsla(${hue}, 90%, 20%, 0.2)`);
+
+        // Draw the glow first
         ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fillStyle = gradient;
+        ctx.arc(x, y, radius + 2, 0, Math.PI * 2);
+        ctx.fillStyle = glow;
+        ctx.fill();
+
+        // Draw the bead core
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.fillStyle = gloss;
         ctx.fill();
       }
 
@@ -82,7 +95,7 @@
       }
     }
 
-    const beads = Array.from({ length: 70 }, () => new Bead());
+    const beads = Array.from({ length: 60 }, () => new Bead());
 
     function animate() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
