@@ -4,21 +4,20 @@ import { auth } from "./firebase.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 
 const container = document.getElementById('product-grid');
-
-// 🔁 Show loading spinner
 container.innerHTML = `<div class="spinner-container"><div class="spinner"></div></div>`;
 
 let currentUser = null;
 
+// 🔐 Listen for login/logout changes
 onAuthStateChanged(auth, (user) => {
   if (user) currentUser = user;
-  loadProducts();
+  loadProducts(); // Load products after knowing user status
 });
 
 async function loadProducts() {
   const productCards = [];
 
-  // Custom pinned card
+  // 📌 Add custom design card
   const pinnedCard = document.createElement("div");
   pinnedCard.className = "product-card pinned-card";
   pinnedCard.setAttribute("data-id", "custom-design");
@@ -54,16 +53,21 @@ async function loadProducts() {
     productCard.setAttribute("data-onesize", data.oneSizeOnly ? "true" : "false");
     productCard.setAttribute("data-stock", JSON.stringify(data.stock || {}));
 
-    let wishlistIcon = '<i class="fa-regular fa-heart wishlist-icon"></i>';
+    // 🔍 Check if item is already in wishlist for current user
+    let wishlistIconClass = "fa-regular";
+    let isFilled = "";
+
     if (currentUser) {
       const wishlistDocId = `${docId}OneSize`;
       const wishlistRef = doc(db, "users", currentUser.uid, "Wishlist", wishlistDocId);
       const snap = await getDoc(wishlistRef);
       if (snap.exists()) {
-        wishlistIcon = '<i class="fa-solid fa-heart wishlist-icon filled"></i>';
+        wishlistIconClass = "fa-solid";
+        isFilled = "filled";
       }
     }
 
+    // 🖼 Handle images + heart icon
     const imagesHTML = `
       ${
         Array.isArray(data.images) && data.images.length > 1
@@ -71,9 +75,10 @@ async function loadProducts() {
               `<img src="${img}" class="fade-img" style="opacity:${i === 0 ? 1 : 0};">`).join('')
           : `<img src="${Array.isArray(data.images) ? data.images[0] : data.images}" class="fade-img">`
       }
-      ${wishlistIcon}
+      <i class="${wishlistIconClass} fa-heart wishlist-icon ${isFilled}"></i>
     `;
 
+    // 🧱 Final card structure
     productCard.innerHTML = `
       <a href="product.html?id=${docId}" class="product-link">
         <div class="multi-image-wrapper">${imagesHTML}</div>
@@ -90,7 +95,7 @@ async function loadProducts() {
   container.innerHTML = '';
   productCards.forEach(card => container.appendChild(card));
 
-  // Handle fading product images
+  // 🎞️ Animate image fading
   document.querySelectorAll('.multi-image-wrapper').forEach(wrapper => {
     const images = wrapper.querySelectorAll('.fade-img');
     if (images.length <= 1) return;
@@ -103,9 +108,9 @@ async function loadProducts() {
   });
 }
 
-// 🛒 Handle Add to Basket + Wishlist
-
+// 🎯 Basket + Wishlist Handling
 document.addEventListener("click", (e) => {
+  // 🧺 Add to Basket
   if (e.target.classList.contains("add-to-basket")) {
     const card = e.target.closest(".product-card");
     const id = card.dataset.id;
@@ -129,6 +134,7 @@ document.addEventListener("click", (e) => {
     }
   }
 
+  // 📏 Size selection logic
   if (e.target.classList.contains("size-option")) {
     const size = e.target.dataset.size;
     const card = e.target.closest(".product-card");
@@ -140,9 +146,11 @@ document.addEventListener("click", (e) => {
     addToCart(id, name, price, image, size);
   }
 
+  // ❤️ Wishlist toggle
   if (e.target.classList.contains("wishlist-icon") || e.target.closest(".wishlist-icon")) {
     const icon = e.target.closest(".wishlist-icon");
     if (!currentUser) return alert("Please log in to use wishlist");
+
     const card = icon.closest(".product-card");
     const productId = card.getAttribute("data-id");
     const name = card.querySelector('.product-name')?.textContent;
@@ -152,18 +160,20 @@ document.addEventListener("click", (e) => {
     const wishlistDocId = `${productId}${size}`;
     const wishlistRef = doc(db, "users", currentUser.uid, "Wishlist", wishlistDocId);
 
+    // Toggle wishlist state
     if (icon.classList.contains("filled")) {
       deleteDoc(wishlistRef);
-      icon.classList.remove("filled");
-      icon.innerHTML = '<i class="fa-regular fa-heart"></i>';
+      icon.classList.remove("filled", "fa-solid");
+      icon.classList.add("fa-regular");
     } else {
       setDoc(wishlistRef, { name, price, image, size });
-      icon.classList.add("filled");
-      icon.innerHTML = '<i class="fa-solid fa-heart"></i>';
+      icon.classList.add("filled", "fa-solid");
+      icon.classList.remove("fa-regular");
     }
   }
 });
 
+// ➕ Add item to localStorage cart
 function addToCart(id, name, price, image, size = "OneSize") {
   const cartKey = "daisyCart";
   let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
@@ -184,6 +194,7 @@ function addToCart(id, name, price, image, size = "OneSize") {
   }
 }
 
+// 📤 Track basket updates in Firestore
 async function logBasketActivity(product) {
   try {
     await addDoc(collection(db, "BasketUpdates"), {
