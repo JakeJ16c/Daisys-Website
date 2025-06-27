@@ -52,9 +52,9 @@ function init() {
     const hue = Math.random() * 360;
     const color = new THREE.Color(`hsl(${hue}, 30%, 75%)`);
   
-    // 🔁 Random size
-    const outerRadius = 0.3 + Math.random() * 0.15;  // 0.3 – 0.45
-    const tubeRadius = 0.12 + Math.random() * 0.08;  // 0.12 – 0.20
+    const outerRadius = 0.3 + Math.random() * 0.15;   // 0.30 – 0.45
+    const tubeRadius  = 0.12 + Math.random() * 0.08;  // 0.12 – 0.20
+    const zScale      = 1.4 + Math.random() * 0.5;    // 1.4 – 1.9
   
     const geometry = new THREE.TorusGeometry(outerRadius, tubeRadius, 32, 64);
     const material = new THREE.MeshPhysicalMaterial({
@@ -69,14 +69,11 @@ function init() {
     });
   
     const mesh = new THREE.Mesh(geometry, material);
-  
-    // Keep consistent squashed Z shape
-    mesh.scale.set(1, 1, 1.5);
+    mesh.scale.set(1, 1, zScale); // ✅ Unique Z scale
     scene.add(mesh);
   
     const body = new CANNON.Body({ mass: 0.5 });
-    body.addShape(new CANNON.Sphere(outerRadius)); // use outer radius for physics
-  
+    body.addShape(new CANNON.Sphere(outerRadius));
     body.position.set(
       (Math.random() - 0.5) * 20,
       Math.random() * 10 + 5,
@@ -84,12 +81,11 @@ function init() {
     );
     body.linearDamping = 0.2;
     body.angularDamping = 0.3;
-  
     world.addBody(body);
   
     beads.push(mesh);
     bodies.push(body);
-  }
+  }    
 
   window.addEventListener('resize', () => {
     camera.aspect = innerWidth/innerHeight;
