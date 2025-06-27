@@ -3,58 +3,47 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>You're So Golden – Bead Loader</title>
+  <title>You're So Golden – Bead Animation</title>
   <style>
     body {
       margin: 0;
-      background: #FFF9C4;
       overflow: hidden;
+      background: #FFF9C4;
     }
     canvas {
       display: block;
-      position: absolute;
-      top: 0;
-      left: 0;
     }
     #logo {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 100px;
-      opacity: 0;
-      animation: fadeIn 2s ease-out 3s forwards;
-      z-index: 2;
-    }
-    @keyframes fadeIn {
-      to {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1.05);
-      }
+      width: 80px;
+      z-index: 1;
     }
   </style>
 </head>
 <body>
-  <canvas id="loaderCanvas"></canvas>
-  <img id="logo" src="logo.jpeg" alt="You're So Golden Logo" />
+  <canvas id="beadsCanvas"></canvas>
+  <img id="logo" src="logo.jpeg" alt="Logo" />
 
   <script>
-    const canvas = document.getElementById('loaderCanvas');
-    const ctx = canvas.getContext('2d');
+    const canvas = document.getElementById("beadsCanvas");
+    const ctx = canvas.getContext("2d");
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    const colors = ['#A3E4FF', '#BCE6E6', '#8FC1D4', '#D0F0F7', '#A5E9E1', '#C5F5FF', '#E3FDFD'];
+    const colors = ["#82B3C9", "#A4D4C2", "#C3E7E3", "#B0C9D4"];
     const beads = [];
 
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 30; i++) {
       beads.push({
         x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height - canvas.height,
-        radius: 6 + Math.random() * 4,
-        speed: 1 + Math.random() * 1.5,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        bounce: Math.random() * 2
+        y: Math.random() * canvas.height,
+        r: 6 + Math.random() * 4,
+        dx: (Math.random() - 0.5) * 2,
+        dy: (Math.random() - 0.5) * 2,
+        color: colors[Math.floor(Math.random() * colors.length)]
       });
     }
 
@@ -62,33 +51,24 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       for (let bead of beads) {
         ctx.beginPath();
-        ctx.arc(bead.x, bead.y, bead.radius, 0, Math.PI * 2);
+        ctx.arc(bead.x, bead.y, bead.r, 0, Math.PI * 2);
         ctx.fillStyle = bead.color;
-        ctx.shadowColor = '#00000033';
+        ctx.shadowColor = "rgba(0,0,0,0.2)";
         ctx.shadowBlur = 4;
         ctx.fill();
         ctx.closePath();
 
-        bead.y += bead.speed + Math.sin(performance.now() / 300 + bead.bounce);
+        bead.x += bead.dx;
+        bead.y += bead.dy;
 
-        if (bead.y > canvas.height + bead.radius) {
-          bead.y = -10;
-          bead.x = Math.random() * canvas.width;
-        }
+        if (bead.x + bead.r > canvas.width || bead.x - bead.r < 0) bead.dx *= -1;
+        if (bead.y + bead.r > canvas.height || bead.y - bead.r < 0) bead.dy *= -1;
       }
+
       requestAnimationFrame(draw);
     }
 
     draw();
-
-    // Exit after 10 seconds
-    setTimeout(() => {
-      document.body.style.transition = 'opacity 1s ease-out';
-      document.body.style.opacity = '0';
-      setTimeout(() => {
-        window.location.href = "index.html"; // Replace with actual route if needed
-      }, 1000);
-    }, 10000);
   </script>
 </body>
 </html>
