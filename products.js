@@ -45,7 +45,6 @@ async function loadProducts() {
     productCard.setAttribute("data-stock", JSON.stringify(data.stock || {}));
 
     const imagesHTML = `
-    <div class="image-wrap">
       ${
         Array.isArray(data.images) && data.images.length > 1
           ? data.images.map((img, i) =>
@@ -53,7 +52,6 @@ async function loadProducts() {
           : `<img src="${Array.isArray(data.images) ? data.images[0] : data.images}" class="fade-img">`
       }
       <i class="fa-regular fa-heart wishlist-icon"></i>
-    </div>
   `;
 
     productCard.innerHTML = `
