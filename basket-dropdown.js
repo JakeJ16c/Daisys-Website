@@ -162,7 +162,7 @@ document.addEventListener("DOMContentLoaded", () => {
       sizeInfo.style.color = "#666";
       sizeInfo.style.marginTop = "9px";
       
-      if (item.size) {
+      if (item.size && item.size.toLowerCase() !== "onesize") {
         sizeInfo.textContent = "Size: ";
         const sizeBadge = document.createElement("span");
         sizeBadge.textContent = item.size;
