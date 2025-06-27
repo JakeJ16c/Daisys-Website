@@ -541,7 +541,11 @@ window.onload = () => {
 
   toggle.addEventListener("change", () => {
     wrapper.style.display = toggle.checked ? "block" : "none";
-    document.getElementById("siteMaintenanceStatus").textContent = toggle.checked ? "Enabled" : "Disabled";
+    const statusEl = document.getElementById("siteMaintenanceStatus");
+    statusEl.textContent = data.enabled ? "Enabled" : "Disabled";
+    statusEl.classList.remove("status-enabled", "status-disabled");
+    statusEl.classList.add(data.enabled ? "status-enabled" : "status-disabled");
+
     saveSettings();
   });
 
