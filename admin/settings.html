@@ -535,16 +535,19 @@ window.onload = () => {
       toggle.checked = data.enabled;
       ipBox.value = (data.allowedIPs || []).join(", ");
       wrapper.style.display = data.enabled ? "block" : "none";
-      document.getElementById("siteMaintenanceStatus").textContent = data.enabled ? "Enabled" : "Disabled";
+      const statusEl = document.getElementById("siteMaintenanceStatus");
+      statusEl.textContent = data.enabled ? "Enabled" : "Disabled";
+      statusEl.classList.remove("status-enabled", "status-disabled");
+      statusEl.classList.add(data.enabled ? "status-enabled" : "status-disabled");
     }
   }
 
   toggle.addEventListener("change", () => {
     wrapper.style.display = toggle.checked ? "block" : "none";
     const statusEl = document.getElementById("siteMaintenanceStatus");
-    statusEl.textContent = data.enabled ? "Enabled" : "Disabled";
+    statusEl.textContent = toggle.checked ? "Enabled" : "Disabled";
     statusEl.classList.remove("status-enabled", "status-disabled");
-    statusEl.classList.add(data.enabled ? "status-enabled" : "status-disabled");
+    statusEl.classList.add(toggle.checked ? "status-enabled" : "status-disabled");
 
     saveSettings();
   });
