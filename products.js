@@ -44,10 +44,17 @@ async function loadProducts() {
     productCard.setAttribute("data-onesize", data.oneSizeOnly ? "true" : "false");
     productCard.setAttribute("data-stock", JSON.stringify(data.stock || {}));
 
-    const imagesHTML = Array.isArray(data.images) && data.images.length > 1
-      ? data.images.map((img, i) =>
-          `<img src="${img}" class="fade-img" style="opacity:${i === 0 ? 1 : 0};">`).join('')
-      : `<img src="${Array.isArray(data.images) ? data.images[0] : data.images}" class="fade-img">`;
+    const imagesHTML = `
+    <div class="image-wrap">
+      ${
+        Array.isArray(data.images) && data.images.length > 1
+          ? data.images.map((img, i) =>
+              `<img src="${img}" class="fade-img" style="opacity:${i === 0 ? 1 : 0};">`).join('')
+          : `<img src="${Array.isArray(data.images) ? data.images[0] : data.images}" class="fade-img">`
+      }
+      <i class="fa-regular fa-heart wishlist-icon"></i>
+    </div>
+  `;
 
     productCard.innerHTML = `
       <a href="product.html?id=${doc.id}" class="product-link">
