@@ -3,100 +3,99 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>You're So Golden – Beads</title>
+  <title>You're So Golden – Bead Simulation</title>
   <style>
     body {
       margin: 0;
       background: #FFF9C4;
       overflow: hidden;
     }
-
     canvas {
       display: block;
     }
-
-    #logo {
+    .center-logo {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
+      z-index: 2;
+    }
+    .center-logo img {
       width: 80px;
-      z-index: 10;
     }
   </style>
 </head>
 <body>
+  <div class="center-logo">
+    <img src="logo.png" alt="Logo">
+  </div>
   <canvas id="beadsCanvas"></canvas>
-  <img id="logo" src="logo.jpeg" alt="Logo" />
 
   <script>
-    const canvas = document.getElementById("beadsCanvas");
-    const ctx = canvas.getContext("2d");
+    const canvas = document.getElementById('beadsCanvas');
+    const ctx = canvas.getContext('2d');
+
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    const colors = ["#bfe3f7", "#d0f0ff", "#a4d4f2", "#e2f7ff"];
-    const beadCount = 45;
-    const gravity = 0.08;
-    const bounceFactor = 0.6;
+    class Bead {
+      constructor() {
+        this.reset();
+      }
 
-    const beads = [];
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * -canvas.height;
+        this.radius = 6 + Math.random() * 10;
+        this.speed = 0.3 + Math.random() * 1.2;
+        this.color = this.getRandomColor();
+      }
 
-    for (let i = 0; i < beadCount; i++) {
-      const radius = 10 + Math.random() * 10;
-      beads.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        r: radius,
-        vy: 0,
-        twinkle: Math.random() * 0.02 + 0.01,
-        opacity: Math.random() * 0.3 + 0.7,
-        color: colors[Math.floor(Math.random() * colors.length)]
-      });
+      getRandomColor() {
+        const blueShades = ['#AEE3F8', '#7BC6F9', '#5EAEF1'];
+        const greenShades = ['#A2E3B1', '#78C48C', '#6EDDAA'];
+        const mix = [...blueShades, ...greenShades];
+        return mix[Math.floor(Math.random() * mix.length)];
+      }
+
+      draw(ctx) {
+        const gradient = ctx.createRadialGradient(
+          this.x - this.radius * 0.3, this.y - this.radius * 0.3, this.radius * 0.2,
+          this.x, this.y, this.radius
+        );
+        gradient.addColorStop(0, '#ffffffcc');
+        gradient.addColorStop(0.4, this.color);
+        gradient.addColorStop(1, '#00000020');
+
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = gradient;
+        ctx.fill();
+      }
+
+      update() {
+        this.y += this.speed;
+        if (this.y - this.radius > canvas.height) {
+          this.reset();
+          this.y = -this.radius;
+        }
+      }
     }
 
-    function drawBead(bead) {
-      const gradient = ctx.createRadialGradient(
-        bead.x - bead.r / 3, bead.y - bead.r / 3, bead.r / 8,
-        bead.x, bead.y, bead.r
-      );
-      gradient.addColorStop(0, `rgba(255, 255, 255, ${bead.opacity})`);
-      gradient.addColorStop(0.4, bead.color);
-      gradient.addColorStop(1, "rgba(0, 0, 0, 0.05)");
-
-      ctx.beginPath();
-      ctx.arc(bead.x, bead.y, bead.r, 0, Math.PI * 2);
-      ctx.fillStyle = gradient;
-      ctx.fill();
-      ctx.closePath();
-    }
+    const beads = Array.from({ length: 70 }, () => new Bead());
 
     function animate() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      for (let bead of beads) {
-        bead.vy += gravity;
-        bead.y += bead.vy;
-
-        // Soft bounce
-        if (bead.y + bead.r > canvas.height) {
-          bead.y = canvas.height - bead.r;
-          bead.vy *= -bounceFactor;
-        }
-
-        // Gentle twinkle
-        bead.opacity += bead.twinkle;
-        if (bead.opacity > 1 || bead.opacity < 0.6) bead.twinkle *= -1;
-
-        drawBead(bead);
-      }
-
+      beads.forEach(bead => {
+        bead.update();
+        bead.draw(ctx);
+      });
       requestAnimationFrame(animate);
     }
 
     animate();
 
-    window.addEventListener("resize", () => {
+    window.addEventListener('resize', () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     });
