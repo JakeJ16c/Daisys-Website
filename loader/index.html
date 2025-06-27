@@ -1,36 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Safari Bead Fix</title>
+  <meta charset="UTF-8" />
+  <title>Bead Shape Focus</title>
   <style>
-    body { margin: 0; overflow: hidden; }
-    canvas { display: block; }
+    body { margin: 0; overflow: hidden; background: #111; }
   </style>
 </head>
 <body>
   <script src="https://unpkg.com/three@0.161.0/build/three.min.js"></script>
   <script>
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x111111);
 
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 15;
+    const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.z = 5;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
+    // Light
     const light = new THREE.DirectionalLight(0xffffff, 1);
     light.position.set(3, 3, 3);
     scene.add(light);
+    scene.add(new THREE.AmbientLight(0x404040)); // soft fill light
 
-    const bead = new THREE.Mesh(
-      new THREE.TorusGeometry(1, 0.4, 16, 50),
-      new THREE.MeshStandardMaterial({ color: 0x66ccff, metalness: 0.5, roughness: 0.2 })
-    );
+    // Bead geometry
+    const geometry = new THREE.TorusGeometry(1, 0.35, 24, 64);
+    const material = new THREE.MeshStandardMaterial({
+      color: 0x66ccff,
+      metalness: 0.4,
+      roughness: 0.2
+    });
+    const bead = new THREE.Mesh(geometry, material);
     scene.add(bead);
 
+    // Animate
     function animate() {
       requestAnimationFrame(animate);
       bead.rotation.x += 0.01;
