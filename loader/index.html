@@ -1,1 +1,87 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>You're So Golden – 3D Beads Loader</title>
+  <style>
+    body {
+      margin: 0;
+      background: #FFF9C4;
+      overflow: hidden;
+    }
+    #loaderCanvas {
+      width: 100vw;
+      height: 100vh;
+      display: block;
+    }
+    #logo {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 120px;
+      opacity: 0;
+      animation: fadeIn 2s ease-out 3s forwards;
+    }
+    @keyframes fadeIn {
+      to { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="loaderCanvas"></canvas>
+  <img id="logo" src="logo.jpeg" alt="You're So Golden Logo" />
+  <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+  <script>
+    // Simplified placeholder logic - you’ll replace with real bead logic
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById("loaderCanvas"), alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    const geometry = new THREE.SphereGeometry(0.2, 32, 32);
+    const texture = new THREE.TextureLoader().load('beads.jpeg');
+    const material = new THREE.MeshStandardMaterial({ map: texture });
+    const light = new THREE.PointLight(0xffffff, 1, 100);
+    light.position.set(10, 10, 10);
+    scene.add(light);
+
+    const beads = [];
+    for (let i = 0; i < 12; i++) {
+      const bead = new THREE.Mesh(geometry, material);
+      bead.position.set((Math.random() - 0.5) * 4, Math.random() * 4 + 2, (Math.random() - 0.5) * 4);
+      beads.push(bead);
+      scene.add(bead);
+    }
+
+    camera.position.z = 5;
+
+    function animate() {
+      requestAnimationFrame(animate);
+      beads.forEach(bead => {
+        bead.rotation.x += 0.01;
+        bead.rotation.y += 0.01;
+      });
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    // Manual callback
+    window.loaderDone = () => {
+      document.body.style.transition = 'opacity 1s ease-out';
+      document.body.style.opacity = '0';
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 1000);
+    }
+
+    // Fallback
+    setTimeout(() => {
+      if (window.loaderDone) loaderDone();
+    }, 10000);
+  </script>
+</body>
+</html>
