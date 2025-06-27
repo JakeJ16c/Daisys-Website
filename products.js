@@ -185,6 +185,7 @@ document.addEventListener("click", (e) => {
       }
     })();
   }
+});
 
 // ➕ Add item to localStorage cart
 function addToCart(id, name, price, image, size = "OneSize") {
