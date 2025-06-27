@@ -330,6 +330,28 @@
   border-color: black;
 }
 
+.image-wrap {
+  position: relative;
+}
+
+.wishlist-icon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 20px;
+  color: rgba(0, 0, 0, 0.4);
+  background: white;
+  border-radius: 50%;
+  padding: 4px;
+  z-index: 2;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.wishlist-icon:hover {
+  color: #ff4081;
+}
+
     /* ========== Hover Jump Animation ========== */
     .circle-card:hover,
     .product-card:hover {
