@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bead Loader</title>
+  <title>Realistic 3D Beads</title>
   <style>
     body, html {
       margin: 0;
@@ -32,43 +32,46 @@
 
     const canvas = document.getElementById("beads-canvas");
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.z = 5;
+
     const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
     document.body.appendChild(renderer.domElement);
 
-    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 1.2);
-    scene.add(hemiLight);
-    const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-    dirLight.position.set(5, 10, 7.5);
-    scene.add(dirLight);
+    // Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight.position.set(2, 4, 5);
+    scene.add(ambientLight, directionalLight);
 
-    const beadGeometry = new THREE.SphereGeometry(0.2, 32, 32);
-    const beadMaterials = [
-      new THREE.MeshPhysicalMaterial({ color: 0x3fc4ff, metalness: 0.2, roughness: 0.1, transmission: 1, transparent: true }),
-      new THREE.MeshPhysicalMaterial({ color: 0x00ff66, metalness: 0.2, roughness: 0.2, transmission: 0.9, transparent: true }),
-      new THREE.MeshPhysicalMaterial({ color: 0xccccff, metalness: 0.1, roughness: 0.3, transmission: 0.8, transparent: true }),
-    ];
+    const material = new THREE.MeshPhysicalMaterial({
+      metalness: 0.5,
+      roughness: 0.05,
+      transmission: 0.95,
+      thickness: 0.2,
+      clearcoat: 1,
+      clearcoatRoughness: 0.1,
+      reflectivity: 1,
+    });
 
+    const beadGeometry = new THREE.SphereGeometry(0.2, 64, 64);
     const beads = [];
+
     for (let i = 0; i < 80; i++) {
-      const bead = new THREE.Mesh(beadGeometry, beadMaterials[Math.floor(Math.random() * beadMaterials.length)]);
-      bead.position.set(
-        (Math.random() - 0.5) * 10,
-        Math.random() * 10 + 5,
-        (Math.random() - 0.5) * 10
-      );
-      bead.scale.setScalar(0.5 + Math.random());
+      const bead = new THREE.Mesh(beadGeometry, material.clone());
+      bead.material.color.setHSL(Math.random(), 0.5, 0.6);
+      bead.position.set((Math.random() - 0.5) * 10, Math.random() * 10 + 5, (Math.random() - 0.5) * 10);
+      bead.scale.setScalar(0.5 + Math.random() * 1.5);
       scene.add(bead);
       beads.push(bead);
     }
 
-    camera.position.z = 5;
-
     function animate() {
       requestAnimationFrame(animate);
       beads.forEach(bead => {
-        bead.position.y -= 0.015 + Math.random() * 0.01;
+        bead.position.y -= 0.01 + Math.random() * 0.005;
         if (bead.position.y < -6) {
           bead.position.y = 10;
           bead.position.x = (Math.random() - 0.5) * 10;
