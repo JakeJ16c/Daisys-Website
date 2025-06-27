@@ -1,112 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Realistic 3D Beads</title>
-  <style>
-    html, body {
-      margin: 0;
-      height: 100%;
-      background-color: #FFF9C4;
-      overflow: hidden;
-    }
-    canvas {
-      display: block;
-    }
-  </style>
-</head>
-<body>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Realistic Bead Loader</title>
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        background: #FFF9C4;
+        overflow: hidden;
+        height: 100%;
+      }
+      canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="module">
+      import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js';
+      import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.160.1/examples/jsm/controls/OrbitControls.js';
 
-  <script>
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 30;
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.z = 20;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
 
-    // Lighting
-    const light1 = new THREE.DirectionalLight(0xffffff, 1);
-    light1.position.set(10, 10, 10);
-    scene.add(light1);
-    const light2 = new THREE.AmbientLight(0xffffff, 0.4);
-    scene.add(light2);
+      // Soft yellow background
+      renderer.setClearColor(0xFFF9C4, 1);
 
-    const colors = ['#F8BBD0', '#E1BEE7', '#B2EBF2', '#C8E6C9', '#FFF59D', '#FFD180'];
+      const light = new THREE.DirectionalLight(0xffffff, 0.9);
+      light.position.set(5, 10, 7.5);
+      scene.add(light);
 
-    const beads = [];
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+      scene.add(ambientLight);
 
-    // Bead profile (2D shape rotated around Y axis)
-    const createBeadGeometry = () => {
-      const points = [];
-      const radius = 1;
-      const holeRadius = 0.3;
+      // Bead profile shape (rounded capsule with hole)
+      const beadPoints = [];
+      beadPoints.push(new THREE.Vector2(0.75, -1.5));  // bottom inner
+      beadPoints.push(new THREE.Vector2(1.5, -1.5));   // bottom outer curve
+      beadPoints.push(new THREE.Vector2(2.25, 0));     // bulge mid-point
+      beadPoints.push(new THREE.Vector2(1.5, 1.5));    // top outer curve
+      beadPoints.push(new THREE.Vector2(0.75, 1.5));   // top inner
 
-      for (let i = 0; i <= 20; i++) {
-        const theta = (i / 20) * Math.PI;
-        const r = holeRadius + (radius - holeRadius) * Math.sin(theta);
-        const y = (radius - holeRadius) * Math.cos(theta);
-        points.push(new THREE.Vector2(r, y));
+      const beadGeometry = new THREE.LatheGeometry(beadPoints, 64);
+
+      const beadMaterials = [
+        new THREE.MeshPhysicalMaterial({ color: 0xdcb3ff, roughness: 0.1, transmission: 0.7, thickness: 0.5 }),
+        new THREE.MeshPhysicalMaterial({ color: 0xa5f2d4, roughness: 0.1, transmission: 0.7, thickness: 0.5 }),
+        new THREE.MeshPhysicalMaterial({ color: 0xffc1c1, roughness: 0.1, transmission: 0.7, thickness: 0.5 }),
+        new THREE.MeshPhysicalMaterial({ color: 0xcfd8dc, roughness: 0.1, transmission: 0.7, thickness: 0.5 }),
+        new THREE.MeshPhysicalMaterial({ color: 0xeeeeee, roughness: 0.1, transmission: 0.7, thickness: 0.5 })
+      ];
+
+      function createBead() {
+        const mat = beadMaterials[Math.floor(Math.random() * beadMaterials.length)];
+        const bead = new THREE.Mesh(beadGeometry, mat);
+        bead.position.set(
+          (Math.random() - 0.5) * 40,
+          (Math.random() - 0.5) * 40,
+          (Math.random() - 0.5) * 40
+        );
+        bead.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+        bead.scale.setScalar(0.7 + Math.random() * 0.5);
+        scene.add(bead);
+        beads.push(bead);
       }
 
-      return new THREE.LatheGeometry(points, 64);
-    };
+      const beads = [];
+      for (let i = 0; i < 60; i++) createBead();
 
-    const geometry = createBeadGeometry();
+      function animate() {
+        requestAnimationFrame(animate);
+        beads.forEach(b => {
+          b.rotation.x += 0.003;
+          b.rotation.y += 0.002;
+          b.position.y -= 0.02;
+          if (b.position.y < -25) b.position.y = 25;
+        });
+        renderer.render(scene, camera);
+      }
 
-    for (let i = 0; i < 60; i++) {
-      const color = new THREE.Color(colors[Math.floor(Math.random() * colors.length)]);
-      const material = new THREE.MeshPhysicalMaterial({
-        color,
-        roughness: 0.15,
-        metalness: 0.4,
-        clearcoat: 0.6,
-        reflectivity: 0.5
+      animate();
+
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
       });
-
-      const bead = new THREE.Mesh(geometry, material);
-      bead.scale.setScalar(0.9 + Math.random() * 0.6);
-      bead.position.set(
-        (Math.random() - 0.5) * 60,
-        (Math.random() - 0.5) * 60,
-        (Math.random() - 0.5) * 60
-      );
-      bead.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
-      scene.add(bead);
-
-      beads.push({
-        mesh: bead,
-        velocity: (Math.random() - 0.5) * 0.005,
-        axis: new THREE.Vector3(Math.random(), Math.random(), Math.random()).normalize()
-      });
-    }
-
-    function animate() {
-      requestAnimationFrame(animate);
-      beads.forEach(b => {
-        b.mesh.rotation.x += 0.01;
-        b.mesh.rotation.y += 0.008;
-        b.mesh.position.addScaledVector(b.axis, b.velocity);
-        if (b.mesh.position.length() > 40) {
-          b.mesh.position.set(
-            (Math.random() - 0.5) * 30,
-            (Math.random() - 0.5) * 30,
-            (Math.random() - 0.5) * 30
-          );
-        }
-      });
-      renderer.render(scene, camera);
-    }
-
-    animate();
-
-    window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    });
-  </script>
-</body>
+    </script>
+  </body>
 </html>
