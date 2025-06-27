@@ -35,32 +35,34 @@
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    const colors = ["#a0d2eb", "#b2e0f2", "#cbeefb", "#d4f1f9"];
-    const beadCount = 50;
-    const gravity = 0.15;
-    const bounceFactor = 0.7;
+    const colors = ["#bfe3f7", "#d0f0ff", "#a4d4f2", "#e2f7ff"];
+    const beadCount = 45;
+    const gravity = 0.08;
+    const bounceFactor = 0.6;
 
     const beads = [];
 
     for (let i = 0; i < beadCount; i++) {
-      const radius = 8 + Math.random() * 10;
+      const radius = 10 + Math.random() * 10;
       beads.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
         r: radius,
         vy: 0,
+        twinkle: Math.random() * 0.02 + 0.01,
+        opacity: Math.random() * 0.3 + 0.7,
         color: colors[Math.floor(Math.random() * colors.length)]
       });
     }
 
     function drawBead(bead) {
       const gradient = ctx.createRadialGradient(
-        bead.x - bead.r / 3, bead.y - bead.r / 3, bead.r / 5,
+        bead.x - bead.r / 3, bead.y - bead.r / 3, bead.r / 8,
         bead.x, bead.y, bead.r
       );
-      gradient.addColorStop(0, "#ffffffdd");
-      gradient.addColorStop(0.3, bead.color);
-      gradient.addColorStop(1, "#00000011");
+      gradient.addColorStop(0, `rgba(255, 255, 255, ${bead.opacity})`);
+      gradient.addColorStop(0.4, bead.color);
+      gradient.addColorStop(1, "rgba(0, 0, 0, 0.05)");
 
       ctx.beginPath();
       ctx.arc(bead.x, bead.y, bead.r, 0, Math.PI * 2);
@@ -76,10 +78,15 @@
         bead.vy += gravity;
         bead.y += bead.vy;
 
+        // Soft bounce
         if (bead.y + bead.r > canvas.height) {
           bead.y = canvas.height - bead.r;
           bead.vy *= -bounceFactor;
         }
+
+        // Gentle twinkle
+        bead.opacity += bead.twinkle;
+        if (bead.opacity > 1 || bead.opacity < 0.6) bead.twinkle *= -1;
 
         drawBead(bead);
       }
