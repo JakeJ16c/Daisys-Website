@@ -1,10 +1,19 @@
 import { db } from './firebase.js';
-import { getDocs, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+import { getDocs, collection, addDoc, serverTimestamp, doc, setDoc, deleteDoc, getDoc } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+import { auth } from "./firebase.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 
 const container = document.getElementById('product-grid');
 
 // 🔁 Show loading spinner
 container.innerHTML = `<div class="spinner-container"><div class="spinner"></div></div>`;
+
+let currentUser = null;
+
+onAuthStateChanged(auth, (user) => {
+  if (user) currentUser = user;
+  loadProducts();
+});
 
 async function loadProducts() {
   const productCards = [];
@@ -33,16 +42,27 @@ async function loadProducts() {
     return;
   }
 
-  querySnapshot.forEach((doc) => {
-    const data = doc.data();
+  for (const docSnap of querySnapshot.docs) {
+    const data = docSnap.data();
+    const docId = docSnap.id;
 
     const productCard = document.createElement("div");
     productCard.className = "product-card";
-    productCard.setAttribute("data-id", doc.id);
+    productCard.setAttribute("data-id", docId);
     productCard.setAttribute("data-name", data.name);
     productCard.setAttribute("data-price", data.price);
     productCard.setAttribute("data-onesize", data.oneSizeOnly ? "true" : "false");
     productCard.setAttribute("data-stock", JSON.stringify(data.stock || {}));
+
+    let wishlistIcon = '<i class="fa-regular fa-heart wishlist-icon"></i>';
+    if (currentUser) {
+      const wishlistDocId = `${docId}OneSize`;
+      const wishlistRef = doc(db, "users", currentUser.uid, "Wishlist", wishlistDocId);
+      const snap = await getDoc(wishlistRef);
+      if (snap.exists()) {
+        wishlistIcon = '<i class="fa-solid fa-heart wishlist-icon filled"></i>';
+      }
+    }
 
     const imagesHTML = `
       ${
@@ -51,21 +71,21 @@ async function loadProducts() {
               `<img src="${img}" class="fade-img" style="opacity:${i === 0 ? 1 : 0};">`).join('')
           : `<img src="${Array.isArray(data.images) ? data.images[0] : data.images}" class="fade-img">`
       }
-      <i class="fa-regular fa-heart wishlist-icon"></i>
-  `;
+      ${wishlistIcon}
+    `;
 
     productCard.innerHTML = `
-      <a href="product.html?id=${doc.id}" class="product-link">
+      <a href="product.html?id=${docId}" class="product-link">
         <div class="multi-image-wrapper">${imagesHTML}</div>
-        <h3>${data.name}</h3>
-        <p>£${parseFloat(data.price).toFixed(2)}</p>
+        <h3 class="product-name">${data.name}</h3>
+        <p class="product-price">£${parseFloat(data.price).toFixed(2)}</p>
       </a>
       <div class="size-popup hidden"></div>
       <button class="btn add-to-basket">Add to Basket</button>
     `;
 
     productCards.push(productCard);
-  });
+  }
 
   container.innerHTML = '';
   productCards.forEach(card => container.appendChild(card));
@@ -83,10 +103,9 @@ async function loadProducts() {
   });
 }
 
-loadProducts();
+// 🛒 Handle Add to Basket + Wishlist
 
 document.addEventListener("click", (e) => {
-  // Add to Basket clicked
   if (e.target.classList.contains("add-to-basket")) {
     const card = e.target.closest(".product-card");
     const id = card.dataset.id;
@@ -98,7 +117,6 @@ document.addEventListener("click", (e) => {
     const sizePopup = card.querySelector(".size-popup");
 
     if (!oneSize && Object.keys(stock).length > 0) {
-      // Show size popup if not already visible
       if (sizePopup.classList.contains("hidden")) {
         sizePopup.innerHTML = `<p>Please select a size below</p>` + Object.entries(stock).map(([size, qty]) => {
           return qty > 0 ? `<button class="size-option" data-size="${size}">${size}</button>` : '';
@@ -111,7 +129,6 @@ document.addEventListener("click", (e) => {
     }
   }
 
-  // Size option clicked
   if (e.target.classList.contains("size-option")) {
     const size = e.target.dataset.size;
     const card = e.target.closest(".product-card");
@@ -119,11 +136,31 @@ document.addEventListener("click", (e) => {
     const name = card.dataset.name;
     const price = parseFloat(card.dataset.price);
     const image = card.querySelector("img")?.src || "placeholder.jpg";
-
-    // Hide the popup after selection
     card.querySelector(".size-popup").classList.add("hidden");
-
     addToCart(id, name, price, image, size);
+  }
+
+  if (e.target.classList.contains("wishlist-icon") || e.target.closest(".wishlist-icon")) {
+    const icon = e.target.closest(".wishlist-icon");
+    if (!currentUser) return alert("Please log in to use wishlist");
+    const card = icon.closest(".product-card");
+    const productId = card.getAttribute("data-id");
+    const name = card.querySelector('.product-name')?.textContent;
+    const price = parseFloat(card.querySelector('.product-price')?.textContent.replace("£", ""));
+    const image = card.querySelector('img')?.src;
+    const size = "OneSize";
+    const wishlistDocId = `${productId}${size}`;
+    const wishlistRef = doc(db, "users", currentUser.uid, "Wishlist", wishlistDocId);
+
+    if (icon.classList.contains("filled")) {
+      deleteDoc(wishlistRef);
+      icon.classList.remove("filled");
+      icon.innerHTML = '<i class="fa-regular fa-heart"></i>';
+    } else {
+      setDoc(wishlistRef, { name, price, image, size });
+      icon.classList.add("filled");
+      icon.innerHTML = '<i class="fa-solid fa-heart"></i>';
+    }
   }
 });
 
@@ -131,21 +168,16 @@ function addToCart(id, name, price, image, size = "OneSize") {
   const cartKey = "daisyCart";
   let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
   const existing = cart.find(item => item.id === id && item.size === size);
-
   if (existing) {
     existing.qty++;
   } else {
     cart.push({ id, name, price, qty: 1, image, size });
   }
-
   localStorage.setItem(cartKey, JSON.stringify(cart));
-
   if (typeof syncBasketToFirestore === "function") {
     syncBasketToFirestore(cart);
   }
-
   logBasketActivity({ id, name, qty: 1, size });
-
   document.getElementById("basket-preview")?.classList.remove("hidden");
   if (typeof updateBasketPreview === "function") {
     updateBasketPreview(true);
