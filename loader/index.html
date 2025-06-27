@@ -1,97 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Realistic Beads</title>
   <style>
-    body, html {
-      margin: 0;
-      padding: 0;
-      background: #FFF9C4;
-      overflow: hidden;
-      height: 100%;
-    }
+    body { margin: 0; background: #FFF9C4; overflow: hidden; }
     canvas { display: block; }
   </style>
 </head>
 <body>
-  <script type="module">
-    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js';
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js';
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 25;
+// Scene setup
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 1000);
+camera.position.z = 30;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
 
-    renderer.setClearColor(0xFFF9C4);
+// Lighting
+const light = new THREE.DirectionalLight(0xffffff, 1);
+light.position.set(10, 10, 20);
+scene.add(light);
+scene.add(new THREE.AmbientLight(0xffffff, 0.4));
 
-    const light = new THREE.DirectionalLight(0xffffff, 1);
-    light.position.set(10, 20, 10);
-    scene.add(light);
+// Bead Material
+const material = new THREE.MeshPhysicalMaterial({
+  color: 0xffc0cb,
+  roughness: 0.2,
+  metalness: 0.3,
+  clearcoat: 1,
+  clearcoatRoughness: 0.1
+});
 
-    scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+// Create realistic torus beads (TorusGeometry(radius, tube, radialSeg, tubularSeg))
+const outerDiameter = 7.5;
+const holeDiameter = 2.0;
+const radius = outerDiameter / 2;              // 3.75 mm
+const tubeRadius = (outerDiameter - holeDiameter) / 4; // ~1.375 mm
 
-    // Bead profile: small hole, round body
-    const beadProfile = [];
-    const outerRadius = 1.2;
-    const innerRadius = 0.35;
-    for (let i = 0; i <= 20; i++) {
-      const angle = (i / 20) * Math.PI;
-      const x = innerRadius + (outerRadius - innerRadius) * Math.sin(angle);
-      const y = Math.cos(angle);
-      beadProfile.push(new THREE.Vector2(x, y));
-    }
+for (let i = 0; i < 40; i++) {
+  const geometry = new THREE.TorusGeometry(radius, tubeRadius, 32, 100);
+  const bead = new THREE.Mesh(geometry, material);
+  bead.position.set(
+    (Math.random() - 0.5) * 50,
+    (Math.random() - 0.5) * 50,
+    (Math.random() - 0.5) * 50
+  );
+  bead.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
+  scene.add(bead);
+}
 
-    const beadGeometry = new THREE.LatheGeometry(beadProfile, 64);
+// Controls
+new OrbitControls(camera, renderer.domElement);
 
-    const beadColors = [0xdcb3ff, 0xa5f2d4, 0xffc1c1, 0xcfd8dc, 0xf6e2b3];
-    const beadMaterials = beadColors.map(color => new THREE.MeshPhysicalMaterial({
-      color,
-      roughness: 0.1,
-      metalness: 0.3,
-      transmission: 0.6,
-      thickness: 1.0,
-      clearcoat: 1.0
-    }));
-
-    const beads = [];
-
-    for (let i = 0; i < 80; i++) {
-      const mat = beadMaterials[Math.floor(Math.random() * beadMaterials.length)];
-      const mesh = new THREE.Mesh(beadGeometry, mat);
-      mesh.position.set(
-        (Math.random() - 0.5) * 40,
-        (Math.random() - 0.5) * 40,
-        (Math.random() - 0.5) * 40
-      );
-      mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
-      const scale = 0.8 + Math.random() * 0.5;
-      mesh.scale.set(scale, scale, scale);
-      scene.add(mesh);
-      beads.push(mesh);
-    }
-
-    function animate() {
-      requestAnimationFrame(animate);
-      beads.forEach(bead => {
-        bead.rotation.x += 0.003;
-        bead.rotation.y += 0.004;
-        bead.position.y -= 0.02;
-        if (bead.position.y < -30) bead.position.y = 30;
-      });
-      renderer.render(scene, camera);
-    }
-
-    animate();
-
-    window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    });
-  </script>
+// Animate
+function animate() {
+  requestAnimationFrame(animate);
+  renderer.render(scene, camera);
+}
+animate();
+</script>
 </body>
 </html>
