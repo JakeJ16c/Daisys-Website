@@ -130,7 +130,7 @@ document.addEventListener("click", (e) => {
         return;
       }
     } else {
-      addToCart(id, name, price, image, "OneSize");
+      addToCart(id, name, price, image);
     }
   }
 
