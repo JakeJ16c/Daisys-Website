@@ -9,114 +9,73 @@
   </style>
 </head>
 <body>
+
+  <!-- 1️⃣ Always load Three.js via CDN, right at the top of body -->
   <script src="https://unpkg.com/three@0.161.0/build/three.min.js"></script>
+
+  <!-- 2️⃣ Immediately after, your code that relies on THREE -->
   <script>
-    // 👇 Ensure this runs only after THREE is defined
-    window.addEventListener('DOMContentLoaded', () => {
-      let scene, camera, renderer;
-      const beads = [];
+    console.log('THREE:', typeof THREE); // should log "function" or "object"
 
-      init();
-      animate();
+    const beads = [];
+    let scene, camera, renderer;
 
-      function init() {
-        scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x111111);
+    init();
+    animate();
 
-        camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 100);
-        camera.position.z = 10;
+    function init() {
+      console.log('INIT:', THREE ? 'THREE is loaded' : 'No THREE');
 
-        renderer = new THREE.WebGLRenderer({ antialias: true });
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x111111);
+
+      camera = new THREE.PerspectiveCamera(70, window.innerWidth/window.innerHeight, 0.1, 100);
+      camera.position.z = 10;
+
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.physicallyCorrectLights = true;
+      document.body.appendChild(renderer.domElement);
+
+      // Light
+      const dir = new THREE.DirectionalLight(0xffffff, 1.2);
+      dir.position.set(5, 10, 5);
+      scene.add(dir);
+      scene.add(new THREE.AmbientLight(0x404040));
+
+      // Add a single test bead
+      const mat = new THREE.MeshPhysicalMaterial({
+        color: new THREE.Color('rgb(102,204,255)'),
+        transmission: 1.0,
+        thickness: 0.3,
+        roughness: 0.1,
+        metalness: 0.3,
+        clearcoat: 1,
+        clearcoatRoughness: 0.1,
+        reflectivity: 0.8
+      });
+      const geom = new THREE.TorusGeometry(0.4, 0.15, 24, 64);
+      const bead = new THREE.Mesh(geom, mat);
+      bead.scale.y = 1.4;
+      scene.add(bead);
+      beads.push(bead);
+
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.physicallyCorrectLights = true;
-        document.body.appendChild(renderer.domElement);
+      });
+    }
 
-        const light = new THREE.DirectionalLight(0xffffff, 1.2);
-        light.position.set(5, 10, 5);
-        scene.add(light);
-        scene.add(new THREE.AmbientLight(0x404040, 1));
-
-        const rgbColors = [
-          'rgb(102,204,255)',
-          'rgb(217,42,255)',
-          'rgb(102,255,102)',
-          'rgb(51,102,204)',
-          'rgb(128,0,128)',
-          'rgb(255,255,255)'
-        ];
-
-        for (let i = 0; i < 50; i++) {
-          const radius = 0.3 + Math.random() * 0.1;
-          const tube = 0.15 + Math.random() * 0.05;
-          const geometry = new THREE.TorusGeometry(radius, tube, 24, 64);
-
-          const color = new THREE.Color(rgbColors[Math.floor(Math.random() * rgbColors.length)]);
-          const isTransparent = Math.random() > 0.4;
-
-          const material = new THREE.MeshPhysicalMaterial({
-            color: color,
-            transmission: isTransparent ? 1.0 : 0.0,
-            thickness: isTransparent ? 0.3 : 0.0,
-            roughness: 0.1,
-            metalness: 0.3,
-            clearcoat: 1.0,
-            clearcoatRoughness: 0.1,
-            reflectivity: 0.8
-          });
-
-          const bead = new THREE.Mesh(geometry, material);
-
-          bead.position.set(
-            (Math.random() - 0.5) * 20,
-            Math.random() * 10 + 10,
-            (Math.random() - 0.5) * 10
-          );
-
-          bead.rotation.set(
-            Math.random() * Math.PI,
-            Math.random() * Math.PI,
-            Math.random() * Math.PI
-          );
-
-          bead.scale.y = 1.4;
-
-          bead.userData = {
-            velocity: 0.01 + Math.random() * 0.015,
-            rotationSpeed: {
-              x: 0.005 + Math.random() * 0.01,
-              y: 0.005 + Math.random() * 0.01
-            }
-          };
-
-          beads.push(bead);
-          scene.add(bead);
-        }
-
-        window.addEventListener('resize', () => {
-          camera.aspect = window.innerWidth / window.innerHeight;
-          camera.updateProjectionMatrix();
-          renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-      }
-
-      function animate() {
-        requestAnimationFrame(animate);
-
-        for (const bead of beads) {
-          bead.position.y -= bead.userData.velocity;
-          bead.rotation.x += bead.userData.rotationSpeed.x;
-          bead.rotation.y += bead.userData.rotationSpeed.y;
-
-          if (bead.position.y < -10) {
-            bead.position.y = 15;
-            bead.position.x = (Math.random() - 0.5) * 20;
-            bead.position.z = (Math.random() - 0.5) * 10;
-          }
-        }
-
-        renderer.render(scene, camera);
-      }
-    });
+    function animate() {
+      requestAnimationFrame(animate);
+      beads.forEach(b => {
+        b.rotation.x += 0.01;
+        b.rotation.y += 0.01;
+      });
+      renderer.render(scene, camera);
+    }
   </script>
+
 </body>
 </html>
