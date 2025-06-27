@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>You're So Golden – Bead Animation</title>
+  <title>You're So Golden – 3D Beads</title>
   <style>
     body {
       margin: 0;
@@ -33,30 +33,42 @@
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    const colors = ["#82B3C9", "#A4D4C2", "#C3E7E3", "#B0C9D4"];
     const beads = [];
+    const colors = ["#82B3C9", "#A4D4C2", "#C3E7E3", "#B0C9D4"];
 
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 40; i++) {
+      const r = 8 + Math.random() * 12;
       beads.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        r: 6 + Math.random() * 4,
-        dx: (Math.random() - 0.5) * 2,
-        dy: (Math.random() - 0.5) * 2,
-        color: colors[Math.floor(Math.random() * colors.length)]
+        r,
+        dx: (Math.random() - 0.5) * 1.5,
+        dy: (Math.random() - 0.5) * 1.5,
+        color: colors[Math.floor(Math.random() * colors.length)],
       });
     }
 
-    function draw() {
+    function drawBead(bead) {
+      const gradient = ctx.createRadialGradient(
+        bead.x - bead.r / 3, bead.y - bead.r / 3, bead.r / 5,
+        bead.x, bead.y, bead.r
+      );
+      gradient.addColorStop(0, "#ffffffcc");
+      gradient.addColorStop(0.3, bead.color);
+      gradient.addColorStop(1, "#00000011");
+
+      ctx.beginPath();
+      ctx.arc(bead.x, bead.y, bead.r, 0, Math.PI * 2);
+      ctx.fillStyle = gradient;
+      ctx.fill();
+      ctx.closePath();
+    }
+
+    function animate() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+
       for (let bead of beads) {
-        ctx.beginPath();
-        ctx.arc(bead.x, bead.y, bead.r, 0, Math.PI * 2);
-        ctx.fillStyle = bead.color;
-        ctx.shadowColor = "rgba(0,0,0,0.2)";
-        ctx.shadowBlur = 4;
-        ctx.fill();
-        ctx.closePath();
+        drawBead(bead);
 
         bead.x += bead.dx;
         bead.y += bead.dy;
@@ -65,10 +77,15 @@
         if (bead.y + bead.r > canvas.height || bead.y - bead.r < 0) bead.dy *= -1;
       }
 
-      requestAnimationFrame(draw);
+      requestAnimationFrame(animate);
     }
 
-    draw();
+    animate();
+
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
   </script>
 </body>
 </html>
