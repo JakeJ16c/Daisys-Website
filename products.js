@@ -150,7 +150,7 @@ document.addEventListener("click", (e) => {
   if (e.target.classList.contains("wishlist-icon") || e.target.closest(".wishlist-icon")) {
     const icon = e.target.closest(".wishlist-icon");
     if (!currentUser) return alert("Please log in to use wishlist");
-
+  
     const card = icon.closest(".product-card");
     const productId = card.getAttribute("data-id");
     const name = card.querySelector('.product-name')?.textContent;
@@ -159,13 +159,15 @@ document.addEventListener("click", (e) => {
     const size = "OneSize";
     const wishlistDocId = `${productId}${size}`;
     const wishlistRef = doc(db, "users", currentUser.uid, "Wishlist", wishlistDocId);
-
-    // Toggle wishlist state
+  
+    // Toggle logic
     if (icon.classList.contains("filled")) {
+      // Remove from wishlist
       deleteDoc(wishlistRef);
       icon.classList.remove("filled", "fa-solid");
       icon.classList.add("fa-regular");
     } else {
+      // Add to wishlist
       setDoc(wishlistRef, { name, price, image, size });
       icon.classList.add("filled", "fa-solid");
       icon.classList.remove("fa-regular");
