@@ -1,103 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Beads by Daisy – Realistic 3D Beads</title>
+  <meta charset="UTF-8">
+  <title>Beads with Three.js</title>
   <style>
-    html, body {
-      margin: 0;
-      height: 100%;
-      background: #FFF9C4;
-      overflow: hidden;
-    }
-    canvas {
-      display: block;
-    }
+    body { margin: 0; overflow: hidden; }
+    canvas { display: block; }
   </style>
 </head>
 <body>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/js/controls/OrbitControls.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.min.js"></script>
 
   <script>
     // Scene setup
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 0.1, 1000);
-    camera.position.z = 20;
+    scene.background = new THREE.Color(0x1a1a1a);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+    camera.position.z = 30;
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    // Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.1);
-    scene.add(ambientLight);
+    // Lights
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
+    directionalLight.position.set(10, 10, 10);
+    scene.add(ambientLight, directionalLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
-    directionalLight.position.set(5, 10, 7.5);
-    scene.add(directionalLight);
-
-    // Bead lathe shape - refined dimensions
-    const beadShape = [
-      new THREE.Vector2(3.0, -1.0),
-      new THREE.Vector2(2.8, -0.9),
-      new THREE.Vector2(1.6, -0.4),
-      new THREE.Vector2(1.1, -0.1),
-      new THREE.Vector2(1.0, 0.0),
-      new THREE.Vector2(1.1, 0.1),
-      new THREE.Vector2(1.6, 0.4),
-      new THREE.Vector2(2.8, 0.9),
-      new THREE.Vector2(3.0, 1.0)
+    // Bead colors
+    const beadColors = [
+      0x3399ff, // light blue
+      0x66ccff, // aqua
+      0xcc33cc, // fuchsia
+      0xff66cc, // pink
+      0x9966ff, // purple
+      0x33cc33  // green
     ];
 
-    const beadGeometry = new THREE.LatheGeometry(beadShape, 64);
-
-    // Glossy material
-    const pastelColors = [0xB2DFDB, 0xF8BBD0, 0xFFF176, 0xCE93D8, 0xA5D6A7, 0xFFAB91];
-    const materials = pastelColors.map(color => new THREE.MeshStandardMaterial({
-      color,
-      metalness: 0.2,
-      roughness: 0.1
-    }));
-
-    // Create beads
-    const beadCount = 40;
-    for (let i = 0; i < beadCount; i++) {
-      const mat = materials[i % materials.length];
-      const bead = new THREE.Mesh(beadGeometry, mat);
-
-      // Position
-      bead.position.x = (Math.random() - 0.5) * 25;
-      bead.position.y = (Math.random() - 0.5) * 25;
-      bead.position.z = (Math.random() - 0.5) * 25;
-
-      // Scale (realistic)
-      bead.scale.set(0.08, 0.04, 0.08); // x = width, y = height, z = depth
-
-      // Rotation
-      bead.rotation.x = Math.random() * Math.PI;
-      bead.rotation.y = Math.random() * Math.PI;
-      bead.rotation.z = Math.random() * Math.PI;
-
-      scene.add(bead);
+    // Function to create one bead
+    function createBead(color) {
+      const geometry = new THREE.TorusGeometry(0.5, 0.2, 16, 100);
+      const material = new THREE.MeshPhongMaterial({ color, shininess: 80 });
+      const mesh = new THREE.Mesh(geometry, material);
+      mesh.rotation.x = Math.random() * Math.PI;
+      mesh.rotation.y = Math.random() * Math.PI;
+      return mesh;
     }
 
-    // OrbitControls for interaction
-    const controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
+    // Add multiple beads
+    for (let i = 0; i < 300; i++) {
+      const bead = createBead(beadColors[Math.floor(Math.random() * beadColors.length)]);
+      bead.position.set(
+        (Math.random() - 0.5) * 50,
+        (Math.random() - 0.5) * 50,
+        (Math.random() - 0.5) * 50
+      );
+      scene.add(bead);
+    }
 
     // Animation loop
     function animate() {
       requestAnimationFrame(animate);
-      controls.update();
+      scene.rotation.y += 0.001;
       renderer.render(scene, camera);
     }
+
     animate();
 
-    // Responsive
+    // Handle resize
     window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth/window.innerHeight;
+      camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
     });
