@@ -91,7 +91,7 @@ exports.notifyOnBasketUpdate = functions.firestore
       }
 
       for (const token of tokens) {
-        const sizeInfo = update.size ? ` (Size: ${update.size})` : "";
+        const sizeInfo = update.size && update.size.toLowerCase() !== "onesize" ? ` (Size: ${update.size})` : "";
         const message = {
           notification: {
             title: "You're So Golden",
