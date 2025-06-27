@@ -46,7 +46,7 @@
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
-    camera.position.z = 6;
+    camera.position.z = 8;
 
     const light = new THREE.DirectionalLight(0xffffff, 1.2);
     light.position.set(5, 10, 7.5);
@@ -69,30 +69,28 @@
         reflectivity: 0.9
       });
 
-      // Realistic bead shape (short rounded cylinder)
-      const bead = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.1, 0.1, 0.06, 32),
-        material
-      );
+      // Cylinder (like seed bead shape)
+      const geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.06, 32);
+      const bead = new THREE.Mesh(geometry, material);
+
+      // Rotate so the cylinder faces the camera better
+      bead.rotation.x = Math.PI / 2;
+      bead.rotation.z = Math.random() * Math.PI * 2;
 
       bead.position.set(
-        (Math.random() - 0.5) * 8,
+        (Math.random() - 0.5) * 7,
         Math.random() * 3 + 2,
-        (Math.random() - 0.5) * 6
+        (Math.random() - 0.5) * 4
       );
 
-      // Random rotation to mimic realism
-      bead.rotation.x = Math.random() * Math.PI;
-      bead.rotation.z = Math.random() * Math.PI;
-
-      bead.userData.velocity = -0.008 - Math.random() * 0.015;
+      bead.userData.velocity = -0.008 - Math.random() * 0.01;
       bead.userData.bounceOffset = Math.random() * Math.PI * 2;
 
       beads.push(bead);
       scene.add(bead);
     };
 
-    for (let i = 0; i < 80; i++) {
+    for (let i = 0; i < 60; i++) {
       createBead();
     }
 
@@ -101,16 +99,14 @@
       beads.forEach(bead => {
         bead.position.y += bead.userData.velocity;
 
-        // Reset bead position when it falls too low
-        if (bead.position.y < -1.5) {
+        if (bead.position.y < -2) {
           bead.position.y = Math.random() * 3 + 2;
         }
 
-        // Subtle vertical float (bounce effect)
+        // Vertical bounce effect
         bead.position.y += Math.sin(time * 0.002 + bead.userData.bounceOffset) * 0.002;
 
-        bead.rotation.x += 0.01;
-        bead.rotation.y += 0.01;
+        bead.rotation.y += 0.005;
       });
 
       renderer.render(scene, camera);
@@ -118,12 +114,12 @@
 
     animate();
 
-    // Exit loader manually
+    // Manual exit
     window.loaderDone = () => {
       document.body.style.transition = 'opacity 1s ease-out';
       document.body.style.opacity = '0';
       setTimeout(() => {
-        window.location.href = "index.html"; // or replace with your home route
+        window.location.href = "index.html"; // Replace with real route
       }, 1000);
     };
 
