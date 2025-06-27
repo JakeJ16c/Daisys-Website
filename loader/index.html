@@ -4,66 +4,82 @@
   <meta charset="UTF-8" />
   <title>Realistic Beads</title>
   <style>
-    body { margin: 0; background: #FFF9C4; overflow: hidden; }
-    canvas { display: block; }
+    body {
+      margin: 0;
+      background: #FFF9C4;
+      overflow: hidden;
+    }
+    canvas {
+      display: block;
+    }
   </style>
 </head>
 <body>
 <script type="module">
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
-import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js';
+  import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
 
-// Scene setup
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 1000);
-camera.position.z = 30;
+  // Scene setup
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera.position.z = 35;
 
-const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.body.appendChild(renderer.domElement);
 
-// Lighting
-const light = new THREE.DirectionalLight(0xffffff, 1);
-light.position.set(10, 10, 20);
-scene.add(light);
-scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+  // Lighting
+  const ambient = new THREE.AmbientLight(0xffffff, 0.6);
+  scene.add(ambient);
+  const directional = new THREE.DirectionalLight(0xffffff, 0.8);
+  directional.position.set(30, 30, 30);
+  scene.add(directional);
 
-// Bead Material
-const material = new THREE.MeshPhysicalMaterial({
-  color: 0xffc0cb,
-  roughness: 0.2,
-  metalness: 0.3,
-  clearcoat: 1,
-  clearcoatRoughness: 0.1
-});
+  // Bead material
+  const pastelColors = [0xffc0cb, 0xa7d3a6, 0xd4a5ff, 0xb0e0e6, 0xf8d9a0];
+  const material = new THREE.MeshPhysicalMaterial({
+    roughness: 0.15,
+    metalness: 0.2,
+    clearcoat: 1,
+    clearcoatRoughness: 0.1
+  });
 
-// Create realistic torus beads (TorusGeometry(radius, tube, radialSeg, tubularSeg))
-const outerDiameter = 7.5;
-const holeDiameter = 2.0;
-const radius = outerDiameter / 2;              // 3.75 mm
-const tubeRadius = (outerDiameter - holeDiameter) / 4; // ~1.375 mm
+  // Dimensions (in mm, simulated visually)
+  const outerDiameter = 7.5;
+  const holeDiameter = 2;
+  const radius = outerDiameter / 2; // 3.75
+  const tubeRadius = (outerDiameter - holeDiameter) / 4; // ~1.375
 
-for (let i = 0; i < 40; i++) {
-  const geometry = new THREE.TorusGeometry(radius, tubeRadius, 32, 100);
-  const bead = new THREE.Mesh(geometry, material);
-  bead.position.set(
-    (Math.random() - 0.5) * 50,
-    (Math.random() - 0.5) * 50,
-    (Math.random() - 0.5) * 50
-  );
-  bead.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
-  scene.add(bead);
-}
+  // Add beads
+  for (let i = 0; i < 40; i++) {
+    const color = new THREE.Color(pastelColors[Math.floor(Math.random() * pastelColors.length)]);
+    const beadMaterial = material.clone();
+    beadMaterial.color = color;
 
-// Controls
-new OrbitControls(camera, renderer.domElement);
+    const geometry = new THREE.TorusGeometry(radius, tubeRadius, 30, 100);
+    const bead = new THREE.Mesh(geometry, beadMaterial);
+    bead.position.set(
+      (Math.random() - 0.5) * 50,
+      (Math.random() - 0.5) * 50,
+      (Math.random() - 0.5) * 50
+    );
+    bead.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
+    scene.add(bead);
+  }
 
-// Animate
-function animate() {
-  requestAnimationFrame(animate);
-  renderer.render(scene, camera);
-}
-animate();
+  // Animate
+  function animate() {
+    requestAnimationFrame(animate);
+    scene.rotation.y += 0.0015;
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  // Resize fix
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
 </script>
 </body>
 </html>
