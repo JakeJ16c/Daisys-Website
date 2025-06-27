@@ -38,6 +38,14 @@ async function loadProduct() {
     if (mainImg) {
       mainImg.src = images[0] || '';
       mainImg.alt = data.name;
+
+      // Ensure the parent has relative positioning
+      mainImg.parentElement.style.position = 'relative';
+    
+      // Add the wishlist heart icon
+      const heartIcon = document.createElement('i');
+      heartIcon.className = 'fa-regular fa-heart wishlist-icon';
+      mainImg.parentElement.appendChild(heartIcon);
     }
 
     if (thumbStack) {
