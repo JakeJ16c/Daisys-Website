@@ -159,21 +159,32 @@ document.addEventListener("click", (e) => {
     const size = "OneSize";
     const wishlistDocId = `${productId}${size}`;
     const wishlistRef = doc(db, "users", currentUser.uid, "Wishlist", wishlistDocId);
-  
+
     // Toggle logic
-    if (icon.classList.contains("filled")) {
-      // Remove from wishlist
-      deleteDoc(wishlistRef);
-      icon.classList.remove("filled", "fa-solid");
-      icon.classList.add("fa-regular");
-    } else {
-      // Add to wishlist
-      setDoc(wishlistRef, { name, price, image, size });
-      icon.classList.add("filled", "fa-solid");
-      icon.classList.remove("fa-regular");
-    }
+    (async () => {
+      if (icon.classList.contains("filled")) {
+        // Remove from wishlist
+        try {
+          await deleteDoc(wishlistRef);
+          icon.classList.remove("filled", "fa-solid");
+          icon.classList.add("fa-regular");
+        } catch (err) {
+          console.error("❌ Failed to remove from wishlist:", err);
+          alert("Error removing from wishlist. Please try again.");
+        }
+      } else {
+        // Add to wishlist
+        try {
+          await setDoc(wishlistRef, { name, price, image, size });
+          icon.classList.add("filled", "fa-solid");
+          icon.classList.remove("fa-regular");
+        } catch (err) {
+          console.error("❌ Failed to add to wishlist:", err);
+          alert("Error adding to wishlist. Please try again.");
+        }
+      }
+    })();
   }
-});
 
 // ➕ Add item to localStorage cart
 function addToCart(id, name, price, image, size = "OneSize") {
