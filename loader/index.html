@@ -24,7 +24,10 @@
   function init() {
     scene = new THREE.Scene();
 
-    // ✅ Environment map for reflections
+    // ✅ Background color
+    scene.background = new THREE.Color("#F8F3EA");
+
+    // ✅ Environment map
     const envMap = new THREE.CubeTextureLoader()
       .setPath('https://threejs.org/examples/textures/cube/Bridge2/')
       .load([
@@ -42,13 +45,11 @@
     renderer.physicallyCorrectLights = true;
     document.body.appendChild(renderer.domElement);
 
-    // ✅ Lighting
     const dirLight = new THREE.DirectionalLight(0xffffff, 2);
     dirLight.position.set(5, 10, 7);
     scene.add(dirLight);
     scene.add(new THREE.AmbientLight(0xffffff, 0.3));
 
-    // ✅ Beads
     for (let i = 0; i < 50; i++) {
       const color = new THREE.Color(Math.random(), Math.random(), Math.random());
 
@@ -66,9 +67,11 @@
         opacity: 1
       });
 
-      const geometry = new THREE.TorusGeometry(0.35, 0.17, 32, 64); // Thickened ring
+      const geometry = new THREE.TorusGeometry(0.35, 0.17, 32, 64);
       const bead = new THREE.Mesh(geometry, material);
-      bead.scale.set(1, 1.4, 1); // Elongate vertically
+
+      // ✅ Flatten along Z instead of Y
+      bead.scale.set(1, 1, 0.6);
 
       bead.position.x = (Math.random() - 0.5) * 20;
       bead.position.y = Math.random() * 10 + 5;
