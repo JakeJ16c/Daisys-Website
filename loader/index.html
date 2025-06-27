@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Falling Beads</title>
   <style>
     body { margin: 0; overflow: hidden; }
     canvas { display: block; }
   </style>
+  <!-- ✅ Correctly place this in <head> -->
+  <script src="https://unpkg.com/three@0.161.0/build/three.min.js"></script>
 </head>
 <body>
-  <!-- ✅ Correct CDN link -->
-  <script src="https://unpkg.com/three@0.161.0/build/three.min.js"></script>
-
+  <!-- ✅ Your code must come AFTER the Three.js script has loaded -->
   <script>
     let scene, camera, renderer;
     const beads = [];
@@ -31,23 +31,20 @@
       renderer.physicallyCorrectLights = true;
       document.body.appendChild(renderer.domElement);
 
-      // Lighting
       const light = new THREE.DirectionalLight(0xffffff, 1.2);
       light.position.set(5, 10, 5);
       scene.add(light);
       scene.add(new THREE.AmbientLight(0x404040, 1));
 
-      // RGB color palette
       const rgbColors = [
-        'rgb(102,204,255)',   // Light Blue
-        'rgb(217,42,255)',    // Magenta
-        'rgb(102,255,102)',   // Green
-        'rgb(51,102,204)',    // Deep Blue
-        'rgb(128,0,128)',     // Purple
-        'rgb(255,255,255)'    // White Pearl
+        'rgb(102,204,255)',
+        'rgb(217,42,255)',
+        'rgb(102,255,102)',
+        'rgb(51,102,204)',
+        'rgb(128,0,128)',
+        'rgb(255,255,255)'
       ];
 
-      // Create 50 random beads
       for (let i = 0; i < 50; i++) {
         const radius = 0.3 + Math.random() * 0.1;
         const tube = 0.15 + Math.random() * 0.05;
@@ -81,7 +78,7 @@
           Math.random() * Math.PI
         );
 
-        bead.scale.y = 1.4; // Slight vertical stretch (bead shaping)
+        bead.scale.y = 1.4;
 
         bead.userData = {
           velocity: 0.01 + Math.random() * 0.015,
@@ -106,14 +103,10 @@
       requestAnimationFrame(animate);
 
       for (const bead of beads) {
-        // Fall
         bead.position.y -= bead.userData.velocity;
-
-        // Spin
         bead.rotation.x += bead.userData.rotationSpeed.x;
         bead.rotation.y += bead.userData.rotationSpeed.y;
 
-        // Respawn from top if it falls below screen
         if (bead.position.y < -10) {
           bead.position.y = 15;
           bead.position.x = (Math.random() - 0.5) * 20;
