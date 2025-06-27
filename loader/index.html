@@ -3,100 +3,96 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>You're So Golden – Loading</title>
+  <title>Bead Loading Screen</title>
   <style>
     html, body {
       margin: 0;
       padding: 0;
       background: #FFF9C4;
       overflow: hidden;
-      height: 100vh;
-      width: 100vw;
     }
-
-    .logo-container {
+    canvas {
+      display: block;
+    }
+    #logo {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      z-index: 2;
+      z-index: 10;
     }
-
-    .logo-container img {
-      width: 90px;
-      height: 90px;
-      object-fit: contain;
-      filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.1));
-    }
-
-    .bead {
-      position: absolute;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, #ffffff, #a0c4ff, #003566);
-      animation: fall linear forwards, wobble 2s infinite ease-in-out;
-      pointer-events: none;
-      box-shadow:
-        inset 2px 2px 6px rgba(255,255,255,0.8),
-        inset -2px -2px 6px rgba(0,0,0,0.3),
-        0 3px 8px rgba(0,0,0,0.2);
-    }
-
-    @keyframes fall {
-      0% {
-        transform: translateY(-100px) scale(1);
-        opacity: 0;
-      }
-      20% {
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(120vh) scale(0.95);
-        opacity: 0.8;
-      }
-    }
-
-    @keyframes wobble {
-      0% { transform: translateX(0px); }
-      25% { transform: translateX(1px); }
-      50% { transform: translateX(-1px); }
-      75% { transform: translateX(1px); }
-      100% { transform: translateX(0px); }
+    #logo img {
+      width: 60px;
+      height: 60px;
     }
   </style>
 </head>
 <body>
-  <div class="logo-container">
-    <img src="your-logo.png" alt="Logo">
+  <div id="logo">
+    <img src="https://cdn-icons-png.flaticon.com/512/4814/4814772.png" alt="Logo">
   </div>
+  <script type="module">
+    import * as THREE from 'https://cdn.skypack.dev/three@0.160.1';
 
-  <script>
-    const container = document.body;
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+    camera.position.z = 50;
 
-    function createBead() {
-      const bead = document.createElement('div');
-      const size = Math.floor(Math.random() * 14) + 10;
-      bead.classList.add('bead');
-      bead.style.width = size + 'px';
-      bead.style.height = size + 'px';
-      bead.style.left = Math.random() * 100 + 'vw';
+    const renderer = new THREE.WebGLRenderer({ alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
 
-      // Optional: Slight color tone variations
-      const colors = [
-        'radial-gradient(circle at 30% 30%, #ffffff, #a0c4ff, #003566)',
-        'radial-gradient(circle at 30% 30%, #ffffff, #ade8f4, #0077b6)',
-        'radial-gradient(circle at 30% 30%, #ffffff, #b5ead7, #0b8457)'
-      ];
-      bead.style.background = colors[Math.floor(Math.random() * colors.length)];
+    const light = new THREE.PointLight(0xffffff, 1.5);
+    light.position.set(50, 50, 50);
+    scene.add(light);
 
-      bead.style.animationDuration = (8 + Math.random() * 4) + 's';
-      container.appendChild(bead);
+    const ambient = new THREE.AmbientLight(0xffffff, 0.6);
+    scene.add(ambient);
 
-      setTimeout(() => bead.remove(), 15000);
+    const beadMaterial = new THREE.MeshPhysicalMaterial({
+      color: 0x33bbee,
+      metalness: 0.1,
+      roughness: 0.1,
+      transmission: 0.8,
+      thickness: 0.8,
+      ior: 1.5,
+      reflectivity: 0.8,
+      clearcoat: 1.0,
+      clearcoatRoughness: 0.1
+    });
+
+    const beads = [];
+    const beadGeometry = new THREE.SphereGeometry(1, 32, 32);
+
+    for (let i = 0; i < 80; i++) {
+      const bead = new THREE.Mesh(beadGeometry, beadMaterial.clone());
+      bead.position.x = (Math.random() - 0.5) * 100;
+      bead.position.y = Math.random() * 100;
+      bead.position.z = (Math.random() - 0.5) * 20;
+      bead.scale.setScalar(Math.random() * 0.8 + 0.5);
+      scene.add(bead);
+      beads.push(bead);
     }
 
-    setInterval(() => {
-      for (let i = 0; i < 2; i++) createBead();
-    }, 200);
+    function animate() {
+      requestAnimationFrame(animate);
+      beads.forEach(bead => {
+        bead.position.y -= 0.1 * bead.scale.y;
+        if (bead.position.y < -60) {
+          bead.position.y = 60;
+          bead.position.x = (Math.random() - 0.5) * 100;
+        }
+      });
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth/window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
   </script>
 </body>
 </html>
