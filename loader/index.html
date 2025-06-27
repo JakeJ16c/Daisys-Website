@@ -48,48 +48,47 @@
     const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
     camera.position.z = 5;
 
-    const light = new THREE.DirectionalLight(0xffffff, 1);
+    const light = new THREE.DirectionalLight(0xffffff, 1.2);
     light.position.set(5, 10, 7.5);
     scene.add(light);
 
-    const ambient = new THREE.AmbientLight(0xffffff, 0.4);
+    const ambient = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambient);
 
     const beads = [];
 
-    const loader = new THREE.TextureLoader();
-    loader.load('beads.jpeg', function(texture) {
-      // Make texture less repetitive
-      texture.wrapS = THREE.ClampToEdgeWrapping;
-      texture.wrapT = THREE.ClampToEdgeWrapping;
-      texture.repeat.set(1, 1);
+    // Generate pastel stylized bead colors
+    const beadColors = ['#A3E4FF', '#BCE6E6', '#8FC1D4', '#D0F0F7', '#A5E9E1'];
 
-      // Glossy material with reflectivity
-      const beadMaterial = new THREE.MeshPhysicalMaterial({
-        map: texture,
-        metalness: 0.3,
+    const createStylizedBead = () => {
+      const color = beadColors[Math.floor(Math.random() * beadColors.length)];
+      const material = new THREE.MeshPhysicalMaterial({
+        color,
+        metalness: 0.1,
         roughness: 0.2,
-        clearcoat: 1.0,
-        clearcoatRoughness: 0.1,
+        clearcoat: 0.8,
+        clearcoatRoughness: 0.05,
+        reflectivity: 0.8
       });
 
-      for (let i = 0; i < 15; i++) {
-        const bead = new THREE.Mesh(
-          new THREE.SphereGeometry(0.25 + Math.random() * 0.1, 32, 32),
-          beadMaterial
-        );
-        bead.position.set(
-          (Math.random() - 0.5) * 4,
-          Math.random() * 3 + 2,
-          (Math.random() - 0.5) * 4
-        );
-        bead.userData.velocity = -0.01 - Math.random() * 0.02;
-        beads.push(bead);
-        scene.add(bead);
-      }
+      const bead = new THREE.Mesh(
+        new THREE.SphereGeometry(0.25 + Math.random() * 0.1, 48, 48),
+        material
+      );
+      bead.position.set(
+        (Math.random() - 0.5) * 4,
+        Math.random() * 3 + 2,
+        (Math.random() - 0.5) * 4
+      );
+      bead.userData.velocity = -0.01 - Math.random() * 0.02;
+      beads.push(bead);
+      scene.add(bead);
+    };
 
-      animate();
-    });
+    // Create beads
+    for (let i = 0; i < 18; i++) {
+      createStylizedBead();
+    }
 
     function animate() {
       requestAnimationFrame(animate);
@@ -104,16 +103,18 @@
       renderer.render(scene, camera);
     }
 
-    // Manual exit function
+    animate();
+
+    // Manual loader exit
     window.loaderDone = () => {
       document.body.style.transition = 'opacity 1s ease-out';
       document.body.style.opacity = '0';
       setTimeout(() => {
-        window.location.href = "index.html"; // Or your real PWA route
+        window.location.href = "index.html"; // Or your actual homepage
       }, 1000);
     };
 
-    // Fallback exit after 10s
+    // Fallback after 10s
     setTimeout(() => {
       if (typeof window.loaderDone === 'function') window.loaderDone();
     }, 10000);
