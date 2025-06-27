@@ -7,12 +7,11 @@
     body { margin: 0; overflow: hidden; background: #000; }
     canvas { display: block; }
   </style>
+
+  <!-- ✅ Three.js in <head> to ensure it's available to the inline script -->
+  <script src="https://unpkg.com/three@0.161.0/build/three.min.js"></script>
 </head>
 <body>
-
-<!-- ✅ Three.js from CDN -->
-<script src="https://unpkg.com/three@0.161.0/build/three.min.js"></script>
-
 <script>
   let scene, camera, renderer;
   const beads = [];
@@ -38,7 +37,7 @@
     scene.add(dirLight);
     scene.add(new THREE.AmbientLight(0x202020));
 
-    // Create multiple beads
+    // Beads
     for (let i = 0; i < 50; i++) {
       const color = new THREE.Color(Math.random(), Math.random(), Math.random());
       const transmission = 0.6 + Math.random() * 0.4;
@@ -105,6 +104,5 @@
     renderer.render(scene, camera);
   }
 </script>
-
 </body>
 </html>
