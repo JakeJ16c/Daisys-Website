@@ -148,6 +148,7 @@ document.addEventListener("click", (e) => {
 
   // ❤️ Wishlist toggle
   if (e.target.classList.contains("wishlist-icon") || e.target.closest(".wishlist-icon")) {
+    e.preventDefault();
     const icon = e.target.closest(".wishlist-icon");
     if (!currentUser) return alert("Please log in to use wishlist");
   
