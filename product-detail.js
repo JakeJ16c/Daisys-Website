@@ -1,8 +1,17 @@
 import { db } from './firebase.js';
-import { doc, getDoc, addDoc, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+import { doc, getDoc, addDoc, collection, serverTimestamp, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+import { auth } from "./firebase.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 
 const params = new URLSearchParams(window.location.search);
 const productId = params.get("id");
+let currentUser = null;
+
+// 🔐 Wait for user login state before loading product
+onAuthStateChanged(auth, (user) => {
+  currentUser = user;
+  loadProduct();
+});
 
 async function loadProduct() {
   if (!productId) {
@@ -21,7 +30,6 @@ async function loadProduct() {
 
     const data = snap.data();
 
-    // DOM Elements
     const titleEl = document.querySelector('.product-title');
     const priceEl = document.querySelector('.product-price');
     const descEl = document.querySelector('.product-description');
@@ -38,14 +46,58 @@ async function loadProduct() {
     if (mainImg) {
       mainImg.src = images[0] || '';
       mainImg.alt = data.name;
-
-      // Ensure the parent has relative positioning
       mainImg.parentElement.style.position = 'relative';
-    
-      // Add the wishlist heart icon
+
+      // Add wishlist heart icon
       const heartIcon = document.createElement('i');
       heartIcon.className = 'fa-regular fa-heart wishlist-icon';
       mainImg.parentElement.appendChild(heartIcon);
+
+      // Check wishlist state
+      if (currentUser) {
+        const wishlistDocId = `${productId}OneSize`;
+        const wishlistRef = doc(db, "users", currentUser.uid, "Wishlist", wishlistDocId);
+        const snap = await getDoc(wishlistRef);
+        if (snap.exists()) {
+          heartIcon.classList.add("filled", "fa-solid");
+          heartIcon.classList.remove("fa-regular");
+        }
+      }
+
+      // Toggle wishlist
+      heartIcon.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+
+        if (!currentUser) return alert("Please log in to use wishlist");
+
+        const name = data.name;
+        const price = data.price;
+        const image = mainImg.src;
+        const size = "OneSize";
+        const wishlistDocId = `${productId}${size}`;
+        const wishlistRef = doc(db, "users", currentUser.uid, "Wishlist", wishlistDocId);
+
+        if (heartIcon.classList.contains("filled")) {
+          try {
+            await deleteDoc(wishlistRef);
+            heartIcon.classList.remove("filled", "fa-solid");
+            heartIcon.classList.add("fa-regular");
+          } catch (err) {
+            console.error("❌ Failed to remove from wishlist:", err);
+            alert("Error removing from wishlist. Please try again.");
+          }
+        } else {
+          try {
+            await setDoc(wishlistRef, { name, price, image, size });
+            heartIcon.classList.add("filled", "fa-solid");
+            heartIcon.classList.remove("fa-regular");
+          } catch (err) {
+            console.error("❌ Failed to add to wishlist:", err);
+            alert("Error adding to wishlist. Please try again.");
+          }
+        }
+      });
     }
 
     if (thumbStack) {
@@ -61,11 +113,9 @@ async function loadProduct() {
       });
     }
 
-    // Handle sizes
     if (!data.oneSizeOnly && typeof data.stock === 'object') {
       sizeContainer.style.display = 'block';
       sizeDropdown.innerHTML = '';
-
       Object.entries(data.stock).forEach(([size, qty]) => {
         if (qty > 0) {
           const option = document.createElement('option');
@@ -88,16 +138,12 @@ async function loadProduct() {
       sizeContainer.style.display = 'none';
     }
 
-    // ✅ Hide loader when all product data is rendered
     document.getElementById("page-loader")?.remove();
-
   } catch (error) {
     console.error("Error loading product:", error);
     document.querySelector('.product-container').innerHTML = '<p>Error loading product.</p>';
   }
 }
-
-loadProduct();
 
 // Quantity Controls
 let quantity = 1;
@@ -114,6 +160,7 @@ document.querySelector('.quantity-selector button:last-of-type').addEventListene
 });
 
 // Add to Basket
+
 document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("click", (e) => {
     if (e.target && e.target.classList.contains("add-to-basket")) {
@@ -127,7 +174,6 @@ document.addEventListener("DOMContentLoaded", () => {
       let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
 
       const existing = cart.find(item => item.id === productId && item.size === selectedSize);
-
       if (existing) {
         existing.qty += quantity;
       } else {
@@ -136,7 +182,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       localStorage.setItem(cartKey, JSON.stringify(cart));
 
-      // 🔁 Sync to Firestore if defined
       if (typeof syncBasketToFirestore === "function") {
         syncBasketToFirestore(cart);
       }
