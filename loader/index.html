@@ -3,115 +3,100 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>You're So Golden – Realistic Beads</title>
+  <title>You're So Golden – Loading</title>
   <style>
-    body {
+    html, body {
       margin: 0;
+      padding: 0;
       background: #FFF9C4;
       overflow: hidden;
+      height: 100vh;
+      width: 100vw;
     }
-    canvas {
-      display: block;
-    }
-    .center-logo {
+
+    .logo-container {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       z-index: 2;
     }
-    .center-logo img {
+
+    .logo-container img {
       width: 90px;
+      height: 90px;
+      object-fit: contain;
+      filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.1));
+    }
+
+    .bead {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #ffffff, #a0c4ff, #003566);
+      animation: fall linear forwards, wobble 2s infinite ease-in-out;
+      pointer-events: none;
+      box-shadow:
+        inset 2px 2px 6px rgba(255,255,255,0.8),
+        inset -2px -2px 6px rgba(0,0,0,0.3),
+        0 3px 8px rgba(0,0,0,0.2);
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(-100px) scale(1);
+        opacity: 0;
+      }
+      20% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(120vh) scale(0.95);
+        opacity: 0.8;
+      }
+    }
+
+    @keyframes wobble {
+      0% { transform: translateX(0px); }
+      25% { transform: translateX(1px); }
+      50% { transform: translateX(-1px); }
+      75% { transform: translateX(1px); }
+      100% { transform: translateX(0px); }
     }
   </style>
 </head>
 <body>
-  <div class="center-logo">
-    <img src="logo.png" alt="Logo" />
+  <div class="logo-container">
+    <img src="your-logo.png" alt="Logo">
   </div>
-  <canvas id="beadsCanvas"></canvas>
 
   <script>
-    const canvas = document.getElementById('beadsCanvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    const container = document.body;
 
-    class Bead {
-      constructor() {
-        this.reset();
-      }
+    function createBead() {
+      const bead = document.createElement('div');
+      const size = Math.floor(Math.random() * 14) + 10;
+      bead.classList.add('bead');
+      bead.style.width = size + 'px';
+      bead.style.height = size + 'px';
+      bead.style.left = Math.random() * 100 + 'vw';
 
-      reset() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * -canvas.height;
-        this.radius = 8 + Math.random() * 10;
-        this.speed = 0.3 + Math.random() * 0.8;
-        this.hue = Math.random() > 0.5 ? 180 + Math.random() * 50 : 120 + Math.random() * 30;
-        this.opacity = 0.6 + Math.random() * 0.4;
-      }
+      // Optional: Slight color tone variations
+      const colors = [
+        'radial-gradient(circle at 30% 30%, #ffffff, #a0c4ff, #003566)',
+        'radial-gradient(circle at 30% 30%, #ffffff, #ade8f4, #0077b6)',
+        'radial-gradient(circle at 30% 30%, #ffffff, #b5ead7, #0b8457)'
+      ];
+      bead.style.background = colors[Math.floor(Math.random() * colors.length)];
 
-      draw(ctx) {
-        const { x, y, radius, hue, opacity } = this;
+      bead.style.animationDuration = (8 + Math.random() * 4) + 's';
+      container.appendChild(bead);
 
-        // Outer glow for translucent feel
-        const glow = ctx.createRadialGradient(x, y, radius * 0.4, x, y, radius);
-        glow.addColorStop(0, `hsla(${hue}, 80%, 80%, ${opacity})`);
-        glow.addColorStop(1, `hsla(${hue}, 80%, 40%, 0)`);
-
-        // Inner light and highlight
-        const gloss = ctx.createRadialGradient(
-          x - radius * 0.2,
-          y - radius * 0.2,
-          radius * 0.1,
-          x,
-          y,
-          radius
-        );
-        gloss.addColorStop(0, `white`);
-        gloss.addColorStop(0.2, `hsla(${hue}, 90%, 85%, 0.8)`);
-        gloss.addColorStop(0.6, `hsla(${hue}, 90%, 40%, ${opacity})`);
-        gloss.addColorStop(1, `hsla(${hue}, 90%, 20%, 0.2)`);
-
-        // Draw the glow first
-        ctx.beginPath();
-        ctx.arc(x, y, radius + 2, 0, Math.PI * 2);
-        ctx.fillStyle = glow;
-        ctx.fill();
-
-        // Draw the bead core
-        ctx.beginPath();
-        ctx.arc(x, y, radius, 0, Math.PI * 2);
-        ctx.fillStyle = gloss;
-        ctx.fill();
-      }
-
-      update() {
-        this.y += this.speed;
-        if (this.y - this.radius > canvas.height) {
-          this.reset();
-          this.y = -this.radius;
-        }
-      }
+      setTimeout(() => bead.remove(), 15000);
     }
 
-    const beads = Array.from({ length: 60 }, () => new Bead());
-
-    function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      beads.forEach(bead => {
-        bead.update();
-        bead.draw(ctx);
-      });
-      requestAnimationFrame(animate);
-    }
-
-    animate();
-
-    window.addEventListener('resize', () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    });
+    setInterval(() => {
+      for (let i = 0; i < 2; i++) createBead();
+    }, 200);
   </script>
 </body>
 </html>
