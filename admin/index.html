@@ -236,13 +236,13 @@
           </div>
         </section>
 
-        <!-- Blank Section -->
-        <section class="dashboard-card" id="admin-messages">
+        <!-- Waiting List Section -->
+        <section class="dashboard-card" id="admin-waitinglist">
           <div class="products-header">
-            <h2>Waiting List</h2>
+            <h2>Waiting List <span id="waitingListCount" style="font-weight: 500; font-size: 0.9rem;">Counter: ...</span></h2>
           </div>
           <div class="product-list">
-            <p></p>
+            <ul id="waitingListNames" style="padding-left: 1rem; list-style: disc; margin-top: 0.5rem;"></ul>
           </div>
         </section>
         
@@ -582,6 +582,32 @@ document.addEventListener("click", async (e) => {
 
 
 loadPromoCodes();
+
+async function loadWaitingList() {
+  const listEl = document.getElementById("waitingListNames");
+  const countEl = document.getElementById("waitingListCount");
+
+  try {
+    const snap = await getDocs(collection(db, "waitinglist"));
+    const names = [];
+
+    snap.forEach(doc => {
+      const data = doc.data();
+      if (data.name) names.push(data.name);
+    });
+
+    listEl.innerHTML = names.length
+      ? names.map(name => `<li>${name}</li>`).join("")
+      : `<li style="color: #888;">No entries yet.</li>`;
+
+    countEl.textContent = `Counter: ${names.length}`;
+  } catch (err) {
+    console.error("❌ Failed to fetch waiting list:", err);
+    listEl.innerHTML = `<li style="color: red;">Error loading list</li>`;
+  }
+}
+
+loadWaitingList();
 </script>
 
 </body>
