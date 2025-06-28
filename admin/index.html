@@ -332,7 +332,7 @@
 
   <script type="module">
     import { db } from '../firebase.js';
-    import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+    import { onSnapshot, collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
 
     async function loadStockCounter() {
     const container = document.getElementById('stock-counter-list');
