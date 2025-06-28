@@ -21,11 +21,6 @@ import * as CANNON from 'https://cdn.skypack.dev/cannon-es';
 
 let scene, camera, renderer;
 const beads = [], bodies = [];
-let world;
-
-init();
-animate();
-spawnBeadsContinuously();
 
 function init() {
   scene = new THREE.Scene();
@@ -36,102 +31,110 @@ function init() {
     .load(['posx.jpg','negx.jpg','posy.jpg','negy.jpg','posz.jpg','negz.jpg']);
   scene.environment = envMap;
 
-  camera = new THREE.PerspectiveCamera(70, innerWidth / innerHeight, 0.1, 100);
+  camera = new THREE.PerspectiveCamera(70, innerWidth/innerHeight, 0.1, 100);
   camera.position.z = 18;
 
-  renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer = new THREE.WebGLRenderer({ antialias:true });
   renderer.setSize(innerWidth, innerHeight);
   renderer.physicallyCorrectLights = true;
   document.body.appendChild(renderer.domElement);
 
-  scene.add(new THREE.DirectionalLight(0xffffff, 2).position.set(5, 10, 7));
+  scene.add(new THREE.DirectionalLight(0xffffff, 2).position.set(5,10,7));
   scene.add(new THREE.AmbientLight(0xffffff, 0.3));
 
-  world = new CANNON.World({ gravity: new CANNON.Vec3(0, -0.6, 0) });
+  const world = new CANNON.World({
+    gravity: new CANNON.Vec3(0, -0.35, 0),
+  });
+
+  const pastelGlassColors = [
+    '#fef3f7', // light pink
+    '#fdb3c8', // bubblegum pink
+    '#ffe0b2', // peach
+    '#ffe57f', // yellow
+    '#c8e6c9', // mint
+    '#80deea', // aqua
+    '#b39ddb', // lavender
+    '#90caf9', // light blue
+    '#ffab91', // coral
+    '#aed581', // lime green
+    '#f06292', // strong pink
+    '#ce93d8', // light purple
+    '#4dd0e1', // turquoise
+    '#ff7043', // orange
+    '#a5d6a7', // soft green
+    '#ba68c8'  // rich purple
+  ];
+
+  const beadShapes = [
+    { outer: 0.30, tube: 0.11 },
+    { outer: 0.35, tube: 0.14 },
+    { outer: 0.40, tube: 0.16 },
+    { outer: 0.45, tube: 0.18 }
+  ];
+
+  for (let i = 0; i < 200; i++) {
+    const shape = beadShapes[Math.floor(Math.random() * beadShapes.length)];
+    const color = new THREE.Color(pastelGlassColors[Math.floor(Math.random() * pastelGlassColors.length)]);
+    const geometry = new THREE.TorusGeometry(shape.outer, shape.tube, 32, 64);
+
+    const material = new THREE.MeshPhysicalMaterial({
+      color,
+      transmission: 0.92,
+      thickness: 1.1,
+      roughness: 0,
+      clearcoat: 1,
+      reflectivity: 1,
+      envMapIntensity: 1.4,
+      transparent: true,
+      opacity: 0.93
+    });
+
+    const mesh = new THREE.Mesh(geometry, material);
+    const zScale = THREE.MathUtils.lerp(1.4, 1.9, Math.random());
+    mesh.scale.set(1, 1, zScale);
+    scene.add(mesh);
+
+    const body = new CANNON.Body({ mass: 0.45 });
+    body.addShape(new CANNON.Sphere(shape.outer));
+    body.position.set((Math.random()-0.5)*20, Math.random()*20 + 10, (Math.random()-0.5)*10);
+    body.linearDamping = 0.22;
+    body.angularDamping = 0.3;
+
+    world.addBody(body);
+    beads.push(mesh);
+    bodies.push(body);
+  }
 
   window.addEventListener('resize', () => {
-    camera.aspect = innerWidth / innerHeight;
+    camera.aspect = innerWidth/innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(innerWidth, innerHeight);
   });
+
+  function animate() {
+    world.step(1/60);
+
+    beads.forEach((mesh, i) => {
+      const body = bodies[i];
+      mesh.position.copy(body.position);
+      mesh.quaternion.copy(body.quaternion);
+
+      // Respawn just above view to keep continuous flow
+      if (body.position.y < -20) {
+        body.position.set((Math.random() - 0.5) * 20, 20 + Math.random() * 5, (Math.random() - 0.5) * 10);
+        body.velocity.set(0, 0, 0);
+        body.angularVelocity.set(0, 0, 0);
+      }
+    });
+
+    renderer.render(scene, camera);
+    requestAnimationFrame(animate);
+  }
+
+  animate();
 }
 
-const pastelColors = [
-  '#EBCFC4', '#F3D7B6', '#D3D9F0', '#D2E3C8', '#F1D4E5',
-  '#E0E6B8', '#F7F5ED', '#DCD1E8', '#CFEAE8', '#F4C6C3'
-];
-
-const beadShapes = [
-  { outer: 0.30, tube: 0.12, z: 1.4 },
-  { outer: 0.35, tube: 0.15, z: 1.6 },
-  { outer: 0.40, tube: 0.18, z: 1.7 },
-  { outer: 0.45, tube: 0.20, z: 1.9 },
-];
-
-function createBead() {
-  const color = new THREE.Color(pastelColors[Math.floor(Math.random() * pastelColors.length)]);
-  const shape = beadShapes[Math.floor(Math.random() * beadShapes.length)];
-
-  const geometry = new THREE.TorusGeometry(shape.outer, shape.tube, 32, 64);
-  const material = new THREE.MeshPhysicalMaterial({
-    color,
-    transmission: 0.9,
-    thickness: 1.2,
-    roughness: 0,
-    clearcoat: 1,
-    reflectivity: 1,
-    envMapIntensity: 1.2,
-    transparent: true,
-    opacity: 0.95
-  });
-
-  const mesh = new THREE.Mesh(geometry, material);
-  mesh.scale.set(1, 1, shape.z);
-  scene.add(mesh);
-
-  const body = new CANNON.Body({ mass: 0.5 });
-  body.addShape(new CANNON.Sphere(shape.outer));
-  body.position.set((Math.random() - 0.5) * 20, 20 + Math.random() * 5, (Math.random() - 0.5) * 5);
-  body.linearDamping = 0.2;
-  body.angularDamping = 0.3;
-
-  world.addBody(body);
-  beads.push(mesh);
-  bodies.push(body);
-}
-
-function spawnBeadsContinuously() {
-  const maxBeads = 120;
-  let spawned = 0;
-
-  const interval = setInterval(() => {
-    if (spawned >= maxBeads) {
-      clearInterval(interval);
-      return;
-    }
-    createBead();
-    spawned++;
-  }, 120); // ~8–9 new beads/sec
-}
-
-function animate() {
-  world.step(1 / 60);
-
-  beads.forEach((mesh, i) => {
-    const body = bodies[i];
-    mesh.position.copy(body.position);
-    mesh.quaternion.copy(body.quaternion);
-
-    if (body.position.y < -15) {
-      body.position.set((Math.random() - 0.5) * 20, 20 + Math.random() * 5, (Math.random() - 0.5) * 5);
-      body.velocity.set(0, 0, 0);
-      body.angularVelocity.set(0, 0, 0);
-    }
-  });
-
-  renderer.render(scene, camera);
-  requestAnimationFrame(animate);
-}
+init();
 </script>
 
 </body>
