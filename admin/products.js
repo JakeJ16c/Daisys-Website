@@ -123,7 +123,7 @@ if (saveProductChanges) {
       name: modalName.value.trim(),
       price: parseFloat(modalPrice.value),
       stock,
-      oneSizeOnly: oneSize, // ✅ This is the missing key
+      oneSizeOnly: oneSize,
       description: modalDescription.value.trim(),
       images: uploadedImages,
       updatedAt: new Date()
@@ -231,6 +231,52 @@ async function loadProducts(paginate = false, direction = 'next') {
 // Render
 function renderProducts(products) {
   container.innerHTML = "";
+
+  // Inject Personalised Design Toggle Card
+  const toggleCard = document.createElement("div");
+  toggleCard.className = "product-card";
+  toggleCard.style.cssText = `
+    background: white;
+    border-radius: 12px;
+    margin: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  `;
+  
+  toggleCard.innerHTML = `
+    <img src="../icon-512.png" alt="Personalised Design" style="
+      width: 100px; height: 100px; object-fit: cover;
+      border-radius: 50%; margin-bottom: 12px;">
+    <h3 style="font-size: 1.1rem; margin: 8px 0;">Personalised Design</h3>
+    <p style="margin: 4px 0;"><strong>Toggle Feature</strong></p>
+    <label class="switch">
+      <input type="checkbox" id="personalisedToggle">
+      <span class="slider round"></span>
+    </label>
+  `;
+  
+  // Add toggle logic after render
+  setTimeout(async () => {
+    const toggle = document.getElementById("personalisedToggle");
+    const settingsRef = doc(db, "SiteSettings", "design");
+  
+    const snap = await getDoc(settingsRef);
+    if (snap.exists()) {
+      toggle.checked = snap.data().personalisedDesignEnabled ?? false;
+    }
+  
+    toggle.addEventListener("change", async () => {
+      await setDoc(settingsRef, {
+        personalisedDesignEnabled: toggle.checked
+      }, { merge: true });
+    });
+  }, 0);
+  
+  container.appendChild(toggleCard);
 
   products.forEach(product => {
     const card = document.createElement("div");
