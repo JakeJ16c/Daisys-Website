@@ -248,7 +248,7 @@ function renderProducts(products) {
   `;
   
   toggleCard.innerHTML = `
-    <img src="./IMG_8861.png" alt="Personalised Design" style="
+    <img src="../IMG_8861.png" alt="Personalised Design" style="
       width: 100px; height: 100px; object-fit: cover;
       border-radius: 50%; margin-bottom: 12px;">
     <h3 style="font-size: 1.1rem; margin: 8px 0;">Personalised Design</h3>
