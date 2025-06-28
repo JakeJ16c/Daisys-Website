@@ -17,7 +17,11 @@ onAuthStateChanged(auth, (user) => {
 async function loadProducts() {
   const productCards = [];
 
-  // 📌 Add custom design card
+// 🔁 Conditionally add custom design card
+const settingsSnap = await getDoc(doc(db, "SiteSettings", "design"));
+const personalisedEnabled = settingsSnap.exists() && settingsSnap.data().personalisedDesignEnabled;
+
+if (personalisedEnabled) {
   const pinnedCard = document.createElement("div");
   pinnedCard.className = "product-card pinned-card";
   pinnedCard.setAttribute("data-id", "custom-design");
@@ -33,13 +37,11 @@ async function loadProducts() {
     </a>
     <button class="btn" href="custom-design.html">Start Now</button>
   `;
+
   productCards.push(pinnedCard);
+}
 
   const querySnapshot = await getDocs(collection(db, "Products"));
-  if (querySnapshot.empty) {
-    container.innerHTML = `<p class="no-products">Sorry, we're out of stock. Follow us on Instagram for updates ✨</p>`;
-    return;
-  }
 
   for (const docSnap of querySnapshot.docs) {
     const data = docSnap.data();
