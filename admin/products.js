@@ -260,21 +260,25 @@ function renderProducts(products) {
   `;
   
   // Add toggle logic after render
-  setTimeout(async () => {
-    const toggle = document.getElementById("personalisedToggle");
-    const settingsRef = doc(db, "SiteSettings", "design");
-  
+  (async () => {
+  const toggle = toggleCard.querySelector("#personalisedToggle");
+  const settingsRef = doc(db, "SiteSettings", "design");
+
+  try {
     const snap = await getDoc(settingsRef);
     if (snap.exists()) {
       toggle.checked = snap.data().personalisedDesignEnabled ?? false;
     }
-  
+
     toggle.addEventListener("change", async () => {
       await setDoc(settingsRef, {
         personalisedDesignEnabled: toggle.checked
       }, { merge: true });
     });
-  }, 0);
+  } catch (err) {
+    console.error("❌ Failed to load personalised toggle:", err);
+  }
+})();
   
   container.appendChild(toggleCard);
 
