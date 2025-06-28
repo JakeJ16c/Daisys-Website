@@ -82,21 +82,6 @@
   margin-bottom: 12px;
 }
 
-/* Add to basket button */
-.product-card button {
-  background-color: #a8dedc;
-  border: none;
-  border-radius: 12px;
-  padding: 10px;
-  font-size: 0.9rem;
-  color: #000;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.product-card button:hover {
-  background-color: #82cbc9;
-}
   .product-layout {
     flex-direction: column;
     align-items: center;
