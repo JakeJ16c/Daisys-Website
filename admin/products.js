@@ -252,7 +252,7 @@ function renderProducts(products) {
       width: 100px; height: 100px; object-fit: cover;
       border-radius: 50%; margin-bottom: 12px;">
     <h3 style="font-size: 1.1rem; margin: 8px 0;">Personalised Design</h3>
-    <p style="margin: 4px 0;"><strong>Toggle Feature</strong></p>
+    <p style="margin: 4px 0;"><strong>Show personalised design page ?</strong></p>
     <label class="switch">
       <input type="checkbox" id="personalisedToggle">
       <span class="slider round"></span>
