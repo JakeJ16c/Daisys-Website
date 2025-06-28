@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- ========== Basic Setup ========== -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" type="image/x-icon" href="favicon_circle.ico">
+  <title>You're So Golden</title>
+
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ffffff">
+
+  <!-- ========== Fonts, Icons & Styling ========== -->
+  <base href="/Daisys-Website/">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles/styles.css">
+  <link rel="stylesheet" href="styles/responsive.css">
+  
+</head>
+<body>
+
+  <!-- Header Section -->
+  <header class="site-header">
+    <h1 class="header-title">You're So Golden</h1>
+
+  </header>
+
+
+  <main>
+
+    
+  </main>
+  
+
+
+  </div>
+</div>
+  
+  <script type="module" src="firebase.js"></script>
+
+  <!-- Load Marquee Images -->
+  <script type="module" src="marquee.js"></script>
+
+  <!-- Admin Features -->
+  <script type="module" src="admin-auth.js"></script>
+
+  <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker
+        .register('sw.js')
+        .then(function (registration) {
+          console.log('✅ ServiceWorker registered: ', registration.scope);
+        })
+        .catch(function (error) {
+          console.error('❌ ServiceWorker registration failed: ', error);
+        });
+    });
+  }
+</script>
+
+<script type="module">
+  import { auth, db } from './firebase.js';
+  import { getDoc, doc } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+
+  async function enforceMaintenance() {
+    const statusRef = doc(db, "Settings", "siteStatus");
+    const snap = await getDoc(statusRef);
+
+    const maintenanceEnabled = snap.exists() && snap.data().siteMaintenance;
+
+    auth.onAuthStateChanged(user => {
+      const isAdmin = user && user.email === "youradmin@email.com"; // replace with your admin email
+
+      if (maintenanceEnabled && !isAdmin) {
+        window.location.href = "/maintenance.html";
+      }
+    });
+  }
+
+  enforceMaintenance();
+</script>
+
+  <!-- Cookie Banner -->
+<script src="cookie-banner/load-cookie-banner.js"></script>
+  
+</body>
+</html>
