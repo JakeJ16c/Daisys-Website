@@ -610,6 +610,31 @@ async function loadWaitingList() {
   }
 }
 
+function animateCounter(el, start, end, duration = 600) {
+  const range = end - start;
+  let startTime = null;
+
+  function step(timestamp) {
+    if (!startTime) startTime = timestamp;
+    const progress = timestamp - startTime;
+    const percent = Math.min(progress / duration, 1);
+    const current = Math.floor(start + range * percent);
+    el.textContent = `Counter: ${current}`;
+    if (percent < 1) requestAnimationFrame(step);
+  }
+
+  requestAnimationFrame(step);
+}
+
+const counterEl = document.getElementById("waitingListCount");
+let lastCount = 0;
+
+onSnapshot(collection(db, "waitinglist"), (snapshot) => {
+  const newCount = snapshot.size;
+  animateCounter(counterEl, lastCount, newCount);
+  lastCount = newCount;
+});
+
 loadWaitingList();
 </script>
 
