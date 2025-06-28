@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <title>Falling Beads</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
       margin: 0;
       overflow: hidden;
-      background-color: #F8F3EA;
+      background: #F8F3EA;
     }
     canvas {
       display: block;
@@ -15,120 +16,133 @@
   </style>
 </head>
 <body>
-
 <script type="module">
 import * as THREE from 'https://unpkg.com/three@0.161.0/build/three.module.js';
 import * as CANNON from 'https://cdn.skypack.dev/cannon-es';
 
-let scene, camera, renderer, world;
-const beads = [], physicsBodies = [];
-
-init();
-animate();
+let scene, camera, renderer;
+const beads = [], bodies = [];
 
 function init() {
   scene = new THREE.Scene();
-  scene.fog = new THREE.Fog(0xF8F3EA, 10, 50);
+  scene.background = new THREE.Color('#F8F3EA');
 
-  camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 100);
-  camera.position.z = 15;
+  const envMap = new THREE.CubeTextureLoader()
+    .setPath('https://threejs.org/examples/textures/cube/Bridge2/')
+    .load(['posx.jpg','negx.jpg','posy.jpg','negy.jpg','posz.jpg','negz.jpg']);
+  scene.environment = envMap;
+
+  camera = new THREE.PerspectiveCamera(70, innerWidth / innerHeight, 0.1, 100);
+  camera.position.z = 18;
 
   renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-  renderer.setClearColor(0xF8F3EA);
-  renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(innerWidth, innerHeight);
+  renderer.physicallyCorrectLights = true;
   document.body.appendChild(renderer.domElement);
 
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
-  scene.add(ambientLight);
-  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
-  directionalLight.position.set(10, 10, 10);
-  scene.add(directionalLight);
+  scene.add(new THREE.DirectionalLight(0xffffff, 2).position.set(5, 10, 7));
+  scene.add(new THREE.AmbientLight(0xffffff, 0.3));
 
-  world = new CANNON.World({
-    gravity: new CANNON.Vec3(0, -1.0, 0),
-  });
+  const world = new CANNON.World({ gravity: new CANNON.Vec3(0, -0.6, 0) });
 
-  const beadColors = [
-    0xffb3ba, 0xffdfba, 0xffffba, 0xbaffc9,
-    0xbae1ff, 0xdcb0ff, 0xffbaff, 0xc2f0fc,
-    0xf8b195, 0xf67280, 0xc06c84, 0x6c5b7b,
-    0x355c7d, 0x99e1d9, 0xfad0c9, 0xff9aa2,
-    0xfbc687, 0xb3d1ff, 0xa0e7e5, 0xffc6ff
+  const pastelColors = ['#EBCFC4', '#F3D7B6', '#D3D9F0', '#D2E3C8', '#F1D4E5', '#E0E6B8', '#F7F5ED', '#DCD1E8', '#CFEAE8', '#F4C6C3'];
+  const beadShapes = [
+    { outer: 0.30, tube: 0.12 },
+    { outer: 0.35, tube: 0.15 },
+    { outer: 0.40, tube: 0.18 },
+    { outer: 0.45, tube: 0.20 }
   ];
 
-  const beadGeometry = new THREE.TorusGeometry(0.3, 0.15, 16, 100);
-
   for (let i = 0; i < 200; i++) {
-    const color = new THREE.Color(beadColors[Math.floor(Math.random() * beadColors.length)]);
-    const material = new THREE.MeshStandardMaterial({
-      color: color,
-      metalness: 0.2,
-      roughness: 0.1
-    });
+    const color = new THREE.Color(pastelColors[Math.floor(Math.random() * pastelColors.length)]);
+    const shape = beadShapes[Math.floor(Math.random() * beadShapes.length)];
+    const zScale = 1.4 + Math.random() * 0.5;
 
-    const mesh = new THREE.Mesh(beadGeometry, material);
-    const scaleX = 0.8 + Math.random() * 0.4;
-    const scaleY = 0.8 + Math.random() * 0.4;
-    const scaleZ = 1.4 + Math.random() * 0.5;
-    mesh.scale.set(scaleX, scaleY, scaleZ);
+    const geometry = new THREE.TorusGeometry(shape.outer, shape.tube, 32, 64);
 
-    mesh.position.set(
-      (Math.random() - 0.5) * 20,
-      Math.random() * 10 + 10,
-      (Math.random() - 0.5) * 10
-    );
+    const materialType = Math.random();
+    let material;
 
-    mesh.userData.rotationSpeed = {
-      x: (Math.random() - 0.5) * 0.01,
-      y: (Math.random() - 0.5) * 0.01,
-      z: (Math.random() - 0.5) * 0.01
-    };
+    if (materialType < 0.33) {
+      // Glassy
+      material = new THREE.MeshPhysicalMaterial({
+        color,
+        transmission: 1,
+        thickness: 1.2,
+        roughness: 0.05,
+        clearcoat: 1,
+        reflectivity: 1,
+        envMapIntensity: 1.5,
+        transparent: true,
+        opacity: 0.95
+      });
+    } else if (materialType < 0.66) {
+      // Plasticky
+      material = new THREE.MeshStandardMaterial({
+        color,
+        roughness: 0.4,
+        metalness: 0.1
+      });
+    } else {
+      // Metallic
+      material = new THREE.MeshStandardMaterial({
+        color,
+        roughness: 0.2,
+        metalness: 1.0
+      });
+    }
 
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.scale.set(1, 1, zScale);
     scene.add(mesh);
-    beads.push(mesh);
 
-    const shape = new CANNON.Sphere(0.3);
-    const body = new CANNON.Body({
-      mass: 0.1 + Math.random() * 0.3,
-      position: new CANNON.Vec3(mesh.position.x, mesh.position.y, mesh.position.z),
-      shape: shape,
-    });
+    const body = new CANNON.Body({ mass: 0.5 });
+    body.addShape(new CANNON.Sphere(shape.outer));
+    body.position.set(
+      (Math.random() - 0.5) * 20,
+      Math.random() * 10 + 15, // ✅ spawn higher off-screen
+      (Math.random() - 0.5) * 5
+    );
+    body.linearDamping = 0.2;
+    body.angularDamping = 0.3;
+    body.velocity.set(0, -0.5 - Math.random() * 0.4, 0); // ✅ varied fall speeds
+    body.angularVelocity.set(Math.random(), Math.random(), Math.random()); // ✅ unique spin
 
     world.addBody(body);
-    physicsBodies.push(body);
+    beads.push(mesh);
+    bodies.push(body);
   }
 
   window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth/window.innerHeight;
+    camera.aspect = innerWidth / innerHeight;
     camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-  });
-}
-
-function animate() {
-  requestAnimationFrame(animate);
-  world.fixedStep();
-
-  beads.forEach((bead, index) => {
-    const body = physicsBodies[index];
-    bead.position.copy(body.position);
-    bead.rotation.x += bead.userData.rotationSpeed.x;
-    bead.rotation.y += bead.userData.rotationSpeed.y;
-    bead.rotation.z += bead.userData.rotationSpeed.z;
-
-    if (body.position.y < -10) {
-      body.position.y = Math.random() * 10 + 10;
-      body.position.x = (Math.random() - 0.5) * 20;
-      body.position.z = (Math.random() - 0.5) * 10;
-      body.velocity.setZero();
-      body.angularVelocity.setZero();
-    }
+    renderer.setSize(innerWidth, innerHeight);
   });
 
-  renderer.render(scene, camera);
+  function animate() {
+    world.step(1 / 60);
+
+    beads.forEach((mesh, i) => {
+      const body = bodies[i];
+      mesh.position.copy(body.position);
+      mesh.quaternion.copy(body.quaternion);
+
+      if (body.position.y < -15) {
+        body.position.set((Math.random() - 0.5) * 20, 18, (Math.random() - 0.5) * 5);
+        body.velocity.set(0, -0.5 - Math.random() * 0.4, 0);
+        body.angularVelocity.set(Math.random(), Math.random(), Math.random());
+      }
+    });
+
+    renderer.render(scene, camera);
+    requestAnimationFrame(animate);
+  }
+
+  animate();
 }
+
+init();
 </script>
-
 </body>
 </html>
