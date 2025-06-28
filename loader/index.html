@@ -47,45 +47,50 @@ function init() {
     gravity: new CANNON.Vec3(0, -0.6, 0),
   });
 
-  const radius = 0.35;
-  for (let i = 0; i < 100; i++) {
-    const hue = Math.random() * 360;
-    const color = new THREE.Color(`hsl(${hue}, 30%, 75%)`);
-  
-    const outerRadius = 0.3 + Math.random() * 0.15;   // 0.30 – 0.45
-    const tubeRadius  = 0.12 + Math.random() * 0.08;  // 0.12 – 0.20
-    const zScale      = 1.4 + Math.random() * 0.5;    // 1.4 – 1.9
-  
-    const geometry = new THREE.TorusGeometry(outerRadius, tubeRadius, 32, 64);
-    const material = new THREE.MeshPhysicalMaterial({
-      color,
-      transmission: 0.9,
-      thickness: 1.2,
-      roughness: 0,
-      clearcoat: 1,
-      reflectivity: 1,
-      envMapIntensity: 1.2,
-      transparent: true
-    });
-  
-    const mesh = new THREE.Mesh(geometry, material);
-    mesh.scale.set(1, 1, zScale); // ✅ Unique Z scale
-    scene.add(mesh);
-  
-    const body = new CANNON.Body({ mass: 0.5 });
-    body.addShape(new CANNON.Sphere(outerRadius));
-    body.position.set(
-      (Math.random() - 0.5) * 20,
-      Math.random() * 10 + 5,
-      (Math.random() - 0.5) * 5
-    );
-    body.linearDamping = 0.2;
-    body.angularDamping = 0.3;
-    world.addBody(body);
-  
-    beads.push(mesh);
-    bodies.push(body);
-  }    
+  const beadShapes = [
+  { outer: 0.30, tube: 0.12, z: 1.4 },
+  { outer: 0.35, tube: 0.15, z: 1.6 },
+  { outer: 0.40, tube: 0.18, z: 1.7 },
+  { outer: 0.45, tube: 0.20, z: 1.9 },
+];
+
+for (let i = 0; i < 100; i++) {
+  const hue = Math.random() * 360;
+  const color = new THREE.Color(`hsl(${hue}, 30%, 75%)`);
+
+  // 🔁 Pick one of the preset shapes
+  const shape = beadShapes[Math.floor(Math.random() * beadShapes.length)];
+
+  const geometry = new THREE.TorusGeometry(shape.outer, shape.tube, 32, 64);
+  const material = new THREE.MeshPhysicalMaterial({
+    color,
+    transmission: 0.9,
+    thickness: 1.2,
+    roughness: 0,
+    clearcoat: 1,
+    reflectivity: 1,
+    envMapIntensity: 1.2,
+    transparent: true
+  });
+
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.scale.set(1, 1, shape.z); // ✅ Squash per preset
+  scene.add(mesh);
+
+  const body = new CANNON.Body({ mass: 0.5 });
+  body.addShape(new CANNON.Sphere(shape.outer));
+  body.position.set(
+    (Math.random() - 0.5) * 20,
+    Math.random() * 10 + 5,
+    (Math.random() - 0.5) * 5
+  );
+  body.linearDamping = 0.2;
+  body.angularDamping = 0.3;
+
+  world.addBody(body);
+  beads.push(mesh);
+  bodies.push(body);
+}  
 
   window.addEventListener('resize', () => {
     camera.aspect = innerWidth/innerHeight;
