@@ -669,6 +669,42 @@
       gap: 0.3rem;
       font-weight: 500;
     }
+
+    .switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 28px;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0;
+  right: 0; bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 22px; width: 22px;
+  left: 3px; bottom: 3px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+input:checked + .slider {
+  background-color: var(--electric-blue);
+}
+input:checked + .slider:before {
+  transform: translateX(22px);
+}
   </style>
 </head>
 <body>
@@ -737,6 +773,15 @@
       </div>
       
       <div id="productsTableContainer">
+
+        <div style="margin-top: 12px;">
+          <label style="font-weight: 600; margin-right: 10px;">Personalised Design</label>
+          <label class="switch">
+            <input type="checkbox" id="personalisedToggle">
+            <span class="slider round"></span>
+          </label>
+        </div>
+
         <!-- Loading spinner will be replaced with table when data loads -->
         <div class="loading-spinner">
           <div class="spinner"></div>
@@ -975,6 +1020,29 @@ document.addEventListener("DOMContentLoaded", () => {
   
     newSizeInput.value = "";
   });
+</script>
+
+  <script type="module">
+  import { db } from '../firebase.js';
+  import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+
+  const toggle = document.getElementById("personalisedToggle");
+  const settingsRef = doc(db, "SiteSettings", "design");
+
+  async function loadToggleState() {
+    const snap = await getDoc(settingsRef);
+    if (snap.exists()) {
+      toggle.checked = snap.data().personalisedDesignEnabled ?? false;
+    }
+  }
+
+  toggle.addEventListener("change", async () => {
+    await setDoc(settingsRef, {
+      personalisedDesignEnabled: toggle.checked
+    }, { merge: true });
+  });
+
+  loadToggleState();
 </script>
 
 </body>
