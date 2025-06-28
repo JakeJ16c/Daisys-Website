@@ -2,152 +2,142 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Beads – Universal Quality</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Falling Beads</title>
   <style>
-    body { margin: 0; overflow: hidden; background: #F8F3EA; }
-    canvas { display: block; }
+    body {
+      margin: 0;
+      overflow: hidden;
+      background-color: #F8F3EA;
+    }
+    canvas {
+      display: block;
+    }
   </style>
 </head>
 <body>
+<script src="https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.js"></script>
+<script>
+  let scene, camera, renderer, world;
+  const beads = [];
+  const physicsBodies = [];
 
-<script type="module">
-import * as THREE from 'https://unpkg.com/three@0.161.0/build/three.module.js';
-import * as CANNON from 'https://cdn.skypack.dev/cannon-es';
+  init();
+  animate();
 
-// Detect iPhone/Safari
-const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  function init() {
+    scene = new THREE.Scene();
+    scene.fog = new THREE.Fog(0xF8F3EA, 10, 50);
 
-let scene, camera, renderer;
-const beads = [], bodies = [], spinAxes = [];
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 100);
+    camera.position.z = 15;
 
-function init() {
-  scene = new THREE.Scene();
-  scene.background = new THREE.Color('#F8F3EA');
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "high-performance" });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    document.body.appendChild(renderer.domElement);
 
-  camera = new THREE.PerspectiveCamera(70, innerWidth / innerHeight, 0.1, 100);
-  camera.position.z = 18;
+    // Lights
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    scene.add(ambientLight);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
+    directionalLight.position.set(10, 10, 10);
+    scene.add(directionalLight);
 
-  renderer = new THREE.WebGLRenderer({ antialias: false, alpha: false, powerPreference: 'high-performance' });
-  renderer.setPixelRatio(isIOS ? 1.2 : window.devicePixelRatio);
-  renderer.setSize(innerWidth, innerHeight);
-  document.body.appendChild(renderer.domElement);
+    // Physics
+    world = new CANNON.World({
+      gravity: new CANNON.Vec3(0, -1.0, 0),
+    });
 
-  const light1 = new THREE.DirectionalLight(0xffffff, 2);
-  light1.position.set(5, 10, 7);
-  scene.add(light1);
-  scene.add(new THREE.AmbientLight(0xffffff, 0.3));
+    const ground = new CANNON.Body({
+      type: CANNON.Body.STATIC,
+      shape: new CANNON.Plane(),
+    });
+    world.addBody(ground);
 
-  const envMap = new THREE.CubeTextureLoader()
-    .setPath('https://threejs.org/examples/textures/cube/Bridge2/')
-    .load(['posx.jpg','negx.jpg','posy.jpg','negy.jpg','posz.jpg','negz.jpg']);
-  scene.environment = envMap;
+    // Beads
+    const beadColors = [
+      0xffb3ba, 0xffdfba, 0xffffba, 0xbaffc9,
+      0xbae1ff, 0xdcb0ff, 0xffbaff, 0xc2f0fc,
+      0xf8b195, 0xf67280, 0xc06c84, 0x6c5b7b,
+      0x355c7d, 0x99e1d9, 0xfad0c9, 0xff9aa2,
+      0xfbc687, 0xb3d1ff, 0xa0e7e5, 0xffc6ff
+    ];
 
-  const world = new CANNON.World({ gravity: new CANNON.Vec3(0, -0.35, 0) });
+    const beadGeometry = new THREE.TorusGeometry(0.3, 0.15, 16, 100);
 
-  const colors = [
-    '#fef3f7', '#fdb3c8', '#ffe0b2', '#ffe57f', '#c8e6c9',
-    '#80deea', '#b39ddb', '#90caf9', '#ffab91', '#aed581',
-    '#f06292', '#ce93d8', '#4dd0e1', '#ff7043', '#a5d6a7', '#ba68c8'
-  ];
+    for (let i = 0; i < 200; i++) {
+      const color = new THREE.Color(beadColors[Math.floor(Math.random() * beadColors.length)]);
+      const material = new THREE.MeshStandardMaterial({
+        color: color,
+        metalness: 0.2,
+        roughness: 0.1
+      });
 
-  const shapes = [
-    { outer: 0.30, tube: 0.11 },
-    { outer: 0.35, tube: 0.14 },
-    { outer: 0.40, tube: 0.16 },
-    { outer: 0.45, tube: 0.18 }
-  ];
+      const mesh = new THREE.Mesh(beadGeometry, material);
 
-  for (let i = 0; i < 200; i++) {
-    const shape = shapes[Math.floor(Math.random() * shapes.length)];
-    const color = new THREE.Color(colors[Math.floor(Math.random() * colors.length)]);
-    const geometry = new THREE.TorusGeometry(shape.outer, shape.tube, 32, 64);
+      const scaleX = 0.8 + Math.random() * 0.4;
+      const scaleY = 0.8 + Math.random() * 0.4;
+      const scaleZ = 1.4 + Math.random() * 0.5;
+      mesh.scale.set(scaleX, scaleY, scaleZ);
 
-    // iOS-safe material
-    const material = isIOS
-      ? new THREE.MeshStandardMaterial({
-          color,
-          metalness: 0.1,
-          roughness: 0.2,
-          opacity: 0.85,
-          transparent: true,
-          envMap,
-          envMapIntensity: 0.4
-        })
-      : new THREE.MeshPhysicalMaterial({
-          color,
-          transmission: 0.94,
-          thickness: 1.2,
-          roughness: 0,
-          clearcoat: 1,
-          clearcoatRoughness: 0,
-          reflectivity: 1,
-          envMap,
-          envMapIntensity: 1.4,
-          metalness: 0.1,
-          sheen: 1,
-          sheenColor: color,
-          sheenRoughness: 0.2,
-          iridescence: 0.2,
-          iridescenceIOR: 1.3,
-          transparent: true,
-          opacity: 0.94
-        });
+      mesh.position.set(
+        (Math.random() - 0.5) * 20,
+        Math.random() * 10 + 10,
+        (Math.random() - 0.5) * 10
+      );
 
-    const mesh = new THREE.Mesh(geometry, material);
-    const zScale = THREE.MathUtils.lerp(1.4, 1.9, Math.random());
-    mesh.scale.set(1, 1, zScale);
-    scene.add(mesh);
+      // Rotation velocity
+      mesh.userData.rotationSpeed = {
+        x: (Math.random() - 0.5) * 0.01,
+        y: (Math.random() - 0.5) * 0.01,
+        z: (Math.random() - 0.5) * 0.01
+      };
 
-    const body = new CANNON.Body({ mass: 0.35 + Math.random() * 0.15 });
-    body.addShape(new CANNON.Sphere(shape.outer));
-    body.position.set((Math.random() - 0.5) * 20, Math.random() * 20 + 10, (Math.random() - 0.5) * 10);
-    body.linearDamping = 0.18 + Math.random() * 0.1;
-    body.angularDamping = 0.25;
-    world.addBody(body);
+      scene.add(mesh);
+      beads.push(mesh);
 
-    spinAxes.push(new THREE.Vector3(
-      Math.random() * 0.01,
-      Math.random() * 0.01,
-      Math.random() * 0.01
-    ));
+      const shape = new CANNON.Sphere(0.3);
+      const body = new CANNON.Body({
+        mass: 0.1 + Math.random() * 0.3,
+        position: new CANNON.Vec3(mesh.position.x, mesh.position.y, mesh.position.z),
+        shape: shape,
+      });
 
-    beads.push(mesh);
-    bodies.push(body);
+      world.addBody(body);
+      physicsBodies.push(body);
+    }
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth/window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
   }
 
-  window.addEventListener('resize', () => {
-    camera.aspect = innerWidth / innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(innerWidth, innerHeight);
-  });
-
   function animate() {
-    world.step(1 / 60);
+    requestAnimationFrame(animate);
+    world.fixedStep();
 
-    beads.forEach((mesh, i) => {
-      const body = bodies[i];
-      mesh.position.copy(body.position);
-      mesh.rotation.x += spinAxes[i].x;
-      mesh.rotation.y += spinAxes[i].y;
-      mesh.rotation.z += spinAxes[i].z;
+    beads.forEach((bead, index) => {
+      const body = physicsBodies[index];
+      bead.position.copy(body.position);
+      bead.rotation.x += bead.userData.rotationSpeed.x;
+      bead.rotation.y += bead.userData.rotationSpeed.y;
+      bead.rotation.z += bead.userData.rotationSpeed.z;
 
-      if (body.position.y < -20) {
-        body.position.set((Math.random() - 0.5) * 20, 20 + Math.random() * 5, (Math.random() - 0.5) * 10);
-        body.velocity.set(0, 0, 0);
-        body.angularVelocity.set(0, 0, 0);
+      // Reset if below screen
+      if (body.position.y < -10) {
+        body.position.y = Math.random() * 10 + 10;
+        body.position.x = (Math.random() - 0.5) * 20;
+        body.position.z = (Math.random() - 0.5) * 10;
+        body.velocity.setZero();
+        body.angularVelocity.setZero();
       }
     });
 
     renderer.render(scene, camera);
-    requestAnimationFrame(animate);
   }
-
-  animate();
-}
-
-init();
 </script>
-
 </body>
 </html>
