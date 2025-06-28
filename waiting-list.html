@@ -114,8 +114,6 @@
     
   </main>
   
-
-
   </div>
 </div>
   
@@ -127,45 +125,41 @@
   <!-- Admin Features -->
   <script type="module" src="admin-auth.js"></script>
 
-  <script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function () {
-      navigator.serviceWorker
-        .register('sw.js')
-        .then(function (registration) {
-          console.log('✅ ServiceWorker registered: ', registration.scope);
-        })
-        .catch(function (error) {
-          console.error('❌ ServiceWorker registration failed: ', error);
+  <script type="module">
+    import { db } from './firebase.js';
+    import { collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+  
+    const form = document.getElementById("waitlistForm");
+    const successMsg = document.getElementById("waitlistSuccess");
+  
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+  
+      const name = form.name.value.trim();
+      const email = form.email.value.trim();
+      const message = form.message.value.trim();
+  
+      if (!name || !email) return alert("Please fill in both name and email.");
+  
+      try {
+        await addDoc(collection(db, "waitinglist"), {
+          name,
+          email,
+          message,
+          timestamp: serverTimestamp()
         });
-    });
-  }
-</script>
-
-<script type="module">
-  import { auth, db } from './firebase.js';
-  import { getDoc, doc } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
-
-  async function enforceMaintenance() {
-    const statusRef = doc(db, "Settings", "siteStatus");
-    const snap = await getDoc(statusRef);
-
-    const maintenanceEnabled = snap.exists() && snap.data().siteMaintenance;
-
-    auth.onAuthStateChanged(user => {
-      const isAdmin = user && user.email === "youradmin@email.com"; // replace with your admin email
-
-      if (maintenanceEnabled && !isAdmin) {
-        window.location.href = "/maintenance.html";
+  
+        form.reset();
+        successMsg.style.display = "flex"; // styled like ✅ You’re on the list!
+      } catch (err) {
+        console.error("❌ Failed to join waiting list:", err);
+        alert("Something went wrong. Please try again.");
       }
     });
-  }
-
-  enforceMaintenance();
-</script>
+  </script>
 
   <!-- Cookie Banner -->
-<script src="cookie-banner/load-cookie-banner.js"></script>
+  <script src="cookie-banner/load-cookie-banner.js"></script>
   
 </body>
 </html>
