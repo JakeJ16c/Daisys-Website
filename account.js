@@ -92,7 +92,6 @@ async function saveProfile(e) {
 // =========================
 // Lookup Address
 // =========================
-const apiKey = "E5XUL7BVtEieVDcUjtuFsw46674";
 const postcodeInput = document.getElementById("postcode-search");
 const resultsDropdown = document.getElementById("address-results");
 
@@ -114,9 +113,10 @@ async function fetchPostcodeSuggestions() {
   }
 
   try {
-    const res = await fetch(`https://api.getaddress.io/find/${encodeURIComponent(term)}?api-key=${apiKey}`);
+    // 🔐 Use your Firebase function instead of getAddress.io directly
+    const res = await fetch(`https://us-central1-YOUR_PROJECT_ID.cloudfunctions.net/lookupPostcode?postcode=${encodeURIComponent(term)}`);
     const data = await res.json();
-    console.log("📦 Find API response:", data);
+    console.log("📦 Secure Find API response:", data);
 
     if (!data || !Array.isArray(data.addresses) || data.addresses.length === 0) {
       resultsDropdown.innerHTML = "<div class='address-option'>No results found</div>";
@@ -134,7 +134,7 @@ async function fetchPostcodeSuggestions() {
       });
     });
   } catch (err) {
-    console.error("❌ Postcode find failed", err);
+    console.error("❌ Secure postcode fetch failed:", err);
     resultsDropdown.innerHTML = "<div class='address-option'>Error fetching results</div>";
   }
 }
