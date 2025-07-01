@@ -230,7 +230,7 @@ exports.notifyOnNewUserAccount = functions.firestore
       return null;
     });
 
-exports.lookupPostcode = onRequest((req, res) => {
+exports.lookupPostcode = functions.https.onRequest((req, res) => {
   cors(req, res, async () => {
     const postcode = req.query.postcode;
     if (!postcode) {
