@@ -228,10 +228,8 @@ exports.notifyOnNewUserAccount = functions.firestore
       return null;
     });
 
-const functions = require("firebase-functions");
 const fetch = require("node-fetch");
-
-const API_KEY = "EFWjNOLH8kGNnokxQFZQ1w46674";
+const API_KEY = functions.config().getaddress.key;
 
 exports.lookupPostcode = functions.https.onRequest(async (req, res) => {
   const postcode = req.query.postcode;
