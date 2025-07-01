@@ -89,6 +89,9 @@ async function saveProfile(e) {
   }
 }
 
+// =========================
+// Lookup Address
+// =========================
 const apiKey = "E5XUL7BVtEieVDcUjtuFsw46674";
 const postcodeInput = document.getElementById("postcode-search");
 const resultsDropdown = document.getElementById("address-results");
@@ -105,36 +108,46 @@ postcodeInput.addEventListener("input", () => {
 
 async function fetchPostcodeSuggestions() {
   const term = postcodeInput.value.trim();
-  if (term.length < 3) {
+  if (term.length < 5) {
     resultsDropdown.innerHTML = "";
     return;
   }
 
   try {
-    const res = await fetch(`https://api.getAddress.io/autocomplete?api-key=${apiKey}&query=${encodeURIComponent(term)}`);
+    const res = await fetch(`https://api.getAddress.io/find/${encodeURIComponent(term)}?api-key=${apiKey}`);
     const data = await res.json();
-    console.log("Autocomplete API response:", data); // ✅ DEBUG LINE
+    console.log("📦 Find API response:", data);
 
-    if (!data || !data.suggestions || data.suggestions.length === 0) {
-      resultsDropdown.innerHTML = "<div class='address-option'>No suggestions found</div>";
+    if (!data || !Array.isArray(data.addresses) || data.addresses.length === 0) {
+      resultsDropdown.innerHTML = "<div class='address-option'>No results found</div>";
       return;
     }
 
-    resultsDropdown.innerHTML = data.suggestions
-      .map(s => `<div class="address-option" data-id="${s.id}">${s.address}</div>`)
+    resultsDropdown.innerHTML = data.addresses
+      .map(address => `<div class="address-option">${address}</div>`)
       .join("");
 
     document.querySelectorAll(".address-option").forEach(option => {
       option.addEventListener("click", () => {
-        fetchFullAddress(option.dataset.id);
+        fillAddressFromLine(option.textContent);
         resultsDropdown.innerHTML = "";
       });
     });
-
   } catch (err) {
-    console.error("❌ Postcode lookup failed", err);
-    resultsDropdown.innerHTML = "<div class='address-option'>Error fetching suggestions</div>";
+    console.error("❌ Postcode find failed", err);
+    resultsDropdown.innerHTML = "<div class='address-option'>Error fetching results</div>";
   }
+}
+
+function fillAddressFromLine(addressLine) {
+  // Simple split — assumes format: house number, street, city, county
+  const parts = addressLine.split(",").map(p => p.trim());
+
+  // Flexible fallback if any field is missing
+  document.getElementById("house-number").value = parts[0] || "";
+  document.getElementById("street").value = parts[1] || "";
+  document.getElementById("city").value = parts[2] || "";
+  document.getElementById("county").value = parts[3] || "";
 }
 
 async function fetchFullAddress(id) {
