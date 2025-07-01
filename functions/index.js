@@ -1,5 +1,4 @@
 const fetch = require("node-fetch");
-const { onRequest } = require("firebase-functions/v2/https");
 const cors = require("cors")({ origin: true });
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
