@@ -114,7 +114,7 @@ async function fetchPostcodeSuggestions() {
 
   try {
     // 🔐 Use your Firebase function instead of getAddress.io directly
-    const res = await fetch(`https://us-central1-YOUR_PROJECT_ID.cloudfunctions.net/lookupPostcode?postcode=${encodeURIComponent(term)}`);
+    const res = await fetch(`https://us-central1-daisy-s-website.cloudfunctions.net/lookupPostcode?postcode=${encodeURIComponent(term)}`);
     const data = await res.json();
     console.log("📦 Secure Find API response:", data);
 
