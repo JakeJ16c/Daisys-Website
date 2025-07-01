@@ -227,3 +227,25 @@ exports.notifyOnNewUserAccount = functions.firestore
     
       return null;
     });
+
+const functions = require("firebase-functions");
+const fetch = require("node-fetch");
+
+const API_KEY = "EFWjNOLH8kGNnokxQFZQ1w46674";
+
+exports.lookupPostcode = functions.https.onRequest(async (req, res) => {
+  const postcode = req.query.postcode;
+
+  if (!postcode) {
+    return res.status(400).send("Missing postcode");
+  }
+
+  try {
+    const response = await fetch(`https://api.getAddress.io/find/${encodeURIComponent(postcode)}?api-key=${API_KEY}`);
+    const data = await response.json();
+    res.json(data);
+  } catch (err) {
+    console.error("Postcode lookup error:", err);
+    res.status(500).send("Server error");
+  }
+});
