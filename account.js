@@ -142,6 +142,7 @@ async function fetchPostcodeSuggestions() {
 function fillAddressFromLine(addressLine) {
   // Simple split — assumes format: house number, street, city, county
   const parts = addressLine.split(",").map(p => p.trim());
+  document.getElementById("postcode").value = postcodeInput.value.trim();
 
   // Flexible fallback if any field is missing
   document.getElementById("house-number").value = parts[0] || "";
