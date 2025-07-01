@@ -107,14 +107,14 @@ postcodeInput.addEventListener("input", () => {
 });
 
 async function fetchPostcodeSuggestions() {
-  const term = postcodeInput.value.trim();
+  const term = postcodeInput.value.trim().toUpperCase();
   if (term.length < 5) {
     resultsDropdown.innerHTML = "";
     return;
   }
 
   try {
-    const res = await fetch(`https://api.getAddress.io/find/${encodeURIComponent(term)}?api-key=${apiKey}`);
+    const res = await fetch(`https://api.getaddress.io/find/${encodeURIComponent(term)}?api-key=${apiKey}`);
     const data = await res.json();
     console.log("📦 Find API response:", data);
 
