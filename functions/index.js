@@ -1,3 +1,6 @@
+const fetch = require("node-fetch");
+const { onRequest } = require("firebase-functions/v2/https");
+const cors = require("cors")({ origin: true });
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const stripe = require('stripe')(functions.config().stripe.secret);
@@ -228,25 +231,25 @@ exports.notifyOnNewUserAccount = functions.firestore
       return null;
     });
 
-const fetch = require("node-fetch");
-const API_KEY = functions.config().getaddress.key;
-const cors = require("cors")({ origin: true });
-
-exports.lookupPostcode = functions.https.onRequest((req, res) => {
+exports.lookupPostcode = onRequest((req, res) => {
   cors(req, res, async () => {
     const postcode = req.query.postcode;
-
     if (!postcode) {
-      return res.status(400).send("Missing postcode");
+      return res.status(400).json({ error: "Postcode is required" });
     }
-
     try {
-      const response = await fetch(`https://api.getAddress.io/find/${encodeURIComponent(postcode)}?api-key=${API_KEY}`);
+      const cleanedPostcode = postcode.replace(/\s/g, '');
+      const response = await fetch(`https://api.postcodes.io/postcodes/${cleanedPostcode}`);
       const data = await response.json();
-      res.json(data);
+
+      if (data.status !== 200 || !data.result) {
+        return res.status(404).json({ error: "Postcode not found" });
+      }
+
+      res.status(200).json(data.result);
     } catch (err) {
       console.error("Postcode lookup error:", err);
-      res.status(500).send("Server error");
+      res.status(500).json({ error: "Internal server error" });
     }
   });
 });
