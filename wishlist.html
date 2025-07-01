@@ -13,6 +13,66 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link rel="stylesheet" href="styles/styles.css">
   <link rel="stylesheet" href="styles/responsive.css">
+
+  <style>
+    .wishlist-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2rem;
+      padding: 2rem;
+    }
+  
+    .wishlist-card {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+      overflow: hidden;
+      transition: transform 0.2s ease;
+    }
+  
+    .wishlist-card:hover {
+      transform: translateY(-4px);
+    }
+  
+    .wishlist-card img {
+      width: 100%;
+      aspect-ratio: 1/1;
+      object-fit: cover;
+    }
+  
+    .wishlist-card .product-info {
+      padding: 1rem;
+      text-align: center;
+    }
+  
+    .wishlist-card h3 {
+      margin: 0.5rem 0;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+  
+    .wishlist-card p {
+      margin: 0.25rem 0;
+      color: #444;
+    }
+  
+    .wishlist-card .remove-btn {
+      margin-top: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: #ffe6e6;
+      border: none;
+      border-radius: 8px;
+      color: #d33;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+  
+    .wishlist-card .remove-btn:hover {
+      background: #ffcccc;
+    }
+  </style>
+  
 </head>
   
 <body>
@@ -76,6 +136,62 @@
 
   <!-- Maintenance Page If Toggled In Dashboard -->
   <script type="module" src="maintenance.js"></script>
+
+  <script type="module">
+    import { db, auth } from './firebase.js';
+    import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
+    import { collection, getDocs, doc, deleteDoc } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+  
+    const main = document.querySelector('main');
+  
+    function createWishlistCard(product, productId) {
+      return `
+        <div class="product-card wishlist-card" data-id="${productId}">
+          <img src="${product.image || 'images/placeholder.png'}" alt="${product.name}" class="product-image">
+          <div class="product-info">
+            <h3>${product.name}</h3>
+            <p>£${product.price.toFixed(2)}</p>
+            <button class="remove-btn"><i class="fa-solid fa-heart"></i> Remove</button>
+          </div>
+        </div>
+      `;
+    }
+  
+    function renderEmptyMessage() {
+      main.innerHTML = `<div style="text-align:center; padding:4rem;">
+        <h2>Your wishlist is empty 🫶</h2>
+        <p>Browse the shop and add some favourites!</p>
+        <a href="shop.html" class="cta-btn">Go to Shop</a>
+      </div>`;
+    }
+  
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) return renderEmptyMessage();
+  
+      const wishlistRef = collection(db, "users", user.uid, "Wishlist");
+      const snap = await getDocs(wishlistRef);
+  
+      if (snap.empty) return renderEmptyMessage();
+  
+      const items = [];
+      snap.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
+  
+      main.innerHTML = `<section class="wishlist-grid">${items.map(item =>
+        createWishlistCard(item, item.id)
+      ).join('')}</section>`;
+  
+      // Remove button logic
+      document.querySelectorAll('.remove-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          const card = e.target.closest('.wishlist-card');
+          const id = card.dataset.id;
+          await deleteDoc(doc(db, "users", user.uid, "Wishlist", id));
+          card.remove();
+          if (document.querySelectorAll('.wishlist-card').length === 0) renderEmptyMessage();
+        });
+      });
+    });
+  </script>
 
 </body>
 </html>
