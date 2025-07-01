@@ -105,7 +105,7 @@ async function fetchPostcodeSuggestions() {
   if (term.length < 3) return (resultsDropdown.innerHTML = "");
 
   try {
-    const res = await fetch(`https://api.getAddress.io/autocomplete/${term}?api-key=${apiKey}`);
+    const res = await fetch(`https://api.getAddress.io/autocomplete?api-key=${apiKey}&query=${encodeURIComponent(term)}`);
     const data = await res.json();
 
     if (!data || !data.suggestions) return;
