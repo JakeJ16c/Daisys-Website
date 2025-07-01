@@ -97,18 +97,28 @@ const resultsDropdown = document.getElementById("address-results");
 let debounceTimeout;
 postcodeInput.addEventListener("input", () => {
   clearTimeout(debounceTimeout);
-  debounceTimeout = setTimeout(fetchPostcodeSuggestions, 400);
+  debounceTimeout = setTimeout(() => {
+    console.log("🔍 Triggering lookup for:", postcodeInput.value.trim());
+    fetchPostcodeSuggestions();
+  }, 400);
 });
 
 async function fetchPostcodeSuggestions() {
   const term = postcodeInput.value.trim();
-  if (term.length < 3) return (resultsDropdown.innerHTML = "");
+  if (term.length < 3) {
+    resultsDropdown.innerHTML = "";
+    return;
+  }
 
   try {
     const res = await fetch(`https://api.getAddress.io/autocomplete?api-key=${apiKey}&query=${encodeURIComponent(term)}`);
     const data = await res.json();
+    console.log("Autocomplete API response:", data); // ✅ DEBUG LINE
 
-    if (!data || !data.suggestions) return;
+    if (!data || !data.suggestions || data.suggestions.length === 0) {
+      resultsDropdown.innerHTML = "<div class='address-option'>No suggestions found</div>";
+      return;
+    }
 
     resultsDropdown.innerHTML = data.suggestions
       .map(s => `<div class="address-option" data-id="${s.id}">${s.address}</div>`)
@@ -120,9 +130,10 @@ async function fetchPostcodeSuggestions() {
         resultsDropdown.innerHTML = "";
       });
     });
+
   } catch (err) {
-    console.error("Postcode lookup failed", err);
-    resultsDropdown.innerHTML = "<div class='error'>Error fetching results</div>";
+    console.error("❌ Postcode lookup failed", err);
+    resultsDropdown.innerHTML = "<div class='address-option'>Error fetching suggestions</div>";
   }
 }
 
