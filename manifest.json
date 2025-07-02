@@ -1,7 +1,7 @@
 {
-  "name": "Daisy's Website",
-  "short_name": "Daisy",
-  "start_url": "index.html",
+  "name": "Golden By Daisy",
+  "short_name": "GoldenByDaisy",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#204ECF",
