@@ -283,7 +283,7 @@
   <!-- PWA Service Worker Registration -->
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/Daisys-Website/admin/sw.js', { scope: '/Daisys-Website/admin/' })
+      navigator.serviceWorker.register('/admin/sw.js', { scope: '/admin/' })
         .then((reg) => {
           console.log("✅ Service Worker registered with scope:", reg.scope);
         })
