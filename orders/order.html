@@ -211,6 +211,15 @@
   let subtotal = 0;
   const items = order.items || [];
   const itemsContainer = document.getElementById('items');
+  const productSnapshot = await getDocs(collection(db, "Products"));
+  const productMap = {};
+  
+  productSnapshot.forEach(doc => {
+    const data = doc.data();
+    const key = data.name?.trim().toLowerCase();
+    const img = Array.isArray(data.images) && data.images.length > 0 ? data.images[0] : "favicon_circle.ico";
+    if (key) productMap[key] = img;
+  });
 
   items.forEach(item => {
     subtotal += item.price * item.qty;
@@ -218,7 +227,7 @@
     const div = document.createElement('div');
     div.className = 'item';
     div.innerHTML = `
-      <img src="${item.image}" alt="${item.productName}" />
+      <img src="${productMap[item.productName?.trim().toLowerCase()] || 'favicon_circle.ico'}" alt="${item.productName}" />
       <div class="item-details">
         <strong>${item.productName}</strong><br>
         Size: ${item.size}<br>
