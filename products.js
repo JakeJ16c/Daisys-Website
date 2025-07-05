@@ -3,14 +3,15 @@ import { getDocs, collection, addDoc, serverTimestamp, doc, setDoc, deleteDoc, g
 import { auth } from "./firebase.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 
-const container = document.getElementById('product-grid');
-if (!container) {
-  // Stop executing this file if we’re not on the product page
-  console.log("⏹️ products.js skipped: #product-grid not found.");
-  return;
-}
-container.innerHTML = `<div class="spinner-container"><div class="spinner"></div></div>`;
+(() => {
+  const container = document.getElementById('product-grid');
+  if (!container) {
+    console.log("⏹️ products.js skipped: #product-grid not found.");
+    return;
+  }
 
+  // ⬇️ Paste the rest of your existing code below this line
+})();
 
 let currentUser = null;
 
