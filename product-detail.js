@@ -28,20 +28,22 @@ async function loadProduct() {
       return;
     }
 
-const carouselImages = document.getElementById('carouselImages');
-
-if (carouselImages && images.length) {
-  carouselImages.innerHTML = '';
-  images.forEach((imgUrl) => {
-    const img = document.createElement('img');
-    img.src = imgUrl;
-    img.alt = data.name;
-    carouselImages.appendChild(img);
-  });
-}
-
     const data = snap.data();
+    const images = Array.isArray(data.images) ? data.images : [data.image];
 
+    // ✅ Now we can safely build the mobile carousel
+    const carouselImages = document.getElementById('carouselImages');
+    if (carouselImages && images.length) {
+      carouselImages.innerHTML = '';
+      images.forEach((imgUrl) => {
+        const img = document.createElement('img');
+        img.src = imgUrl;
+        img.alt = data.name;
+        carouselImages.appendChild(img);
+      });
+    }
+
+    // --- the rest of your logic stays the same ---
     const titleEl = document.querySelector('.product-title');
     const priceEl = document.querySelector('.product-price');
     const descEl = document.querySelector('.product-description');
@@ -54,18 +56,16 @@ if (carouselImages && images.length) {
     if (priceEl) priceEl.textContent = `£${parseFloat(data.price).toFixed(2)}`;
     if (descEl) descEl.textContent = data.description || '';
 
-    const images = Array.isArray(data.images) ? data.images : [data.image];
     if (mainImg) {
       mainImg.src = images[0] || '';
       mainImg.alt = data.name;
       mainImg.parentElement.style.position = 'relative';
 
-      // Add wishlist heart icon
+      // Wishlist logic...
       const heartIcon = document.createElement('i');
       heartIcon.className = 'fa-regular fa-heart wishlist-icon';
       mainImg.parentElement.appendChild(heartIcon);
 
-      // Check wishlist state
       if (currentUser) {
         const wishlistDocId = `${productId}OneSize`;
         const wishlistRef = doc(db, "users", currentUser.uid, "Wishlist", wishlistDocId);
@@ -76,7 +76,6 @@ if (carouselImages && images.length) {
         }
       }
 
-      // Toggle wishlist
       heartIcon.addEventListener('click', async (e) => {
         e.stopPropagation();
         e.preventDefault();
