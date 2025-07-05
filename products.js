@@ -5,13 +5,7 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/fi
 
 (() => {
   const container = document.getElementById('product-grid');
-  if (!container) {
-    console.log("⏹️ products.js skipped: #product-grid not found.");
-    return;
-  }
-
-  // ⬇️ Paste the rest of your existing code below this line
-})();
+  if (!container) return;
 
 let currentUser = null;
 
@@ -233,3 +227,4 @@ async function logBasketActivity(product) {
     console.error("❌ Error logging basket activity:", err);
   }
 }
+})();
