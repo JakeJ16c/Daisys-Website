@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Orders link
       const ordersLink = document.createElement("a");
-      ordersLink.href = "/orders.html";
+      ordersLink.href = "/orders/";
       ordersLink.textContent = "My Orders";
       ordersLink.style.display = "block";
       ordersLink.style.padding = "0.4rem 0.8rem";
