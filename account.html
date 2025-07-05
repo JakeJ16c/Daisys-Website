@@ -13,98 +13,6 @@
   <link rel="stylesheet" href="styles/responsive.css">
   
   <style>  
-.order-card {
-  background: #fff;
-  border-radius: 14px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
-  margin-bottom: 1.25rem;
-  transition: box-shadow 0.3s ease;
-}
-
-.order-card:hover {
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-}
-
-.order-summary {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 1.25rem;
-  cursor: pointer;
-  font-weight: 500;
-  background: #fefefe;
-  transition: background 0.3s ease;
-}
-
-.order-summary:hover {
-  background: #f5f5f5;
-}
-
-.summary-left {
-  font-size: 1rem;
-}
-
-.summary-right {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.order-summary i {
-  transition: transform 0.3s ease;
-}
-
-.order-summary.open i {
-  transform: rotate(180deg);
-}
-
-.order-details {
-  display: none;
-  padding: 1rem 1.5rem;
-  background: #fff;
-  border-top: 1px solid #eee;
-}
-
-.order-details.open {
-  display: block;
-}
-
-.order-date {
-  font-size: 0.85rem;
-  color: #666;
-  margin-bottom: 0.75rem;
-}
-
-.order-details ul {
-  list-style-type: disc;
-  padding-left: 1.25rem;
-}
-
-.order-status {
-  font-size: 0.85rem;
-  font-weight: 500;
-  padding: 0.2rem 0.6rem;
-  border-radius: 20px;
-  white-space: nowrap;
-  text-transform: capitalize;
-}
-
-.order-status.pending {
-  background-color: #fff4e5;
-  color: #a96a00;
-}
-
-.order-status.cancelled {
-  background-color: #ffe5e5;
-  color: #b30000;
-}
-
-.order-status.completed {
-  background-color: #e6f9e8;
-  color: #207a3c;
-}
-
 .hidden {
   display: none;
 }
@@ -122,60 +30,6 @@
   display: block;
   max-width: 300px;
   width: 100%;
-}
-
-.order-images {
-  display: flex;
-  margin-top: 0.2rem;
-}
-
-.product-thumb {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid white;
-  box-shadow: 0 0 0 1px #ccc;
-  margin-left: -8px;
-  background: #f4f4f4;
-}
-.product-thumb:first-child {
-  margin-left: 0;
-}
-
-.status-timeline {
-  display: flex;
-  align-items: center;
-  margin-top: 1rem;
-  gap: 8px;
-  overflow-x: auto;
-}
-
-.status-step {
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 0.85rem;
-  background-color: #e0e0e0;
-  color: #555;
-  white-space: nowrap;
-  transition: all 0.3s ease;
-}
-
-.status-step.completed {
-  background-color: #4CAF50;
-  color: white;
-}
-
-.status-step.active {
-  background-color: #204ECF;
-  color: white;
-}
-
-.status-line {
-  width: 30px;
-  height: 2px;
-  background-color: #ccc;
-  flex-shrink: 0;
 }
 
 #address-results {
@@ -457,15 +311,6 @@
             </div>
           </div>
           </form>
-        </div>
-
-        <!-- 📦 My Orders -->
-        <div class="form-container">
-          <h3><i class="fas fa-box"></i> My Orders</h3>
-          <div id="user-orders" style="max-height: none;">
-            <div id="orders-wrapper"></div>
-            <div id="pagination-controls" style="text-align:center; margin-top: 1rem;"></div>
-          </div>   
         </div>
 
         <!-- 📦 My Settings -->
