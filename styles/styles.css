@@ -901,9 +901,9 @@ input[type="range"] {
 		  display: flex;
 		  flex-direction: column;
 		  gap: 20px;
-			max-height: 400px;
+			max-height: 500px;
 			overflow-y: scroll;
-			scrollbar-width: thin;
+			scrollbar-width: none;
 			padding-left: 4px;
 			padding-right: 6px;
 			direction: rtl;
