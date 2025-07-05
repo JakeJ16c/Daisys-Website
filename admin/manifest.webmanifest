@@ -3,7 +3,7 @@
   "short_name": "GBD Dashboard",
   "start_url": "/admin/index.html",
   "display": "standalone",
-  "background_color": "#ffffff",
+  "background_color": "#204ECF",
   "theme_color": "#204ECF",
   "orientation": "portrait",
   "scope": "/admin/",
