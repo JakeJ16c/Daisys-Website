@@ -1,4 +1,31 @@
 @media (max-width: 600px) {
+  .mobile-only {
+    display: block;
+  }
+
+  .desktop-product-images {
+    display: none;
+  }
+
+  .carousel-container {
+    width: 100%;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .carousel-images {
+    display: flex;
+  }
+
+  .carousel-images img {
+    width: 100vw;
+    height: 65vh;
+    object-fit: cover;
+    scroll-snap-align: start;
+    flex-shrink: 0;
+  }
+  
 .login-container {
 	margin-left: 40px;
 	margin-right: 40px;
