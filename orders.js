@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             <div class="order-summary-text">
               <p><strong>${order.items?.length || 0}</strong> item(s)</p>
               <p>Order #${order.orderNumber || "N/A"}</p>
-              <p>£${order.total?.toFixed(2) || "0.00"}</p>
+              <p>£${parseFloat(order.finalTotal || 0).toFixed(2)}</p>
             </div>
           </div>
         `;
