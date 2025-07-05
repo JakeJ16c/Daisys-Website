@@ -163,34 +163,39 @@
   <script src="/cookie-banner/load-cookie-banner.js"></script>
 
 <script type="module">
+  // ✅ Import Firestore
   import { db } from '/firebase.js';
   import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
 
+  // ✅ Extract order ID from the URL (e.g., ?id=ABC123)
   const params = new URLSearchParams(window.location.search);
   const orderId = params.get('id');
 
+  // ✅ Check for missing order ID
   if (!orderId) {
     alert('Order not found.');
     throw new Error('No order ID in URL.');
   }
 
-  document.getElementById('order-id').textContent = `Order #${order.orderNumber}`;
-
+  // ✅ Fetch order from Firestore
   const docRef = doc(db, 'Orders', orderId);
   const docSnap = await getDoc(docRef);
 
+  // ❌ Handle missing order
   if (!docSnap.exists()) {
     alert('Order not found.');
     throw new Error('Order does not exist');
   }
 
+  // ✅ Extract order data
   const order = docSnap.data();
 
-  // ✅ Dynamically set the page <title>
-  document.getElementById("pageTitle").textContent = `Order #${order.orderNumber || orderId} - Golden By Daisy`;
-
+  // ✅ Update dynamic elements on the page
+  document.getElementById('order-id').textContent = `Order #${order.orderNumber || orderId}`;
+  document.getElementById('pageTitle').textContent = `Order #${order.orderNumber || orderId} - Golden By Daisy`;
   document.getElementById('order-status').textContent = `Status: ${order.status || 'Confirmed'}`;
 
+  // ✅ Shipping and billing info
   document.getElementById('shipping-info').innerHTML = `
     ${order.name || ''}<br>
     ${order.address?.line1 || ''}<br>
@@ -202,11 +207,14 @@
 
   document.getElementById('billing-info').innerHTML = document.getElementById('shipping-info').innerHTML;
 
+  // ✅ Render order items
   let subtotal = 0;
   const items = order.items || [];
   const itemsContainer = document.getElementById('items');
+
   items.forEach(item => {
     subtotal += item.price * item.qty;
+
     const div = document.createElement('div');
     div.className = 'item';
     div.innerHTML = `
@@ -220,6 +228,7 @@
     itemsContainer.appendChild(div);
   });
 
+  // ✅ Totals
   document.getElementById('subtotal').textContent = `£${subtotal.toFixed(2)}`;
   document.getElementById('shipping').textContent = `£${(order.shipping || 0).toFixed(2)}`;
   document.getElementById('total').textContent = `£${(subtotal + (order.shipping || 0)).toFixed(2)}`;
