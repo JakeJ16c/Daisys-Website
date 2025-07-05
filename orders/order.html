@@ -93,7 +93,7 @@
     import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
 
     const params = new URLSearchParams(window.location.search);
-    const orderId = params.get('order');
+    const orderId = params.get('id');
 
     if (!orderId) {
       alert('Order not found.');
