@@ -52,19 +52,21 @@ document.addEventListener("DOMContentLoaded", async () => {
         }).join("");
 
       wrapper.innerHTML += `
-        <div class="order-card" onclick="window.location.href='order-details.html?id=${orderId}'">
-          <div class="order-header">
-            <span class="order-status">${orderStatus}</span>
-            <span class="order-date">${orderDate}</span>
+          <div class="order-card" onclick="window.location.href='order-details.html?id=${orderId}'">
+            <div class="order-images-wrapper">
+              ${thumbnails}
+            </div>
+            <div class="order-status-bar">
+              <span class="order-status-pill">${orderStatus}</span>
+              <span class="order-date">${orderDate}</span>
+            </div>
+            <div class="order-summary-text">
+              <p><strong>${order.items?.length || 0}</strong> item(s)</p>
+              <p><strong>Total:</strong> £${order.total?.toFixed(2) || "0.00"}</p>
+              <p><strong>Order No.</strong> ${order.orderNumber || "N/A"}</p>
+            </div>
           </div>
-          <div class="order-thumbnails">${thumbnails}</div>
-          <div class="order-info">
-            <p>${order.items?.length || 0} item(s)</p>
-            <p>Order No. ${order.orderNumber || "N/A"}</p>
-            <p>Total: £${order.total?.toFixed(2) || "0.00"}</p>
-          </div>
-        </div>
-      `;
+        `;
     });
   });
 });
