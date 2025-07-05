@@ -93,11 +93,12 @@ exports.notifyOnBasketUpdate = functions.firestore
       }
 
       for (const token of tokens) {
+        const userType = update.isGuest ? "A guest" : "A customer";
         const sizeInfo = update.size && update.size.toLowerCase() !== "onesize" ? ` (Size: ${update.size})` : "";
         const message = {
           notification: {
             title: "You're So Golden",
-            body: `Someone added ${update.qty || 1} ${update.name || 'a product'}${sizeInfo} to their basket.`,
+            body: `${userType} added ${update.qty || 1} ${update.name || 'a product'}${sizeInfo} to their basket.`,
           },
           data: {
             category: "basket",
