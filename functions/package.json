@@ -1,5 +1,6 @@
 {
   "name": "functions",
+  "type": "module",
   "description": "Cloud Functions for You're So Golden",
   "dependencies": {
     "firebase-admin": "^11.5.0",
