@@ -56,6 +56,39 @@
   margin: 4px 0;
   font-size: 0.95rem;
 }
+.order-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease;
+}
+.order-card:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+.order-thumbnails {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+.product-thumb {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+.order-info p {
+  margin: 3px 0;
+  font-size: 0.95rem;
+}
   </style>
   
 </head>
@@ -96,11 +129,12 @@
   <div id="navigation-bar-container"></div>
 
   <main class="orders-page">
-      <div class="container" id="orders-list">
-        <h2 style="text-align:center; margin-top: 2rem;">My Orders</h2>
-        <div id="orders-wrapper" style="display: flex; flex-direction: column; gap: 2rem; padding: 2rem;"></div>
+      <div class="container" style="padding: 2rem;">
+        <h2 style="text-align:center; margin-bottom: 2rem;">My Orders</h2>
+        <div id="orders-wrapper" style="display: flex; flex-direction: column; gap: 1.5rem;"></div>
       </div>
     </main>
+
 
   <!-- Footer -->
   <div id="footer-container"></div>
