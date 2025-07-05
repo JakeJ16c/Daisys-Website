@@ -4,7 +4,13 @@ import { auth } from "./firebase.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 
 const container = document.getElementById('product-grid');
+if (!container) {
+  // Stop executing this file if we’re not on the product page
+  console.log("⏹️ products.js skipped: #product-grid not found.");
+  return;
+}
 container.innerHTML = `<div class="spinner-container"><div class="spinner"></div></div>`;
+
 
 let currentUser = null;
 
