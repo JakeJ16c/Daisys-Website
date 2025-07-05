@@ -224,6 +224,7 @@ async function logBasketActivity(product) {
       productId: product.id,
       qty: product.qty || 1,
       size: product.size || null,
+      isGuest: !currentUser,
       timestamp: serverTimestamp()
     });
     console.log("📤 Basket activity logged.");
