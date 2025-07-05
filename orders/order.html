@@ -165,7 +165,7 @@
 <script type="module">
   // ✅ Import Firestore
   import { db } from '/firebase.js';
-  import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+  import { doc, getDoc, getDocs, collection } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
 
   // ✅ Extract order ID from the URL (e.g., ?id=ABC123)
   const params = new URLSearchParams(window.location.search);
