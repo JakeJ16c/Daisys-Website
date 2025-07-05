@@ -28,6 +28,18 @@ async function loadProduct() {
       return;
     }
 
+const carouselImages = document.getElementById('carouselImages');
+
+if (carouselImages && images.length) {
+  carouselImages.innerHTML = '';
+  images.forEach((imgUrl) => {
+    const img = document.createElement('img');
+    img.src = imgUrl;
+    img.alt = data.name;
+    carouselImages.appendChild(img);
+  });
+}
+
     const data = snap.data();
 
     const titleEl = document.querySelector('.product-title');
