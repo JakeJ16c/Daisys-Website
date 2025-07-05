@@ -229,26 +229,3 @@ exports.notifyOnNewUserAccount = functions.firestore
     
       return null;
     });
-
-exports.lookupPostcode = functions.https.onRequest((req, res) => {
-  cors(req, res, async () => {
-    const postcode = req.query.postcode;
-    if (!postcode) {
-      return res.status(400).json({ error: "Postcode is required" });
-    }
-    try {
-      const cleanedPostcode = postcode.replace(/\s/g, '');
-      const response = await fetch(`https://api.postcodes.io/postcodes/${cleanedPostcode}`);
-      const data = await response.json();
-
-      if (data.status !== 200 || !data.result) {
-        return res.status(404).json({ error: "Postcode not found" });
-      }
-
-      res.status(200).json(data.result);
-    } catch (err) {
-      console.error("Postcode lookup error:", err);
-      res.status(500).json({ error: "Internal server error" });
-    }
-  });
-});
