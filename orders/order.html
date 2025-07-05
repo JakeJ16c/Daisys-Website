@@ -210,9 +210,9 @@
     const div = document.createElement('div');
     div.className = 'item';
     div.innerHTML = `
-      <img src="${item.image}" alt="${item.name}" />
+      <img src="${item.image}" alt="${item.productName}" />
       <div class="item-details">
-        <strong>${item.name}</strong><br>
+        <strong>${item.productName}</strong><br>
         Size: ${item.size}<br>
         £${item.price.toFixed(2)} x ${item.qty}
       </div>
