@@ -233,6 +233,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   const editBtn = document.getElementById("editBtn");
   if (editBtn) editBtn.addEventListener("click", toggleEdit);
 
+  const cancelBtn = document.getElementById("cancelBtn");
+  if (cancelBtn) cancelBtn.addEventListener("click", toggleEdit);
+
   if (currentUser) {
     loadUserOrders(currentUser);
   }
