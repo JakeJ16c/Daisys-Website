@@ -16,6 +16,47 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="styles/styles.css">
   <link rel="stylesheet" href="styles/responsive.css">
+
+  <style>
+    .order-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease;
+}
+.order-card:hover {
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
+.order-status-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+.order-status-icon {
+  font-size: 1.2rem;
+}
+.order-images-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+.order-product-img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+.order-summary-text p {
+  margin: 4px 0;
+  font-size: 0.95rem;
+}
+  </style>
   
 </head>
 <body>
@@ -54,10 +95,13 @@
   <!-- Navigation Bar -->
   <div id="navigation-bar-container"></div>
 
-  <main>
+  <main class="orders-page">
+      <div class="container" id="orders-list">
+        <h2 style="text-align:center; margin-top: 2rem;">My Orders</h2>
+        <div id="orders-wrapper" style="display: flex; flex-direction: column; gap: 2rem; padding: 2rem;"></div>
+      </div>
+    </main>
 
-  </main>
-  
   <!-- Footer -->
   <div id="footer-container"></div>
 
