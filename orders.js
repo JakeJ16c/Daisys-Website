@@ -11,7 +11,7 @@ import {
 // Global variables for pagination
 let orders = [];
 let currentPage = 1;
-const ordersPerPage = 4;
+const ordersPerPage = 6;
 
 // When DOM is ready
 document.addEventListener("DOMContentLoaded", async () => {
