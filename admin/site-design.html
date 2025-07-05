@@ -851,6 +851,28 @@
 .save-changes-btn:hover {
   background: #218838;
 }
+
+.message-list li {
+  display: flex;
+  margin-bottom: 8px;
+  gap: 8px;
+}
+
+.message-list input {
+  flex: 1;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.message-list button {
+  background-color: #ff4d4f;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
   </style>
 
 </head>
@@ -878,6 +900,16 @@
   <div class="overlay" id="overlay"></div>
 
   <main>
+
+  <!-- Announcement Bar Editor -->
+  <div class="section">
+    <h2>Announcement Bar Messages</h2>
+    <ul id="announcementList" class="message-list"></ul>
+    <button id="addAnnouncementBtn">+ Add Message</button>
+    <br />
+    <button id="saveAnnouncementBtn">💾 Save Messages</button>
+  </div>
+
     
   <!-- Hero Section -->
   <section class="hero">
@@ -1014,5 +1046,52 @@
     });
   </script>
 
+  <script>
+    import { db } from '../firebase.js';
+import { doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+
+const listEl = document.getElementById('announcementList');
+const addBtn = document.getElementById('addAnnouncementBtn');
+const saveBtn = document.getElementById('saveAnnouncementBtn');
+
+// Load announcements from Firestore
+async function loadAnnouncements() {
+  const ref = doc(db, 'SiteSettings', 'announcementBar');
+  const snap = await getDoc(ref);
+  const data = snap.exists() ? snap.data() : { messages: [] };
+  listEl.innerHTML = '';
+
+  data.messages.forEach((msg, idx) => {
+    addAnnouncementRow(msg);
+  });
+}
+
+// Add new message row
+function addAnnouncementRow(value = '') {
+  const li = document.createElement('li');
+  li.innerHTML = `
+    <input type="text" value="${value}" placeholder="Enter message..." />
+    <button onclick="this.parentElement.remove()">🗑</button>
+  `;
+  listEl.appendChild(li);
+}
+
+// Save all messages to Firestore
+async function saveAnnouncements() {
+  const messages = Array.from(listEl.querySelectorAll('input'))
+    .map(input => input.value.trim())
+    .filter(msg => msg.length > 0);
+
+  await setDoc(doc(db, 'SiteSettings', 'announcementBar'), { messages });
+  alert('✅ Messages updated!');
+}
+
+addBtn.addEventListener('click', () => addAnnouncementRow());
+saveBtn.addEventListener('click', saveAnnouncements);
+
+// Initial load
+loadAnnouncements();
+  </script>
+  
 </body>
 </html>
