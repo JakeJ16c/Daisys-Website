@@ -90,117 +90,6 @@ async function saveProfile(e) {
 }
 
 // =========================
-// 📦 Load User Orders
-// =========================
-async function loadUserOrders(user) {
-  const ordersRef = collection(db, "Orders");
-  const q = query(ordersRef, where("userId", "==", user.uid));
-  const snapshot = await getDocs(q);
-  const productSnapshot = await getDocs(collection(db, "Products"));
-  const productMap = {};
-  productSnapshot.forEach(doc => {
-    const data = doc.data();
-    const nameKey = data.name?.trim().toLowerCase();
-    const img = Array.isArray(data.images) && data.images.length > 0
-      ? data.images[0]
-      : "https://via.placeholder.com/40";
-  
-    if (nameKey) productMap[nameKey] = img;
-  });
-
-  const orders = snapshot.docs.map(docSnap => ({
-    id: docSnap.id,
-    ...docSnap.data(),
-  }));
-
-  // Store in chunks
-  const ordersPerPage = 6;
-  let currentPage = 1;
-  const totalPages = Math.ceil(orders.length / ordersPerPage);
-
-  function renderPage(page) {
-    const wrapper = document.getElementById("orders-wrapper");
-    const pagination = document.getElementById("pagination-controls");
-    wrapper.innerHTML = "";
-
-    const start = (page - 1) * ordersPerPage;
-    const end = start + ordersPerPage;
-    const pageOrders = orders.slice(start, end);
-
-    if (pageOrders.length === 0) {
-      wrapper.innerHTML = "<p>You haven't placed any orders yet.</p>";
-      return;
-    }
-
-    pageOrders.forEach(order => {
-      const date = order.createdAt?.toDate?.().toLocaleString() || "Unknown date";
-      const itemsList = Array.isArray(order.items)
-        ? order.items.map(item => `<li>${item.productName} × ${item.qty} – £${item.price.toFixed(2)}</li>`).join("")
-        : "<li>No items found in this order.</li>";
-
-      wrapper.innerHTML += `
-        <div class="order-card">
-          <div class="order-summary" onclick="this.classList.toggle('open'); this.nextElementSibling.classList.toggle('open')">
-            <div class="summary-left">
-              <strong>Order No.${order.orderNumber || "N/A"}</strong>
-            </div>
-            <div class="summary-right">
-              <div class="order-images">
-                ${Array.isArray(order.items)
-                  ? order.items.slice(0, 5).map(item => `
-                      <img src="${productMap[item.productName?.trim().toLowerCase()] || 'favicon_circle.ico'}" class="product-thumb" />
-                    `).join('')
-                  : ''
-                }
-              </div>
-              <i class="fa fa-chevron-down"></i>
-            </div>
-          </div>
-          <div class="order-details">
-            <p class="order-date">Placed on: ${date}</p>
-            <ul>${itemsList}</ul>
-
-            <div class="status-timeline">
-              ${["Confirmed", "Ready to Ship", "Dispatched", "Delivered"].map((stage, index, arr) => {
-                const currentIndex = arr.indexOf(order.status || "Confirmed");
-                const isCompleted = index < currentIndex;
-                const isActive = index === currentIndex;
-            
-                return `
-                  <div class="status-step ${isCompleted ? "completed" : isActive ? "active" : ""}">${stage}</div>
-                  ${index < arr.length - 1 ? '<div class="status-line"></div>' : ""}
-                `;
-              }).join("")}
-            </div>
-
-          </div>
-        </div>
-      `;
-    });
-
-    // Pagination buttons
-    pagination.innerHTML = "";
-    for (let i = 1; i <= totalPages; i++) {
-      const btn = document.createElement("button");
-      btn.textContent = i;
-      btn.style.margin = "0 5px";
-      btn.style.padding = "6px 10px";
-      btn.style.borderRadius = "6px";
-      btn.style.border = "1px solid #ccc";
-      btn.style.backgroundColor = i === page ? "#204ECF" : "#f0f0f0";
-      btn.style.color = i === page ? "#fff" : "#000";
-      btn.addEventListener("click", () => {
-        currentPage = i;
-        renderPage(currentPage);
-      });
-      pagination.appendChild(btn);
-    }
-  }
-
-  renderPage(currentPage);
-}
-
-// =========================
 // ✏️ Toggle Edit Mode
 // =========================
 function toggleEdit() {
@@ -216,7 +105,7 @@ function setupLogout() {
   if (btn) {
     btn.addEventListener("click", async () => {
       await signOut(auth);
-      window.location.href = "index.html";
+      window.location.href = "/";
     });
   }
 }
