@@ -1,17 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ========== Basic Setup ========== -->
+  <base href="/">
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Order Details</title>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" type="image/x-icon" href="/favicon_circle.ico">
+  <title id="pageTitle">Order Details</title>
+
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#ffffff">
+
+  <!-- ========== Fonts, Icons & Styling ========== -->
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/styles/styles.css">
+  <link rel="stylesheet" href="/styles/responsive.css">
+
   <style>
-    body {
-      font-family: 'Nunito Sans', sans-serif;
-      margin: 0;
-      padding: 2rem;
-      background: #f7f7f7;
-    }
     .order-container {
       max-width: 900px;
       margin: auto;
@@ -59,8 +66,46 @@
       text-align: right;
     }
   </style>
+  
 </head>
 <body>
+
+  <!-- Top Announcement -->
+  <div id="announcement-bar-container"></div>
+
+  <!-- Header Section -->
+  <header class="site-header">
+    <div class="header-left">
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-facebook-f"></i></a>
+      <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+      <a href="#"><i class="fas fa-envelope"></i></a>
+    </div>
+    <h1 class="header-title"><a href="/" class="logo-link">Golden By Daisy</a></h1>
+    <div class="header-right">
+      <a href="#cart" class="cart-icon"><i class="fas fa-basket-shopping"></i></a>
+      <a id="auth-icon" class="login-icon" href="#" title="User Menu">
+        <i id="auth-icon-symbol" class="fas fa-user"></i>
+      </a>
+
+</div>
+      <!-- Basket Dropdown -->
+      <div id="basket-preview"></div>
+
+    <!-- 👤 User Dropdown (dynamic) -->
+    <div id="logout-dropdown" class="hidden" style="position:absolute; right:1rem; top:4.2rem; background:white; border:1px solid #ccc; padding:1rem; border-radius:8px; z-index:1000; box-shadow:0 4px 12px rgba(0,0,0,0.1); min-width:160px;">
+      <div id="user-dropdown-content">
+        <!-- Content will be filled in by JS -->
+  </div>
+</div>
+
+  </header>
+
+  <!-- Navigation Bar -->
+  <div id="navigation-bar-container"></div>
+
+  <main>
+    
   <div class="order-container">
     <h1 id="order-id">Order #...</h1>
     <div class="order-status" id="order-status">Status: ...</div>
@@ -87,62 +132,97 @@
       <div><strong>Total: <span id="total">...</span></strong></div>
     </div>
   </div>
+    
+    </main>
 
-  <script type="module">
-    import { db } from '../firebase.js';
-    import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
 
-    const params = new URLSearchParams(window.location.search);
-    const orderId = params.get('id');
+  <!-- Footer -->
+  <div id="footer-container"></div>
 
-    if (!orderId) {
-      alert('Order not found.');
-      throw new Error('No order ID in URL.');
-    }
+  <!-- Load Page Layout -->
+  <script src="/layout/load-layout.js" type="module"></script>
 
-    document.getElementById('order-id').textContent = `Order #${orderId}`;
+  <script type="module" src="/orders/orders.js"></script>
 
-    const snap = await getDoc(doc(db, 'Orders', orderId));
-    if (!snap.exists()) {
-      alert('Order not found.');
-      throw new Error('Order does not exist');
-    }
+  <!-- 'User' Toggle Btn -->
+  <script type="module" src="/user-toggle.js"></script>
 
-    const order = snap.data();
-    document.getElementById('order-status').textContent = `Status: ${order.status || 'Confirmed'}`;
+  <!-- Basket Dropdown Btn -->
+  <script type="module" src="/basket-dropdown.js"></script>
+  
+  <script type="module" src="/firebase.js"></script>
 
-    document.getElementById('shipping-info').innerHTML = `
-      ${order.name}<br>
-      ${order.address?.line1}<br>
-      ${order.address?.town}<br>
-      ${order.address?.postcode}<br>
-      ${order.address?.country}<br>
-      ${order.phone || ''}
+  <!-- Import Products List -->
+  <script type="module" src="/products.js"></script>
+
+  <!-- Maintenance Page If Toggled In Dashboard -->
+  <script type="module" src="/maintenance.js"></script>
+
+  <!-- Cookie Banner -->
+  <script src="/cookie-banner/load-cookie-banner.js"></script>
+
+<script type="module">
+  import { db } from '/firebase.js';
+  import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+
+  const params = new URLSearchParams(window.location.search);
+  const orderId = params.get('id');
+
+  if (!orderId) {
+    alert('Order not found.');
+    throw new Error('No order ID in URL.');
+  }
+
+  document.getElementById('order-id').textContent = `Order #${orderId}`;
+
+  const docRef = doc(db, 'Orders', orderId);
+  const docSnap = await getDoc(docRef);
+
+  if (!docSnap.exists()) {
+    alert('Order not found.');
+    throw new Error('Order does not exist');
+  }
+
+  const order = docSnap.data();
+
+  // ✅ Dynamically set the page <title>
+  document.getElementById("pageTitle").textContent = `Order #${order.orderNumber || orderId}`;
+
+  document.getElementById('order-status').textContent = `Status: ${order.status || 'Confirmed'}`;
+
+  document.getElementById('shipping-info').innerHTML = `
+    ${order.name || ''}<br>
+    ${order.address?.line1 || ''}<br>
+    ${order.address?.town || ''}<br>
+    ${order.address?.postcode || ''}<br>
+    ${order.address?.country || ''}<br>
+    ${order.phone || ''}
+  `;
+
+  document.getElementById('billing-info').innerHTML = document.getElementById('shipping-info').innerHTML;
+
+  let subtotal = 0;
+  const items = order.items || [];
+  const itemsContainer = document.getElementById('items');
+  items.forEach(item => {
+    subtotal += item.price * item.qty;
+    const div = document.createElement('div');
+    div.className = 'item';
+    div.innerHTML = `
+      <img src="${item.image}" alt="${item.name}" />
+      <div class="item-details">
+        <strong>${item.name}</strong><br>
+        Size: ${item.size}<br>
+        £${item.price.toFixed(2)} x ${item.qty}
+      </div>
     `;
+    itemsContainer.appendChild(div);
+  });
 
-    document.getElementById('billing-info').innerHTML = document.getElementById('shipping-info').innerHTML;
+  document.getElementById('subtotal').textContent = `£${subtotal.toFixed(2)}`;
+  document.getElementById('shipping').textContent = `£${(order.shipping || 0).toFixed(2)}`;
+  document.getElementById('total').textContent = `£${(subtotal + (order.shipping || 0)).toFixed(2)}`;
+</script>
 
-    let subtotal = 0;
-    const items = order.items || [];
-    const itemsContainer = document.getElementById('items');
-    items.forEach(item => {
-      subtotal += item.price * item.qty;
-      const div = document.createElement('div');
-      div.className = 'item';
-      div.innerHTML = `
-        <img src="${item.image}" alt="${item.name}" />
-        <div class="item-details">
-          <strong>${item.name}</strong><br>
-          Size: ${item.size}<br>
-          £${item.price.toFixed(2)} x ${item.qty}
-        </div>
-      `;
-      itemsContainer.appendChild(div);
-    });
-
-    document.getElementById('subtotal').textContent = `£${subtotal.toFixed(2)}`;
-    document.getElementById('shipping').textContent = `£${(order.shipping || 0).toFixed(2)}`;
-    document.getElementById('total').textContent = `£${(subtotal + (order.shipping || 0)).toFixed(2)}`;
-  </script>
 </body>
 </html>
