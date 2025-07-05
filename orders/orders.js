@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           }).join("");
 
         const html = `
-          <div class="order-card" onclick="window.location.href='order-details.html?id=${orderId}'">
+          <div class="order-card" onclick="window.location.href='order.html?id=${orderId}'">
             <div class="order-images-wrapper">${thumbnails}</div>
             <div class="order-status-bar">
               <span class="order-status-pill">${orderStatus}</span>
