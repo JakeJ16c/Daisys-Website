@@ -1,12 +1,12 @@
 {
   "name": "Golden By Daisy - Admin",
   "short_name": "GBD Dashboard",
-  "start_url": "/admin/index.html",
+  "start_url": "/Daisys-Website/admin/index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#204ECF",
   "orientation": "portrait",
-  "scope": "/admin/",
+  "scope": "/Daisys-Website/",
   "icons": [
     {
       "src": "/IMG_8861.png",
