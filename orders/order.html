@@ -174,7 +174,7 @@
     throw new Error('No order ID in URL.');
   }
 
-  document.getElementById('order-id').textContent = `Order #${orderId}`;
+  document.getElementById('order-id').textContent = `Order #${order.orderNumber}`;
 
   const docRef = doc(db, 'Orders', orderId);
   const docSnap = await getDoc(docRef);
