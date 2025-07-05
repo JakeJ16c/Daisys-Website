@@ -920,8 +920,8 @@ input[type="range"] {
 		}
 		
 		.thumbnail-stack img.thumb {
-		  width: 120px;
-		  height: 120px;
+		  width: 145px;
+		  height: 145px;
 		  border-radius: 8px;
 		  cursor: pointer;
 		  object-fit: cover;
@@ -929,8 +929,8 @@ input[type="range"] {
 		}
 		
 		.main-image-wrapper {
-		  width: 530px;
-		  height: 530px;
+		  width: 500px;
+		  height: 500px;
 		  border-radius: 12px;
 		  overflow: hidden;
 		  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
