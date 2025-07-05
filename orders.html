@@ -142,6 +142,50 @@
   color: #444;
   text-transform: capitalize;
 }
+  .orders-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+  }
+
+  .pagination-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 2rem;
+  }
+
+  .pagination-controls button {
+    background: #e0e0e0;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s ease;
+  }
+
+  .pagination-controls button:hover {
+    background: #c0c0c0;
+  }
+
+  .pagination-controls .active-page {
+    background: #555;
+    color: white;
+  }
+
+  @media (max-width: 768px) {
+    .order-card {
+      width: 90%;
+    }
+  }
+
+  @media (min-width: 769px) {
+    .order-card {
+      width: 320px;
+    }
+  }
   </style>
   
 </head>
@@ -184,7 +228,8 @@
   <main class="orders-page">
       <div class="container" style="padding: 2rem;">
         <h2 style="text-align:center; margin-bottom: 2rem;">My Orders</h2>
-        <div id="orders-wrapper" style="display: flex; flex-direction: row; gap: 1.5rem;"></div>
+        <div id="ordersGrid" class="orders-grid"></div>
+        <div id="pagination" class="pagination-controls"></div>
       </div>
     </main>
 
