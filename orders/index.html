@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- ========== Basic Setup ========== -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" type="image/x-icon" href="favicon_circle.ico">
+  <title>My Orders - Golden By Daisy</title>
+
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ffffff">
+
+  <!-- ========== Fonts, Icons & Styling ========== -->
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles/styles.css">
+  <link rel="stylesheet" href="styles/responsive.css">
+
+  <style>
+.order-card:hover {
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
+.order-status-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+.order-status-icon {
+  font-size: 1.2rem;
+}
+.order-images-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+.order-product-img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+.order-summary-text p {
+  margin: 4px 0;
+  font-size: 0.95rem;
+}
+.order-card:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+.order-thumbnails {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+.product-thumb {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+.order-info p {
+  margin: 3px 0;
+  font-size: 0.95rem;
+}
+.order-card {
+  width: 100%;
+  max-width: 320px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  padding: 1.5rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.order-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* Overlapping Circles */
+.order-images-wrapper {
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+.order-images-wrapper img {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid white;
+  box-shadow: 0 0 0 1px #ccc;
+  margin-left: -14px;
+  background: #f4f4f4;
+}
+.order-images-wrapper img:first-child {
+  margin-left: 0;
+}
+
+/* Grey status bar */
+.order-status-bar {
+  background: #f5f5f5;
+  border-radius: 12px;
+  padding: 6px 12px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #555;
+  font-weight: 500;
+}
+
+/* Summary text */
+.order-summary-text {
+  text-align: left;
+}
+.order-summary-text p {
+  font-size: 0.9rem;
+  margin: 4px 0;
+}
+
+/* Optional: colored pill for status */
+.order-status-pill {
+  background: #e0e0e0;
+  padding: 4px 10px;
+  border-radius: 50px;
+  font-weight: 600;
+  color: #444;
+  text-transform: capitalize;
+}
+.orders-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+  .pagination-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 2rem;
+  }
+
+  .pagination-controls button {
+    background: #e0e0e0;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s ease;
+  }
+
+  .pagination-controls button:hover {
+    background: #c0c0c0;
+  }
+
+  .pagination-controls .active-page {
+    background: #555;
+    color: white;
+  }
+  </style>
+  
+</head>
+<body>
+
+  <!-- Top Announcement -->
+  <div id="announcement-bar-container"></div>
+
+  <!-- Header Section -->
+  <header class="site-header">
+    <div class="header-left">
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-facebook-f"></i></a>
+      <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+      <a href="#"><i class="fas fa-envelope"></i></a>
+    </div>
+    <h1 class="header-title"><a href="index.html" class="logo-link">Golden By Daisy</a></h1>
+    <div class="header-right">
+      <a href="#cart" class="cart-icon"><i class="fas fa-basket-shopping"></i></a>
+      <a id="auth-icon" class="login-icon" href="#" title="User Menu">
+        <i id="auth-icon-symbol" class="fas fa-user"></i>
+      </a>
+
+</div>
+      <!-- Basket Dropdown -->
+      <div id="basket-preview"></div>
+
+    <!-- 👤 User Dropdown (dynamic) -->
+    <div id="logout-dropdown" class="hidden" style="position:absolute; right:1rem; top:4.2rem; background:white; border:1px solid #ccc; padding:1rem; border-radius:8px; z-index:1000; box-shadow:0 4px 12px rgba(0,0,0,0.1); min-width:160px;">
+      <div id="user-dropdown-content">
+        <!-- Content will be filled in by JS -->
+  </div>
+</div>
+
+  </header>
+
+  <!-- Navigation Bar -->
+  <div id="navigation-bar-container"></div>
+
+  <main class="orders-page">
+      <div class="container" style="padding: 2rem;">
+        <h2 style="text-align:center; margin-bottom: 2rem; margin-top: 0;">My Orders</h2>
+        <div id="ordersGrid" class="orders-grid"></div>
+        <div id="pagination" class="pagination-controls"></div>
+      </div>
+    </main>
+
+
+  <!-- Footer -->
+  <div id="footer-container"></div>
+
+  </div>
+</div>
+
+  <!-- Load Page Layout -->
+  <script src="layout/load-layout.js" type="module"></script>
+
+  <script type="module" src="/orders/orders.js"></script>
+
+  <!-- 'User' Toggle Btn -->
+  <script type="module" src="user-toggle.js"></script>
+
+  <!-- Basket Dropdown Btn -->
+  <script type="module" src="basket-dropdown.js"></script>
+  
+  <script type="module" src="firebase.js"></script>
+
+  <!-- Import Products List -->
+  <script type="module" src="products.js"></script>
+
+  <!-- Maintenance Page If Toggled In Dashboard -->
+  <script type="module" src="maintenance.js"></script>
+
+  <!-- Cookie Banner -->
+  <script src="cookie-banner/load-cookie-banner.js"></script>
+  
+</body>
+</html>
