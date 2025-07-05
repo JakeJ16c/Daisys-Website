@@ -6,7 +6,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="icon" type="image/x-icon" href="/favicon_circle.ico">
-  <title id="pageTitle">Order Details</title>
+  <title id="pageTitle">Order Details - Golden By Daisy</title>
 
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#ffffff">
@@ -187,7 +187,7 @@
   const order = docSnap.data();
 
   // ✅ Dynamically set the page <title>
-  document.getElementById("pageTitle").textContent = `Order #${order.orderNumber || orderId}`;
+  document.getElementById("pageTitle").textContent = `Order #${order.orderNumber || orderId} - Golden By Daisy`;
 
   document.getElementById('order-status').textContent = `Status: ${order.status || 'Confirmed'}`;
 
