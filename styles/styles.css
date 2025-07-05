@@ -1,3 +1,6 @@
+.mobile-only {
+  display: none;
+}
     /* ========== Root Colours ========== */
     :root {
       --light-pink: #F8F3EA;
