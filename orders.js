@@ -58,7 +58,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             </div>
             <div class="order-status-bar">
               <span class="order-status-pill">${orderStatus}</span>
-              <span class="order-date">${orderDate}</span>
             </div>
             <div class="order-summary-text">
               <p><strong>${order.items?.length || 0}</strong> item(s)</p>
