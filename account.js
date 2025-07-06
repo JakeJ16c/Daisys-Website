@@ -129,11 +129,28 @@ async function submitNewAddress(e) {
   e.preventDefault();
   if (!currentUser) return alert("You must be logged in to add an address.");
 
-  const houseNumber = document.getElementById("modal-house-number").value.trim();
-  const street = document.getElementById("modal-street").value.trim();
-  const city = document.getElementById("modal-city").value.trim();
-  const county = document.getElementById("modal-county").value.trim();
-  const postcode = document.getElementById("modal-postcode").value.trim();
+const houseNumber = document.getElementById("modal-house-number").value.trim();
+const street = document.getElementById("modal-street").value.trim();
+const postcode = document.getElementById("modal-postcode").value.trim();
+
+// 🔄 Fetch city + county from autocomplete function
+let city = "", county = "";
+try {
+  const res = await fetch(`https://us-central1-daisy-s-website.cloudfunctions.net/autocompleteAddress?postcode=${encodeURIComponent(postcode)}`);
+  const data = await res.json();
+  if (data && data.city && data.county) {
+    city = data.city;
+    county = data.county;
+  } else {
+    console.warn("Could not auto-fill address, manual entry required.");
+    city = document.getElementById("modal-city").value.trim();
+    county = document.getElementById("modal-county").value.trim();
+  }
+} catch (err) {
+  console.error("Autocomplete failed:", err);
+  city = document.getElementById("modal-city").value.trim();
+  county = document.getElementById("modal-county").value.trim();
+}
 
   if (!houseNumber || !street || !city || !county || !postcode) return alert("Please fill in all fields.");
 
