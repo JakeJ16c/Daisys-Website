@@ -143,14 +143,15 @@ async function submitNewAddress(e) {
   }
 }
 
-function closeModal() {
-  document.getElementById("addressModal").classList.remove("active");
-  document.getElementById("addAddressForm").reset();
-}
+// 🟢 Open Add Address Modal
+document.getElementById('addAddressBtn')?.addEventListener('click', () => {
+  document.getElementById('addressModal').classList.remove('hidden');
+});
 
-function openModal() {
-  document.getElementById("addressModal").classList.add("active");
-}
+// 🔴 Close Add Address Modal
+document.getElementById('closeAddressModal')?.addEventListener('click', () => {
+  document.getElementById('addressModal').classList.add('hidden');
+});
 
 // =========================
 // 💾 Save Profile Info
