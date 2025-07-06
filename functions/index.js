@@ -180,8 +180,7 @@ exports.cleanupDeletedUsers = functions.auth.user().onDelete(async (user) => {
 });
 
 // 🔔 Autocomplete Address Modal
-
-const GOOGLE_API_KEY = "AIzaSyBSlOGFHwYI_6YZMQwU103_4dYQf9bgiU0";
+const GOOGLE_API_KEY = functions.config().google.key;
 
 exports.autocompleteAddress = functions.https.onRequest((req, res) => {
   cors(req, res, async () => {
