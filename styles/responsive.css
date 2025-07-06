@@ -12,6 +12,7 @@
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
+	position: relative;
   }
 
   .carousel-images {
@@ -26,16 +27,19 @@
     flex-shrink: 0;
   }
 .carousel-dots {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
-  justify-content: center;
-  margin-top: 10px;
   gap: 6px;
+  z-index: 2;
 }
 
 .carousel-dots .dot {
   width: 10px;
   height: 10px;
-  background-color: grey;
+  background-color: rgba(255, 255, 255, 0.4);
   border-radius: 50%;
   cursor: pointer;
   transition: background-color 0.3s ease;
