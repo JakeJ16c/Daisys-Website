@@ -220,6 +220,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   const saveBtn = document.getElementById("saveBtn");
   if (saveBtn) saveBtn.addEventListener("click", saveProfile);
 
+  const addAddressBtn = document.getElementById("addAddressBtn");
+  if (addAddressBtn) addAddressBtn.addEventListener("click", openModal);
+
   const editAccountBtn = document.getElementById("editAccountBtn");
   if (editAccountBtn) editAccountBtn.addEventListener("click", () => toggleProfileEditMode(true));
 
