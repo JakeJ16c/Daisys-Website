@@ -43,7 +43,6 @@ async function loadProduct() {
       });
     }
 
-    // --- the rest of your logic stays the same ---
     const titleEl = document.querySelector('.product-title');
     const priceEl = document.querySelector('.product-price');
     const descEl = document.querySelector('.product-description');
@@ -149,10 +148,61 @@ async function loadProduct() {
       sizeContainer.style.display = 'none';
     }
 
+    if (!data.oneSizeOnly && typeof data.stock === 'object') {
+  // Existing size dropdown code...
+  
+  // Check if ALL sizes are out of stock
+  const allOutOfStock = Object.values(data.stock).every(qty => qty === 0);
+  updateStockUI(allOutOfStock);
+
+  // 👇 Optional: update stock check when size is changed
+  sizeDropdown.addEventListener("change", () => {
+    const selectedQty = data.stock[sizeDropdown.value];
+    updateStockUI(selectedQty <= 0);
+  });
+
+} else {
+  // One size only
+  updateStockUI((data.stock ?? 0) <= 0);
+}
+
+
     document.getElementById("page-loader")?.remove();
   } catch (error) {
     console.error("Error loading product:", error);
     document.querySelector('.product-container').innerHTML = '<p>Error loading product.</p>';
+  }
+}
+
+function updateStockUI(isOutOfStock) {
+  const addBtn = document.querySelector(".add-to-basket");
+  const buyBtn = document.getElementById("buy-now-button");
+  const msg = document.getElementById("out-of-stock-msg");
+
+  if (isOutOfStock) {
+    addBtn.disabled = true;
+    addBtn.style.opacity = "0.5";
+    addBtn.style.pointerEvents = "none";
+
+    if (buyBtn) {
+      buyBtn.disabled = true;
+      buyBtn.style.opacity = "0.5";
+      buyBtn.style.pointerEvents = "none";
+    }
+
+    msg.style.display = "block";
+  } else {
+    addBtn.disabled = false;
+    addBtn.style.opacity = "1";
+    addBtn.style.pointerEvents = "auto";
+
+    if (buyBtn) {
+      buyBtn.disabled = false;
+      buyBtn.style.opacity = "1";
+      buyBtn.style.pointerEvents = "auto";
+    }
+
+    msg.style.display = "none";
   }
 }
 
