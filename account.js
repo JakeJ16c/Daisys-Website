@@ -248,5 +248,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
+  const closeModalBtn = document.getElementById("closeAddressModal");
+    if (closeModalBtn) {
+      closeModalBtn.addEventListener("click", () => {
+        document.getElementById("addressModal").classList.remove("active");
+      });
+    }
+
   setupLogout();
 });
