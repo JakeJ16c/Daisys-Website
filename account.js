@@ -226,14 +226,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const cancelBtn = document.getElementById("cancelBtn");
   if (cancelBtn) cancelBtn.addEventListener("click", () => toggleProfileEditMode(false));
 
-  const addAddressBtn = document.getElementById("addAddressBtn");
-  if (addAddressBtn) addAddressBtn.addEventListener("click", openModal);
-
   const modalForm = document.getElementById("addAddressForm");
   if (modalForm) modalForm.addEventListener("submit", submitNewAddress);
-
-  const modalClose = document.getElementById("closeAddressModal");
-  if (modalClose) modalClose.addEventListener("click", closeModal);
 
   window.addEventListener("click", (e) => {
     const addressModal = document.getElementById("addressModal");
