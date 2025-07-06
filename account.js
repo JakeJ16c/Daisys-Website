@@ -161,7 +161,6 @@ function toggleProfileEditMode(enable) {
   editActions.classList.toggle("hidden", !enable);
 
     if (!enable) {
-    // User is exiting edit mode, re-render addresses to ensure up-to-date
     renderAddresses();
   }
 }
@@ -226,7 +225,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (saveBtn) saveBtn.addEventListener("click", saveProfile);
 
   const addAddressBtn = document.getElementById("addAddressBtn");
-  if (addAddressBtn) addAddressBtn.addEventListener("click", openModal);
+  if (addAddressBtn) {
+    const addressModal = document.getElementById("addressModal");
+    addAddressBtn.addEventListener("click", () => {
+      addressModal.classList.add("active");
+    });
+  }
 
   const editAccountBtn = document.getElementById("editAccountBtn");
   if (editAccountBtn) editAccountBtn.addEventListener("click", () => toggleProfileEditMode(true));
