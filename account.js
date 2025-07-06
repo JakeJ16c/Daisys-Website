@@ -40,7 +40,7 @@ async function loadUserProfile() {
 // 📦 Render Address Cards
 // =========================
 async function renderAddresses() {
-  const addressList = document.getElementById("address-list");
+  const addressList = document.getElementById("addresses-list");
   addressList.innerHTML = "";
 
   const addressRef = collection(db, "users", currentUser.uid, "addresses");
