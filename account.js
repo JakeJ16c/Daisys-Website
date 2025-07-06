@@ -244,7 +244,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   window.addEventListener("click", (e) => {
     const addressModal = document.getElementById("addressModal");
     if (e.target === addressModal) {
-      closeModal();
+      addressModal.classList.remove("active");
     }
   });
 
