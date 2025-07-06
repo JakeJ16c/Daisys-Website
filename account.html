@@ -174,11 +174,6 @@
 }
 
 /* Action buttons */
-.account-actions {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1.5rem;
-}
 .account-actions .btn-submit,
 .account-actions .btn-secondary {
   flex: 1;
@@ -509,15 +504,13 @@ input:checked + .slider::before {
               <button id="cancelBtn" class="btn-cancel">Cancel</button>
             </div>
 
-
-            <h3><i class="fas fa-user"></i>Saved Addresses</h3>
+            <h3 class="section-title">
+              <i class="fa-solid fa-user"></i> Saved Addresses
+              <button id="addAddressBtn" class="edit-icon"><i class="fa-solid fa-plus"></i></button>
+            </h3>
             
             <div id="address-list">
               <!-- Address cards will be populated by JS -->
-            </div>
-            
-            <div class="account-actions">
-              <button type="button" id="addAddressBtn" class="btn-submit" style="background:#777;">+ Add Address</button>
             </div>
             
           </div>
