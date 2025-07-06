@@ -25,6 +25,25 @@
     scroll-snap-align: start;
     flex-shrink: 0;
   }
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  gap: 6px;
+}
+
+.carousel-dots .dot {
+  width: 10px;
+  height: 10px;
+  background-color: grey;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.carousel-dots .dot.active {
+  background-color: white;
+}
   
 .login-container {
 	margin-left: 40px;
