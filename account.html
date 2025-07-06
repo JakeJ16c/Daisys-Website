@@ -372,6 +372,41 @@ input:checked + .slider::before {
 .address-actions button:hover {
   opacity: 0.85;
 }
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.4);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal.active {
+  display: flex;
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 400px;
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #444;
+  cursor: pointer;
+}
   </style>
 </head>
 <body>
@@ -533,49 +568,30 @@ input:checked + .slider::before {
     </div>
 
     <!-- Add Address Modal -->
-    <div id="addAddressModal" class="hidden" style="
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: rgba(0, 0, 0, 0.4);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-    ">
-      <div style="
-        background: white;
-        padding: 2rem;
-        border-radius: 12px;
-        width: 100%;
-        max-width: 420px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        position: relative;
-      ">
-        <h3 style="margin-bottom: 1rem; text-align: center; color: var(--electric-blue);">Add New Address</h3>
+    <div id="addressModal" class="modal hidden">
+      <div class="modal-content">
+        <button id="closeAddressModal" class="modal-close">&times;</button>
+        <h3>Add New Address</h3>
         <form id="addAddressForm">
-          <label for="modalHouse">House Number</label>
-          <input type="text" id="modalHouse" placeholder="e.g. 42" required />
+          <label for="modal-house-number">House Number</label>
+          <input id="modal-house-number" type="text" required />
     
-          <label for="modalStreet">Street</label>
-          <input type="text" id="modalStreet" placeholder="e.g. Acacia Avenue" required />
+          <label for="modal-street">Street</label>
+          <input id="modal-street" type="text" required />
     
-          <label for="modalCity">Town / City</label>
-          <input type="text" id="modalCity" placeholder="e.g. London" required />
+          <label for="modal-city">City</label>
+          <input id="modal-city" type="text" required />
     
-          <label for="modalCounty">County</label>
-          <input type="text" id="modalCounty" placeholder="e.g. Greater London" required />
+          <label for="modal-county">County</label>
+          <input id="modal-county" type="text" required />
     
-          <label for="modalPostcode">Postcode</label>
-          <input type="text" id="modalPostcode" placeholder="e.g. SW1A 1AA" required />
+          <label for="modal-postcode">Postcode</label>
+          <input id="modal-postcode" type="text" required />
     
-          <div class="account-actions" style="margin-top: 1.5rem;">
-            <button type="submit" class="btn-submit">Save Address</button>
-            <button type="button" class="btn-secondary" id="closeAddressModal">Cancel</button>
-          </div>
+          <button type="submit" class="btn-submit" style="margin-top: 1rem;">Save Address</button>
         </form>
       </div>
     </div>
-
     
   </main>
 
