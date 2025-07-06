@@ -135,7 +135,7 @@ exports.notifyOnNewUserAccount = functions.firestore
       const snapshot = await db.collection('adminTokens').get();
       const tokens = snapshot.docs
         .map(doc => doc.data())
-        .filter(data => data.categories?.reviews !== false && data.token)
+        .filter(data => data.categories?.newacccount !== false && data.token)
         .map(data => data.token);
 
       if (!tokens.length) return null;
@@ -151,7 +151,7 @@ exports.notifyOnNewUserAccount = functions.firestore
             body: `${(firstName + " " + lastName).trim() || 'A customer'} just signed up${city ? ` from ${city}` : ""}. Total users: ${totalUsers}.`
           },
           data: {
-            category: "accounts",
+            category: "newaccount",
             timestamp: new Date().toISOString()
           },
           token
