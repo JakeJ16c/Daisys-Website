@@ -77,14 +77,6 @@ async function renderAddresses() {
 // =========================
 // 🎯 Attach Action Handlers
 // =========================
-function openModal() {
-  document.getElementById("addressModal").classList.remove("hidden");
-}
-
-function closeModal() {
-  document.getElementById("addressModal").classList.add("hidden");
-}
-
 function attachAddressActions() {
   document.querySelectorAll(".set-default").forEach((btn) => {
     btn.addEventListener("click", async () => {
@@ -123,6 +115,14 @@ async function setDefaultAddress(id) {
 
   await Promise.all(batchOps);
   await renderAddresses();
+}
+
+function openModal() {
+  document.getElementById("addressModal").classList.remove("hidden");
+}
+
+function closeModal() {
+  document.getElementById("addressModal").classList.add("hidden");
 }
 
 // =========================
