@@ -466,6 +466,29 @@ input:checked + .slider::before {
 .edit-actions.hidden {
   display: none;
 }
+
+.suggestion-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 160px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  position: absolute;
+  background: white;
+  z-index: 1000;
+  width: 100%;
+}
+
+.suggestion-list li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.suggestion-list li:hover {
+  background-color: #f0f0f0;
+}
   </style>
 </head>
 <body>
@@ -618,6 +641,10 @@ input:checked + .slider::before {
       <div class="modal-content">
         <button id="closeAddressModal" class="modal-close">&times;</button>
         <h3>Add New Address</h3>
+
+        <input type="text" id="address-search" placeholder="Start typing address..." autocomplete="off" />
+        <ul id="address-suggestions" class="suggestion-list"></ul>
+        
         <form id="addAddressForm">
           <label for="modal-house-number">House Number</label>
           <input id="modal-house-number" type="text" required />
