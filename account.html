@@ -407,6 +407,36 @@ input:checked + .slider::before {
   color: #444;
   cursor: pointer;
 }
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.icon-button {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  color: #555;
+  padding: 0.25rem 0.5rem;
+  transition: color 0.2s ease;
+}
+
+.icon-button:hover {
+  color: var(--accent-color);
+}
+
+.edit-actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.edit-actions.hidden {
+  display: none;
+}
   </style>
 </head>
 <body>
@@ -459,13 +489,24 @@ input:checked + .slider::before {
         <!-- 👤 Account Info Form -->
         <div class="form-container">
           <form id="profileForm">
-          <h3><i class="fas fa-user"></i>Account Info</h3>
+          <div class="section-header">
+            <h3><i class="fa-solid fa-user"></i> Account Info</h3>
+            <button id="editAccountBtn" class="icon-button" title="Edit Info">
+              <i class="fa-solid fa-pen"></i>
+            </button>
+          </div>
             
           <!-- View Mode -->
           <div id="summary-block" style="line-height: 1.8;">
             <p><strong>Name:</strong> <span id="summary-name">Loading...</span></p>
             <p><strong>Phone:</strong> <span id="summary-phone">Loading...</span></p>
             <p><strong>Birthday:</strong> <span id="summary-birthday">Not set</span></p>
+
+            <div id="edit-actions" class="edit-actions hidden">
+              <button id="saveBtn" class="btn-save">Save</button>
+              <button id="cancelBtn" class="btn-cancel">Cancel</button>
+            </div>
+
 
             <h3><i class="fas fa-user"></i>Saved Addresses</h3>
             
