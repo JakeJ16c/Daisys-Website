@@ -1,7 +1,6 @@
 {
   "name": "functions",
-  "type": "module",
-  "main": "index.mjs",
+  "main": "index.js",
   "description": "Cloud Functions for You're So Golden",
   "dependencies": {
     "firebase-admin": "^11.5.0",
