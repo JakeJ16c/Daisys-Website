@@ -73,6 +73,25 @@ dots.forEach(dot => {
 
 // Start with first image only
 updateCarousel(0);
+
+// 👆 Swipe support for mobile
+let startX = 0;
+carouselImages.addEventListener("touchstart", (e) => {
+  startX = e.touches[0].clientX;
+});
+
+carouselImages.addEventListener("touchend", (e) => {
+  const endX = e.changedTouches[0].clientX;
+  const deltaX = endX - startX;
+
+  if (Math.abs(deltaX) > 40) {
+    if (deltaX < 0 && currentIndex < images.length - 1) {
+      updateCarousel(currentIndex + 1);
+    } else if (deltaX > 0 && currentIndex > 0) {
+      updateCarousel(currentIndex - 1);
+    }
+  }
+});
     }
 
     const titleEl = document.querySelector('.product-title');
