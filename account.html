@@ -242,6 +242,60 @@
   margin-right: 0.5rem;
   color: var(--electric-blue);
 }
+
+.toggle-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1rem 0;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 24px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  border-radius: 24px;
+  transition: 0.3s;
+}
+
+.slider::before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+input:checked + .slider {
+  background-color: var(--electric-blue);
+}
+
+input:checked + .slider::before {
+  transform: translateX(22px);
+}
   </style>
 </head>
 <body>
@@ -366,6 +420,25 @@
               <button type="submit" class="btn-submit">Change Password</button>
             </div>
           </form>
+
+            <!-- Notification & Newsletter Toggles -->
+            <div class="toggle-section" style="margin-bottom: 1.5rem;">
+              <label class="toggle-label">
+                <span><i class="fas fa-bell"></i> Email & Push Notifications</span>
+                <label class="switch">
+                  <input type="checkbox" id="notifications-toggle">
+                  <span class="slider round"></span>
+                </label>
+              </label>
+            
+              <label class="toggle-label">
+                <span><i class="fas fa-envelope-open-text"></i> Subscribe to Newsletter</span>
+                <label class="switch">
+                  <input type="checkbox" id="newsletter-toggle">
+                  <span class="slider round"></span>
+                </label>
+              </label>
+            </div>
         </div>
         
       </div>
