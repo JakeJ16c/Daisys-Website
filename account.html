@@ -296,6 +296,70 @@ input:checked + .slider {
 input:checked + .slider::before {
   transform: translateX(22px);
 }
+
+#address-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.address-card {
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #f9f9f9;
+  position: relative;
+}
+
+.address-card.default {
+  border-color: var(--electric-blue);
+  background: #eef4ff;
+}
+
+.address-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+.address-card-header .badge {
+  background-color: var(--electric-blue);
+  color: white;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.75rem;
+  border-radius: 4px;
+}
+
+.address-card-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.address-card-actions button {
+  font-size: 0.85rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+}
+
+.address-card-actions .set-default {
+  background: var(--electric-blue);
+  color: white;
+}
+
+.address-card-actions .edit {
+  background: #888;
+  color: white;
+}
+
+.address-card-actions .delete {
+  background: #c0392b;
+  color: white;
+}
   </style>
 </head>
 <body>
@@ -355,10 +419,15 @@ input:checked + .slider::before {
             <p><strong>Name:</strong> <span id="summary-name">Loading...</span></p>
             <p><strong>Phone:</strong> <span id="summary-phone">Loading...</span></p>
             <p><strong>Birthday:</strong> <span id="summary-birthday">Not set</span></p>
-            <p><strong>Address:</strong> <span id="summary-address">Loading...</span></p>
-            <div class="account-actions">
-              <button type="button" id="editBtn" class="btn-submit">Edit Profile</button>
+            
+            <div id="address-list">
+              <!-- Address cards will be populated by JS -->
             </div>
+            
+            <div class="account-actions">
+              <button type="button" id="addAddressBtn" class="btn-submit" style="background:#777;">+ Add Address</button>
+            </div>
+            
           </div>
           
           <!-- Edit Mode -->
