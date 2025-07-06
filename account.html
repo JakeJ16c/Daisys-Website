@@ -531,6 +531,52 @@ input:checked + .slider::before {
         <button id="logoutBtn" class="logout-btn">Log Out</button>
       </div>
     </div>
+
+    <!-- Add Address Modal -->
+    <div id="addAddressModal" class="hidden" style="
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(0, 0, 0, 0.4);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    ">
+      <div style="
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        width: 100%;
+        max-width: 420px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        position: relative;
+      ">
+        <h3 style="margin-bottom: 1rem; text-align: center; color: var(--electric-blue);">Add New Address</h3>
+        <form id="addAddressForm">
+          <label for="modalHouse">House Number</label>
+          <input type="text" id="modalHouse" placeholder="e.g. 42" required />
+    
+          <label for="modalStreet">Street</label>
+          <input type="text" id="modalStreet" placeholder="e.g. Acacia Avenue" required />
+    
+          <label for="modalCity">Town / City</label>
+          <input type="text" id="modalCity" placeholder="e.g. London" required />
+    
+          <label for="modalCounty">County</label>
+          <input type="text" id="modalCounty" placeholder="e.g. Greater London" required />
+    
+          <label for="modalPostcode">Postcode</label>
+          <input type="text" id="modalPostcode" placeholder="e.g. SW1A 1AA" required />
+    
+          <div class="account-actions" style="margin-top: 1.5rem;">
+            <button type="submit" class="btn-submit">Save Address</button>
+            <button type="button" class="btn-secondary" id="closeAddressModal">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    
   </main>
 
   <!-- Footer -->
