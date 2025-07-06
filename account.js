@@ -52,15 +52,19 @@ async function renderAddresses() {
     div.className = `address-card ${data.default ? "default" : ""}`;
 
     div.innerHTML = `
-      <div class="address-card-header">
-        <strong>${data.houseNumber || ""} ${data.street || ""}</strong>
-        ${data.default ? '<span class="badge">Default</span>' : ""}
+      <div class="address-header">
+        <div class="address-line">
+          <strong>${data.houseNumber || ""} ${data.street || ""}</strong>
+          ${data.default ? '<span class="default-badge">Default</span>' : ""}
+        </div>
+        <div class="address-details">${data.city || ""}</div>
+        <div class="address-details">${data.county || ""}</div>
+        <div class="address-details">${data.postcode || ""}</div>
       </div>
-      <div>${data.city || ""}, ${data.county || ""}, ${data.postcode || ""}</div>
-      <div class="address-card-actions">
-        ${!data.default ? `<button class="set-default" data-id="${docSnap.id}">Set Default</button>` : ""}
-        <button class="edit" data-id="${docSnap.id}">Edit</button>
-        <button class="delete" data-id="${docSnap.id}">Delete</button>
+      <div class="address-actions">
+        ${!data.default ? `<button class="set-default" data-id="${docSnap.id}"><i class="fa-solid fa-star"></i></button>` : ""}
+        <button class="edit" data-id="${docSnap.id}"><i class="fa-solid fa-pen"></i></button>
+        <button class="delete" data-id="${docSnap.id}"><i class="fa-solid fa-trash"></i></button>
       </div>
     `;
 
