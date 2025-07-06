@@ -319,3 +319,40 @@ addressSearchInput.addEventListener("input", async () => {
     console.error("Address suggestion error:", err);
   }
 });
+
+function initAutocomplete() {
+  const addressSearchInput = document.getElementById("address-search");
+  const suggestionList = document.getElementById("address-suggestions");
+
+  addressSearchInput.addEventListener("input", async () => {
+    const query = addressSearchInput.value.trim();
+
+    if (query.length < 3) {
+      suggestionList.innerHTML = "";
+      return;
+    }
+
+    try {
+      const res = await fetch(`https://us-central1-daisy-s-website.cloudfunctions.net/autocompleteAddress?query=${encodeURIComponent(query)}`);
+      const suggestions = await res.json();
+
+      suggestionList.innerHTML = "";
+
+      suggestions.forEach((item) => {
+        const li = document.createElement("li");
+        li.textContent = item.description;
+        li.classList.add("suggestion-item");
+
+        li.addEventListener("click", () => {
+          addressSearchInput.value = item.description;
+          addressSearchInput.dataset.placeId = item.place_id;
+          suggestionList.innerHTML = "";
+        });
+
+        suggestionList.appendChild(li);
+      });
+    } catch (err) {
+      console.error("Address suggestion error:", err);
+    }
+  });
+}
