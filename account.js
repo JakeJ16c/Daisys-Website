@@ -195,10 +195,5 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const cancelBtn = document.getElementById("cancelBtn");
   if (cancelBtn) cancelBtn.addEventListener("click", toggleEdit);
-
-  if (currentUser) {
-    loadUserOrders?.(currentUser);
-  }
-
   setupLogout();
 });
