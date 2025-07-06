@@ -273,4 +273,46 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
   setupLogout();
+  initAutocomplete();
 });
+
+let autocomplete;
+
+function initAutocomplete() {
+  const input = document.getElementById("autocomplete-address");
+  if (!input) return;
+
+  autocomplete = new google.maps.places.Autocomplete(input, {
+    types: ["address"],
+    componentRestrictions: { country: "gb" },
+    fields: ["address_components", "formatted_address"],
+  });
+
+  autocomplete.addListener("place_changed", () => {
+    const place = autocomplete.getPlace();
+    if (!place.address_components) return;
+
+    // Reset form first
+    document.getElementById("modal-house-number").value = "";
+    document.getElementById("modal-street").value = "";
+    document.getElementById("modal-city").value = "";
+    document.getElementById("modal-county").value = "";
+    document.getElementById("modal-postcode").value = "";
+
+    for (const component of place.address_components) {
+      const types = component.types;
+
+      if (types.includes("street_number")) {
+        document.getElementById("modal-house-number").value = component.long_name;
+      } else if (types.includes("route")) {
+        document.getElementById("modal-street").value = component.long_name;
+      } else if (types.includes("postal_town") || types.includes("locality")) {
+        document.getElementById("modal-city").value = component.long_name;
+      } else if (types.includes("administrative_area_level_2")) {
+        document.getElementById("modal-county").value = component.long_name;
+      } else if (types.includes("postal_code")) {
+        document.getElementById("modal-postcode").value = component.long_name;
+      }
+    }
+  });
+}
