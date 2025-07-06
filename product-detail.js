@@ -33,65 +33,56 @@ async function loadProduct() {
 
     // ✅ Now we can safely build the mobile carousel
     const carouselImages = document.getElementById('carouselImages');
+    const carouselDots = document.getElementById('carouselDots');
+    
     if (carouselImages && images.length) {
       carouselImages.innerHTML = '';
-const carouselDots = document.getElementById('carouselDots');
-carouselDots.innerHTML = '';
-
-images.forEach((imgUrl, index) => {
-  const img = document.createElement('img');
-  img.src = imgUrl;
-  img.alt = data.name;
-  img.dataset.index = index;
-  carouselImages.appendChild(img);
-
-  const dot = document.createElement('span');
-  dot.className = 'dot' + (index === 0 ? ' active' : '');
-  dot.dataset.index = index;
-  carouselDots.appendChild(dot);
-});
-
-let currentIndex = 0;
-const dots = carouselDots.querySelectorAll('.dot');
-const allImgs = carouselImages.querySelectorAll('img');
-
-function updateCarousel(index) {
-  allImgs.forEach((img, i) => {
-    img.style.display = i === index ? 'block' : 'none';
-  });
-  dots.forEach(dot => dot.classList.remove('active'));
-  dots[index].classList.add('active');
-  currentIndex = index;
-}
-
-dots.forEach(dot => {
-  dot.addEventListener('click', () => {
-    const index = parseInt(dot.dataset.index);
-    updateCarousel(index);
-  });
-});
-
-// Start with first image only
-updateCarousel(0);
-
-// 👆 Swipe support for mobile
-let startX = 0;
-carouselImages.addEventListener("touchstart", (e) => {
-  startX = e.touches[0].clientX;
-});
-
-carouselImages.addEventListener("touchend", (e) => {
-  const endX = e.changedTouches[0].clientX;
-  const deltaX = endX - startX;
-
-  if (Math.abs(deltaX) > 40) {
-    if (deltaX < 0 && currentIndex < images.length - 1) {
-      updateCarousel(currentIndex + 1);
-    } else if (deltaX > 0 && currentIndex > 0) {
-      updateCarousel(currentIndex - 1);
-    }
-  }
-});
+      carouselDots.innerHTML = '';
+    
+      images.forEach((imgUrl, index) => {
+        const img = document.createElement('img');
+        img.src = imgUrl;
+        img.alt = data.name;
+        img.style.minWidth = '100%';
+        img.style.objectFit = 'cover';
+        img.style.scrollSnapAlign = 'start';
+        carouselImages.appendChild(img);
+    
+        const dot = document.createElement('span');
+        dot.className = 'dot' + (index === 0 ? ' active' : '');
+        dot.dataset.index = index;
+        carouselDots.appendChild(dot);
+      });
+    
+      // 🧠 Ensure styling for flex scroll
+      carouselImages.style.display = 'flex';
+      carouselImages.style.overflowX = 'scroll';
+      carouselImages.style.scrollSnapType = 'x mandatory';
+      carouselImages.style.scrollBehavior = 'smooth';
+      carouselImages.style.webkitOverflowScrolling = 'touch';
+    
+      carouselImages.scrollLeft = 0;
+      let currentIndex = 0;
+      const dots = carouselDots.querySelectorAll('.dot');
+    
+      carouselImages.addEventListener('scroll', () => {
+        const width = carouselImages.offsetWidth;
+        const index = Math.round(carouselImages.scrollLeft / width);
+        if (index !== currentIndex) {
+          dots.forEach(dot => dot.classList.remove('active'));
+          if (dots[index]) dots[index].classList.add('active');
+          currentIndex = index;
+        }
+      });
+    
+      dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+          carouselImages.scrollTo({
+            left: index * carouselImages.offsetWidth,
+            behavior: 'smooth'
+          });
+        });
+      });
     }
 
     const titleEl = document.querySelector('.product-title');
