@@ -1,12 +1,12 @@
-import { onDocumentCreated } from 'firebase-functions/v2/firestore';
-import { onCall } from 'firebase-functions/v2/https';
-import { onUserDeleted } from 'firebase-functions/v2/auth';
-import { logger } from 'firebase-functions';
-import * as admin from 'firebase-admin';
-import * as functions from 'firebase-functions';
-import fetch from 'node-fetch';
-import corsModule from 'cors';
-import Stripe from 'stripe';
+const { onDocumentCreated } = require('firebase-functions/v2/firestore');
+const { onCall } = require('firebase-functions/v2/https');
+const { onUserDeleted } = require('firebase-functions/v2/auth');
+const { logger } = require('firebase-functions');
+const admin = require('firebase-admin');
+const functions = require('firebase-functions');
+const fetch = require('node-fetch');
+const corsModule = require('cors');
+const Stripe = require('stripe');
 
 const cors = corsModule({ origin: true });
 const stripe = new Stripe(functions.config().stripe.secret, { apiVersion: '2022-11-15' });
@@ -15,8 +15,7 @@ admin.initializeApp();
 const db = admin.firestore();
 const messaging = admin.messaging();
 
-// 🔔 Notify on new order creation
-export const notifyOnNewOrder = onDocumentCreated('Orders/{orderId}', async (event) => {
+exports.notifyOnNewOrder = onDocumentCreated('Orders/{orderId}', async (event) => {
   const order = event.data.data();
   logger.info("📦 New order received:", order);
 
@@ -51,8 +50,7 @@ export const notifyOnNewOrder = onDocumentCreated('Orders/{orderId}', async (eve
   return null;
 });
 
-// 🔔 Notify on basket update
-export const notifyOnBasketUpdate = onDocumentCreated('BasketUpdates/{updateId}', async (event) => {
+exports.notifyOnBasketUpdate = onDocumentCreated('BasketUpdates/{updateId}', async (event) => {
   const update = event.data.data();
   logger.info("🛒 New basket activity:", update);
 
@@ -88,8 +86,7 @@ export const notifyOnBasketUpdate = onDocumentCreated('BasketUpdates/{updateId}'
   return null;
 });
 
-// 💳 Stripe checkout session creator
-export const createStripeCheckout = onCall(async (request) => {
+exports.createStripeCheckout = onCall(async (request) => {
   const { items } = request.data;
   try {
     const line_items = items.map(item => ({
@@ -119,8 +116,7 @@ export const createStripeCheckout = onCall(async (request) => {
   }
 });
 
-// 🔔 Notify on new account creation
-export const notifyOnNewUserAccount = onDocumentCreated('users/{userId}', async (event) => {
+exports.notifyOnNewUserAccount = onDocumentCreated('users/{userId}', async (event) => {
   const user = event.data.data();
   try {
     const totalSnap = await db.collection("users").get();
@@ -155,8 +151,7 @@ export const notifyOnNewUserAccount = onDocumentCreated('users/{userId}', async 
   return null;
 });
 
-// 🧹 Cleanup user data when account is deleted
-export const cleanupDeletedUsers = onUserDeleted(async (event) => {
+exports.cleanupDeletedUsers = onUserDeleted(async (event) => {
   const uid = event.uid;
   logger.info(`🧹 Cleaning up data for deleted user: ${uid}`);
 
