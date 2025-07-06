@@ -1,9 +1,5 @@
-const { onDocumentCreated } = require('firebase-functions/v2/firestore');
-const { onCall } = require('firebase-functions/v2/https');
-const { onUserDeleted } = require('firebase-functions/v2/auth');
-const { logger } = require('firebase-functions');
-const admin = require('firebase-admin');
 const functions = require('firebase-functions');
+const admin = require('firebase-admin');
 const fetch = require('node-fetch');
 const corsModule = require('cors');
 const Stripe = require('stripe');
@@ -15,79 +11,90 @@ admin.initializeApp();
 const db = admin.firestore();
 const messaging = admin.messaging();
 
-exports.notifyOnNewOrder = onDocumentCreated('Orders/{orderId}', async (event) => {
-  const order = event.data.data();
-  logger.info("📦 New order received:", order);
+// 🔔 Notify on new order creation
+exports.notifyOnNewOrder = functions.firestore
+  .document('Orders/{orderId}')
+  .onCreate(async (snap, context) => {
+    const order = snap.data();
+    functions.logger.info("📦 New order received:", order);
 
-  try {
-    const snapshot = await db.collection('adminTokens').get();
-    const tokens = snapshot.docs
-      .map(doc => doc.data())
-      .filter(data => data.categories?.orders !== false && data.token)
-      .map(data => data.token);
+    try {
+      const snapshot = await db.collection('adminTokens').get();
+      const tokens = snapshot.docs
+        .map(doc => doc.data())
+        .filter(data => data.categories?.orders !== false && data.token)
+        .map(data => data.token);
 
-    if (!tokens.length) return null;
+      if (!tokens.length) return null;
 
-    const itemSummary = order.items.map(item => `${item.qty} ${item.productName}`).join(', ');
-    const totalAmount = `£${(order.finalTotal || 0).toFixed(2)}`;
+      const itemSummary = order.items.map(item => `${item.qty} ${item.productName}`).join(', ');
+      const totalAmount = `£${(order.finalTotal || 0).toFixed(2)}`;
 
-    await Promise.all(tokens.map(token => messaging.send({
-      notification: {
-        title: "New Order Recieved!",
-        body: `${order.name || 'A customer'} ordered ${itemSummary} worth ${totalAmount}`,
-      },
-      data: {
-        category: "orders",
-        orderId: event.params.orderId,
-        timestamp: new Date().toISOString()
-      },
-      token
-    })));
-  } catch (error) {
-    logger.error("❌ Order notification error:", error);
-  }
+      await Promise.all(tokens.map(token =>
+        messaging.send({
+          notification: {
+            title: "New Order Recieved!",
+            body: `${order.name || 'A customer'} ordered ${itemSummary} worth ${totalAmount}`,
+          },
+          data: {
+            category: "orders",
+            orderId: context.params.orderId,
+            timestamp: new Date().toISOString()
+          },
+          token
+        })
+      ));
+    } catch (error) {
+      functions.logger.error("❌ Order notification error:", error);
+    }
 
-  return null;
-});
+    return null;
+  });
 
-exports.notifyOnBasketUpdate = onDocumentCreated('BasketUpdates/{updateId}', async (event) => {
-  const update = event.data.data();
-  logger.info("🛒 New basket activity:", update);
+// 🔔 Notify on basket update
+exports.notifyOnBasketUpdate = functions.firestore
+  .document('BasketUpdates/{updateId}')
+  .onCreate(async (snap, context) => {
+    const update = snap.data();
+    functions.logger.info("🛒 New basket activity:", update);
 
-  try {
-    const snapshot = await db.collection('adminTokens').get();
-    const tokens = snapshot.docs
-      .map(doc => doc.data())
-      .filter(data => data.categories?.basket !== false && data.token)
-      .map(data => data.token);
+    try {
+      const snapshot = await db.collection('adminTokens').get();
+      const tokens = snapshot.docs
+        .map(doc => doc.data())
+        .filter(data => data.categories?.basket !== false && data.token)
+        .map(data => data.token);
 
-    if (!tokens.length) return null;
+      if (!tokens.length) return null;
 
-    const userType = update.isGuest ? "A guest" : "A customer";
-    const sizeInfo = update.size && update.size.toLowerCase() !== "onesize" ? ` (Size: ${update.size})` : "";
+      const userType = update.isGuest ? "A guest" : "A customer";
+      const sizeInfo = update.size && update.size.toLowerCase() !== "onesize" ? ` (Size: ${update.size})` : "";
 
-    await Promise.all(tokens.map(token => messaging.send({
-      notification: {
-        title: "You're So Golden",
-        body: `${userType} added ${update.qty || 1} ${update.name || 'a product'}${sizeInfo} to their basket.`
-      },
-      data: {
-        category: "basket",
-        productId: update.productId || "",
-        productName: update.name || "",
-        timestamp: new Date().toISOString()
-      },
-      token
-    })));
-  } catch (error) {
-    logger.error("❌ Basket notification error:", error);
-  }
+      await Promise.all(tokens.map(token =>
+        messaging.send({
+          notification: {
+            title: "You're So Golden",
+            body: `${userType} added ${update.qty || 1} ${update.name || 'a product'}${sizeInfo} to their basket.`
+          },
+          data: {
+            category: "basket",
+            productId: update.productId || "",
+            productName: update.name || "",
+            timestamp: new Date().toISOString()
+          },
+          token
+        })
+      ));
+    } catch (error) {
+      functions.logger.error("❌ Basket notification error:", error);
+    }
 
-  return null;
-});
+    return null;
+  });
 
-exports.createStripeCheckout = onCall(async (request) => {
-  const { items } = request.data;
+// 💳 Stripe checkout session creator
+exports.createStripeCheckout = functions.https.onCall(async (data, context) => {
+  const { items } = data;
   try {
     const line_items = items.map(item => ({
       price_data: {
@@ -111,55 +118,61 @@ exports.createStripeCheckout = onCall(async (request) => {
 
     return { url: session.url };
   } catch (err) {
-    logger.error("❌ Stripe Checkout error:", err);
+    functions.logger.error("❌ Stripe Checkout error:", err);
     throw new functions.https.HttpsError('internal', err.message);
   }
 });
 
-exports.notifyOnNewUserAccount = onDocumentCreated('users/{userId}', async (event) => {
-  const user = event.data.data();
-  try {
-    const totalSnap = await db.collection("users").get();
-    const totalUsers = totalSnap.size;
+// 🔔 Notify on new user account
+exports.notifyOnNewUserAccount = functions.firestore
+  .document('users/{userId}')
+  .onCreate(async (snap, context) => {
+    const user = snap.data();
+    try {
+      const totalSnap = await db.collection("users").get();
+      const totalUsers = totalSnap.size;
 
-    const snapshot = await db.collection('adminTokens').get();
-    const tokens = snapshot.docs
-      .map(doc => doc.data())
-      .filter(data => data.categories?.reviews !== false && data.token)
-      .map(data => data.token);
+      const snapshot = await db.collection('adminTokens').get();
+      const tokens = snapshot.docs
+        .map(doc => doc.data())
+        .filter(data => data.categories?.reviews !== false && data.token)
+        .map(data => data.token);
 
-    if (!tokens.length) return null;
+      if (!tokens.length) return null;
 
-    const firstName = user.firstName || "";
-    const lastName = user.lastName || "";
-    const city = user.address?.city || user.city || "";
+      const firstName = user.firstName || "";
+      const lastName = user.lastName || "";
+      const city = user.address?.city || user.city || "";
 
-    await Promise.all(tokens.map(token => messaging.send({
-      notification: {
-        title: "New Account Created!",
-        body: `${(firstName + " " + lastName).trim() || 'A customer'} just signed up${city ? ` from ${city}` : ""}. Total users: ${totalUsers}.`
-      },
-      data: {
-        category: "accounts",
-        timestamp: new Date().toISOString()
-      },
-      token
-    })));
-  } catch (error) {
-    logger.error("❌ Error in notifyOnNewUserAccount:", error);
-  }
-  return null;
-});
+      await Promise.all(tokens.map(token =>
+        messaging.send({
+          notification: {
+            title: "New Account Created!",
+            body: `${(firstName + " " + lastName).trim() || 'A customer'} just signed up${city ? ` from ${city}` : ""}. Total users: ${totalUsers}.`
+          },
+          data: {
+            category: "accounts",
+            timestamp: new Date().toISOString()
+          },
+          token
+        })
+      ));
+    } catch (error) {
+      functions.logger.error("❌ Error in notifyOnNewUserAccount:", error);
+    }
+    return null;
+  });
 
-exports.cleanupDeletedUsers = onUserDeleted(async (event) => {
-  const uid = event.uid;
-  logger.info(`🧹 Cleaning up data for deleted user: ${uid}`);
+// 🧹 Cleanup user data when account is deleted
+exports.cleanupDeletedUsers = functions.auth.user().onDelete(async (user) => {
+  const uid = user.uid;
+  functions.logger.info(`🧹 Cleaning up data for deleted user: ${uid}`);
 
   try {
     await db.collection('users').doc(uid).delete();
-    logger.info(`✅ Deleted user data from Firestore for UID: ${uid}`);
+    functions.logger.info(`✅ Deleted user data from Firestore for UID: ${uid}`);
   } catch (error) {
-    logger.error(`❌ Error deleting user data from Firestore for UID: ${uid}`, error);
+    functions.logger.error(`❌ Error deleting user data from Firestore for UID: ${uid}`, error);
   }
 
   return null;
