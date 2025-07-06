@@ -1,5 +1,5 @@
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
-import { collection, doc, getDoc, getDocs, setDoc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+import { collection, doc, getDoc, getDocs, setDoc, deleteDoc, updateDoc, addDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 import { auth, db } from "./firebase.js";
 
 let currentUser = null;
@@ -118,6 +118,41 @@ async function setDefaultAddress(id) {
 }
 
 // =========================
+// ➕ Add Address Modal Submit
+// =========================
+async function submitNewAddress(e) {
+  e.preventDefault();
+  if (!currentUser) return alert("You must be logged in to add an address.");
+
+  const houseNumber = document.getElementById("modal-house-number").value.trim();
+  const street = document.getElementById("modal-street").value.trim();
+  const city = document.getElementById("modal-city").value.trim();
+  const county = document.getElementById("modal-county").value.trim();
+  const postcode = document.getElementById("modal-postcode").value.trim();
+
+  if (!houseNumber || !street || !city || !county || !postcode) return alert("Please fill in all fields.");
+
+  try {
+    const ref = collection(db, "users", currentUser.uid, "addresses");
+    await addDoc(ref, { houseNumber, street, city, county, postcode, default: false });
+    closeModal();
+    await renderAddresses();
+  } catch (err) {
+    console.error("Failed to add address:", err);
+    alert("Could not save address.");
+  }
+}
+
+function closeModal() {
+  document.getElementById("addressModal").classList.remove("active");
+  document.getElementById("addAddressForm").reset();
+}
+
+function openModal() {
+  document.getElementById("addressModal").classList.add("active");
+}
+
+// =========================
 // 💾 Save Profile Info
 // =========================
 async function saveProfile(e) {
@@ -129,15 +164,6 @@ async function saveProfile(e) {
   const phone = document.getElementById("phone").value.trim();
   const birthday = document.getElementById("birthday").value.trim();
 
-  const address = {
-    houseNumber: document.getElementById("house-number").value.trim(),
-    street: document.getElementById("street").value.trim(),
-    city: document.getElementById("city").value.trim(),
-    county: document.getElementById("county").value.trim(),
-    postcode: document.getElementById("postcode").value.trim(),
-    default: true
-  };
-
   try {
     await setDoc(doc(db, "users", currentUser.uid), {
       firstName,
@@ -146,15 +172,8 @@ async function saveProfile(e) {
       birthday,
     }, { merge: true });
 
-    // Add address to subcollection and set as default
-    const addressRef = collection(db, "users", currentUser.uid, "addresses");
-    const newAddressDoc = doc(addressRef);
-    await setDoc(newAddressDoc, address);
-
-    await setDefaultAddress(newAddressDoc.id); // set as default
-    alert("Profile and address saved!");
+    alert("Profile updated!");
     toggleEdit();
-    await renderAddresses();
   } catch (err) {
     console.error("Save error:", err);
     alert("Failed to save your profile.");
@@ -207,7 +226,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (cancelBtn) cancelBtn.addEventListener("click", toggleEdit);
 
   const addAddressBtn = document.getElementById("addAddressBtn");
-  if (addAddressBtn) addAddressBtn.addEventListener("click", toggleEdit);
+  if (addAddressBtn) addAddressBtn.addEventListener("click", openModal);
+
+  const modalForm = document.getElementById("addAddressForm");
+  if (modalForm) modalForm.addEventListener("submit", submitNewAddress);
+
+  const modalClose = document.getElementById("closeAddressModal");
+  if (modalClose) modalClose.addEventListener("click", closeModal);
 
   setupLogout();
 });
