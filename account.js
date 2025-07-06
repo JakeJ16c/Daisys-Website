@@ -180,9 +180,7 @@ async function saveProfile(e) {
   }
 }
 
-// =========================
-// ✏️ Toggle Edit Mode
-// =========================
+
 function toggleEdit() {
   document.getElementById("summary-block").classList.toggle("hidden");
   document.getElementById("form-block").classList.toggle("hidden");
@@ -210,6 +208,20 @@ function setupLogout() {
   }
 }
 
+
+// =========================
+// ✏️ Toggle Profile Edit Mode with Icon
+// =========================
+function toggleProfileEditMode(enable) {
+  const formBlock = document.getElementById("form-block");
+  const summaryBlock = document.getElementById("summary-block");
+  const editActions = document.getElementById("edit-actions");
+
+  formBlock.classList.toggle("hidden", !enable);
+  summaryBlock.classList.toggle("hidden", enable);
+  editActions.classList.toggle("hidden", !enable);
+}
+
 // =========================
 // 🚀 Init Page
 // =========================
@@ -219,11 +231,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   const saveBtn = document.getElementById("saveBtn");
   if (saveBtn) saveBtn.addEventListener("click", saveProfile);
 
-  const editBtn = document.getElementById("editBtn");
-  if (editBtn) editBtn.addEventListener("click", toggleEdit);
+  const editAccountBtn = document.getElementById("editAccountBtn");
+  if (editAccountBtn) editAccountBtn.addEventListener("click", () => toggleProfileEditMode(true));
 
   const cancelBtn = document.getElementById("cancelBtn");
-  if (cancelBtn) cancelBtn.addEventListener("click", toggleEdit);
+  if (cancelBtn) cancelBtn.addEventListener("click", () => toggleProfileEditMode(false));
 
   const addAddressBtn = document.getElementById("addAddressBtn");
   if (addAddressBtn) addAddressBtn.addEventListener("click", openModal);
