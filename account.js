@@ -129,30 +129,39 @@ async function submitNewAddress(e) {
   e.preventDefault();
   if (!currentUser) return alert("You must be logged in to add an address.");
 
-const houseNumber = document.getElementById("modal-house-number").value.trim();
-const street = document.getElementById("modal-street").value.trim();
-const postcode = document.getElementById("modal-postcode").value.trim();
+const placeId = document.getElementById("address-search").dataset.placeId;
 
-// 🔄 Fetch city + county from autocomplete function
-let city = "", county = "";
-try {
-  const res = await fetch(`https://us-central1-daisy-s-website.cloudfunctions.net/autocompleteAddress?postcode=${encodeURIComponent(postcode)}`);
-  const data = await res.json();
-  if (data && data.city && data.county) {
-    city = data.city;
-    county = data.county;
-  } else {
-    console.warn("Could not auto-fill address, manual entry required.");
-    city = document.getElementById("modal-city").value.trim();
-    county = document.getElementById("modal-county").value.trim();
+let houseNumber = "", street = "", city = "", county = "", postcode = "";
+
+if (placeId) {
+  try {
+    const res = await fetch(`https://us-central1-daisy-s-website.cloudfunctions.net/getFullAddressFromPlaceId?placeId=${encodeURIComponent(placeId)}`);
+    const data = await res.json();
+
+    houseNumber = data.houseNumber || "";
+    street = data.street || "";
+    city = data.city || "";
+    county = data.county || "";
+    postcode = data.postcode || "";
+
+  } catch (err) {
+    console.error("Place ID resolution failed:", err);
+    alert("Could not resolve full address. Please enter manually.");
   }
-} catch (err) {
-  console.error("Autocomplete failed:", err);
-  city = document.getElementById("modal-city").value.trim();
-  county = document.getElementById("modal-county").value.trim();
 }
 
-  if (!houseNumber || !street || !city || !county || !postcode) return alert("Please fill in all fields.");
+// Fallback if not using placeId
+if (!houseNumber || !street || !city || !county || !postcode) {
+  houseNumber = document.getElementById("modal-house-number").value.trim();
+  street = document.getElementById("modal-street").value.trim();
+  city = document.getElementById("modal-city").value.trim();
+  county = document.getElementById("modal-county").value.trim();
+  postcode = document.getElementById("modal-postcode").value.trim();
+}
+
+if (!houseNumber || !street || !city || !county || !postcode) {
+  return alert("Please fill in all fields.");
+}
 
   try {
     const ref = collection(db, "users", currentUser.uid, "addresses");
@@ -276,43 +285,37 @@ document.addEventListener("DOMContentLoaded", async () => {
   initAutocomplete();
 });
 
-let autocomplete;
+const addressSearchInput = document.getElementById("address-search");
+const suggestionList = document.getElementById("address-suggestions");
 
-function initAutocomplete() {
-  const input = document.getElementById("autocomplete-address");
-  if (!input) return;
+addressSearchInput.addEventListener("input", async () => {
+  const query = addressSearchInput.value.trim();
 
-  autocomplete = new google.maps.places.Autocomplete(input, {
-    types: ["address"],
-    componentRestrictions: { country: "gb" },
-    fields: ["address_components", "formatted_address"],
-  });
+  if (query.length < 3) {
+    suggestionList.innerHTML = "";
+    return;
+  }
 
-  autocomplete.addListener("place_changed", () => {
-    const place = autocomplete.getPlace();
-    if (!place.address_components) return;
+  try {
+    const res = await fetch(`https://us-central1-daisy-s-website.cloudfunctions.net/autocompleteAddress?query=${encodeURIComponent(query)}`);
+    const suggestions = await res.json();
 
-    // Reset form first
-    document.getElementById("modal-house-number").value = "";
-    document.getElementById("modal-street").value = "";
-    document.getElementById("modal-city").value = "";
-    document.getElementById("modal-county").value = "";
-    document.getElementById("modal-postcode").value = "";
+    suggestionList.innerHTML = "";
 
-    for (const component of place.address_components) {
-      const types = component.types;
+    suggestions.forEach((item) => {
+      const li = document.createElement("li");
+      li.textContent = item.description;
+      li.classList.add("suggestion-item");
 
-      if (types.includes("street_number")) {
-        document.getElementById("modal-house-number").value = component.long_name;
-      } else if (types.includes("route")) {
-        document.getElementById("modal-street").value = component.long_name;
-      } else if (types.includes("postal_town") || types.includes("locality")) {
-        document.getElementById("modal-city").value = component.long_name;
-      } else if (types.includes("administrative_area_level_2")) {
-        document.getElementById("modal-county").value = component.long_name;
-      } else if (types.includes("postal_code")) {
-        document.getElementById("modal-postcode").value = component.long_name;
-      }
-    }
-  });
-}
+      li.addEventListener("click", () => {
+        addressSearchInput.value = item.description;
+        addressSearchInput.dataset.placeId = item.place_id;
+        suggestionList.innerHTML = "";
+      });
+
+      suggestionList.appendChild(li);
+    });
+  } catch (err) {
+    console.error("Address suggestion error:", err);
+  }
+});
