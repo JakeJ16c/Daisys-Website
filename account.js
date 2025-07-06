@@ -298,21 +298,22 @@ addressSearchInput.addEventListener("input", async () => {
 
   try {
     const res = await fetch(`https://us-central1-daisy-s-website.cloudfunctions.net/autocompleteAddress?query=${encodeURIComponent(query)}`);
-    const suggestions = await res.json();
-
+    const result = await res.json();
+    const predictions = result.predictions || [];
+  
     suggestionList.innerHTML = "";
-
-    suggestions.forEach((item) => {
+  
+    predictions.forEach((item) => {
       const li = document.createElement("li");
       li.textContent = item.description;
       li.classList.add("suggestion-item");
-
+  
       li.addEventListener("click", () => {
         addressSearchInput.value = item.description;
         addressSearchInput.dataset.placeId = item.place_id;
         suggestionList.innerHTML = "";
       });
-
+  
       suggestionList.appendChild(li);
     });
   } catch (err) {
@@ -334,11 +335,12 @@ function initAutocomplete() {
 
     try {
       const res = await fetch(`https://us-central1-daisy-s-website.cloudfunctions.net/autocompleteAddress?query=${encodeURIComponent(query)}`);
-      const suggestions = await res.json();
+      const result = await res.json();
+      const predictions = result.predictions || [];
 
       suggestionList.innerHTML = "";
 
-      suggestions.forEach((item) => {
+      predictions.forEach((item) => {
         const li = document.createElement("li");
         li.textContent = item.description;
         li.classList.add("suggestion-item");
