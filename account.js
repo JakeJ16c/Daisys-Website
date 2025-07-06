@@ -1,11 +1,11 @@
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
-import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+import { collection, doc, getDoc, getDocs, setDoc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 import { auth, db } from "./firebase.js";
 
 let currentUser = null;
 
 // =========================
-// 👤 Load User Profile
+// 👤 Load User Profile + Addresses
 // =========================
 async function loadUserProfile() {
   return new Promise((resolve) => {
@@ -17,26 +17,16 @@ async function loadUserProfile() {
       try {
         const userRef = doc(db, "users", user.uid);
         const userSnap = await getDoc(userRef);
-
         if (userSnap.exists()) {
           const data = userSnap.data();
-          const addr = data.address || {};
-
-          // Update form fields
           document.getElementById("first-name").value = data.firstName || "";
           document.getElementById("last-name").value = data.lastName || "";
           document.getElementById("phone").value = data.phone || "";
           document.getElementById("birthday").value = data.birthday || "";
-
-          document.getElementById("house-number").value = addr.houseNumber || "";
-          document.getElementById("street").value = addr.street || "";
-          document.getElementById("city").value = addr.city || "";
-          document.getElementById("county").value = addr.county || "";
-          document.getElementById("postcode").value = addr.postcode || "";
-
-          // Update summary display
-          updateSummary(data.firstName, data.lastName, data.phone, data.birthday, addr);
+          updateSummary(data.firstName, data.lastName, data.phone, data.birthday);
         }
+
+        await renderAddresses();
       } catch (err) {
         console.error("Error loading profile:", err);
       }
@@ -47,15 +37,80 @@ async function loadUserProfile() {
 }
 
 // =========================
-// 📝 Update Summary
+// 📦 Render Address Cards
 // =========================
-function updateSummary(firstName, lastName, phone, birthday, address) {
-  document.getElementById("summary-name").textContent = `${firstName || "-"} ${lastName || ""}`;
-  document.getElementById("summary-phone").textContent = phone || "-";
-  document.getElementById("summary-birthday").textContent = birthday || "Not set";
+async function renderAddresses() {
+  const addressList = document.getElementById("address-list");
+  addressList.innerHTML = "";
 
-  const addressString = `${address.houseNumber || ""} ${address.street || ""}, ${address.city || ""}, ${address.county || ""}, ${address.postcode || ""}`.trim();
-  document.getElementById("summary-address").textContent = addressString || "No saved addresses.";
+  const addressRef = collection(db, "users", currentUser.uid, "addresses");
+  const snapshot = await getDocs(addressRef);
+
+  snapshot.forEach((docSnap) => {
+    const data = docSnap.data();
+    const div = document.createElement("div");
+    div.className = `address-card ${data.default ? "default" : ""}`;
+
+    div.innerHTML = `
+      <div class="address-card-header">
+        <strong>${data.houseNumber || ""} ${data.street || ""}</strong>
+        ${data.default ? '<span class="badge">Default</span>' : ""}
+      </div>
+      <div>${data.city || ""}, ${data.county || ""}, ${data.postcode || ""}</div>
+      <div class="address-card-actions">
+        ${!data.default ? `<button class="set-default" data-id="${docSnap.id}">Set Default</button>` : ""}
+        <button class="edit" data-id="${docSnap.id}">Edit</button>
+        <button class="delete" data-id="${docSnap.id}">Delete</button>
+      </div>
+    `;
+
+    addressList.appendChild(div);
+  });
+
+  attachAddressActions();
+}
+
+// =========================
+// 🎯 Attach Action Handlers
+// =========================
+function attachAddressActions() {
+  document.querySelectorAll(".set-default").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const id = btn.dataset.id;
+      await setDefaultAddress(id);
+    });
+  });
+
+  document.querySelectorAll(".delete").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const id = btn.dataset.id;
+      if (confirm("Delete this address?")) {
+        await deleteDoc(doc(db, "users", currentUser.uid, "addresses", id));
+        await renderAddresses();
+      }
+    });
+  });
+
+  // Edit logic can be added here if needed
+}
+
+// =========================
+// 🌟 Set Default Address
+// =========================
+async function setDefaultAddress(id) {
+  const addressRef = collection(db, "users", currentUser.uid, "addresses");
+  const snapshot = await getDocs(addressRef);
+
+  const batchOps = [];
+  snapshot.forEach((docSnap) => {
+    const isDefault = docSnap.id === id;
+    batchOps.push(updateDoc(doc(db, "users", currentUser.uid, "addresses", docSnap.id), {
+      default: isDefault,
+    }));
+  });
+
+  await Promise.all(batchOps);
+  await renderAddresses();
 }
 
 // =========================
@@ -76,6 +131,7 @@ async function saveProfile(e) {
     city: document.getElementById("city").value.trim(),
     county: document.getElementById("county").value.trim(),
     postcode: document.getElementById("postcode").value.trim(),
+    default: true
   };
 
   try {
@@ -84,15 +140,20 @@ async function saveProfile(e) {
       lastName,
       phone,
       birthday,
-      address,
-    });
+    }, { merge: true });
 
-    alert("Profile updated successfully!");
-    updateSummary(firstName, lastName, phone, birthday, address);
+    // Add address to subcollection and set as default
+    const addressRef = collection(db, "users", currentUser.uid, "addresses");
+    const newAddressDoc = doc(addressRef);
+    await setDoc(newAddressDoc, address);
+
+    await setDefaultAddress(newAddressDoc.id); // set as default
+    alert("Profile and address saved!");
     toggleEdit();
+    await renderAddresses();
   } catch (err) {
-    console.error("Failed to save profile:", err);
-    alert("There was an error saving your profile.");
+    console.error("Save error:", err);
+    alert("Failed to save your profile.");
   }
 }
 
@@ -102,6 +163,15 @@ async function saveProfile(e) {
 function toggleEdit() {
   document.getElementById("summary-block").classList.toggle("hidden");
   document.getElementById("form-block").classList.toggle("hidden");
+}
+
+// =========================
+// 🧾 Update Summary
+// =========================
+function updateSummary(firstName, lastName, phone, birthday) {
+  document.getElementById("summary-name").textContent = `${firstName || "-"} ${lastName || ""}`;
+  document.getElementById("summary-phone").textContent = phone || "-";
+  document.getElementById("summary-birthday").textContent = birthday || "Not set";
 }
 
 // =========================
