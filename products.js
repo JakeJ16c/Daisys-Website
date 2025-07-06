@@ -153,7 +153,7 @@ document.addEventListener("click", (e) => {
   if (e.target.classList.contains("wishlist-icon") || e.target.closest(".wishlist-icon")) {
     e.preventDefault();
     const icon = e.target.closest(".wishlist-icon");
-    if (!currentUser) return alert("Please log in to use wishlist");
+    if (!currentUser) return alert("Please log in to save to your wishlist");
   
     const card = icon.closest(".product-card");
     const productId = card.getAttribute("data-id");
