@@ -3,6 +3,7 @@ const admin = require('firebase-admin');
 const fetch = require('node-fetch');
 const corsModule = require('cors');
 const Stripe = require('stripe');
+const axios = require('axios');
 
 const cors = corsModule({ origin: true });
 const stripe = new Stripe(functions.config().stripe.secret, { apiVersion: '2022-11-15' });
@@ -176,4 +177,37 @@ exports.cleanupDeletedUsers = functions.auth.user().onDelete(async (user) => {
   }
 
   return null;
+});
+
+// 🔔 Autocomplete Address Modal
+
+const GOOGLE_API_KEY = "AIzaSyBSlOGFHwYI_6YZMQwU103_4dYQf9bgiU0"
+
+exports.autocompleteAddress = functions.https.onRequest((req, res) => {
+  cors(req, res, async () => {
+    const input = req.query.input;
+
+    if (!input) {
+      return res.status(400).json({ error: "Missing input parameter" });
+    }
+
+    try {
+      const response = await axios.get(
+        `https://maps.googleapis.com/maps/api/place/autocomplete/json`,
+        {
+          params: {
+            input,
+            key: GOOGLE_API_KEY,
+            types: "address",
+            components: "country:gb"
+          }
+        }
+      );
+
+      res.status(200).json(response.data);
+    } catch (error) {
+      console.error("Autocomplete error:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
 });
