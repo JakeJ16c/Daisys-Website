@@ -504,10 +504,12 @@ input:checked + .slider::before {
               <button id="cancelBtn" class="btn-cancel">Cancel</button>
             </div>
 
-            <h3 class="section-title">
-              <i class="fa-solid fa-user"></i> Saved Addresses
-              <button id="addAddressBtn" class="edit-icon"><i class="fa-solid fa-plus"></i></button>
-            </h3>
+            <div class="section-header">
+              <h3><i class="fa-solid fa-user"></i> Saved Addresses</h3>
+              <button id="addAddressBtn" class="icon-button" title="Add new address">
+                <i class="fa-solid fa-plus"></i>
+              </button>
+            </div>
             
             <div id="address-list">
               <!-- Address cards will be populated by JS -->
