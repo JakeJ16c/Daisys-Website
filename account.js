@@ -159,6 +159,11 @@ function toggleProfileEditMode(enable) {
   formBlock.classList.toggle("hidden", !enable);
   summaryBlock.classList.toggle("hidden", enable);
   editActions.classList.toggle("hidden", !enable);
+
+    if (!enable) {
+    // User is exiting edit mode, re-render addresses to ensure up-to-date
+    renderAddresses();
+  }
 }
 
 // =========================
