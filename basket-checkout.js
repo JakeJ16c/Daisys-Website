@@ -1,10 +1,7 @@
 // basket-checkout.js – Handles checkout, promos, Firestore order saving, Stripe
 import { httpsCallable } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-functions.js';
 import { db, auth, functions } from './firebase.js';
-import {
-  collection, doc, getDoc, getDocs,
-  deleteDoc, runTransaction, serverTimestamp
-} from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+import { collection, doc, getDoc, updateDoc, getDocs, deleteDoc, runTransaction, serverTimestamp } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
 
 let activePromo = null;
@@ -138,6 +135,30 @@ async function submitOrder() {
 
   await loadCurrentUser();
 
+  // Loop through each product in the order
+for (const item of basket) {
+  const productRef = doc(db, "Products", item.id);
+  const productSnap = await getDoc(productRef);
+
+  if (!productSnap.exists()) continue;
+
+  const productData = productSnap.data();
+
+  if (item.selectedSize && productData.sizes?.length > 0) {
+    // Size-specific stock
+    const updatedSizes = productData.sizes.map(size => {
+      if (size.size === item.selectedSize) {
+        return { ...size, stock: Math.max(0, (size.stock || 0) - item.qty) };
+      }
+      return size;
+    });
+    await updateDoc(productRef, { sizes: updatedSizes });
+  } else {
+    // One-size stock
+    const newStock = Math.max(0, (productData.stock || 0) - item.qty);
+    await updateDoc(productRef, { stock: newStock });
+  }
+}
   const subtotal = basket.reduce((acc, item) => acc + item.price * item.qty, 0);
   discountAmount = activePromo
     ? (activePromo.type === "percentage"
