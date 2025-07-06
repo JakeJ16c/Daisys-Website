@@ -499,11 +499,6 @@ input:checked + .slider::before {
             <p><strong>Phone:</strong> <span id="summary-phone">Loading...</span></p>
             <p><strong>Birthday:</strong> <span id="summary-birthday">Not set</span></p>
 
-            <div id="edit-actions" class="edit-actions hidden">
-              <button id="saveBtn" class="btn-save">Save</button>
-              <button id="cancelBtn" class="btn-cancel">Cancel</button>
-            </div>
-
             <div class="section-header">
               <h3><i class="fa-solid fa-house"></i> Saved Addresses</h3>
               <button id="addAddressBtn" class="icon-button" title="Add new address">
@@ -531,28 +526,9 @@ input:checked + .slider::before {
             <label for="birthday">Birthday <span style="font-weight:normal;">(optional)</span></label>
             <input id="birthday" type="date" placeholder="Select your birthday" />
           
-            <div class="address-block">
-              <label class="account-label">Delivery Address</label>
-          
-              <label for="houseNumber">House Number</label>
-              <input id="house-number" type="text" placeholder="e.g. 42" />
-          
-              <label for="street">Street</label>
-              <input id="street" type="text" placeholder="e.g. Acacia Avenue" />
-          
-              <label for="city">City</label>
-              <input id="city" type="text" placeholder="e.g. London" />
-          
-              <label for="county">County</label>
-              <input id="county" type="text" placeholder="e.g. Greater London" />
-          
-              <label for="postcode">Postcode</label>
-              <input id="postcode" type="text" placeholder="e.g. SW1A 1AA" />
-            </div>
-          
-            <div class="account-actions">
-              <button type="button" id="saveBtn" class="btn-submit">Save Profile</button>
-              <button type="button" id="cancelBtn" class="btn-secondary">Cancel</button>
+            <div id="edit-actions" class="edit-actions hidden">
+              <button id="saveBtn" class="btn-save">Save</button>
+              <button id="cancelBtn" class="btn-cancel">Cancel</button>
             </div>
           </div>
           </form>
