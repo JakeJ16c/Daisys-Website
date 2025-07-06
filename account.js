@@ -94,8 +94,6 @@ function attachAddressActions() {
       }
     });
   });
-
-  // Edit logic can be added here if needed
 }
 
 // =========================
@@ -117,17 +115,16 @@ async function setDefaultAddress(id) {
   await renderAddresses();
 }
 
+// =========================
+// ➕ Add Address Modal
+// =========================
 function openModal() {
   document.getElementById("addressModal").classList.remove("hidden");
 }
-
 function closeModal() {
   document.getElementById("addressModal").classList.add("hidden");
 }
 
-// =========================
-// ➕ Add Address Modal Submit
-// =========================
 async function submitNewAddress(e) {
   e.preventDefault();
   if (!currentUser) return alert("You must be logged in to add an address.");
@@ -152,6 +149,19 @@ async function submitNewAddress(e) {
 }
 
 // =========================
+// ✏️ Toggle Profile Edit Mode with Icon
+// =========================
+function toggleProfileEditMode(enable) {
+  const formBlock = document.getElementById("form-block");
+  const summaryBlock = document.getElementById("summary-block");
+  const editActions = document.getElementById("edit-actions");
+
+  formBlock.classList.toggle("hidden", !enable);
+  summaryBlock.classList.toggle("hidden", enable);
+  editActions.classList.toggle("hidden", !enable);
+}
+
+// =========================
 // 💾 Save Profile Info
 // =========================
 async function saveProfile(e) {
@@ -172,17 +182,11 @@ async function saveProfile(e) {
     }, { merge: true });
 
     alert("Profile updated!");
-    toggleEdit();
+    toggleProfileEditMode(false);
   } catch (err) {
     console.error("Save error:", err);
     alert("Failed to save your profile.");
   }
-}
-
-
-function toggleEdit() {
-  document.getElementById("summary-block").classList.toggle("hidden");
-  document.getElementById("form-block").classList.toggle("hidden");
 }
 
 // =========================
@@ -205,20 +209,6 @@ function setupLogout() {
       window.location.href = "/";
     });
   }
-}
-
-
-// =========================
-// ✏️ Toggle Profile Edit Mode with Icon
-// =========================
-function toggleProfileEditMode(enable) {
-  const formBlock = document.getElementById("form-block");
-  const summaryBlock = document.getElementById("summary-block");
-  const editActions = document.getElementById("edit-actions");
-
-  formBlock.classList.toggle("hidden", !enable);
-  summaryBlock.classList.toggle("hidden", enable);
-  editActions.classList.toggle("hidden", !enable);
 }
 
 // =========================
@@ -244,6 +234,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const modalClose = document.getElementById("closeAddressModal");
   if (modalClose) modalClose.addEventListener("click", closeModal);
+
+  window.addEventListener("click", (e) => {
+    const addressModal = document.getElementById("addressModal");
+    if (e.target === addressModal) {
+      closeModal();
+    }
+  });
 
   setupLogout();
 });
