@@ -208,7 +208,7 @@ function injectBaseStyles() {
       gap: 1rem;
       margin-bottom: 1.5rem;
       padding-right: 1rem;
-      paddinh-left: 1rem;
+      padding-left: 1rem;
     }
 
     .checkout-item img {
