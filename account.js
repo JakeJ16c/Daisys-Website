@@ -135,7 +135,7 @@ let houseNumber = "", street = "", city = "", county = "", postcode = "";
 
 if (placeId) {
   try {
-    const res = await fetch(`https://us-central1-daisy-s-website.cloudfunctions.net/autocompleteAddress?input=${encodeURIComponent(query)}`)
+    const res = await fetch(`https://us-central1-daisy-s-website.cloudfunctions.net/resolvePlaceId?placeId=${encodeURIComponent(placeId)}`);
     const data = await res.json();
 
     houseNumber = data.houseNumber || "";
@@ -334,7 +334,7 @@ function initAutocomplete() {
     }
 
     try {
-      const res = await fetch(`https://us-central1-daisy-s-website.cloudfunctions.net/autocompleteAddress?query=${encodeURIComponent(query)}`);
+      const res = await fetch(`https://us-central1-daisy-s-website.cloudfunctions.net/autocompleteAddress?input=${encodeURIComponent(query)}`);
       const result = await res.json();
       const predictions = result.predictions || [];
 
