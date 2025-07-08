@@ -267,15 +267,17 @@ function injectBaseStyles() {
     }
 
     .primary-btn {
-      display: inline-block;
-      background: black;
-      color: white;
-      padding: 0.75rem 1.5rem;
-      font-weight: bold;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1rem;
+        display: block;
+        margin: 2rem auto 0;
+        background: black;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1rem;
+        text-align: center;
     }
 
     .secondary-btn {
