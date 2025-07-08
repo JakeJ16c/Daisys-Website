@@ -462,7 +462,7 @@
                   <div class="total-line final-total"><span>Total:</span><span id="total-display-summary">£0.00</span></div>
                 </div>
                 <div class="button-row">
-                  <button class="summary-btn" id="checkout-button">Proceed to Checkout</button>
+                  <button class="summary-btn" id="checkoutBtn">Proceed to Checkout</button>
                 </div>
               </div>
             </div>
@@ -565,6 +565,12 @@
   <script type="module" src="basket-checkout.js"></script>
   <script type="module" src="maintenance.js"></script>
   <script src="https://js.stripe.com/v3/"></script>
+  <script>
+    import { initCheckout } from './checkout.js';
+    document.getElementById("checkoutBtn")?.addEventListener("click", () => {
+      initCheckout({ mode: "cart" }); // This will auto-load from Firestore basket
+    });
+  </script>
 
   <script>
     const checkoutContainer = document.getElementById("checkout-container");
