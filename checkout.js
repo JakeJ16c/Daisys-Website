@@ -143,8 +143,8 @@ async function renderCustomerAndAddress(container, user) {
   const customerDiv = document.createElement("div");
   customerDiv.className = "checkout-section";
   customerDiv.innerHTML = `
-    <div class="section-label">Customer Details</div>
     <div class="section-box" id="customer-info">
+    <div class="section-label">Customer Details</div>
       ${name || "(No name)"}<br>
       <span style="color: #666;">${email}</span>
     </div>
@@ -153,8 +153,8 @@ async function renderCustomerAndAddress(container, user) {
   const addressDiv = document.createElement("div");
   addressDiv.className = "checkout-section";
   addressDiv.innerHTML = `
-    <div class="section-box" id="address-info">No address selected.
-    <div class="section-label">Delivery Address</div>
+    <div class="section-box" id="address-info"> <div class="section-label">Delivery Address</div>
+    No address selected.
     </div>
     <button id="addAddressBtn" class="secondary-btn" style="margin-top: 0.5rem;">Add Address</button>
   `;
