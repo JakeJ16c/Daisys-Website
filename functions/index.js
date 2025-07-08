@@ -221,3 +221,47 @@ exports.autocompleteAddress = functions.https.onRequest((req, res) => {
     }
   });
 });
+
+// 📍 Resolve full address from Google Place ID
+exports.resolvePlaceId = functions.https.onRequest((req, res) => {
+  cors(req, res, async () => {
+    const placeId = req.query.placeId;
+
+    if (!placeId) {
+      return res.status(400).json({ error: "Missing placeId parameter" });
+    }
+
+    try {
+      const response = await axios.get(
+        `https://maps.googleapis.com/maps/api/place/details/json`,
+        {
+          params: {
+            place_id: placeId,
+            key: GOOGLE_API_KEY,
+            fields: "address_component",
+          },
+        }
+      );
+
+      const components = response.data.result.address_components || [];
+
+      const getComponent = (type) =>
+        components.find((c) => c.types.includes(type))?.long_name || "";
+
+      const address = {
+        houseNumber: getComponent("street_number"),
+        street: getComponent("route"),
+        city: getComponent("postal_town") || getComponent("locality"),
+        county: getComponent("administrative_area_level_2") || getComponent("administrative_area_level_1"),
+        postcode: getComponent("postal_code"),
+      };
+
+      console.log("📬 Resolved address:", address);
+
+      res.status(200).json(address);
+    } catch (error) {
+      console.error("Place ID resolution error:", error);
+      res.status(500).json({ error: "Failed to resolve address from Place ID" });
+    }
+  });
+});
