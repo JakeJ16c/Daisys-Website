@@ -1,15 +1,16 @@
+// checkout.js – Universal Checkout System (modular & Firestore-powered)
+
 import { auth, db } from './firebase.js';
 import {
   doc, getDoc, getDocs, collection
 } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
 
-// 🔓 Entry Point – use mode "cart" or "direct"
+// 🔓 Global entry point
 export async function initCheckout({ mode = "cart", product = null } = {}) {
   const existing = document.getElementById("checkout");
   if (existing) existing.remove();
 
-  // Inject DOM container
   const wrapper = document.createElement("div");
   wrapper.id = "checkout";
   wrapper.innerHTML = `
@@ -24,95 +25,49 @@ export async function initCheckout({ mode = "cart", product = null } = {}) {
     </div>
   `;
   document.body.appendChild(wrapper);
-
-  // Scroll lock + close logic
   document.body.style.overflow = "hidden";
+
   document.getElementById("closeCheckout").onclick = () => {
     document.getElementById("checkout")?.remove();
     document.body.style.overflow = "";
   };
 
-  // Choose mode: "cart" vs "direct"
-  if (mode === "direct") {
-    renderProductCheckout(product);
-  } else {
-    const user = await waitForUser();
-    if (!user) {
-      document.getElementById("checkout-body").innerHTML = `<p>Please sign in to view your basket.</p>`;
-      return;
-    }
+  const user = await waitForUser();
+  if (!user) {
+    document.getElementById("checkout-body").innerHTML = `<p>Please sign in to view your basket.</p>`;
+    return;
+  }
 
+  if (mode === "direct") {
+    renderProductCheckout(product, user);
+  } else {
     const cart = await loadCartFromFirestore(user.uid);
-    renderCartCheckout(cart, user.uid);
+    renderCartCheckout(cart, user);
   }
 
   injectBaseStyles();
 }
 
-// 🔐 Wait for Firebase Auth to resolve
+// Wait for login
 function waitForUser() {
   return new Promise(resolve => {
     onAuthStateChanged(auth, user => resolve(user));
   });
 }
 
-// 📦 Load Firestore basket items
+// Load Firestore basket items
 async function loadCartFromFirestore(uid) {
   try {
     const snap = await getDocs(collection(db, "users", uid, "Basket"));
-    return snap.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
+    return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   } catch (err) {
-    console.error("❌ Firestore cart load failed:", err);
+    console.error("❌ Failed to load cart from Firestore:", err);
     return [];
   }
 }
 
-// 🧍 Render direct product checkout
-function renderProductCheckout(product) {
-  const container = document.getElementById("checkout-body");
-  if (!product) {
-    container.innerHTML = `<p>Missing product data.</p>`;
-    return;
-  }
-
-  const total = product.price * product.qty;
-
-  container.innerHTML = `
-    <div class="checkout-item">
-      <div class="item-img"><img src="${product.image}" alt="${product.name}"></div>
-      <div class="item-details">
-        <div class="item-name">${product.name}</div>
-        ${product.size && product.size.toLowerCase() !== "onesize" ? `<div class="item-size">Size: ${product.size}</div>` : ""}
-        <div class="item-qty-price">Qty: ${product.qty} × £${product.price.toFixed(2)} = <strong>£${total.toFixed(2)}</strong></div>
-      </div>
-    </div>
-    <hr>
-    <p class="summary-line">Total: <strong>£${total.toFixed(2)}</strong></p>
-
-    <div class="checkout-section">
-      <h3>Customer Details</h3>
-      <p id="customer-info">Loading user info...</p>
-    </div>
-
-    <div class="checkout-section">
-      <h3>Delivery Address</h3>
-      <p id="address-info">No address selected.</p>
-      <button id="addAddressBtn" class="secondary-btn">Add Address</button>
-    </div>
-
-    <div style="margin-top: 2rem; text-align: right;">
-      <button id="completePaymentBtn" class="primary-btn">Complete Payment</button>
-    </div>
-  `;
-
-  populateCustomerInfo();
-}
-
-// 🧺 Render full cart checkout
-function renderCartCheckout(cart, uid) {
+// Render multiple items
+function renderCartCheckout(cart, user) {
   const container = document.getElementById("checkout-body");
   container.innerHTML = "";
 
@@ -122,18 +77,19 @@ function renderCartCheckout(cart, uid) {
   }
 
   let subtotal = 0;
+
   cart.forEach(item => {
     const itemDiv = document.createElement("div");
     itemDiv.className = "checkout-item";
-    const total = item.qty * item.price;
-    subtotal += total;
+    const lineTotal = item.qty * item.price;
+    subtotal += lineTotal;
 
     itemDiv.innerHTML = `
       <div class="item-img"><img src="${item.image}" alt="${item.name}"></div>
       <div class="item-details">
         <div class="item-name">${item.name}</div>
         ${item.size && item.size.toLowerCase() !== "onesize" ? `<div class="item-size">Size: ${item.size}</div>` : ""}
-        <div class="item-qty-price">Qty: ${item.qty} × £${item.price.toFixed(2)} = <strong>£${total.toFixed(2)}</strong></div>
+        <div class="item-qty-price">Qty: ${item.qty} × £${item.price.toFixed(2)} = <strong>£${lineTotal.toFixed(2)}</strong></div>
       </div>
     `;
     container.appendChild(itemDiv);
@@ -143,51 +99,76 @@ function renderCartCheckout(cart, uid) {
   summary.className = "checkout-summary";
   summary.innerHTML = `
     <hr>
-    <p class="summary-line">Subtotal: <strong>£${subtotal.toFixed(2)}</strong></p>
-
-    <div class="checkout-section">
-      <h3>Customer Details</h3>
-      <p id="customer-info">Loading user info...</p>
-    </div>
-
-    <div class="checkout-section">
-      <h3>Delivery Address</h3>
-      <p id="address-info">No address selected.</p>
-      <button id="addAddressBtn" class="secondary-btn">Add Address</button>
-    </div>
-
-    <div style="margin-top: 2rem; text-align: right;">
-      <button id="completePaymentBtn" class="primary-btn">Complete Payment</button>
-    </div>
+    <p class="summary-line">Total: <strong>£${subtotal.toFixed(2)}</strong></p>
   `;
   container.appendChild(summary);
 
-  populateCustomerInfo();
+  renderCustomerAndAddress(container, user);
 }
 
-// 🙋 Populate customer info from Firestore
-async function populateCustomerInfo() {
-  const user = auth.currentUser;
-  if (!user) return;
-
-  try {
-    const ref = doc(db, "users", user.uid);
-    const snap = await getDoc(ref);
-
-    if (snap.exists()) {
-      const data = snap.data();
-      const infoEl = document.getElementById("customer-info");
-      infoEl.innerHTML = `
-        <strong>${data.firstName || ""} ${data.lastName || ""}</strong><br>
-        <small>${user.email}</small>
-      `;
-    }
-  } catch (err) {
-    console.warn("⚠️ Couldn’t load user info:", err);
+// Render single product (Buy Now)
+function renderProductCheckout(product, user) {
+  const container = document.getElementById("checkout-body");
+  if (!product) {
+    container.innerHTML = `<p>Missing product data.</p>`;
+    return;
   }
+
+  const lineTotal = product.price * product.qty;
+
+  container.innerHTML = `
+    <div class="checkout-item">
+      <div class="item-img"><img src="${product.image}" alt="${product.name}"></div>
+      <div class="item-details">
+        <div class="item-name">${product.name}</div>
+        ${product.size && product.size.toLowerCase() !== "onesize" ? `<div class="item-size">Size: ${product.size}</div>` : ""}
+        <div class="item-qty-price">Qty: ${product.qty} × £${product.price.toFixed(2)} = <strong>£${lineTotal.toFixed(2)}</strong></div>
+      </div>
+    </div>
+    <hr>
+    <p class="summary-line">Total: <strong>£${lineTotal.toFixed(2)}</strong></p>
+  `;
+
+  renderCustomerAndAddress(container, user);
 }
 
-// 🧼 Inject minimal CSS styles for checkout
+// Render user info and address
+async function renderCustomerAndAddress(container, user) {
+  const userDoc = await getDoc(doc(db, "users", user.uid));
+  const userData = userDoc.exists() ? userDoc.data() : {};
+
+  const name = `${userData.firstName || ""} ${userData.lastName || ""}`.trim();
+  const email = user.email;
+
+  const customerDiv = document.createElement("div");
+  customerDiv.className = "checkout-section";
+  customerDiv.innerHTML = `
+    <div class="section-label">Customer Details</div>
+    <div class="section-box" id="customer-info">
+      ${name || "(No name)"}<br>
+      <span style="color: #666;">${email}</span>
+    </div>
+  `;
+
+  const addressDiv = document.createElement("div");
+  addressDiv.className = "checkout-section";
+  addressDiv.innerHTML = `
+    <div class="section-label">Delivery Address</div>
+    <div class="section-box" id="address-info">No address selected.</div>
+    <button id="addAddressBtn" class="secondary-btn" style="margin-top: 0.5rem;">Add Address</button>
+  `;
+
+  const checkoutBtn = document.createElement("button");
+  checkoutBtn.textContent = "Complete Payment";
+  checkoutBtn.className = "primary-btn";
+  checkoutBtn.style.marginTop = "2rem";
+
+  container.appendChild(customerDiv);
+  container.appendChild(addressDiv);
+  container.appendChild(checkoutBtn);
+}
+
+// CSS Styles
 function injectBaseStyles() {
   const style = document.createElement("style");
   style.textContent = `
@@ -211,7 +192,7 @@ function injectBaseStyles() {
 
     .checkout-content h2 {
       margin-bottom: 1rem;
-      color: #004cc7;
+      color: #0045c7;
     }
 
     #closeCheckout {
@@ -270,42 +251,49 @@ function injectBaseStyles() {
       margin-top: 2rem;
     }
 
-    .checkout-section h3 {
-      margin-bottom: 0.5rem;
-      font-size: 1.1rem;
+    .section-label {
+      font-size: 1rem;
+      font-weight: 600;
       color: #222;
+      margin-bottom: 0.25rem;
     }
 
-    .secondary-btn {
-      background: none;
-      border: 2px solid #007bff;
-      padding: 0.4rem 1rem;
-      border-radius: 6px;
-      color: #007bff;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .secondary-btn:hover {
-      background: #007bff;
-      color: #fff;
+    .section-box {
+      background: #f9f9f9;
+      padding: 1rem 1.25rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      margin-top: 0.5rem;
+      font-size: 0.95rem;
+      line-height: 1.4;
     }
 
     .primary-btn {
+      display: inline-block;
       background: #007bff;
-      color: #fff;
-      border: none;
-      padding: 0.6rem 1.5rem;
-      border-radius: 6px;
+      color: white;
+      padding: 0.75rem 1.5rem;
       font-weight: bold;
-      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
       cursor: pointer;
-      transition: background 0.3s ease;
+      font-size: 1rem;
     }
 
-    .primary-btn:hover {
-      background: #0056b3;
+    .secondary-btn {
+      background: transparent;
+      color: #007bff;
+      border: 2px solid #007bff;
+      padding: 0.5rem 1rem;
+      font-weight: 500;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+    .primary-btn:hover,
+    .secondary-btn:hover {
+      opacity: 0.9;
     }
 
     @keyframes slideIn {
