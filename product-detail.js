@@ -2,6 +2,7 @@ import { db } from './firebase.js';
 import { doc, getDoc, addDoc, collection, serverTimestamp, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 import { auth } from "./firebase.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+import { initCheckout } from './checkout.js';
 
 const params = new URLSearchParams(window.location.search);
 const productId = params.get("id");
@@ -324,3 +325,25 @@ async function logBasketActivity(product) {
     console.error("❌ Error logging basket activity:", err);
   }
 }
+
+document.getElementById("buy-now-button")?.addEventListener("click", () => {
+  const name = document.querySelector(".product-title")?.textContent;
+  const price = parseFloat(document.querySelector(".product-price")?.textContent.replace("£", ""));
+  const image = document.getElementById("product-image")?.src || "";
+  const sizeDropdown = document.getElementById("size-dropdown");
+  const selectedSize = sizeDropdown && sizeDropdown.value ? sizeDropdown.value : "OneSize";
+
+  const item = {
+    id: productId,
+    name,
+    price,
+    qty: quantity,
+    size: selectedSize,
+    image
+  };
+
+  initCheckout({
+    mode: "direct",
+    product: item
+  });
+});
