@@ -268,7 +268,7 @@ function injectBaseStyles() {
 
     .primary-btn {
         display: block;
-        margin: 2rem auto 0;
+        margin: 2rem auto;
         background: black;
         color: white;
         padding: 0.75rem 1.5rem;
