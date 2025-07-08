@@ -186,13 +186,10 @@ function injectBaseStyles() {
       font-family: 'Nunito Sans', sans-serif;
     }
 
-    .checkout-panel {
-      padding: 2rem;
-    }
-
     .checkout-content h2 {
       margin-bottom: 1rem;
       color: #0045c7;
+      padding-left: 1rem;
     }
 
     #closeCheckout {
@@ -210,6 +207,8 @@ function injectBaseStyles() {
       align-items: center;
       gap: 1rem;
       margin-bottom: 1.5rem;
+      padding-right: 1rem;
+      paddinh-left: 1rem;
     }
 
     .checkout-item img {
@@ -270,7 +269,7 @@ function injectBaseStyles() {
 
     .primary-btn {
       display: inline-block;
-      background: #007bff;
+      background: black;
       color: white;
       padding: 0.75rem 1.5rem;
       font-weight: bold;
