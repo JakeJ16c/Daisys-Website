@@ -211,41 +211,8 @@ exports.autocompleteAddress = functions.https.onRequest((req, res) => {
         place_id: p.place_id,
       }));
 
-      res.status(200).json(simplified);
-    } catch (error) {
-      console.error("Autocomplete error:", error);
-      res.status(500).json({ error: "Internal server error" });
-    }
-  });
-});
-exports.autocompleteAddress = functions.https.onRequest((req, res) => {
-  cors(req, res, async () => {
-    const input = req.query.input;
-
-    if (!input) {
-      return res.status(400).json({ error: "Missing input parameter" });
-    }
-
-    try {
-      const response = await axios.get(
-        `https://maps.googleapis.com/maps/api/place/autocomplete/json`,
-        {
-          params: {
-            input,
-            key: GOOGLE_API_KEY,
-            types: "address",
-            components: "country:gb"
-          }
-        }
-      );
-
-      const predictions = response.data.predictions || [];
-
-      // ✅ Return only the necessary array
-      const simplified = predictions.map((p) => ({
-        description: p.description,
-        place_id: p.place_id,
-      }));
+      // 🔍 Add full log of what Google returned
+      console.log("📦 Google response:", JSON.stringify(response.data));
 
       res.status(200).json(simplified);
     } catch (error) {
