@@ -147,25 +147,28 @@ function injectBaseStyles() {
   style.textContent = "";
 
   if (document.location.pathname.includes("product.html")) {
-    style.textContent += `
-      #checkout {
-        position: relative;
-        width: 100%;
-        max-width: 600px;
-        margin: 2rem auto;
-        background: #fff;
-        border-radius: 12px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        animation: fadeIn 0.4s ease forwards;
-        font-family: 'Nunito Sans', sans-serif;
-      }
+  style.textContent += `
+    #checkout {
+      position: absolute;
+      top: 10vh; /* offset from the top of main */
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 600px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      animation: fadeIn 0.4s ease forwards;
+      font-family: 'Nunito Sans', sans-serif;
+      z-index: 10;
+    }
 
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-    `;
-  } else {
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, 20px); }
+      to { opacity: 1; transform: translate(-50%, 0); }
+    }
+  `;
+} else {
     style.textContent += `
       #checkout {
         position: fixed;
