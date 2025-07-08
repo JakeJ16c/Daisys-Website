@@ -1,19 +1,15 @@
 import { auth, db } from './firebase.js';
-import { doc, getDoc, getDocs, collection } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+import {
+  doc, getDoc, getDocs, collection
+} from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
 
+// 🔓 Entry Point – use mode "cart" or "direct"
 export async function initCheckout({ mode = "cart", product = null } = {}) {
-  // Remove any existing instances
-  document.getElementById("checkout")?.remove();
-  document.getElementById("checkout-backdrop")?.remove();
+  const existing = document.getElementById("checkout");
+  if (existing) existing.remove();
 
-  // 🔲 Create backdrop
-  const backdrop = document.createElement("div");
-  backdrop.id = "checkout-backdrop";
-  backdrop.onclick = () => closeCheckout(); // click to dismiss
-  document.body.appendChild(backdrop);
-
-  // 🧾 Create floating checkout container
+  // Inject DOM container
   const wrapper = document.createElement("div");
   wrapper.id = "checkout";
   wrapper.innerHTML = `
@@ -29,13 +25,14 @@ export async function initCheckout({ mode = "cart", product = null } = {}) {
   `;
   document.body.appendChild(wrapper);
 
-  // ❌ Close button
-  document.getElementById("closeCheckout").onclick = () => closeCheckout();
-
-  // 🚫 Lock scroll
+  // Scroll lock + close logic
   document.body.style.overflow = "hidden";
+  document.getElementById("closeCheckout").onclick = () => {
+    document.getElementById("checkout")?.remove();
+    document.body.style.overflow = "";
+  };
 
-  // 🧠 Mode handling
+  // Choose mode: "cart" vs "direct"
   if (mode === "direct") {
     renderProductCheckout(product);
   } else {
@@ -46,35 +43,76 @@ export async function initCheckout({ mode = "cart", product = null } = {}) {
     }
 
     const cart = await loadCartFromFirestore(user.uid);
-    renderCartCheckout(cart);
+    renderCartCheckout(cart, user.uid);
   }
 
   injectBaseStyles();
 }
 
-function closeCheckout() {
-  document.getElementById("checkout")?.remove();
-  document.getElementById("checkout-backdrop")?.remove();
-  document.body.style.overflow = ""; // restore scroll
-}
-
+// 🔐 Wait for Firebase Auth to resolve
 function waitForUser() {
   return new Promise(resolve => {
     onAuthStateChanged(auth, user => resolve(user));
   });
 }
 
+// 📦 Load Firestore basket items
 async function loadCartFromFirestore(uid) {
   try {
     const snap = await getDocs(collection(db, "users", uid, "Basket"));
-    return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    return snap.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
   } catch (err) {
-    console.error("❌ Failed to load cart from Firestore:", err);
+    console.error("❌ Firestore cart load failed:", err);
     return [];
   }
 }
 
-function renderCartCheckout(cart) {
+// 🧍 Render direct product checkout
+function renderProductCheckout(product) {
+  const container = document.getElementById("checkout-body");
+  if (!product) {
+    container.innerHTML = `<p>Missing product data.</p>`;
+    return;
+  }
+
+  const total = product.price * product.qty;
+
+  container.innerHTML = `
+    <div class="checkout-item">
+      <div class="item-img"><img src="${product.image}" alt="${product.name}"></div>
+      <div class="item-details">
+        <div class="item-name">${product.name}</div>
+        ${product.size && product.size.toLowerCase() !== "onesize" ? `<div class="item-size">Size: ${product.size}</div>` : ""}
+        <div class="item-qty-price">Qty: ${product.qty} × £${product.price.toFixed(2)} = <strong>£${total.toFixed(2)}</strong></div>
+      </div>
+    </div>
+    <hr>
+    <p class="summary-line">Total: <strong>£${total.toFixed(2)}</strong></p>
+
+    <div class="checkout-section">
+      <h3>Customer Details</h3>
+      <p id="customer-info">Loading user info...</p>
+    </div>
+
+    <div class="checkout-section">
+      <h3>Delivery Address</h3>
+      <p id="address-info">No address selected.</p>
+      <button id="addAddressBtn" class="secondary-btn">Add Address</button>
+    </div>
+
+    <div style="margin-top: 2rem; text-align: right;">
+      <button id="completePaymentBtn" class="primary-btn">Complete Payment</button>
+    </div>
+  `;
+
+  populateCustomerInfo();
+}
+
+// 🧺 Render full cart checkout
+function renderCartCheckout(cart, uid) {
   const container = document.getElementById("checkout-body");
   container.innerHTML = "";
 
@@ -84,19 +122,18 @@ function renderCartCheckout(cart) {
   }
 
   let subtotal = 0;
-
   cart.forEach(item => {
     const itemDiv = document.createElement("div");
     itemDiv.className = "checkout-item";
-    const lineTotal = item.qty * item.price;
-    subtotal += lineTotal;
+    const total = item.qty * item.price;
+    subtotal += total;
 
     itemDiv.innerHTML = `
       <div class="item-img"><img src="${item.image}" alt="${item.name}"></div>
       <div class="item-details">
         <div class="item-name">${item.name}</div>
         ${item.size && item.size.toLowerCase() !== "onesize" ? `<div class="item-size">Size: ${item.size}</div>` : ""}
-        <div class="item-qty-price">Qty: ${item.qty} × £${item.price.toFixed(2)} = <strong>£${lineTotal.toFixed(2)}</strong></div>
+        <div class="item-qty-price">Qty: ${item.qty} × £${item.price.toFixed(2)} = <strong>£${total.toFixed(2)}</strong></div>
       </div>
     `;
     container.appendChild(itemDiv);
@@ -107,58 +144,63 @@ function renderCartCheckout(cart) {
   summary.innerHTML = `
     <hr>
     <p class="summary-line">Subtotal: <strong>£${subtotal.toFixed(2)}</strong></p>
-    <p style="margin-top: 1rem;"><em>More summary features coming soon (promo codes, delivery, etc)</em></p>
+
+    <div class="checkout-section">
+      <h3>Customer Details</h3>
+      <p id="customer-info">Loading user info...</p>
+    </div>
+
+    <div class="checkout-section">
+      <h3>Delivery Address</h3>
+      <p id="address-info">No address selected.</p>
+      <button id="addAddressBtn" class="secondary-btn">Add Address</button>
+    </div>
+
+    <div style="margin-top: 2rem; text-align: right;">
+      <button id="completePaymentBtn" class="primary-btn">Complete Payment</button>
+    </div>
   `;
   container.appendChild(summary);
+
+  populateCustomerInfo();
 }
 
-function renderProductCheckout(product) {
-  const container = document.getElementById("checkout-body");
-  if (!product) {
-    container.innerHTML = `<p>Missing product data.</p>`;
-    return;
+// 🙋 Populate customer info from Firestore
+async function populateCustomerInfo() {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  try {
+    const ref = doc(db, "users", user.uid);
+    const snap = await getDoc(ref);
+
+    if (snap.exists()) {
+      const data = snap.data();
+      const infoEl = document.getElementById("customer-info");
+      infoEl.innerHTML = `
+        <strong>${data.firstName || ""} ${data.lastName || ""}</strong><br>
+        <small>${user.email}</small>
+      `;
+    }
+  } catch (err) {
+    console.warn("⚠️ Couldn’t load user info:", err);
   }
-
-  const lineTotal = product.price * product.qty;
-
-  container.innerHTML = `
-    <div class="checkout-item">
-      <div class="item-img"><img src="${product.image}" alt="${product.name}"></div>
-      <div class="item-details">
-        <div class="item-name">${product.name}</div>
-        ${product.size && product.size.toLowerCase() !== "onesize" ? `<div class="item-size">Size: ${product.size}</div>` : ""}
-        <div class="item-qty-price">Qty: ${product.qty} × £${product.price.toFixed(2)} = <strong>£${lineTotal.toFixed(2)}</strong></div>
-      </div>
-    </div>
-    <hr>
-    <p class="summary-line">Total: <strong>£${lineTotal.toFixed(2)}</strong></p>
-  `;
 }
 
-// 💅 Inject floating styles
+// 🧼 Inject minimal CSS styles for checkout
 function injectBaseStyles() {
   const style = document.createElement("style");
   style.textContent = `
-    #checkout-backdrop {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.4);
-      z-index: 9998;
-    }
-
     #checkout {
       position: fixed;
-      top: 0;
-      right: 0;
+      top: 0; right: 0;
       width: 100%;
       max-width: 600px;
       height: 100vh;
       background: #fff;
       z-index: 9999;
       overflow-y: auto;
-      box-shadow: -2px 0 15px rgba(0, 0, 0, 0.2);
+      box-shadow: -2px 0 10px rgba(0,0,0,0.15);
       animation: slideIn 0.4s ease forwards;
       font-family: 'Nunito Sans', sans-serif;
     }
@@ -169,6 +211,7 @@ function injectBaseStyles() {
 
     .checkout-content h2 {
       margin-bottom: 1rem;
+      color: #004cc7;
     }
 
     #closeCheckout {
@@ -223,9 +266,51 @@ function injectBaseStyles() {
       text-align: right;
     }
 
+    .checkout-section {
+      margin-top: 2rem;
+    }
+
+    .checkout-section h3 {
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+      color: #222;
+    }
+
+    .secondary-btn {
+      background: none;
+      border: 2px solid #007bff;
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
+      color: #007bff;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .secondary-btn:hover {
+      background: #007bff;
+      color: #fff;
+    }
+
+    .primary-btn {
+      background: #007bff;
+      color: #fff;
+      border: none;
+      padding: 0.6rem 1.5rem;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .primary-btn:hover {
+      background: #0056b3;
+    }
+
     @keyframes slideIn {
-      from { right: -100%; opacity: 0; }
-      to { right: 0; opacity: 1; }
+      from { right: -100%; }
+      to { right: 0; }
     }
 
     @media (max-width: 768px) {
