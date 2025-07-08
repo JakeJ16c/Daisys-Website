@@ -157,7 +157,7 @@ function injectBaseStyles() {
         border-radius: 12px;
         box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         animation: fadeIn 0.4s ease forwards;
-        font-family: 'Fredoka', sans-serif;
+        font-family: 'Nunito Sans', sans-serif;
       }
 
       @keyframes fadeIn {
