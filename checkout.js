@@ -178,7 +178,7 @@ function injectBaseStyles() {
         overflow-y: auto;
         box-shadow: -2px 0 10px rgba(0,0,0,0.15);
         animation: slideIn 0.4s ease forwards;
-        font-family: 'Fredoka', sans-serif;
+        font-family: 'Nunito Sans', sans-serif;
       }
 
       @keyframes slideIn {
