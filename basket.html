@@ -565,7 +565,7 @@
   <script type="module" src="basket-checkout.js"></script>
   <script type="module" src="maintenance.js"></script>
   <script src="https://js.stripe.com/v3/"></script>
-  <script>
+  <script type="module">
     import { initCheckout } from './checkout.js';
     document.getElementById("checkoutBtn")?.addEventListener("click", () => {
       initCheckout({ mode: "cart" }); // This will auto-load from Firestore basket
