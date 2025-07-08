@@ -1,18 +1,19 @@
-// checkout.js – Universal Checkout System (modular & Firestore-powered)
-
 import { auth, db } from './firebase.js';
-import {
-  doc, getDoc, getDocs, collection
-} from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+import { doc, getDoc, getDocs, collection } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
 
-// 🔓 Global entry point
 export async function initCheckout({ mode = "cart", product = null } = {}) {
-  // Remove existing checkout panel if one is already open
-  const existing = document.getElementById("checkout");
-  if (existing) existing.remove();
+  // Remove any existing instances
+  document.getElementById("checkout")?.remove();
+  document.getElementById("checkout-backdrop")?.remove();
 
-  // Create the container and append it to the DOM
+  // 🔲 Create backdrop
+  const backdrop = document.createElement("div");
+  backdrop.id = "checkout-backdrop";
+  backdrop.onclick = () => closeCheckout(); // click to dismiss
+  document.body.appendChild(backdrop);
+
+  // 🧾 Create floating checkout container
   const wrapper = document.createElement("div");
   wrapper.id = "checkout";
   wrapper.innerHTML = `
@@ -28,16 +29,13 @@ export async function initCheckout({ mode = "cart", product = null } = {}) {
   `;
   document.body.appendChild(wrapper);
 
-  // Close handler
-  document.getElementById("closeCheckout").onclick = () => {
-    document.getElementById("checkout")?.remove();
-    document.body.style.overflow = ""; // re-enable scroll
-  };
+  // ❌ Close button
+  document.getElementById("closeCheckout").onclick = () => closeCheckout();
 
-  // Lock body scroll
+  // 🚫 Lock scroll
   document.body.style.overflow = "hidden";
 
-  // Detect mode
+  // 🧠 Mode handling
   if (mode === "direct") {
     renderProductCheckout(product);
   } else {
@@ -54,28 +52,28 @@ export async function initCheckout({ mode = "cart", product = null } = {}) {
   injectBaseStyles();
 }
 
-// 🔐 Wait for Firebase Auth user
+function closeCheckout() {
+  document.getElementById("checkout")?.remove();
+  document.getElementById("checkout-backdrop")?.remove();
+  document.body.style.overflow = ""; // restore scroll
+}
+
 function waitForUser() {
   return new Promise(resolve => {
     onAuthStateChanged(auth, user => resolve(user));
   });
 }
 
-// 📦 Load Firestore basket items
 async function loadCartFromFirestore(uid) {
   try {
     const snap = await getDocs(collection(db, "users", uid, "Basket"));
-    return snap.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
+    return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   } catch (err) {
     console.error("❌ Failed to load cart from Firestore:", err);
     return [];
   }
 }
 
-// 🖼 Render Firestore cart
 function renderCartCheckout(cart) {
   const container = document.getElementById("checkout-body");
   container.innerHTML = "";
@@ -114,7 +112,6 @@ function renderCartCheckout(cart) {
   container.appendChild(summary);
 }
 
-// 🧍 Render single product checkout ("Buy Now")
 function renderProductCheckout(product) {
   const container = document.getElementById("checkout-body");
   if (!product) {
@@ -138,20 +135,30 @@ function renderProductCheckout(product) {
   `;
 }
 
-// 🧼 CSS injected dynamically
+// 💅 Inject floating styles
 function injectBaseStyles() {
   const style = document.createElement("style");
   style.textContent = `
+    #checkout-backdrop {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 9998;
+    }
+
     #checkout {
       position: fixed;
-      top: 0; right: 0;
+      top: 0;
+      right: 0;
       width: 100%;
       max-width: 600px;
       height: 100vh;
       background: #fff;
       z-index: 9999;
       overflow-y: auto;
-      box-shadow: -2px 0 10px rgba(0,0,0,0.15);
+      box-shadow: -2px 0 15px rgba(0, 0, 0, 0.2);
       animation: slideIn 0.4s ease forwards;
       font-family: 'Nunito Sans', sans-serif;
     }
@@ -217,8 +224,8 @@ function injectBaseStyles() {
     }
 
     @keyframes slideIn {
-      from { right: -100%; }
-      to { right: 0; }
+      from { right: -100%; opacity: 0; }
+      to { right: 0; opacity: 1; }
     }
 
     @media (max-width: 768px) {
