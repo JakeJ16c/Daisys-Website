@@ -24,7 +24,12 @@ export async function initCheckout({ mode = "cart", product = null } = {}) {
       </div>
     </div>
   `;
-  document.body.appendChild(wrapper);
+  const main = document.querySelector("main");
+    if (main) {
+      main.appendChild(wrapper);
+    } else {
+      document.body.appendChild(wrapper);
+    }
 
   // Close handler
   document.getElementById("closeCheckout").onclick = () => {
