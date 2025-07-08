@@ -271,7 +271,7 @@ function injectBaseStyles() {
         margin: 2rem auto;
         background: black;
         color: white;
-        padding: 0.75rem 1.5rem;
+        padding: 0.75rem 3rem;
         font-weight: bold;
         border: none;
         border-radius: 8px;
