@@ -344,12 +344,7 @@ function initAutocomplete() {
         const li = document.createElement("li");
         li.textContent = item.description;
         li.classList.add("suggestion-item");
-
-        li.addEventListener("click", () => {
-          addressSearchInput.value = item.description;
-          addressSearchInput.dataset.placeId = item.place_id;
-          suggestionList.innerHTML = "";
-        });
+        li.addEventListener("click", () => handleSelectPrediction(item));
 
         suggestionList.appendChild(li);
       });
@@ -360,10 +355,19 @@ function initAutocomplete() {
 }
 
 async function handleSelectPrediction(prediction) {
-  addressInput.value = prediction.description;
-  suggestionsBox.style.display = "none";
+  const addressInput = document.getElementById("address-search");
+  const suggestionsBox = document.getElementById("address-suggestions");
 
-  // 🔍 Resolve place details using your Firebase Cloud Function
+  const houseInput = document.getElementById("modal-house-number");
+  const streetInput = document.getElementById("modal-street");
+  const cityInput = document.getElementById("modal-city");
+  const countyInput = document.getElementById("modal-county");
+  const postcodeInput = document.getElementById("modal-postcode");
+
+  addressInput.value = prediction.description;
+  addressInput.dataset.placeId = prediction.place_id;
+  suggestionsBox.innerHTML = "";
+
   try {
     const res = await fetch(`https://us-central1-daisy-s-website.cloudfunctions.net/resolvePlaceId?place_id=${prediction.place_id}`);
     const data = await res.json();
@@ -373,7 +377,6 @@ async function handleSelectPrediction(prediction) {
       return;
     }
 
-    // ✅ Populate fields with resolved address
     houseInput.value = data.houseNumber || '';
     streetInput.value = data.street || '';
     cityInput.value = data.city || '';
