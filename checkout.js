@@ -99,7 +99,7 @@ function renderCartCheckout(cart, user) {
   summary.className = "checkout-summary";
   summary.innerHTML = `
     <hr>
-    <p class="summary-line">Total: <strong>£${subtotal.toFixed(2)}</strong></p>
+    <p class="summary-line">Total to pay: <strong>£${subtotal.toFixed(2)}</strong></p>
   `;
   container.appendChild(summary);
 
