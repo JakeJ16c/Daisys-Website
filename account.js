@@ -358,3 +358,30 @@ function initAutocomplete() {
     }
   });
 }
+
+async function handleSelectPrediction(prediction) {
+  addressInput.value = prediction.description;
+  suggestionsBox.style.display = "none";
+
+  // 🔍 Resolve place details using your Firebase Cloud Function
+  try {
+    const res = await fetch(`https://us-central1-daisy-s-website.cloudfunctions.net/resolvePlaceId?place_id=${prediction.place_id}`);
+    const data = await res.json();
+
+    if (data.error) {
+      console.error("❌ Place resolution error:", data.error);
+      return;
+    }
+
+    // ✅ Populate fields with resolved address
+    houseInput.value = data.houseNumber || '';
+    streetInput.value = data.street || '';
+    cityInput.value = data.city || '';
+    countyInput.value = data.county || '';
+    postcodeInput.value = data.postcode || '';
+
+    console.log("📦 Autofilled from place ID:", data);
+  } catch (err) {
+    console.error("❌ Error resolving place ID:", err);
+  }
+}
