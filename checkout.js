@@ -153,8 +153,9 @@ async function renderCustomerAndAddress(container, user) {
   const addressDiv = document.createElement("div");
   addressDiv.className = "checkout-section";
   addressDiv.innerHTML = `
+    <div class="section-box" id="address-info">No address selected.
     <div class="section-label">Delivery Address</div>
-    <div class="section-box" id="address-info">No address selected.</div>
+    </div>
     <button id="addAddressBtn" class="secondary-btn" style="margin-top: 0.5rem;">Add Address</button>
   `;
 
@@ -260,8 +261,6 @@ function injectBaseStyles() {
     .section-box {
       background: #f9f9f9;
       padding: 1rem 1.25rem;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
       margin-top: 0.5rem;
       font-size: 0.95rem;
       line-height: 1.4;
