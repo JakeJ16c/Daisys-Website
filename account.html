@@ -491,6 +491,27 @@ input:checked + .slider::before {
 .suggestion-list li:hover {
   background-color: #f0f0f0;
 }
+
+#address-suggestions {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  max-height: 200px;
+  overflow-y: auto;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+#address-suggestions li {
+  padding: 10px 12px;
+  cursor: pointer;
+}
+
+#address-suggestions li:hover {
+  background-color: #f1f1f1;
+}
   </style>
 </head>
 <body>
