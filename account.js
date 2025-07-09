@@ -4,6 +4,8 @@ import { auth, db, functions } from "./firebase.js";
 import { httpsCallable } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-functions.js";
 
 let currentUser = null;
+let editMode = false;
+let editingAddressId = null;
 
 // =========================
 // 👤 Load User Profile + Addresses
@@ -86,6 +88,42 @@ function attachAddressActions() {
     });
   });
 
+    document.querySelectorAll(".edit").forEach((btn) => {
+  btn.addEventListener("click", async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const id = btn.dataset.id;
+    const docRef = doc(db, "users", currentUser.uid, "addresses", id);
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) return alert("Address not found.");
+
+    const data = docSnap.data();
+
+    // Set form values
+    document.getElementById("modal-house-number").value = data.houseNumber || "";
+    document.getElementById("modal-street").value = data.street || "";
+    document.getElementById("modal-city").value = data.city || "";
+    document.getElementById("modal-county").value = data.county || "";
+    document.getElementById("modal-postcode").value = data.postcode || "";
+
+    // Clear autocomplete field
+    document.getElementById("address-search").value = "";
+    document.getElementById("address-search").dataset.placeId = "";
+
+    // Set edit mode
+    editMode = true;
+    editingAddressId = id;
+
+    // Update modal title
+    document.querySelector("#addressModal h2").textContent = "Edit Address";
+    
+    // Show modal
+    document.getElementById("addressModal").classList.add("active");
+  });
+});
+
     document.querySelectorAll(".delete").forEach((btn) => {
       btn.addEventListener("click", async (e) => {
         e.preventDefault(); // ⛔ Prevent page reload if button is inside a form
@@ -139,53 +177,49 @@ function openModal() {
   document.getElementById("addressModal").classList.remove("hidden");
 }
 function closeModal() {
-  document.getElementById("addressModal").classList.add("hidden");
+  document.getElementById("addressModal").classList.remove("active");
+
+  // Reset form & edit mode
+  editMode = false;
+  editingAddressId = null;
+  document.getElementById("addAddressForm").reset();
+  document.getElementById("address-search").dataset.placeId = "";
+  document.getElementById("address-suggestions").innerHTML = "";
 }
 
 async function submitNewAddress(e) {
   e.preventDefault();
   if (!currentUser) return alert("You must be logged in to add an address.");
 
-const placeId = document.getElementById("address-search").dataset.placeId;
-let houseNumber = "", street = "", city = "", county = "", postcode = "";
+  let houseNumber = document.getElementById("modal-house-number").value.trim();
+  let street = document.getElementById("modal-street").value.trim();
+  let city = document.getElementById("modal-city").value.trim();
+  let county = document.getElementById("modal-county").value.trim();
+  let postcode = document.getElementById("modal-postcode").value.trim();
 
-if (placeId) {
-  try {
-    const response = await resolvePlaceId({ placeId });
-    const data = response.data;
-
-    houseNumber = data.houseNumber || "";
-    street = data.street || "";
-    city = data.city || "";
-    county = data.county || "";
-    postcode = data.postcode || "";
-
-  } catch (err) {
-    console.error("Place ID resolution failed:", err);
-    alert("Could not resolve full address. Please enter manually.");
+  if (!houseNumber || !street || !city || !county || !postcode) {
+    return alert("Please fill in all fields.");
   }
-}
 
-// Fallback if not using placeId
-if (!houseNumber || !street || !city || !county || !postcode) {
-  houseNumber = document.getElementById("modal-house-number").value.trim();
-  street = document.getElementById("modal-street").value.trim();
-  city = document.getElementById("modal-city").value.trim();
-  county = document.getElementById("modal-county").value.trim();
-  postcode = document.getElementById("modal-postcode").value.trim();
-}
-
-if (!houseNumber || !street || !city || !county || !postcode) {
-  return alert("Please fill in all fields.");
-}
+  const payload = { houseNumber, street, city, county, postcode, default: false };
 
   try {
     const ref = collection(db, "users", currentUser.uid, "addresses");
-    await addDoc(ref, { houseNumber, street, city, county, postcode, default: false });
+
+    if (editMode && editingAddressId) {
+      const docRef = doc(ref, editingAddressId);
+      await updateDoc(docRef, payload);
+    } else {
+      await addDoc(ref, payload);
+    }
+
+    // Reset and refresh
+    editMode = false;
+    editingAddressId = null;
     closeModal();
     await renderAddresses();
   } catch (err) {
-    console.error("Failed to add address:", err);
+    console.error("Failed to save address:", err);
     alert("Could not save address.");
   }
 }
@@ -271,6 +305,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   const closeAddressModal = document.getElementById('closeAddressModal');
   
   addAddressBtn?.addEventListener('click', () => {
+    document.querySelector("#addressModal h2").textContent = "Add New Address"; // 🪄 Modal title
+    editMode = false; // Ensure clean slate
+    editingAddressId = null;
+    document.getElementById("addAddressForm").reset(); // Optional: clear old values
     addressModal.classList.add('active');
   });
   
