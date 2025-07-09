@@ -336,6 +336,7 @@ function injectBaseStyles() {
         cursor: pointer;
         font-size: 1rem;
         text-align: center;
+        width: unset;
     }
 
     .secondary-btn {
