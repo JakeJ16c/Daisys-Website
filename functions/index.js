@@ -93,34 +93,27 @@ exports.notifyOnBasketUpdate = functions.firestore
     return null;
   });
 
-// 💳 Stripe checkout session creator
-exports.createStripeCheckout = functions.https.onCall(async (data, context) => {
-  const { items } = data;
-  try {
-    const line_items = items.map(item => ({
-      price_data: {
-        currency: 'gbp',
-        product_data: {
-          name: item.name + (item.size ? ` (${item.size})` : ''),
-          images: item.image ? [item.image] : [],
-        },
-        unit_amount: Math.round(item.price * 100),
-      },
-      quantity: item.qty,
-    }));
+// 💳 Stripe checkout Embedded
+exports.createStripePaymentIntent = functions.https.onCall(async (data, context) => {
+  const { items, customerEmail } = data;
 
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      mode: 'payment',
-      line_items,
-      success_url: 'https://jakej16c.github.io/Daisys-Website/success.html',
-      cancel_url: 'https://jakej16c.github.io/Daisys-Website/cancel.html',
+  try {
+    const amount = items.reduce((sum, item) => sum + item.price * item.qty, 0);
+    const amountInPence = Math.round(amount * 100); // GBP uses pence
+
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: amountInPence,
+      currency: 'gbp',
+      receipt_email: customerEmail || undefined,
+      automatic_payment_methods: { enabled: true },
     });
 
-    return { url: session.url };
-  } catch (err) {
-    functions.logger.error("❌ Stripe Checkout error:", err);
-    throw new functions.https.HttpsError('internal', err.message);
+    return {
+      clientSecret: paymentIntent.client_secret
+    };
+  } catch (error) {
+    console.error("❌ PaymentIntent error:", error);
+    throw new functions.https.HttpsError("internal", error.message);
   }
 });
 
