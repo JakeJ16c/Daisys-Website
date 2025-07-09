@@ -231,7 +231,6 @@ async function renderCustomerAndAddress(container, user) {
   container.appendChild(customerDiv);
   container.appendChild(addressDiv);
   container.appendChild(checkoutBtn);
-  checkoutBtn.addEventListener("click", handleStripeCheckout);
   renderStripeForm();
 }
 
