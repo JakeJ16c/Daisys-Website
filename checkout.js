@@ -166,7 +166,7 @@ async function renderCustomerAndAddress(container) {
         <input type="email" id="emailInput" class="form-input" value="${currentUser.email}" disabled>
       
         <label class="form-label">Phone Number</label>
-        <input type="tel" id="phoneInput" class="form-input" placeholder="Phone Number">
+        <input type="tel" id="phoneInput" class="form-input" placeholder="Optional">
       </div>
   
       <div class="section-body open" id="address-info">
