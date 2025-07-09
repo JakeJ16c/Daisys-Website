@@ -85,15 +85,24 @@ function attachAddressActions() {
     });
   });
 
-  document.querySelectorAll(".delete").forEach((btn) => {
+    document.querySelectorAll(".delete").forEach((btn) => {
     btn.addEventListener("click", async () => {
       const id = btn.dataset.id;
+      console.log("🗑 Attempting to delete address with ID:", id); // DEBUG
+  
       if (confirm("Delete this address?")) {
-        await deleteDoc(doc(db, "users", currentUser.uid, "addresses", id));
-        await renderAddresses();
+        try {
+          await deleteDoc(doc(db, "users", currentUser.uid, "addresses", id));
+          console.log("✅ Deleted address:", id); // DEBUG
+          await renderAddresses();
+        } catch (err) {
+          console.error("❌ Failed to delete address:", err);
+          alert("Something went wrong deleting the address.");
+        }
       }
     });
   });
+
 }
 
 // =========================
