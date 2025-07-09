@@ -11,7 +11,7 @@ const card = elements.create('card');
 // 🧩 Inject payment form into your checkout panel
 function renderStripeForm() {
   const formHtml = `
-    <form id="payment-form" style="margin-top: 20px;">
+    <form id="payment-form" style="margin-top: 20px; margin-left: 1rem; margin-right: 1rem;">
       <div id="card-element" style="padding: 12px; border: 1px solid #ccc; border-radius: 8px; background: white;"></div>
       <div id="card-errors" role="alert" style="color: red; margin-top: 8px;"></div>
       <button id="completePaymentBtn" type="submit" class="completepayment-btn">
