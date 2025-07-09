@@ -112,6 +112,17 @@ async function renderCart() {
   await renderCustomerAndAddress(container);
   addApplePayButton(finalTotal);
   renderStripeForm();
+  document.querySelectorAll('.section-header').forEach(header => {
+  header.addEventListener('click', () => {
+    const targetId = header.getAttribute('data-toggle');
+    const body = document.getElementById(targetId);
+    const icon = header.querySelector('.toggle-icon');
+    
+    body.classList.toggle('open');
+    icon.textContent = body.classList.contains('open') ? '–' : '+';
+  });
+});
+
 }
 
 // === Render Customer Details ===
@@ -122,18 +133,26 @@ async function renderCustomerAndAddress(container) {
 
   container.innerHTML += `
     <div class="checkout-section">
-      <div class="section-box" id="customer-info">
-        <div class="section-label">Customer Details</div>
+      <div class="section-header" data-toggle="customer-details">
+        <span class="section-label">Customer Details</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="section-body" id="customer-details">
         ${name || "(No name)"}<br>
         <span style="color: #666;">${currentUser.email}</span>
       </div>
     </div>
+  
     <div class="checkout-section">
-      <div class="section-box" id="address-info">
-        <div class="section-label">Delivery Address</div>
-        No address selected.
+      <div class="section-header" data-toggle="address-info">
+        <span class="section-label">Delivery Address</span>
+        <span class="toggle-icon">+</span>
       </div>
-      <button id="addAddressBtn" class="secondary-btn" style="margin-top: 0.5rem;">Add Address</button>
+      <div class="section-body" id="address-info">
+        No address selected.
+        <br>
+        <button id="addAddressBtn" class="secondary-btn" style="margin-top: 0.75rem;">Add Address</button>
+      </div>
     </div>
   `;
 }
@@ -268,32 +287,6 @@ async function clearFirestoreBasket(uid) {
   }
 }
 
-// === APPLE PAY BUTTON ===
-function addApplePayButton(total) {
-  const paymentRequest = stripe.paymentRequest({
-    country: 'GB',
-    currency: 'gbp',
-    total: { label: 'Golden By Daisy', amount: Math.round(total * 100) },
-    requestPayerName: true,
-    requestPayerEmail: true,
-  });
-
-  const prButton = elements.create('paymentRequestButton', {
-    paymentRequest,
-    style: { paymentRequestButton: { type: 'default', theme: 'dark', height: '44px' } }
-  });
-
-  paymentRequest.canMakePayment().then(result => {
-    if (result) prButton.mount('#apple-pay-button');
-    else document.getElementById('apple-pay-button').style.display = 'none';
-  });
-
-  paymentRequest.on('paymentmethod', ev => {
-    console.log('🍏 Apple Pay placeholder clicked');
-    ev.complete('fail');
-  });
-}
-
 // === STYLES ===
 function injectBaseStyles() {
   const style = document.createElement("style");
@@ -375,6 +368,41 @@ function injectBaseStyles() {
       margin-top: 0.5rem;
       font-size: 0.95rem;
       line-height: 1.4;
+    }
+
+    .section-header {
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1.25rem;
+      background: #f1f1f1;
+      font-weight: 600;
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+    
+    .section-header:hover {
+      background: #e8e8e8;
+    }
+    
+    .section-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+      background: #f9f9f9;
+      padding: 0 1.25rem;
+    }
+    
+    .section-body.open {
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+      max-height: 500px;
+    }
+    
+    .toggle-icon {
+      font-size: 1.2rem;
+      margin-left: 10px;
     }
 
     .completepayment-btn {
