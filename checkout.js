@@ -149,11 +149,18 @@ async function renderCustomerAndAddress(container) {
         <span class="toggle-icon">-</span>
       </div>
       <div class="section-body open" id="contact-info">
-        <label class="form-label">First Name</label>
-        <input type="text" id="firstNameInput" class="form-input" placeholder="First Name">
-      
-        <label class="form-label">Last Name</label>
-        <input type="text" id="lastNameInput" class="form-input" placeholder="Last Name">
+        <div class="form-row">
+        
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <input type="text" id="firstNameInput" class="form-input" placeholder="First Name">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <input type="text" id="lastNameInput" class="form-input" placeholder="Last Name">
+          </div>
+        </div>
       
         <label class="form-label">Email</label>
         <input type="email" id="emailInput" class="form-input" value="${currentUser.email}" disabled>
@@ -436,6 +443,18 @@ function injectBaseStyles() {
       font-weight: 600;
       color: #222;
       margin-bottom: 0.25rem;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 1rem;
+      justify-content: space-between;
+    }
+    
+    .form-group {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
     }
 
     .form-label {
