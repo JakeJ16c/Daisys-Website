@@ -107,15 +107,6 @@ async function renderCart() {
     : 0;
   finalTotal = Math.max(0, subtotal - discountAmount);
 
-  container.innerHTML += `
-    <div class="checkout-summary">
-      <hr>
-      <p class="summary-line">Total to pay: <strong>£${finalTotal.toFixed(2)}</strong></p>
-    </div>
-    <div id="apple-pay-button" style="margin-top: 2rem;"></div>
-  `;
-
-
   await renderCustomerAndAddress(container);
   attachToggleListeners();
   renderStripeForm();
@@ -242,13 +233,19 @@ function renderStripeForm() {
   const container = document.getElementById("checkout-body");
   container.insertAdjacentHTML('beforeend', `
     <form id="payment-form" style="margin: 2rem 1rem;">
+      <div class="checkout-summary" style="margin-bottom: 1.5rem;">
+        <hr>
+        <p class="summary-line">Total to pay: <strong>£${finalTotal.toFixed(2)}</strong></p>
+      </div>
+
       <div id="card-element" style="padding: 12px; border: 1px solid #ccc; border-radius: 8px; background: white;"></div>
       <div id="card-errors" role="alert" style="color: red; margin-top: 8px;"></div>
+
       <button id="completePaymentBtn" type="submit" class="completepayment-btn">Complete Payment</button>
     </form>
   `);
-  card.mount('#card-element');
 
+  card.mount('#card-element');
   document.getElementById("payment-form").onsubmit = handleSubmitPayment;
 }
 
