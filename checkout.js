@@ -20,7 +20,7 @@ function renderStripeForm() {
     </form>
   `;
 
-  const container = document.querySelector('checkout'); // ⛳ Replace with actual ID or class
+  const container = document.querySelector('checkout-body');
   container.insertAdjacentHTML('beforeend', formHtml);
   card.mount('#card-element');
 
