@@ -158,10 +158,11 @@ async function renderCustomerAndAddress(container, user) {
     </div>
     <button id="addAddressBtn" class="secondary-btn" style="margin-top: 0.5rem;">Add Address</button>
   `;
-
+                  
   const checkoutBtn = document.createElement("button");
   checkoutBtn.textContent = "Complete Payment";
   checkoutBtn.className = "primary-btn";
+  checkoutBtn.id = "stripeCheckoutBtn";
   checkoutBtn.style.marginTop = "2rem";
 
   container.appendChild(customerDiv);
