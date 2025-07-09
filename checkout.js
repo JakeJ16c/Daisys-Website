@@ -144,11 +144,11 @@ async function renderCustomerAndAddress(container) {
 
   container.innerHTML += `
     <div class="checkout-section">
-      <div class="section-header" data-toggle="customer-details">
-        <span class="section-label">Customer Details</span>
+      <div class="section-header" data-toggle="contact-info">
+        <span class="section-label">Contact & Delivery Info</span>
         <span class="toggle-icon">-</span>
       </div>
-      <div class="section-body open" id="customer-details">
+      <div class="section-body open" id="contact-info">
         <label class="form-label">First Name</label>
         <input type="text" id="firstNameInput" class="form-input" placeholder="First Name">
       
@@ -161,18 +161,13 @@ async function renderCustomerAndAddress(container) {
         <label class="form-label">Phone Number</label>
         <input type="tel" id="phoneInput" class="form-input" placeholder="Phone Number">
       </div>
-    </div>
   
-    <div class="checkout-section">
-      <div class="section-header" data-toggle="address-info">
-        <span class="section-label">Delivery Address</span>
-        <span class="toggle-icon">-</span>
-      </div>
       <div class="section-body open" id="address-info">
         No address selected.
         <br>
         <button id="addAddressBtn" class="secondary-btn" style="margin-top: 0.75rem;">Add Address</button>
       </div>
+      
     </div>
 
       <div class="checkout-section">
