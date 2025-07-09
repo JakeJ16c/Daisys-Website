@@ -266,13 +266,17 @@ document.addEventListener("DOMContentLoaded", async () => {
   const saveBtn = document.getElementById("saveBtn");
   if (saveBtn) saveBtn.addEventListener("click", saveProfile);
 
-  const addAddressBtn = document.getElementById("addAddressBtn");
-  if (addAddressBtn) {
-    const addressModal = document.getElementById("addressModal");
-    addAddressBtn.addEventListener("click", () => {
-      addressModal.classList.add("active");
-    });
-  }
+  const addAddressBtn = document.getElementById('addAddressBtn');
+  const addressModal = document.getElementById('addressModal');
+  const closeAddressModal = document.getElementById('closeAddressModal');
+  
+  addAddressBtn?.addEventListener('click', () => {
+    addressModal.classList.add('active');
+  });
+  
+  closeAddressModal?.addEventListener('click', () => {
+    addressModal.classList.remove('active');
+  });
 
   const editAccountBtn = document.getElementById("editAccountBtn");
   if (editAccountBtn) editAccountBtn.addEventListener("click", () => toggleProfileEditMode(true));
