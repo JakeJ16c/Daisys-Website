@@ -36,7 +36,6 @@ export async function initCheckout({ mode = "cart", product = null } = {}) {
   const wrapper = document.getElementById("checkout") || document.createElement("div");
   wrapper.id = "checkout";
   wrapper.innerHTML = `
-    <div class="checkout-backdrop"></div>
     <div class="checkout-panel">
       <button id="closeCheckout">&times;</button>
       <div class="checkout-content">
@@ -45,12 +44,18 @@ export async function initCheckout({ mode = "cart", product = null } = {}) {
       </div>
     </div>
   `;
+  
+  const backdrop = document.createElement("div");
+  backdrop.className = "checkout-backdrop";
+  document.body.appendChild(backdrop);
+
 
   document.body.appendChild(wrapper);
   document.body.style.overflow = "hidden";
 
   document.getElementById("closeCheckout").onclick = () => {
     wrapper.remove();
+    document.querySelector('.checkout-backdrop')?.remove();
     document.body.style.overflow = "";
   };
 
