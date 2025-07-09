@@ -112,8 +112,33 @@ function renderCart() {
   `;
 
   document.getElementById("apply-promo-btn").onclick = applyPromoCode;
+  await renderCustomerAndAddress(container);
   addApplePayButton(finalTotal);
   renderStripeForm();
+}
+
+// === Render Customer Details ===
+async function renderCustomerAndAddress(container) {
+  const snap = await getDoc(doc(db, "users", currentUser.uid));
+  const data = snap.exists() ? snap.data() : {};
+  const name = `${data.firstName || ""} ${data.lastName || ""}`.trim();
+
+  container.innerHTML += `
+    <div class="checkout-section">
+      <div class="section-box" id="customer-info">
+        <div class="section-label">Customer Details</div>
+        ${name || "(No name)"}<br>
+        <span style="color: #666;">${currentUser.email}</span>
+      </div>
+    </div>
+    <div class="checkout-section">
+      <div class="section-box" id="address-info">
+        <div class="section-label">Delivery Address</div>
+        No address selected.
+      </div>
+      <button id="addAddressBtn" class="secondary-btn" style="margin-top: 0.5rem;">Add Address</button>
+    </div>
+  `;
 }
 
 // === PROMO CODE LOGIC ===
