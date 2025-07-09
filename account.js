@@ -86,22 +86,29 @@ function attachAddressActions() {
   });
 
     document.querySelectorAll(".delete").forEach((btn) => {
-    btn.addEventListener("click", async () => {
-      const id = btn.dataset.id;
-      console.log("🗑 Attempting to delete address with ID:", id); // DEBUG
-  
-      if (confirm("Delete this address?")) {
-        try {
-          await deleteDoc(doc(db, "users", currentUser.uid, "addresses", id));
-          console.log("✅ Deleted address:", id); // DEBUG
-          await renderAddresses();
-        } catch (err) {
-          console.error("❌ Failed to delete address:", err);
-          alert("Something went wrong deleting the address.");
+      btn.addEventListener("click", async (e) => {
+        e.preventDefault(); // ⛔ Prevent page reload if button is inside a form
+        e.stopPropagation(); // ⛔ Stop bubbling up
+    
+        const id = btn.dataset.id;
+        const card = btn.closest(".address-card");
+        console.log("🗑 Attempting to delete address with ID:", id);
+    
+        if (confirm("Delete this address?")) {
+          try {
+            // 👇 Remove the card from the DOM first for instant UI feedback
+            card?.remove();
+    
+            // 👇 Then delete from Firestore
+            await deleteDoc(doc(db, "users", currentUser.uid, "addresses", id));
+            console.log("✅ Address deleted:", id);
+          } catch (err) {
+            console.error("❌ Failed to delete address:", err);
+            alert("Something went wrong deleting the address.");
+          }
         }
-      }
+      });
     });
-  });
 
 }
 
