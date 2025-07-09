@@ -197,8 +197,15 @@ async function renderCustomerAndAddress(container) {
       </label>
     </div>
   </div>
-    
   `;
+
+// Wait for DOM to update
+await new Promise(r => setTimeout(r, 0));
+
+document.getElementById("firstNameInput").value = data.firstName || "";
+document.getElementById("lastNameInput").value = data.lastName || "";
+document.getElementById("phoneInput").value = data.phone || "";
+
 }
 
 // === PROMO CODE LOGIC ===
