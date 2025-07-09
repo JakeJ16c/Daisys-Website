@@ -147,13 +147,12 @@ async function submitNewAddress(e) {
   if (!currentUser) return alert("You must be logged in to add an address.");
 
 const placeId = document.getElementById("address-search").dataset.placeId;
-
 let houseNumber = "", street = "", city = "", county = "", postcode = "";
 
 if (placeId) {
   try {
-    const res = await fetch(`https://us-central1-daisy-s-website.cloudfunctions.net/resolvePlaceId?placeId=${encodeURIComponent(placeId)}`);
-    const data = await res.json();
+    const response = await resolvePlaceId({ placeId });
+    const data = response.data;
 
     houseNumber = data.houseNumber || "";
     street = data.street || "";
