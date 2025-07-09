@@ -1,9 +1,12 @@
+// checkout.js – Unified Stripe Checkout with Promo + Order Submission
 import { auth, db, functions } from './firebase.js';
-import { doc, getDoc, getDocs, collection } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+import {
+  doc, getDoc, getDocs, updateDoc, collection, runTransaction, serverTimestamp, deleteDoc
+} from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
 import { httpsCallable } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-functions.js';
 
-// Inject Stripe.js if needed
+// === STRIPE SETUP ===
 if (!window.Stripe) {
   const script = document.createElement('script');
   script.src = 'https://js.stripe.com/v3/';
@@ -11,29 +14,29 @@ if (!window.Stripe) {
   document.head.appendChild(script);
 }
 
-// Wait for Stripe to be loaded before initializing
-async function waitForStripeReady() {
-  return new Promise(resolve => {
-    const interval = setInterval(() => {
-      if (window.Stripe) {
-        clearInterval(interval);
-        resolve();
-      }
-    }, 50);
-  });
-}
-
-await waitForStripeReady();
+await new Promise(resolve => {
+  const interval = setInterval(() => {
+    if (window.Stripe) {
+      clearInterval(interval);
+      resolve();
+    }
+  }, 50);
+});
 
 const stripe = Stripe("pk_test_51RWjp7C0ROfvT2EdFetsUx7ntfuVlWZv7C4LOqZx3foe15C7vzkRuAqcHTpf8SJBc29gQlCDojeCmSN6tjTnmDSm00IUGRugqa");
 const elements = stripe.elements();
 const card = elements.create('card');
 
-export async function initCheckout({ mode = "cart", product = null } = {}) {
-  const existing = document.getElementById("checkout");
-  if (existing) existing.remove();
+// === STATE ===
+let currentUser = null;
+let currentCart = [];
+let activePromo = null;
+let discountAmount = 0;
+let finalTotal = 0;
 
-  const wrapper = document.createElement("div");
+// === INIT CHECKOUT FLOW ===
+export async function initCheckout({ mode = "cart", product = null } = {}) {
+  const wrapper = document.getElementById("checkout") || document.createElement("div");
   wrapper.id = "checkout";
   wrapper.innerHTML = `
     <div class="checkout-panel">
@@ -48,125 +51,105 @@ export async function initCheckout({ mode = "cart", product = null } = {}) {
   document.body.style.overflow = "hidden";
 
   document.getElementById("closeCheckout").onclick = () => {
-    document.getElementById("checkout")?.remove();
+    wrapper.remove();
     document.body.style.overflow = "";
   };
 
-  const user = await new Promise(res => onAuthStateChanged(auth, res));
-  if (!user) {
-    document.getElementById("checkout-body").innerHTML = `<p>Please sign in to view your basket.</p>`;
-    return;
-  }
+  currentUser = await new Promise(res => onAuthStateChanged(auth, res));
+  if (!currentUser) return document.getElementById("checkout-body").innerHTML = `<p>Please sign in to view your basket.</p>`;
 
   if (mode === "direct") {
-    renderProductCheckout(product, user);
+    currentCart = [product];
   } else {
-    const cart = await loadCartFromFirestore(user.uid);
-    renderCartCheckout(cart, user);
+    const snap = await getDocs(collection(db, "users", currentUser.uid, "Basket"));
+    currentCart = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   }
 
+  if (!currentCart.length) return document.getElementById("checkout-body").innerHTML = `<p>Your basket is empty.</p>`;
+
+  restorePromoIfExists();
+  renderCart();
   injectBaseStyles();
 }
 
-async function loadCartFromFirestore(uid) {
-  try {
-    const snap = await getDocs(collection(db, "users", uid, "Basket"));
-    return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-  } catch (err) {
-    console.error("❌ Failed to load cart:", err);
-    return [];
-  }
-}
-
-function renderCartCheckout(cart, user) {
+// === RENDER CART ITEMS & TOTAL ===
+function renderCart() {
   const container = document.getElementById("checkout-body");
   container.innerHTML = "";
 
-  if (!cart.length) {
-    container.innerHTML = `<p>Your basket is empty.</p>`;
-    return;
-  }
-
   let subtotal = 0;
-  cart.forEach(item => {
-    const lineTotal = item.qty * item.price;
-    subtotal += lineTotal;
-
+  currentCart.forEach(item => {
+    const line = item.qty * item.price;
+    subtotal += line;
     container.innerHTML += `
       <div class="checkout-item">
         <div class="item-img"><img src="${item.image}" alt="${item.name}"></div>
         <div class="item-details">
           <div class="item-name">${item.name}</div>
-          ${item.size && item.size.toLowerCase() !== "onesize" ? `<div class="item-size">Size: ${item.size}</div>` : ""}
-          <div class="item-qty-price">Qty: ${item.qty} × £${item.price.toFixed(2)} = <strong>£${lineTotal.toFixed(2)}</strong></div>
+          ${item.size ? `<div class="item-size">Size: ${item.size}</div>` : ""}
+          <div class="item-qty-price">Qty: ${item.qty} × £${item.price.toFixed(2)} = <strong>£${line.toFixed(2)}</strong></div>
         </div>
       </div>
     `;
   });
 
+  discountAmount = activePromo
+    ? (activePromo.type === "percentage"
+        ? subtotal * (activePromo.discount / 100)
+        : activePromo.discount)
+    : 0;
+  finalTotal = Math.max(0, subtotal - discountAmount);
+
   container.innerHTML += `
     <div class="checkout-summary">
       <hr>
-      <p class="summary-line">Total to pay: <strong>£${subtotal.toFixed(2)}</strong></p>
+      ${activePromo ? `<p class="summary-line">Promo (${activePromo.code}): −£${discountAmount.toFixed(2)}</p>` : ""}
+      <p class="summary-line">Total to pay: <strong>£${finalTotal.toFixed(2)}</strong></p>
+      <input id="promo-code-input" placeholder="Enter promo code" />
+      <button id="apply-promo-btn" class="secondary-btn" style="margin-top: 0.5rem;">Apply Promo</button>
     </div>
     <div id="apple-pay-button" style="margin-top: 2rem;"></div>
   `;
 
-  renderCustomerAndAddress(container, user);
-  addApplePayButton(subtotal);
+  document.getElementById("apply-promo-btn").onclick = applyPromoCode;
+  addApplePayButton(finalTotal);
   renderStripeForm();
 }
 
-function renderProductCheckout(product, user) {
-  const container = document.getElementById("checkout-body");
-  if (!product) {
-    container.innerHTML = `<p>Missing product data.</p>`;
-    return;
+// === PROMO CODE LOGIC ===
+async function applyPromoCode() {
+  const codeInput = document.getElementById("promo-code-input");
+  const code = codeInput.value.trim().toUpperCase();
+  if (!code) return alert("Enter a promo code.");
+
+  try {
+    const snap = await getDocs(collection(db, "PromoCodes"));
+    for (const docSnap of snap.docs) {
+      const promo = docSnap.data();
+      if (promo.code.toUpperCase() === code) {
+        const subtotal = currentCart.reduce((a, b) => a + b.qty * b.price, 0);
+        if (subtotal < (promo.minSpend || 0)) return alert(`Min spend for this promo is £${promo.minSpend}`);
+
+        activePromo = { ...promo, code };
+        localStorage.setItem("activePromo", JSON.stringify(activePromo));
+        renderCart();
+        alert("Promo code applied!");
+        return;
+      }
+    }
+    alert("Promo not found.");
+  } catch (err) {
+    console.error("Promo error:", err);
+    alert("Could not apply promo.");
   }
-
-  const total = product.price * product.qty;
-  container.innerHTML = `
-    <div class="checkout-item">
-      <div class="item-img"><img src="${product.image}" alt="${product.name}"></div>
-      <div class="item-details">
-        <div class="item-name">${product.name}</div>
-        ${product.size && product.size.toLowerCase() !== "onesize" ? `<div class="item-size">Size: ${product.size}</div>` : ""}
-        <div class="item-qty-price">Qty: ${product.qty} × £${product.price.toFixed(2)} = <strong>£${total.toFixed(2)}</strong></div>
-      </div>
-    </div>
-    <hr>
-    <p class="summary-line">Total: <strong>£${total.toFixed(2)}</strong></p>
-    <div id="apple-pay-button" style="margin-top: 2rem;"></div>
-  `;
-
-  renderCustomerAndAddress(container, user);
-  addApplePayButton(total);
-  renderStripeForm();
 }
 
-async function renderCustomerAndAddress(container, user) {
-  const snap = await getDoc(doc(db, "users", user.uid));
-  const data = snap.exists() ? snap.data() : {};
-  const name = `${data.firstName || ""} ${data.lastName || ""}`.trim();
-
-  container.innerHTML += `
-    <div class="checkout-section">
-      <div class="section-box" id="customer-info">
-        <div class="section-label">Customer Details</div>
-        ${name || "(No name)"}<br>
-        <span style="color: #666;">${user.email}</span>
-      </div>
-    </div>
-    <div class="checkout-section">
-      <div class="section-box" id="address-info">
-        <div class="section-label">Delivery Address</div>
-        No address selected.
-      </div>
-      <button id="addAddressBtn" class="secondary-btn" style="margin-top: 0.5rem;">Add Address</button>
-    </div>
-  `;
+function restorePromoIfExists() {
+  const promo = JSON.parse(localStorage.getItem("activePromo"));
+  if (promo) activePromo = promo;
 }
 
+// === STRIPE FORM ===
 function renderStripeForm() {
   const container = document.getElementById("checkout-body");
   container.insertAdjacentHTML('beforeend', `
@@ -177,82 +160,122 @@ function renderStripeForm() {
     </form>
   `);
   card.mount('#card-element');
-  bindStripeFormLogic();
+
+  document.getElementById("payment-form").onsubmit = handleSubmitPayment;
 }
 
-function bindStripeFormLogic() {
-  const form = document.getElementById('payment-form');
-  const completePaymentBtn = document.getElementById('completePaymentBtn');
-  const cardErrors = document.getElementById('card-errors');
+async function handleSubmitPayment(e) {
+  e.preventDefault();
+  const btn = document.getElementById("completePaymentBtn");
+  btn.disabled = true;
 
-  form.addEventListener('submit', async e => {
-    e.preventDefault();
-    completePaymentBtn.disabled = true;
+  try {
+    const createIntent = httpsCallable(functions, 'createStripePaymentIntent');
+    const { data } = await createIntent({ items: currentCart });
+    const result = await stripe.confirmCardPayment(data.clientSecret, { payment_method: { card } });
 
-    try {
-      const basket = JSON.parse(localStorage.getItem('basket') || "[]");
-      const createIntent = httpsCallable(functions, 'createStripePaymentIntent');
-      const { data } = await createIntent({ items: basket });
-
-      const result = await stripe.confirmCardPayment(data.clientSecret, {
-        payment_method: { card }
-      });
-
-      if (result.error) {
-        cardErrors.textContent = result.error.message;
-        completePaymentBtn.disabled = false;
-      } else if (result.paymentIntent.status === 'succeeded') {
-        window.location.href = '/success.html';
-      }
-
-    } catch (err) {
-      cardErrors.textContent = err.message;
-      completePaymentBtn.disabled = false;
-      console.error("🔥 Stripe Error:", err);
+    if (result.error) {
+      document.getElementById("card-errors").textContent = result.error.message;
+      btn.disabled = false;
+    } else {
+      await submitOrder();
+      window.location.href = "/success.html";
     }
-  });
+  } catch (err) {
+    console.error("Payment error:", err);
+    alert("Something went wrong.");
+    btn.disabled = false;
+  }
 }
 
+// === ORDER SUBMISSION ===
+async function submitOrder() {
+  const subtotal = currentCart.reduce((a, b) => a + b.price * b.qty, 0);
+
+  // 🔄 Update stock
+  for (const item of currentCart) {
+    const ref = doc(db, "Products", item.id);
+    const snap = await getDoc(ref);
+    if (!snap.exists()) continue;
+
+    const data = snap.data();
+    if (item.size && data.sizes?.length > 0) {
+      const newSizes = data.sizes.map(s => s.size === item.size
+        ? { ...s, stock: Math.max(0, s.stock - item.qty) }
+        : s);
+      await updateDoc(ref, { sizes: newSizes });
+    } else {
+      await updateDoc(ref, { stock: Math.max(0, (data.stock || 0) - item.qty) });
+    }
+  }
+
+  // 🔢 Order number
+  const counterRef = doc(db, "meta", "orderCounter");
+  const orderRef = await runTransaction(db, async (tx) => {
+    const snap = await tx.get(counterRef);
+    const count = snap.exists() ? snap.data().count : 0;
+    const newRef = doc(collection(db, "Orders"));
+    tx.set(newRef, {
+      userId: currentUser.uid,
+      name: currentUser.displayName || "Anonymous",
+      email: currentUser.email,
+      address: {}, // TODO: Pull saved address
+      items: currentCart,
+      status: "Confirmed",
+      createdAt: serverTimestamp(),
+      promoCode: activePromo?.code || null,
+      discount: discountAmount,
+      finalTotal: finalTotal,
+      orderNumber: count + 1
+    });
+    tx.update(counterRef, { count: count + 1 });
+    return newRef;
+  });
+
+  // 🧹 Cleanup
+  await clearFirestoreBasket(currentUser.uid);
+  localStorage.removeItem("basket");
+  localStorage.removeItem("activePromo");
+}
+
+// === BASKET CLEANUP ===
+async function clearFirestoreBasket(uid) {
+  const snap = await getDocs(collection(db, "users", uid, "Basket"));
+  for (const docSnap of snap.docs) {
+    await deleteDoc(doc(db, "users", uid, "Basket", docSnap.id));
+  }
+}
+
+// === APPLE PAY BUTTON ===
 function addApplePayButton(total) {
   const paymentRequest = stripe.paymentRequest({
     country: 'GB',
     currency: 'gbp',
-    total: {
-      label: 'Golden By Daisy',
-      amount: Math.round(total * 100),
-    },
+    total: { label: 'Golden By Daisy', amount: Math.round(total * 100) },
     requestPayerName: true,
     requestPayerEmail: true,
   });
 
   const prButton = elements.create('paymentRequestButton', {
     paymentRequest,
-    style: {
-      paymentRequestButton: {
-        type: 'default',
-        theme: 'dark',
-        height: '44px',
-      },
-    },
+    style: { paymentRequestButton: { type: 'default', theme: 'dark', height: '44px' } }
   });
 
   paymentRequest.canMakePayment().then(result => {
-    if (result) {
-      prButton.mount('#apple-pay-button');
-    } else {
-      document.getElementById('apple-pay-button').style.display = 'none';
-    }
+    if (result) prButton.mount('#apple-pay-button');
+    else document.getElementById('apple-pay-button').style.display = 'none';
   });
 
   paymentRequest.on('paymentmethod', ev => {
-    console.log('🍏 Apple Pay clicked (test fallback)');
+    console.log('🍏 Apple Pay placeholder clicked');
     ev.complete('fail');
   });
 }
 
+// === STYLES ===
 function injectBaseStyles() {
   const style = document.createElement("style");
-  style.textContent = `
+    style.textContent = `
     #checkout {
       position: fixed;
       top: 0; right: 0;
