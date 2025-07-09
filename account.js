@@ -117,7 +117,7 @@ function attachAddressActions() {
     editingAddressId = id;
 
     // Update modal title
-    document.querySelector("#addressModal h2").textContent = "Edit Address";
+    document.querySelector("#addressModal h3").textContent = "Edit Address";
     
     // Show modal
     document.getElementById("addressModal").classList.add("active");
@@ -305,10 +305,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   const closeAddressModal = document.getElementById('closeAddressModal');
   
   addAddressBtn?.addEventListener('click', () => {
-    document.querySelector("#addressModal h2").textContent = "Add New Address"; // 🪄 Modal title
-    editMode = false; // Ensure clean slate
+    document.querySelector("#addressModal h3").textContent = "Add New Address";
+    editMode = false;
     editingAddressId = null;
-    document.getElementById("addAddressForm").reset(); // Optional: clear old values
+    document.getElementById("addAddressForm").reset();
     addressModal.classList.add('active');
   });
   
