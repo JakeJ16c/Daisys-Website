@@ -1,6 +1,7 @@
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 import { collection, doc, getDoc, getDocs, setDoc, deleteDoc, updateDoc, addDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
-import { auth, db } from "./firebase.js";
+import { auth, db, functions } from "./firebase.js";
+import { httpsCallable } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-functions.js";
 
 let currentUser = null;
 
@@ -340,6 +341,8 @@ function initAutocomplete() {
   });
 }
 
+const resolvePlaceId = httpsCallable(functions, 'resolvePlaceId');
+
 async function handleSelectPrediction(prediction) {
   const addressInput = document.getElementById("address-search");
   const suggestionsBox = document.getElementById("address-suggestions");
@@ -355,14 +358,10 @@ async function handleSelectPrediction(prediction) {
   suggestionsBox.innerHTML = "";
 
   try {
-    const res = await fetch(`https://us-central1-daisy-s-website.cloudfunctions.net/resolvePlaceId?place_id=${prediction.place_id}`);
-    const data = await res.json();
+    const response = await resolvePlaceId({ placeId: prediction.place_id });
+    const data = response.data;
 
-    if (data.error) {
-      console.error("❌ Place resolution error:", data.error);
-      return;
-    }
-
+    // Autofill
     houseInput.value = data.houseNumber || '';
     streetInput.value = data.street || '';
     cityInput.value = data.city || '';
@@ -372,5 +371,6 @@ async function handleSelectPrediction(prediction) {
     console.log("📦 Autofilled from place ID:", data);
   } catch (err) {
     console.error("❌ Error resolving place ID:", err);
+    alert("Failed to autofill address details.");
   }
 }
