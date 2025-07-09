@@ -4,10 +4,6 @@ import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.8.1/fi
 import { httpsCallable } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-functions.js';
 
 // 💳 Stripe Checkout for universal checkout
-import { httpsCallable } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-functions.js";
-import { functions } from "./firebase.js";
-
-// 🔁 Replace with your actual Stripe publishable key
 const stripe = Stripe("pk_test_XXXXXXXXXXXXXXXXXXXXXXXX");
 const elements = stripe.elements();
 const card = elements.create('card');
