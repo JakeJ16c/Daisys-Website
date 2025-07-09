@@ -1,10 +1,31 @@
-// checkout.js – Universal Checkout System (modular & Firestore-powered)
-
-import { auth, db } from './firebase.js';
-import {
-  doc, getDoc, getDocs, collection
-} from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+import { auth, db, functions } from './firebase.js';
+import { doc, getDoc, getDocs, collection } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
+import { httpsCallable } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-functions.js';
+
+// 💳 Stripe Checkout for universal checkout
+async function handleStripeCheckout() {
+  const user = await waitForUser();
+  if (!user) return alert("Please sign in first!");
+
+  const cart = await loadCartFromFirestore(user.uid); // load Firestore basket items
+
+  if (!cart.length) return alert("Your basket is empty!");
+
+  try {
+    const createCheckout = httpsCallable(functions, "createStripeCheckout");
+    const result = await createCheckout({ items: cart });
+
+    if (result.data?.url) {
+      window.location.href = result.data.url;
+    } else {
+      alert("No Stripe URL returned.");
+    }
+  } catch (err) {
+    console.error("Stripe error:", err);
+    alert("Checkout failed.");
+  }
+}
 
 // 🔓 Global entry point
 export async function initCheckout({ mode = "cart", product = null } = {}) {
