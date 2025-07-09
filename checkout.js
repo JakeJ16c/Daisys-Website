@@ -332,7 +332,9 @@ function injectBaseStyles() {
       height: 100vh;
       background: #fff;
       z-index: 9999;
-      overflow-y: auto;
+      overflow-y: scroll;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
       box-shadow: -2px 0 10px rgba(0,0,0,0.15);
       animation: slideIn 0.4s ease forwards;
       font-family: 'Nunito Sans', sans-serif;
