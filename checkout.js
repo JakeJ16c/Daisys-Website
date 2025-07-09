@@ -110,7 +110,6 @@ async function renderCart() {
 
 
   await renderCustomerAndAddress(container);
-  addApplePayButton(finalTotal);
   renderStripeForm();
   document.querySelectorAll('.section-header').forEach(header => {
   header.addEventListener('click', () => {
