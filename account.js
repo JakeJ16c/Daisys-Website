@@ -320,20 +320,22 @@ function initAutocomplete() {
     try {
       const res = await fetch(`https://us-central1-daisy-s-website.cloudfunctions.net/autocompleteAddress?input=${encodeURIComponent(query)}`);
       const result = await res.json();
+    
+      console.log("🔍 Full autocomplete response:", result); // 👈 add this
+    
       const predictions = result.predictions || [];
-
+    
       suggestionList.innerHTML = "";
-
+    
       predictions.forEach((item) => {
         const li = document.createElement("li");
         li.textContent = item.description;
         li.classList.add("suggestion-item");
         li.addEventListener("click", () => handleSelectPrediction(item));
-
         suggestionList.appendChild(li);
       });
     } catch (err) {
-      console.error("Address suggestion error:", err);
+      console.error("❌ Address suggestion error:", err);
     }
   });
 }
