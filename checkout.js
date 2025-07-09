@@ -36,6 +36,7 @@ export async function initCheckout({ mode = "cart", product = null } = {}) {
   const wrapper = document.getElementById("checkout") || document.createElement("div");
   wrapper.id = "checkout";
   wrapper.innerHTML = `
+    <div class="checkout-backdrop"></div>
     <div class="checkout-panel">
       <button id="closeCheckout">&times;</button>
       <div class="checkout-content">
@@ -44,6 +45,7 @@ export async function initCheckout({ mode = "cart", product = null } = {}) {
       </div>
     </div>
   `;
+
   document.body.appendChild(wrapper);
   document.body.style.overflow = "hidden";
 
@@ -304,6 +306,21 @@ function injectBaseStyles() {
       box-shadow: -2px 0 10px rgba(0,0,0,0.15);
       animation: slideIn 0.4s ease forwards;
       font-family: 'Nunito Sans', sans-serif;
+    }
+
+    .checkout-backdrop {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: 9998;
+      animation: fadeIn 0.3s ease forwards;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
     }
 
     .checkout-content h2 {
