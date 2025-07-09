@@ -371,26 +371,20 @@ input:checked + .slider::before {
   display: none;
   position: fixed;
   top: 0; left: 0;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   background: rgba(0,0,0,0.4);
   z-index: 9999;
   justify-content: center;
   align-items: center;
 }
 
-#addressModal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0,0,0,0.4);
+.modal.active {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
+}
+
+.modal.hidden {
+  display: none !important;
 }
 
 #addressModal input[type="text"] {
@@ -416,12 +410,6 @@ input:checked + .slider::before {
 #addressModal button[type="submit"] {
   margin-top: 10px;
   padding: 12px;
-}
-
-.modal.active {
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .modal-content {
