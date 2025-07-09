@@ -87,7 +87,10 @@ async function renderCart() {
     subtotal += line;
     container.innerHTML += `
       <div class="checkout-item">
-        <div class="item-img"><img src="${item.image}" alt="${item.name}"></div>
+        <div class="item-img">
+          <img src="${item.image}" alt="${item.name}">
+          <div class="qty-badge">${item.qty}</div>
+        </div>
         <div class="item-details">
           <div class="item-name">${item.name}</div>
           ${item.size ? `<div class="item-size">Size: ${item.size}</div>` : ""}
@@ -379,6 +382,28 @@ function injectBaseStyles() {
       height: 70px;
       border-radius: 8px;
       object-fit: cover;
+    }
+
+    .qty-badge {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: #ccc;
+      color: #000;
+      font-size: 0.75rem;
+      font-weight: bold;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 2px rgba(0,0,0,0.2);
+    }
+    .item-img {
+      position: relative;
+      width: 70px;
+      height: 70px;
     }
 
     .item-details { flex: 1; }
