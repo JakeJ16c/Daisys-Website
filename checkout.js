@@ -4,27 +4,73 @@ import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.8.1/fi
 import { httpsCallable } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-functions.js';
 
 // 💳 Stripe Checkout for universal checkout
-async function handleStripeCheckout() {
-  const user = await waitForUser();
-  if (!user) return alert("Please sign in first!");
+import { httpsCallable } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-functions.js";
+import { functions } from "./firebase.js";
 
-  const cart = await loadCartFromFirestore(user.uid); // load Firestore basket items
+// 🔁 Replace with your actual Stripe publishable key
+const stripe = Stripe("pk_test_XXXXXXXXXXXXXXXXXXXXXXXX");
+const elements = stripe.elements();
+const card = elements.create('card');
 
-  if (!cart.length) return alert("Your basket is empty!");
+// 🧩 Inject payment form into your checkout panel
+function renderStripeForm() {
+  const formHtml = `
+    <form id="payment-form" style="margin-top: 20px;">
+      <div id="card-element" style="padding: 12px; border: 1px solid #ccc; border-radius: 8px; background: white;"></div>
+      <div id="card-errors" role="alert" style="color: red; margin-top: 8px;"></div>
+      <button id="completePaymentBtn" type="submit" style="margin-top: 16px; background-color: #000; color: white; padding: 12px 20px; border: none; border-radius: 6px; font-size: 16px;">
+        Complete Payment
+      </button>
+    </form>
+  `;
 
-  try {
-    const createCheckout = httpsCallable(functions, "createStripeCheckout");
-    const result = await createCheckout({ items: cart });
+  const container = document.querySelector('checkout'); // ⛳ Replace with actual ID or class
+  container.insertAdjacentHTML('beforeend', formHtml);
+  card.mount('#card-element');
 
-    if (result.data?.url) {
-      window.location.href = result.data.url;
-    } else {
-      alert("No Stripe URL returned.");
+  bindStripeFormLogic(); // ⏬ Bind Stripe logic to button
+}
+
+// 🧠 Fetch basket data (replace with your logic to fetch cart items)
+async function getBasketData() {
+  const stored = localStorage.getItem('basket');
+  return stored ? JSON.parse(stored) : [];
+}
+
+// 🧠 Form handler logic
+function bindStripeFormLogic() {
+  const form = document.getElementById('payment-form');
+  const completePaymentBtn = document.getElementById('completePaymentBtn');
+  const cardErrors = document.getElementById('card-errors');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    completePaymentBtn.disabled = true;
+
+    try {
+      const items = await getBasketData(); // 🔁 your basket items
+      const createIntent = httpsCallable(functions, 'createStripePaymentIntent');
+      const { data } = await createIntent({ items });
+
+      const result = await stripe.confirmCardPayment(data.clientSecret, {
+        payment_method: { card: card }
+      });
+
+      if (result.error) {
+        cardErrors.textContent = result.error.message;
+        completePaymentBtn.disabled = false;
+      } else {
+        if (result.paymentIntent.status === 'succeeded') {
+          window.location.href = '/success.html';
+        }
+      }
+
+    } catch (err) {
+      console.error("🔥 Payment failed:", err);
+      cardErrors.textContent = err.message;
+      completePaymentBtn.disabled = false;
     }
-  } catch (err) {
-    console.error("Stripe error:", err);
-    alert("Checkout failed.");
-  }
+  });
 }
 
 // 🔓 Global entry point
