@@ -1,8 +1,5 @@
-// checkout.js – Unified Stripe Checkout with Promo + Order Submission
 import { auth, db, functions } from './firebase.js';
-import {
-  doc, getDoc, getDocs, updateDoc, collection, runTransaction, serverTimestamp, deleteDoc
-} from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+import { doc, getDoc, getDocs, updateDoc, collection, runTransaction, serverTimestamp, deleteDoc } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
 import { httpsCallable } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-functions.js';
 
@@ -110,18 +107,23 @@ async function renderCart() {
 
 
   await renderCustomerAndAddress(container);
+  attachToggleListeners();
   renderStripeForm();
-  document.querySelectorAll('.section-header').forEach(header => {
-  header.addEventListener('click', () => {
-    const targetId = header.getAttribute('data-toggle');
-    const body = document.getElementById(targetId);
-    const icon = header.querySelector('.toggle-icon');
-    
-    body.classList.toggle('open');
-    icon.textContent = body.classList.contains('open') ? '–' : '+';
-  });
-});
+}
 
+function attachToggleListeners() {
+  document.querySelectorAll('.section-header').forEach(header => {
+    header.addEventListener('click', () => {
+      const targetId = header.getAttribute('data-toggle');
+      const body = document.getElementById(targetId);
+      const icon = header.querySelector('.toggle-icon');
+
+      if (body) {
+        body.classList.toggle('open');
+        icon.textContent = body.classList.contains('open') ? '–' : '+';
+      }
+    });
+  });
 }
 
 // === Render Customer Details ===
