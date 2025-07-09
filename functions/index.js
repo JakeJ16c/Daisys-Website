@@ -207,7 +207,7 @@ exports.autocompleteAddress = functions.https.onRequest((req, res) => {
       // 🔍 Add full log of what Google returned
       console.log("📦 Google response:", JSON.stringify(response.data));
 
-      res.status(200).json(simplified);
+      res.status(200).json({ predictions: simplified });
     } catch (error) {
       console.error("Autocomplete error:", error);
       res.status(500).json({ error: "Internal server error" });
