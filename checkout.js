@@ -187,10 +187,6 @@ async function renderCustomerAndAddress(container) {
         <input type="radio" name="deliveryOption" value="standard" checked>
         Standard (2–4 days) – £2.99
       </label>
-      <label style="display:block; margin-bottom: 0.5rem;">
-        <input type="radio" name="deliveryOption" value="nextDay">
-        Next Day Delivery – £5.99
-      </label>
       <label style="display:block;">
         <input type="radio" name="deliveryOption" value="chooseDate">
         Choose a Date – £4.99
