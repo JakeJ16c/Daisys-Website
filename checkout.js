@@ -232,6 +232,7 @@ async function renderCustomerAndAddress(container, user) {
   container.appendChild(addressDiv);
   container.appendChild(checkoutBtn);
   checkoutBtn.addEventListener("click", handleStripeCheckout);
+  renderStripeForm();
 }
 
 // CSS Styles
