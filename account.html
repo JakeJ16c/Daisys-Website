@@ -409,6 +409,8 @@ input:checked + .slider::before {
 
 .modal.active {
   display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .modal-content {
@@ -416,7 +418,9 @@ input:checked + .slider::before {
   padding: 2rem;
   border-radius: 10px;
   width: 90%;
+  max-width: 400px;
   position: relative;
+  margin: 0 auto;
 }
 
 .modal-content h3 {
