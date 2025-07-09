@@ -165,8 +165,46 @@ function renderCartCheckout(cart, user) {
     <p class="summary-line">Total to pay: <strong>£${subtotal.toFixed(2)}</strong></p>
   `;
   container.appendChild(summary);
-
+  addApplePayButton(subtotal);
   renderCustomerAndAddress(container, user);
+}
+
+function addApplePayButton(subtotal) {
+  const paymentRequest = stripe.paymentRequest({
+    country: 'GB',
+    currency: 'gbp',
+    total: {
+      label: 'Golden By Daisy',
+      amount: Math.round(subtotal * 100),
+    },
+    requestPayerName: true,
+    requestPayerEmail: true,
+  });
+
+  const prButton = elements.create('paymentRequestButton', {
+    paymentRequest,
+    style: {
+      paymentRequestButton: {
+        type: 'default', // Can also use 'buy' or 'donate'
+        theme: 'dark',
+        height: '44px',
+      },
+    },
+  });
+
+  paymentRequest.canMakePayment().then(result => {
+    if (result) {
+      prButton.mount('#apple-pay-button');
+    } else {
+      document.getElementById('apple-pay-button').style.display = 'none';
+    }
+  });
+
+  // Log test event
+  paymentRequest.on('paymentmethod', ev => {
+    console.log('🍏 Apple Pay clicked (test fallback)');
+    ev.complete('fail'); // Always fail until domain is verified
+  });
 }
 
 // Render single product (Buy Now)
@@ -224,6 +262,12 @@ async function renderCustomerAndAddress(container, user) {
 
   container.appendChild(customerDiv);
   container.appendChild(addressDiv);
+  
+  const applePayDiv = document.createElement("div");
+  applePayDiv.id = "apple-pay-button";
+  applePayDiv.style.marginTop = "2rem";
+  container.appendChild(applePayDiv);
+
   renderStripeForm();
 }
 
