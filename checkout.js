@@ -386,8 +386,8 @@ function injectBaseStyles() {
 
     .qty-badge {
       position: absolute;
-      top: 4px;
-      right: 4px;
+      top: -5px;
+      right: -5px;
       background: #ccc;
       color: #000;
       font-size: 0.75rem;
