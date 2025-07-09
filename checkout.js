@@ -14,7 +14,7 @@ function renderStripeForm() {
     <form id="payment-form" style="margin-top: 20px;">
       <div id="card-element" style="padding: 12px; border: 1px solid #ccc; border-radius: 8px; background: white;"></div>
       <div id="card-errors" role="alert" style="color: red; margin-top: 8px;"></div>
-      <button id="completePaymentBtn" type="submit" style="margin-top: 16px; background-color: #000; color: white; padding: 12px 20px; border: none; border-radius: 6px; font-size: 16px;">
+      <button id="completePaymentBtn" type="submit" class="completepayment-btn">
         Complete Payment
       </button>
     </form>
@@ -221,16 +221,9 @@ async function renderCustomerAndAddress(container, user) {
     </div>
     <button id="addAddressBtn" class="secondary-btn" style="margin-top: 0.5rem;">Add Address</button>
   `;
-                  
-  const checkoutBtn = document.createElement("button");
-  checkoutBtn.textContent = "Complete Payment";
-  checkoutBtn.className = "primary-btn";
-  checkoutBtn.id = "stripeCheckoutBtn";
-  checkoutBtn.style.marginTop = "2rem";
 
   container.appendChild(customerDiv);
   container.appendChild(addressDiv);
-  container.appendChild(checkoutBtn);
   renderStripeForm();
 }
 
@@ -331,7 +324,7 @@ function injectBaseStyles() {
       line-height: 1.4;
     }
 
-    .primary-btn {
+    .completepayment-btn {
         display: block;
         margin: 2rem auto;
         background: black;
