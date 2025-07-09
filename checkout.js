@@ -73,7 +73,7 @@ export async function initCheckout({ mode = "cart", product = null } = {}) {
 }
 
 // === RENDER CART ITEMS & TOTAL ===
-function renderCart() {
+async function renderCart() {
   const container = document.getElementById("checkout-body");
   container.innerHTML = "";
 
