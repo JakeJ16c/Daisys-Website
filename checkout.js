@@ -103,15 +103,12 @@ async function renderCart() {
   container.innerHTML += `
     <div class="checkout-summary">
       <hr>
-      ${activePromo ? `<p class="summary-line">Promo (${activePromo.code}): −£${discountAmount.toFixed(2)}</p>` : ""}
       <p class="summary-line">Total to pay: <strong>£${finalTotal.toFixed(2)}</strong></p>
-      <input id="promo-code-input" placeholder="Enter promo code" />
-      <button id="apply-promo-btn" class="secondary-btn" style="margin-top: 0.5rem;">Apply Promo</button>
     </div>
     <div id="apple-pay-button" style="margin-top: 2rem;"></div>
   `;
 
-  document.getElementById("apply-promo-btn").onclick = applyPromoCode;
+
   await renderCustomerAndAddress(container);
   addApplePayButton(finalTotal);
   renderStripeForm();
