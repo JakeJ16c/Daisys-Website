@@ -146,9 +146,9 @@ async function renderCustomerAndAddress(container) {
     <div class="checkout-section">
       <div class="section-header" data-toggle="customer-details">
         <span class="section-label">Customer Details</span>
-        <span class="toggle-icon">+</span>
+        <span class="toggle-icon">-</span>
       </div>
-      <div class="section-body" id="customer-details">
+      <div class="section-body open" id="customer-details">
         ${name || "(No name)"}<br>
         <span style="color: #666;">${currentUser.email}</span>
       </div>
@@ -157,9 +157,9 @@ async function renderCustomerAndAddress(container) {
     <div class="checkout-section">
       <div class="section-header" data-toggle="address-info">
         <span class="section-label">Delivery Address</span>
-        <span class="toggle-icon">+</span>
+        <span class="toggle-icon">-</span>
       </div>
-      <div class="section-body" id="address-info">
+      <div class="section-body open" id="address-info">
         No address selected.
         <br>
         <button id="addAddressBtn" class="secondary-btn" style="margin-top: 0.75rem;">Add Address</button>
@@ -169,9 +169,9 @@ async function renderCustomerAndAddress(container) {
       <div class="checkout-section">
     <div class="section-header" data-toggle="delivery-method">
       <span class="section-label">Delivery Method</span>
-      <span class="toggle-icon">+</span>
+      <span class="toggle-icon">-</span>
     </div>
-    <div class="section-body" id="delivery-method">
+    <div class="section-body open" id="delivery-method">
       <label style="display:block; margin-bottom: 0.5rem;">
         <input type="radio" name="deliveryOption" value="standard" checked>
         Standard (2–4 days) – £2.99
