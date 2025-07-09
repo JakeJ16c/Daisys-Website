@@ -4,7 +4,7 @@ import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.8.1/fi
 import { httpsCallable } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-functions.js';
 
 // 💳 Stripe Checkout for universal checkout
-const stripe = Stripe("pk_test_XXXXXXXXXXXXXXXXXXXXXXXX");
+const stripe = Stripe("pk_test_51N1lvQGzPQ8gDJpGZWXmAijvMSz2yoQZCQRaWwTtW5cHyPQEcS6MiNjUmccwxyYci7ZnAzVr94jYyKf5lXVPJDZ0009l97a3n8");
 const elements = stripe.elements();
 const card = elements.create('card');
 
