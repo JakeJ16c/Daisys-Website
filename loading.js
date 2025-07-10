@@ -5,6 +5,7 @@ const loaderHTML = `
       <div class="spinner"></div>
       <img src="IMG_8861.png" class="logo-inside-spinner" />
     </div>
+    <p class="loading-text">Loading</p>
   </div>
 `;
 document.body.insertAdjacentHTML("afterbegin", loaderHTML);
@@ -16,6 +17,14 @@ style.textContent = `
     margin: 0;
     padding: 0;
     overflow: hidden;
+  }
+
+  .loading-text {
+    margin-top: 12px;
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 1rem;
+    color: #204ECF;
+    text-align: center;
   }
 
   #loading-screen {
