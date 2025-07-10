@@ -99,10 +99,9 @@ window.addEventListener("load", () => {
 
   setTimeout(() => {
     loader.remove();
-    
     document.body.style.opacity = "0";
     setTimeout(() => {
-      document.body.style.transition = "opacity 3s ease";
+      document.body.style.transition = "opacity 4s ease";
       document.body.style.opacity = "1";
     }, 0);
 
