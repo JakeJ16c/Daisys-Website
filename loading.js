@@ -5,8 +5,9 @@ const loaderHTML = `
       <div class="spinner"></div>
       <img src="IMG_8861.png" class="logo-inside-spinner" />
     </div>
-    <p class="loading-text">Loading</p>
+    
   </div>
+  <p class="loading-text">Loading</p>
 `;
 document.body.insertAdjacentHTML("afterbegin", loaderHTML);
 
