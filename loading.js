@@ -3,15 +3,16 @@ const loaderHTML = `
   <div id="loading-screen">
     <div class="spinner"></div>
   </div>
-  <div id="main-content" class="hidden">
-    <!-- Page content remains visible underneath -->
-  </div>
 `;
 document.body.insertAdjacentHTML("afterbegin", loaderHTML);
 
 // Inject CSS
 const style = document.createElement("style");
 style.textContent = `
+  body {
+    visibility: hidden;
+  }
+
   #loading-screen {
     position: fixed;
     top: 0;
@@ -42,22 +43,16 @@ style.textContent = `
   @keyframes spin {
     to { transform: rotate(360deg); }
   }
-
-  .hidden {
-    display: none;
-  }
 `;
 document.head.appendChild(style);
 
-// Handle hide logic
+// Handle logic
 window.addEventListener("load", () => {
-  const loadingScreen = document.getElementById("loading-screen");
-  const mainContent = document.getElementById("main-content");
-
-  loadingScreen.classList.add("fade-out");
+  const loader = document.getElementById("loading-screen");
+  loader.classList.add("fade-out");
 
   setTimeout(() => {
-    loadingScreen.remove(); // Cleanly remove loader
-    mainContent.classList.remove("hidden");
+    loader.remove();
+    document.body.style.visibility = "visible";
   }, 400);
 });
