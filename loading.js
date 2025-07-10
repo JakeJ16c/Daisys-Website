@@ -60,7 +60,8 @@ style.textContent = `
     width: 70px;
     height: 70px;
     border-radius: 50%;
-    object-fit: cover;
+    object-fit: contain;
+    pointer-events: none;
   }
 
   @keyframes spin {
