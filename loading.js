@@ -1,8 +1,9 @@
 // Inject HTML
 const loaderHTML = `
   <div id="loading-screen">
-    <div class="spinner spinner-with-logo">
-      <img src="IMG_8861.png" alt="Logo" class="logo-inside-spinner" />
+    <div class="spinner-wrapper">
+      <div class="spinner"></div>
+      <img src="IMG_8861.png" class="logo-inside-spinner" />
     </div>
   </div>
 `;
@@ -36,21 +37,26 @@ style.textContent = `
     pointer-events: none;
   }
 
-  .spinner-with-logo {
+  .spinner-wrapper {
     position: relative;
+    width: 70px;
+    height: 70px;
+  }
+  
+  .spinner {
     width: 70px;
     height: 70px;
     border: 5px solid #ccc;
     border-top-color: #204ECF;
     border-radius: 50%;
-    animation: spin 3s linear infinite;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    animation: spin 0.8s linear infinite;
   }
   
   .logo-inside-spinner {
     position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     width: 70px;
     height: 70px;
     border-radius: 50%;
