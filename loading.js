@@ -38,7 +38,7 @@ style.textContent = `
     width: 50px;
     height: 50px;
     border: 5px solid #ccc;
-    border-top-color: #ee77a6;
+    border-top-color: #204ECF;
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
   }
@@ -59,6 +59,7 @@ window.addEventListener("load", () => {
 
   setTimeout(() => {
     loader.remove();
-    document.documentElement.style.overflow = ""; // re-enable scroll
+    document.documentElement.style.overflow = "auto";
+    document.body.style.overflow = "auto";
   }, 400);
 });
