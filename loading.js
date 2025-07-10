@@ -1,6 +1,7 @@
 // Inject HTML
 const loaderHTML = `
   <div id="loading-screen">
+    <img src="logo.png" alt="Logo" class="loading-logo" />
     <div class="spinner"></div>
   </div>
 `;
