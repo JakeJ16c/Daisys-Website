@@ -101,7 +101,7 @@ window.addEventListener("load", () => {
     loader.remove();
     document.body.style.opacity = "0";
     setTimeout(() => {
-      document.body.style.transition = "opacity 4s ease";
+      document.body.style.transition = "opacity 2s ease";
       document.body.style.opacity = "1";
     }, 0);
 
