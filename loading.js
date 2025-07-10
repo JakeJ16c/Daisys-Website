@@ -43,7 +43,7 @@ style.textContent = `
     border: 5px solid #ccc;
     border-top-color: #204ECF;
     border-radius: 50%;
-    animation: spin 0.8s linear infinite;
+    animation: spin 3s linear infinite;
     display: flex;
     justify-content: center;
     align-items: center;
