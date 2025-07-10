@@ -59,6 +59,13 @@ window.addEventListener("load", () => {
 
   setTimeout(() => {
     loader.remove();
+    
+    document.body.style.opacity = "0";
+    setTimeout(() => {
+      document.body.style.transition = "opacity 0.3s ease";
+      document.body.style.opacity = "1";
+    }, 0);
+
     document.documentElement.style.overflow = "auto";
     document.body.style.overflow = "auto";
   }, 400);
