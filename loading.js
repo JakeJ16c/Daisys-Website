@@ -48,7 +48,7 @@ style.textContent = `
     justify-content: center;
     align-items: center;
     z-index: 9999;
-    transition: opacity 1s ease;
+    transition: opacity 4s ease;
   }
 
   #loading-screen.fade-out {
