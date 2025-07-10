@@ -1,8 +1,9 @@
 // Inject HTML
 const loaderHTML = `
   <div id="loading-screen">
-    <img src="IMG_8861.png" alt="Logo" class="loading-logo" />
-    <div class="spinner"></div>
+    <div class="spinner spinner-with-logo">
+      <img src="IMG_8861.png" alt="Logo" class="logo-inside-spinner" />
+    </div>
   </div>
 `;
 document.body.insertAdjacentHTML("afterbegin", loaderHTML);
@@ -35,18 +36,25 @@ style.textContent = `
     pointer-events: none;
   }
 
-  .spinner {
-    width: 50px;
-    height: 50px;
+  .spinner-with-logo {
+    position: relative;
+    width: 70px;
+    height: 70px;
     border: 5px solid #ccc;
     border-top-color: #204ECF;
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
-
-  .loading-logo {
-    width: 60px;
-    margin-bottom: 20px;
+  
+  .logo-inside-spinner {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
   }
 
   @keyframes spin {
