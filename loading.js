@@ -51,8 +51,8 @@ style.textContent = `
   
   .logo-inside-spinner {
     position: absolute;
-    width: 30px;
-    height: 30px;
+    width: 70px;
+    height: 70px;
     border-radius: 50%;
     object-fit: cover;
   }
