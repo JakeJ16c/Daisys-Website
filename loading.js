@@ -31,8 +31,8 @@ style.textContent = `
   .loading-text {
     margin-top: 20px;
     font-family: 'Nunito Sans', sans-serif;
-    font-size: 2rem;
-    font-weight: 900;
+    font-size: 4rem;
+    font-weight: bold;
     color: #204ECF;
     text-align: center;
   }
