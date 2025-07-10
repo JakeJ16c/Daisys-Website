@@ -29,9 +29,10 @@ style.textContent = `
   }
 
   .loading-text {
-    margin-top: 25px;
+    margin-top: 20px;
     font-family: 'Nunito Sans', sans-serif;
-    font-size: 1rem;
+    font-size: 2rem;
+    font-weight: 900;
     color: #204ECF;
     text-align: center;
   }
