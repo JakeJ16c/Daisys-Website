@@ -9,15 +9,17 @@ document.body.insertAdjacentHTML("afterbegin", loaderHTML);
 // Inject CSS
 const style = document.createElement("style");
 style.textContent = `
-  body {
-    visibility: hidden;
+  html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
   }
 
   #loading-screen {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
+    width: 100vw;
     height: 100vh;
     background: #f8f3ea;
     display: flex;
@@ -29,6 +31,7 @@ style.textContent = `
 
   #loading-screen.fade-out {
     opacity: 0;
+    pointer-events: none;
   }
 
   .spinner {
@@ -46,6 +49,9 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
+// Show loader immediately
+document.documentElement.style.overflow = "hidden"; // disable scroll
+
 // Handle logic
 window.addEventListener("load", () => {
   const loader = document.getElementById("loading-screen");
@@ -53,6 +59,6 @@ window.addEventListener("load", () => {
 
   setTimeout(() => {
     loader.remove();
-    document.body.style.visibility = "visible";
+    document.documentElement.style.overflow = ""; // re-enable scroll
   }, 400);
 });
