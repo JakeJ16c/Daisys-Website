@@ -1,7 +1,7 @@
 // Inject HTML
 const loaderHTML = `
   <div id="loading-screen">
-    <img src="logo.png" alt="Logo" class="loading-logo" />
+    <img src="IMG_8861.png" alt="Logo" class="loading-logo" />
     <div class="spinner"></div>
   </div>
 `;
@@ -42,6 +42,11 @@ style.textContent = `
     border-top-color: #204ECF;
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
+  }
+
+  .loading-logo {
+    width: 60px;
+    margin-bottom: 20px;
   }
 
   @keyframes spin {
