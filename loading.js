@@ -1,11 +1,13 @@
 // Inject HTML
 const loaderHTML = `
   <div id="loading-screen">
-    <div class="spinner-wrapper">
-      <div class="spinner"></div>
-      <img src="IMG_8861.png" class="logo-inside-spinner" />
+    <div class="loader-inner">
+      <div class="spinner-wrapper">
+        <div class="spinner"></div>
+        <img src="IMG_8861.png" class="logo-inside-spinner" />
+      </div>
+      <p class="loading-text">Loading...</p>  
     </div>
-    <p class="loading-text">Loading</p>  
   </div>
 `;
 document.body.insertAdjacentHTML("afterbegin", loaderHTML);
@@ -17,6 +19,13 @@ style.textContent = `
     margin: 0;
     padding: 0;
     overflow: hidden;
+  }
+
+  .loader-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
 
   .loading-text {
