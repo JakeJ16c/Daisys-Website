@@ -49,14 +49,14 @@ style.textContent = `
     border: 5px solid #ccc;
     border-top-color: #204ECF;
     border-radius: 50%;
-    animation: spin 0.8s linear infinite;
+    animation: spin 1.2s linear infinite;
   }
   
   .logo-inside-spinner {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-43%, -43%);
     width: 70px;
     height: 70px;
     border-radius: 50%;
