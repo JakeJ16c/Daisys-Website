@@ -72,6 +72,25 @@
   margin-top: 10px;
   color: green;
 }
+
+.or-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 20px 0;
+  color: #555;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.or-divider::before,
+.or-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #ccc;
+  margin: 0 10px;
+}
   </style>
 </head>
 
@@ -118,7 +137,7 @@
     </form>
 
     <div style="text-align:center; margin-top: 1.5rem;">
-      <p>or</p>
+      <div class="or-divider"><span>or</span></div>
       <button type="button" class="google-login">
         <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width: 18px; margin-right: 8px;" />
         Sign in with Google
