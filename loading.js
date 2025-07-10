@@ -20,7 +20,7 @@ style.textContent = `
   }
 
   .loading-text {
-    margin-top: 12px;
+    margin-top: 25px;
     font-family: 'Nunito Sans', sans-serif;
     font-size: 1rem;
     color: #204ECF;
