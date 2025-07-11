@@ -273,6 +273,10 @@ minus.style.fontWeight = "bold";
 minus.style.padding = "0.75rem 1.25rem";
 minus.style.borderTopLeftRadius = "4px";
 minus.style.borderBottomLeftRadius = "4px";
+minus.onmouseover = () => minus.style.transform = "scale(1.2)";
+minus.onmouseover = () => minus.style.background = "#FBB6C1";
+minus.onmouseout = () => minus.style.transform = "scale(1)";
+minus.onmouseout = () => minus.style.background = "none";
 minus.addEventListener("click", () => {
   if (quantity > 1) {
     quantity--;
