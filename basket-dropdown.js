@@ -211,7 +211,14 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         localStorage.setItem(cartKey, JSON.stringify(cart));
         syncBasketToFirestore(cart);
-        updateBasketPreview(true);
+        
+        // Just update the DOM without full rerender
+        qty.textContent = item.qty;
+        price.textContent = `£${(item.price * item.qty).toFixed(2)}`;
+        
+        // Update subtotal
+        const newSubtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+        document.querySelector("#basket-preview").querySelector("div:last-of-type").previousSibling.textContent = `Subtotal: £${newSubtotal.toFixed(2)}`;
       });
       
       const qty = document.createElement("span");
@@ -239,7 +246,14 @@ document.addEventListener("DOMContentLoaded", () => {
         item.qty++;
         localStorage.setItem(cartKey, JSON.stringify(cart));
         syncBasketToFirestore(cart);
-        updateBasketPreview(true);
+        
+        // Just update the DOM without full rerender
+        qty.textContent = item.qty;
+        price.textContent = `£${(item.price * item.qty).toFixed(2)}`;
+        
+        // Update subtotal
+        const newSubtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+        document.querySelector("#basket-preview").querySelector("div:last-of-type").previousSibling.textContent = `Subtotal: £${newSubtotal.toFixed(2)}`;
       });
       
       quantityControls.appendChild(minus);
