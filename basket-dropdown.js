@@ -218,7 +218,6 @@ document.addEventListener("DOMContentLoaded", () => {
       qty.textContent = item.qty;
       qty.style.minWidth = "16px";
       qty.style.textAlign = "center";
-      qty.style.color = "#999";
       
       const plus = document.createElement("button");
       plus.textContent = "+";
