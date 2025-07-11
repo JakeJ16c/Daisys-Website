@@ -182,7 +182,6 @@ document.addEventListener("DOMContentLoaded", () => {
       quantityControls.style.gap = "2px";
       quantityControls.style.border = "1.5px solid #000";
       quantityControls.style.borderRadius = "999px";
-      quantityControls.style.padding = "2px 8px";
       quantityControls.style.fontFamily = "'Nunito Sans', sans-serif";
       quantityControls.style.fontSize = "0.6rem";
       quantityControls.style.fontWeight = "600";
@@ -195,6 +194,7 @@ document.addEventListener("DOMContentLoaded", () => {
       minus.style.fontSize = "0.6rem";
       minus.style.cursor = "pointer";
       minus.style.fontWeight = "bold";
+      minus.style.padding = "2px 8px";
       minus.style.transition = "transform 0.2s ease";
       minus.onmouseover = () => minus.style.transform = "scale(1.2)";
       minus.onmouseover = () => minus.style.background = "#FBB6C1";
@@ -224,6 +224,7 @@ document.addEventListener("DOMContentLoaded", () => {
       plus.style.fontSize = "0.6rem";
       plus.style.cursor = "pointer";
       plus.style.fontWeight = "bold";
+      plus.style.padding = "2px 8px";
       plus.style.transition = "transform 0.2s ease";
       plus.onmouseover = () => plus.style.transform = "scale(1.2)";
       plus.onmouseover = () => plus.style.background = "#CCE0FF";
