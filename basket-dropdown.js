@@ -203,23 +203,30 @@ document.addEventListener("DOMContentLoaded", () => {
       minus.onmouseout = () => minus.style.transform = "scale(1)";
       minus.onmouseout = () => minus.style.background = "none";
       minus.addEventListener("click", (e) => {
-        e.stopPropagation();
-        if (item.qty > 1) {
-          item.qty--;
-        } else {
-          cart.splice(index, 1);
-        }
+      e.stopPropagation();
+    
+      if (item.qty > 1) {
+        item.qty--;
         localStorage.setItem(cartKey, JSON.stringify(cart));
         syncBasketToFirestore(cart);
-        
-        // Just update the DOM without full rerender
+    
+        // ✅ Safe to update DOM
         qty.textContent = item.qty;
         price.textContent = `£${(item.price * item.qty).toFixed(2)}`;
-        
-        // Update subtotal
-        const newSubtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-        document.querySelector("#basket-preview").querySelector("div:last-of-type").previousSibling.textContent = `Subtotal: £${newSubtotal.toFixed(2)}`;
-      });
+      } else {
+        // ✅ Remove item, then re-render just once
+        cart.splice(index, 1);
+        localStorage.setItem(cartKey, JSON.stringify(cart));
+        syncBasketToFirestore(cart);
+    
+        updateBasketPreview(true); // Full rerender for item removal only
+        return;
+      }
+    
+      // ✅ Update subtotal (even if one item was removed)
+      const newSubtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+      document.querySelector("#basket-preview").querySelector("div:last-of-type").previousSibling.textContent = `Subtotal: £${newSubtotal.toFixed(2)}`;
+    });
       
       const qty = document.createElement("span");
       qty.textContent = item.qty;
