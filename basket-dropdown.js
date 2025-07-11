@@ -175,20 +175,29 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       productInfo.appendChild(sizeInfo);
       
-      // Quantity Controls - now in the middle with smaller size
+      // 🔁 Clean pill-style quantity controls
       const quantityControls = document.createElement("div");
-      quantityControls.style.display = "flex";
+      quantityControls.style.display = "inline-flex";
       quantityControls.style.alignItems = "center";
-      quantityControls.style.margin = "0 10px"; // Add margin on both sides for spacing
-    
+      quantityControls.style.gap = "12px";
+      quantityControls.style.border = "2px solid #000";
+      quantityControls.style.borderRadius = "999px";
+      quantityControls.style.padding = "4px 12px";
+      quantityControls.style.fontFamily = "'Nunito Sans', sans-serif";
+      quantityControls.style.fontSize = "0.9rem";
+      quantityControls.style.fontWeight = "600";
+      quantityControls.style.backgroundColor = "#fff";
+      
       const minus = document.createElement("button");
       minus.textContent = "−";
-      minus.style.padding = "0.15rem 0.35rem"; // Smaller padding
-      minus.style.fontWeight = "bold";
+      minus.style.border = "none";
+      minus.style.background = "none";
+      minus.style.fontSize = "1rem";
       minus.style.cursor = "pointer";
-      minus.style.fontSize = "0.8rem"; // Smaller font size
-      minus.style.border = "1px solid #ddd";
-      minus.style.borderRadius = "4px";
+      minus.style.fontWeight = "bold";
+      minus.style.transition = "transform 0.2s ease";
+      minus.onmouseover = () => minus.style.transform = "scale(1.2)";
+      minus.onmouseout = () => minus.style.transform = "scale(1)";
       minus.addEventListener("click", (e) => {
         e.stopPropagation();
         if (item.qty > 1) {
@@ -200,20 +209,22 @@ document.addEventListener("DOMContentLoaded", () => {
         syncBasketToFirestore(cart);
         updateBasketPreview(true);
       });
-    
+      
       const qty = document.createElement("span");
       qty.textContent = item.qty;
-      qty.style.margin = "0 0.3rem"; // Smaller margin
-      qty.style.fontSize = "0.8rem"; // Smaller font size
-    
+      qty.style.minWidth = "20px";
+      qty.style.textAlign = "center";
+      
       const plus = document.createElement("button");
       plus.textContent = "+";
-      plus.style.padding = "0.15rem 0.35rem"; // Smaller padding
-      plus.style.fontWeight = "bold";
+      plus.style.border = "none";
+      plus.style.background = "none";
+      plus.style.fontSize = "1rem";
       plus.style.cursor = "pointer";
-      plus.style.fontSize = "0.8rem"; // Smaller font size
-      plus.style.border = "1px solid #ddd";
-      plus.style.borderRadius = "4px";
+      plus.style.fontWeight = "bold";
+      plus.style.transition = "transform 0.2s ease";
+      plus.onmouseover = () => plus.style.transform = "scale(1.2)";
+      plus.onmouseout = () => plus.style.transform = "scale(1)";
       plus.addEventListener("click", (e) => {
         e.stopPropagation();
         item.qty++;
@@ -221,7 +232,7 @@ document.addEventListener("DOMContentLoaded", () => {
         syncBasketToFirestore(cart);
         updateBasketPreview(true);
       });
-    
+      
       quantityControls.appendChild(minus);
       quantityControls.appendChild(qty);
       quantityControls.appendChild(plus);
