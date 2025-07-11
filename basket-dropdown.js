@@ -198,10 +198,14 @@ document.addEventListener("DOMContentLoaded", () => {
       minus.style.borderTopLeftRadius = "4px";
       minus.style.borderBottomLeftRadius = "4px";
       minus.style.transition = "transform 0.2s ease";
-      minus.onmouseover = () => minus.style.transform = "scale(1.2)";
-      minus.onmouseover = () => minus.style.background = "#FBB6C1";
-      minus.onmouseout = () => minus.style.transform = "scale(1)";
-      minus.onmouseout = () => minus.style.background = "none";
+      minus.onmouseover = () => {
+        minus.style.transform = "scale(1.2)";
+        minus.style.background = "#FBB6C1";
+      };
+      minus.onmouseout = () => {
+        minus.style.transform = "scale(1)";
+        minus.style.background = "none";
+      };
       minus.addEventListener("click", (e) => {
       e.stopPropagation();
     
@@ -232,10 +236,14 @@ document.addEventListener("DOMContentLoaded", () => {
       plus.style.borderTopRightRadius = "4px";
       plus.style.borderBottomRightRadius = "4px";
       plus.style.transition = "transform 0.2s ease";
-      plus.onmouseover = () => plus.style.transform = "scale(1.2)";
-      plus.onmouseover = () => plus.style.background = "#CCE0FF";
-      plus.onmouseout = () => plus.style.transform = "scale(1)";
-      plus.onmouseout = () => plus.style.background = "none";
+      minus.onmouseover = () => {
+        minus.style.transform = "scale(1.2)";
+        minus.style.background = "#FBB6C1";
+      };
+      minus.onmouseout = () => {
+        minus.style.transform = "scale(1)";
+        minus.style.background = "none";
+      };
       plus.addEventListener("click", (e) => {
       e.stopPropagation();
       item.qty++;
