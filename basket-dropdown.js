@@ -179,12 +179,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const quantityControls = document.createElement("div");
       quantityControls.style.display = "inline-flex";
       quantityControls.style.alignItems = "center";
-      quantityControls.style.gap = "12px";
+      quantityControls.style.gap = "2px";
       quantityControls.style.border = "2px solid #000";
       quantityControls.style.borderRadius = "999px";
-      quantityControls.style.padding = "4px 12px";
+      quantityControls.style.padding = "2px 8px";
       quantityControls.style.fontFamily = "'Nunito Sans', sans-serif";
-      quantityControls.style.fontSize = "0.9rem";
+      quantityControls.style.fontSize = "0.6rem";
       quantityControls.style.fontWeight = "600";
       quantityControls.style.backgroundColor = "#fff";
       
