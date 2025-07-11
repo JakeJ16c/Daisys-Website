@@ -197,6 +197,7 @@ document.addEventListener("DOMContentLoaded", () => {
       minus.style.fontWeight = "bold";
       minus.style.transition = "transform 0.2s ease";
       minus.onmouseover = () => minus.style.transform = "scale(1.2)";
+      minus.onmouseover = () => minus.style.background = "#FBB6C1";
       minus.onmouseout = () => minus.style.transform = "scale(1)";
       minus.addEventListener("click", (e) => {
         e.stopPropagation();
@@ -224,6 +225,7 @@ document.addEventListener("DOMContentLoaded", () => {
       plus.style.fontWeight = "bold";
       plus.style.transition = "transform 0.2s ease";
       plus.onmouseover = () => plus.style.transform = "scale(1.2)";
+      plus.onmouseover = () => plus.style.background = "#CCE0FF";
       plus.onmouseout = () => plus.style.transform = "scale(1)";
       plus.addEventListener("click", (e) => {
         e.stopPropagation();
