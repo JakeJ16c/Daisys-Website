@@ -299,6 +299,10 @@ plus.style.fontWeight = "bold";
 plus.style.padding = "0.75rem 1.25rem";
 plus.style.borderTopRightRadius = "4px";
 plus.style.borderBottomRightRadius = "4px";
+plus.onmouseover = () => plus.style.transform = "scale(1.2)";
+plus.onmouseover = () => plus.style.background = "#CCE0FF";
+plus.onmouseout = () => plus.style.transform = "scale(1)";
+plus.onmouseout = () => plus.style.background = "none";
 plus.addEventListener("click", () => {
   quantity++;
   qty.textContent = quantity;
