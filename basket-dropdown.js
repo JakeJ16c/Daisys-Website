@@ -128,6 +128,11 @@ document.addEventListener("DOMContentLoaded", () => {
       img.style.height = "60px";
       img.style.objectFit = "cover";
       img.style.borderRadius = "8px";
+      img.loading = "eager";
+      img.decoding = "sync";
+      img.style.willChange = "transform, opacity";
+      img.style.backfaceVisibility = "hidden";
+      link.style.contentVisibility = "auto";
       link.appendChild(img);
     
       const infoWrapper = document.createElement("div");
