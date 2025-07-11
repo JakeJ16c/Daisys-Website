@@ -207,25 +207,13 @@ document.addEventListener("DOMContentLoaded", () => {
     
       if (item.qty > 1) {
         item.qty--;
-        localStorage.setItem(cartKey, JSON.stringify(cart));
-        syncBasketToFirestore(cart);
-    
-        // ✅ Safe to update DOM
-        qty.textContent = item.qty;
-        price.textContent = `£${(item.price * item.qty).toFixed(2)}`;
       } else {
-        // ✅ Remove item, then re-render just once
         cart.splice(index, 1);
-        localStorage.setItem(cartKey, JSON.stringify(cart));
-        syncBasketToFirestore(cart);
-    
-        updateBasketPreview(true); // Full rerender for item removal only
-        return;
       }
     
-      // ✅ Update subtotal (even if one item was removed)
-      const newSubtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-      document.querySelector("#basket-preview").querySelector("div:last-of-type").previousSibling.textContent = `Subtotal: £${newSubtotal.toFixed(2)}`;
+      localStorage.setItem(cartKey, JSON.stringify(cart));
+      syncBasketToFirestore(cart);
+      updateBasketPreview(true); // ✅ Let it fully re-render (because layout is now stable)
     });
       
       const qty = document.createElement("span");
@@ -249,19 +237,13 @@ document.addEventListener("DOMContentLoaded", () => {
       plus.onmouseout = () => plus.style.transform = "scale(1)";
       plus.onmouseout = () => plus.style.background = "none";
       plus.addEventListener("click", (e) => {
-        e.stopPropagation();
-        item.qty++;
-        localStorage.setItem(cartKey, JSON.stringify(cart));
-        syncBasketToFirestore(cart);
-        
-        // Just update the DOM without full rerender
-        qty.textContent = item.qty;
-        price.textContent = `£${(item.price * item.qty).toFixed(2)}`;
-        
-        // Update subtotal
-        const newSubtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-        document.querySelector("#basket-preview").querySelector("div:last-of-type").previousSibling.textContent = `Subtotal: £${newSubtotal.toFixed(2)}`;
-      });
+      e.stopPropagation();
+      item.qty++;
+    
+      localStorage.setItem(cartKey, JSON.stringify(cart));
+      syncBasketToFirestore(cart);
+      updateBasketPreview(true); // ✅ Let it fully re-render
+    });
       
       quantityControls.appendChild(minus);
       quantityControls.appendChild(qty);
