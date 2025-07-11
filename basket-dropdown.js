@@ -212,7 +212,7 @@ document.addEventListener("DOMContentLoaded", () => {
       
       const qty = document.createElement("span");
       qty.textContent = item.qty;
-      qty.style.minWidth = "20px";
+      qty.style.minWidth = "16px";
       qty.style.textAlign = "center";
       
       const plus = document.createElement("button");
