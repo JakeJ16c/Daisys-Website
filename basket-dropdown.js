@@ -124,15 +124,17 @@ document.addEventListener("DOMContentLoaded", () => {
       const img = document.createElement("img");
       img.src = item.image || "placeholder.jpg";
       img.alt = item.name;
+      img.decoding = "async";
+      img.loading = "eager";
       img.style.width = "60px";
       img.style.height = "60px";
       img.style.objectFit = "cover";
       img.style.borderRadius = "8px";
-      img.loading = "eager";
-      img.decoding = "sync";
-      img.style.willChange = "transform, opacity";
-      img.style.backfaceVisibility = "hidden";
-      link.style.contentVisibility = "auto";
+      img.style.display = "block";
+      img.style.contentVisibility = "visible";
+      img.style.transform = "translateZ(0)";
+      img.style.willChange = "transform";
+      
       link.appendChild(img);
     
       const infoWrapper = document.createElement("div");
