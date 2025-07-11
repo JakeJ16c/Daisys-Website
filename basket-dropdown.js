@@ -230,8 +230,8 @@ document.addEventListener("DOMContentLoaded", () => {
       plus.style.cursor = "pointer";
       plus.style.fontWeight = "bold";
       plus.style.padding = "2px 8px";
-      plus.style.borderTopLeftRadius = "4px";
-      plus.style.borderBottomLeftRadius = "4px";
+      plus.style.borderTopRightRadius = "4px";
+      plus.style.borderBottomRightRadius = "4px";
       plus.style.transition = "transform 0.2s ease";
       plus.onmouseover = () => plus.style.transform = "scale(1.2)";
       plus.onmouseover = () => plus.style.background = "#CCE0FF";
