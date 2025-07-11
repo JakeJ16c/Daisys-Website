@@ -252,6 +252,8 @@ document.addEventListener("DOMContentLoaded", () => {
       price.style.fontWeight = "bold";
       price.style.fontSize = "0.9rem"; // Slightly smaller font for price
       price.style.whiteSpace = "nowrap"; // Prevent price from wrapping
+      price.style.width = "60px"; // 👈 fixed width
+      price.style.textAlign = "right"; // optional: aligns price inside its box
       
       // Add elements to their containers
       const rightSide = document.createElement("div");
