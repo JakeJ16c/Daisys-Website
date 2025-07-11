@@ -199,6 +199,7 @@ document.addEventListener("DOMContentLoaded", () => {
       minus.onmouseover = () => minus.style.transform = "scale(1.2)";
       minus.onmouseover = () => minus.style.background = "#FBB6C1";
       minus.onmouseout = () => minus.style.transform = "scale(1)";
+      minus.onmouseout = () => minus.style.background = "none";
       minus.addEventListener("click", (e) => {
         e.stopPropagation();
         if (item.qty > 1) {
@@ -227,6 +228,7 @@ document.addEventListener("DOMContentLoaded", () => {
       plus.onmouseover = () => plus.style.transform = "scale(1.2)";
       plus.onmouseover = () => plus.style.background = "#CCE0FF";
       plus.onmouseout = () => plus.style.transform = "scale(1)";
+      plus.onmouseout = () => plus.style.background = "none";
       plus.addEventListener("click", (e) => {
         e.stopPropagation();
         item.qty++;
