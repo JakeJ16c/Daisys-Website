@@ -196,6 +196,8 @@ document.addEventListener("DOMContentLoaded", () => {
       minus.style.cursor = "pointer";
       minus.style.fontWeight = "bold";
       minus.style.padding = "2px 8px";
+      minus.style.borderTopLeftRadius = "999px";
+      minus.style.borderBottomLeftRadius = "999px";
       minus.style.transition = "transform 0.2s ease";
       minus.onmouseover = () => minus.style.transform = "scale(1.2)";
       minus.onmouseover = () => minus.style.background = "#FBB6C1";
@@ -228,6 +230,8 @@ document.addEventListener("DOMContentLoaded", () => {
       plus.style.cursor = "pointer";
       plus.style.fontWeight = "bold";
       plus.style.padding = "2px 8px";
+      plus.style.borderTopLeftRadius = "999px";
+      plus.style.borderBottomLeftRadius = "999px";
       plus.style.transition = "transform 0.2s ease";
       plus.onmouseover = () => plus.style.transform = "scale(1.2)";
       plus.onmouseover = () => plus.style.background = "#CCE0FF";
