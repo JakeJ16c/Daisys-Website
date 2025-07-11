@@ -251,20 +251,62 @@ function updateStockUI(isOutOfStock) {
 
 // Quantity Controls
 let quantity = 1;
-const quantityDisplay = document.querySelector('.quantity-selector span');
+const qtyContainer = document.getElementById("pill-qty-control");
 
-document.querySelector('.quantity-selector button:first-of-type').addEventListener('click', () => {
-  if (quantity > 1) quantity--;
-  quantityDisplay.textContent = quantity;
+const quantityControls = document.createElement("div");
+quantityControls.style.display = "inline-flex";
+quantityControls.style.alignItems = "center";
+quantityControls.style.gap = "2px";
+quantityControls.style.border = "1.75px solid black";
+quantityControls.style.borderRadius = "6px";
+quantityControls.style.fontFamily = "'Nunito Sans', sans-serif";
+quantityControls.style.fontSize = "0.75rem";
+quantityControls.style.fontWeight = "600";
+quantityControls.style.backgroundColor = "#fff";
+
+const minus = document.createElement("button");
+minus.textContent = "−";
+minus.style.border = "none";
+minus.style.background = "none";
+minus.style.fontSize = "0.8rem";
+minus.style.cursor = "pointer";
+minus.style.fontWeight = "bold";
+minus.style.padding = "3px 10px";
+minus.style.borderTopLeftRadius = "4px";
+minus.style.borderBottomLeftRadius = "4px";
+minus.addEventListener("click", () => {
+  if (quantity > 1) {
+    quantity--;
+    qty.textContent = quantity;
+  }
 });
 
-document.querySelector('.quantity-selector button:last-of-type').addEventListener('click', () => {
+const qty = document.createElement("span");
+qty.textContent = quantity;
+qty.style.minWidth = "16px";
+qty.style.textAlign = "center";
+
+const plus = document.createElement("button");
+plus.textContent = "+";
+plus.style.border = "none";
+plus.style.background = "none";
+plus.style.fontSize = "0.8rem";
+plus.style.cursor = "pointer";
+plus.style.fontWeight = "bold";
+plus.style.padding = "3px 10px";
+plus.style.borderTopRightRadius = "4px";
+plus.style.borderBottomRightRadius = "4px";
+plus.addEventListener("click", () => {
   quantity++;
-  quantityDisplay.textContent = quantity;
+  qty.textContent = quantity;
 });
+
+quantityControls.appendChild(minus);
+quantityControls.appendChild(qty);
+quantityControls.appendChild(plus);
+qtyContainer.appendChild(quantityControls);
 
 // Add to Basket
-
 document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("click", (e) => {
     if (e.target && e.target.classList.contains("add-to-basket")) {
