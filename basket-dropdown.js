@@ -243,11 +243,11 @@ document.addEventListener("DOMContentLoaded", () => {
       plus.style.borderTopRightRadius = "4px";
       plus.style.borderBottomRightRadius = "4px";
       plus.style.transition = "transform 0.2s ease";
-      minus.onmouseover = () => {
+      plus.onmouseover = () => {
         minus.style.transform = "scale(1.2)";
         minus.style.background = "#FBB6C1";
       };
-      minus.onmouseout = () => {
+      plus.onmouseout = () => {
         minus.style.transform = "scale(1)";
         minus.style.background = "none";
       };
