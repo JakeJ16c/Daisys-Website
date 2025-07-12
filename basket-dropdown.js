@@ -244,12 +244,12 @@ document.addEventListener("DOMContentLoaded", () => {
       plus.style.borderBottomRightRadius = "4px";
       plus.style.transition = "transform 0.2s ease";
       plus.onmouseover = () => {
-        minus.style.transform = "scale(1.2)";
-        minus.style.background = "#FBB6C1";
+        plus.style.transform = "scale(1.2)";
+        plus.style.background = "#FBB6C1";
       };
       plus.onmouseout = () => {
-        minus.style.transform = "scale(1)";
-        minus.style.background = "none";
+        plus.style.transform = "scale(1)";
+        plus.style.background = "none";
       };
       plus.addEventListener("click", (e) => {
       e.stopPropagation();
