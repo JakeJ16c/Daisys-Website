@@ -316,7 +316,7 @@ qtyContainer.appendChild(quantityControls);
 // Add to Basket
 document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("click", (e) => {
-    if (e.target && e.target.classList.contains("Add-to-basket")) {
+    if (e.target && e.target.classList.contains("add-to-basket")) {
       const name = document.querySelector(".product-title").textContent;
       const price = parseFloat(document.querySelector(".product-price").textContent.replace("£", ""));
       const image = document.getElementById("product-image").src;
