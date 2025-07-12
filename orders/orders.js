@@ -69,11 +69,14 @@ document.addEventListener("DOMContentLoaded", async () => {
               <span class="order-status-pill">${orderStatus}</span>
             </div>
             <div class="order-summary-text">
-              <p>${order.items?.length || 0} ${order.items?.length === 1 ? 'item' : 'items'}</p>
-              <p>Order #${order.orderNumber || "N/A"}</p>
-              <p>£${parseFloat(order.finalTotal || 0).toFixed(2)}</p>
+                <p>${order.items?.length || 0} ${order.items?.length === 1 ? 'item' : 'items'}</p>
+                <p>Order #${order.orderNumber || "N/A"}</p>
+                <p>£${parseFloat(order.finalTotal || 0).toFixed(2)}</p>
+              </div>
+              <button class="review-btn" onclick="event.stopPropagation(); window.location.href='leave-review.html?orderId=${orderId}'">
+                Leave a Review
+              </button>
             </div>
-          </div>
         `;
 
         orders.push({ ...order, html });
