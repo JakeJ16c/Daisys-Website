@@ -245,7 +245,7 @@ document.addEventListener("DOMContentLoaded", () => {
       plus.style.transition = "transform 0.2s ease";
       plus.onmouseover = () => {
         plus.style.transform = "scale(1.2)";
-        plus.style.background = "#FBB6C1";
+        plus.style.background = "#CCE0FF";
       };
       plus.onmouseout = () => {
         plus.style.transform = "scale(1)";
