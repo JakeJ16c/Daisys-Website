@@ -4,7 +4,7 @@ const loaderHTML = `
     <div class="loader-inner">
       <div class="spinner-wrapper">
         <div class="spinner"></div>
-        <img src="IMG_8861.png" class="logo-inside-spinner" />
+        <img src="favicon_circle.ico" class="logo-inside-spinner" />
       </div>
       <p class="loading-text">Loading...</p>  
     </div>
