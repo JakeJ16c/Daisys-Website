@@ -868,7 +868,7 @@ input[type="range"] {
 		  display: flex;
 		  align-items: flex-start;
 		  gap: 1rem;
-		  padding: 0 2rem;
+		  padding: 0 8rem;
 		}
 		    
 		.product-container {
