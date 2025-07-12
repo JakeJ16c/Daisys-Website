@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           <div class="order-card" onclick="window.location.href='orders/order.html?id=${orderId}'">
             <div class="order-images-wrapper">${thumbnails}</div>
             <div class="order-status-bar">
-              <span class="order-status-pill">${orderStatus}</span>
+              ${orderStatus}
             </div>
             <div class="order-summary-text">
                 <p>${order.items?.length || 0} ${order.items?.length === 1 ? 'item' : 'items'}</p>
