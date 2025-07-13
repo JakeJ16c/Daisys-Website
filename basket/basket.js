@@ -116,6 +116,108 @@ async function handleQtyChange(e, items, isLoggedIn, uid, delta) {
   }
 }
 
+function renderSummaryBox(subtotal = 0, total = 0) {
+  const container = document.getElementById("summary-container");
+
+  // Inject style once
+  if (!document.getElementById("summary-styles")) {
+    const style = document.createElement("style");
+    style.id = "summary-styles";
+    style.textContent = `
+      .summary-box {
+        background: white;
+        padding: 1.8rem;
+        border-radius: 16px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        font-size: 0.95rem;
+        min-width: 320px;
+        height: fit-content;
+      }
+      .summary-box h3 {
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+        color: var(--electric-blue);
+      }
+      .promo-code {
+        display: flex;
+        gap: 1.5rem;
+        margin-bottom: 1rem;
+      }
+      .promo-code input {
+        flex: 1;
+        padding: 0.5rem;
+        font-size: 0.95rem;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+      }
+      .promo-code button {
+        padding: 0.5rem 1rem;
+        background: #236b27;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-weight: 500;
+        cursor: pointer;
+      }
+      .total-line {
+        display: flex;
+        justify-content: space-between;
+        margin: 0.4rem 0;
+      }
+      .button-row {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-top: 1rem;
+        padding: 0 1.5rem;
+      }
+      .summary-btn {
+        background-color: black;
+        color: white;
+        border: none;
+        padding: 0.8rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 500;
+        font-family: 'Nunito Sans', sans-serif;
+        transition: 0.3s;
+      }
+      .summary-btn:hover {
+        background-color: #68b2a8;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  // Inject the summary box
+  container.innerHTML = `
+    <div class="basket-summary">
+      <div class="summary-box">
+        <h3>Order Summary</h3>
+        <div class="promo-code">
+          <input type="text" id="promo-code-input" placeholder="Promo Code">
+          <button id="apply-promo-btn">Apply</button>
+        </div>
+        <div class="totals">
+          <div class="total-line"><span>Subtotal:</span><span id="subtotal-display-summary">£${subtotal.toFixed(2)}</span></div>
+          <div class="total-line"><span>Shipping:</span><span>£0.00</span></div>
+          <div class="total-line final-total"><span>Total:</span><span id="total-display-summary">£${total.toFixed(2)}</span></div>
+        </div>
+        <div class="button-row">
+          <button class="summary-btn" id="checkoutBtn">Proceed to Checkout</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Hook up checkout button
+  document.getElementById("checkoutBtn").addEventListener("click", () => {
+    import("/checkout.js").then(({ initCheckout }) => {
+      initCheckout({ mode: "cart" });
+    });
+  });
+}
+
 // === Inline Style Strings ===
 const btnStyle = `
   padding: 2px 10px;
