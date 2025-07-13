@@ -350,6 +350,7 @@ function renderSummaryBox(subtotal = 0, total = 0) {
 
       <div class="payment-icons">
         <img src="/images/payments/visa.png" alt="Visa" class="icon">
+        <img src="/images/payments/mastercard.png" alt="Mastercard" class="icon">
         <img src="/images/payments/american-express.png" alt="AmEx" class="icon">
       </div>
       
