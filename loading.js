@@ -76,8 +76,8 @@ style.textContent = `
     top: 50%;
     left: 50%;
     transform: translate(-43%, -43%);
-    width: 65px;
-    height: 65px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
     object-fit: contain;
     pointer-events: none;
