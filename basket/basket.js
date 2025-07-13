@@ -203,6 +203,37 @@ function renderSummaryBox(subtotal = 0, total = 0) {
     document.head.appendChild(style);
   }
 
+  if (!document.getElementById("basket-layout-styles")) {
+    const style = document.createElement("style");
+    style.id = "basket-layout-styles";
+    style.textContent = `
+      .basket-layout {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        padding: 2rem;
+      }
+  
+      @media (min-width: 768px) {
+        .basket-layout {
+          flex-direction: row;
+          align-items: flex-start;
+        }
+  
+        #basket-items {
+          flex: 1;
+        }
+  
+        #basket-summary {
+          flex-shrink: 0;
+          width: 100%;
+          max-width: 400px;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
   container.innerHTML = `
     <div class="summary-box">
       <h3>Order Summary</h3>
