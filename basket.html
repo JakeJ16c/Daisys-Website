@@ -294,7 +294,6 @@
     
     <div class="basket-page">
       <div class="basket-content">
-        <div class="checkout-container" id="checkout-container">
 
           <!-- Sliding Basket Wrapper -->
           <div id="basket-wrapper">
@@ -321,7 +320,6 @@
             </div>
           </div>
 
-        </div>
       </div>
     </div>
 
@@ -345,167 +343,6 @@
     });
   </script>
 
-  <script>
-    const checkoutContainer = document.getElementById("checkout-container");
-    const cartKey = "daisyCart";
-    
-    document.addEventListener("DOMContentLoaded", () => {
-      const basket = JSON.parse(localStorage.getItem(cartKey)) || [];
-      const container = document.getElementById("basket-left");
-      const emptyMessage = document.getElementById("basket-empty-message");
-      const subtotalDisplaySummary = document.getElementById("subtotal-display-summary");
-      const totalDisplaySummary = document.getElementById("total-display-summary");
-      const totalDisplayCheckout = document.getElementById("total-display-checkout");
-
-      const checkoutButton = document.getElementById("checkout-button");
-      const backButton = document.getElementById("back-button");
-      const continueShoppingBtn = document.querySelector(".summary-btn.secondary");
-
-      function calculateSubtotal(cart) {
-        return cart.reduce((sum, item) => sum + item.qty * item.price, 0);
-      }
-
-      function updateUI() {
-        container.innerHTML = "";
-        const updatedCart = JSON.parse(localStorage.getItem(cartKey)) || [];
-        const subtotal = calculateSubtotal(updatedCart);
-        const total = subtotal;
-
-        if (updatedCart.length === 0) {
-          emptyMessage.style.display = "block";
-          subtotalDisplaySummary.textContent = totalDisplaySummary.textContent = totalDisplayCheckout.textContent = "£0.00";
-          return;
-        } else {
-          emptyMessage.style.display = "none";
-        }
-
-        updatedCart.forEach((item, index) => {
-          const itemDiv = document.createElement("div");
-          itemDiv.className = "basket-item-row";
-          itemDiv.innerHTML = `
-            <div class="item-image"><img src="${item.image}" alt="${item.name}" /></div>
-            <div class="item-details">
-              <div class="item-name">${item.name}</div>
-              <div class="item-qty">
-                <button class="decrease" data-index="${index}">-</button>
-                <span>${item.qty}</span>
-                <button class="increase" data-index="${index}">+</button>
-              </div>
-            </div>
-            <div class="item-price">£${(item.price * item.qty).toFixed(2)}</div>`;
-          container.appendChild(itemDiv);
-        });
-
-        subtotalDisplaySummary.textContent = totalDisplaySummary.textContent = totalDisplayCheckout.textContent = `£${subtotal.toFixed(2)}`;
-        addButtonHandlers();
-      }
-
-      function addButtonHandlers() {
-        document.querySelectorAll(".increase").forEach(btn => {
-          btn.addEventListener("click", () => {
-            const index = parseInt(btn.dataset.index);
-            cart[index].qty++;
-            localStorage.setItem(cartKey, JSON.stringify(cart));
-            updateUI();
-          });
-        });
-        document.querySelectorAll(".decrease").forEach(btn => {
-          btn.addEventListener("click", () => {
-            const index = parseInt(btn.dataset.index);
-            if (cart[index].qty > 1) {
-              cart[index].qty--;
-            } else {
-              cart.splice(index, 1);
-            }
-            localStorage.setItem(cartKey, JSON.stringify(cart));
-            updateUI();
-          });
-        });
-      }
-
-      // Init UI
-      updateUI();
-
-      // Slide in checkout
-      checkoutButton?.addEventListener("click", () => {
-        const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
-        if (!cart.length) return alert("Your basket is empty.");
-        showMobileCheckout();
-      });
-
-      // Slide back to basket
-      backButton?.addEventListener("click", () => {
-        hideMobileCheckout();
-      });
-
-      // Continue shopping button
-      continueShoppingBtn?.addEventListener("click", () => {
-        window.location.href = "shop.html";
-      });
-    });
-  </script>
-
-<script>
-  // Add these variables to your existing script
-const mobileOverlay = document.getElementById("mobile-checkout-overlay");
-const checkoutBox = document.querySelector(".checkout-box");
-const summaryBox = document.querySelector(".summary-box");
-
-// Add this function
-function isMobile() {
-  return window.innerWidth <= 768;
-}
-
-// Update your existing showMobileCheckout function or add this new one
-function showMobileCheckout() {
-  if (isMobile()) {
-    mobileOverlay.classList.add("active");
-    checkoutBox.classList.add("slide-up");
-    document.body.style.overflow = "hidden";
-  } else {
-    checkoutContainer.classList.add("sliding");
-  }
-}
-
-// Update your existing hideMobileCheckout function or add this new one
-function hideMobileCheckout() {
-  if (isMobile()) {
-    mobileOverlay.classList.remove("active");
-    checkoutBox.classList.remove("slide-up");
-    document.body.style.overflow = "";
-  } else {
-    checkoutContainer.classList.remove("sliding");
-  }
-}
-
-// Add mobile summary box click handler
-if (isMobile()) {
-  summaryBox.addEventListener("click", (e) => {
-    // Don't trigger if clicking on buttons
-    if (e.target.tagName === "BUTTON" || e.target.closest("button")) {
-      return;
-    }
-    const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
-    if (!cart.length) return alert("Your basket is empty.");
-    showMobileCheckout();
-  });
-}
-
-// Add mobile overlay click to close
-mobileOverlay?.addEventListener("click", () => {
-  hideMobileCheckout();
-});
-
-// Add window resize handler
-window.addEventListener("resize", () => {
-  if (!isMobile()) {
-    // Reset mobile states when switching to desktop
-    mobileOverlay.classList.remove("active");
-    checkoutBox.classList.remove("slide-up");
-    document.body.style.overflow = "";
-  }
-});
-</script>
   
 </body>
 </html>
