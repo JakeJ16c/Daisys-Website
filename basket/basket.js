@@ -60,13 +60,19 @@ function renderBasket(items, isLoggedIn, uid = null) {
         <div style="font-weight: 600; font-size: 1rem; margin-bottom: 0.4rem;">${item.name}</div>
         ${item.size ? `<div style="font-size: 0.85rem; color: #666;">Size: ${item.size}</div>` : ""}
       </div>
-      <div class="qty-price-wrapper" style="display: flex; align-items: center; gap: 15rem;">
-        <!-- quantityControls will be appended here -->
+      <div class="qty-price-wrapper" style="
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-width: 200px;
+        flex: 1;
+        gap: 1rem;
+      ">
+        <!-- Quantity controls will be inserted here -->
         <div class="item-price" style="font-weight: 600; min-width: 64px; text-align: right;">£${itemTotal.toFixed(2)}</div>
       </div>
       <button class="delete-btn" data-index="${index}" style="${delStyle}">×</button>
     `;
-
          
       // 🔁 Clean pill-style quantity controls
       const quantityControls = document.createElement("div");
