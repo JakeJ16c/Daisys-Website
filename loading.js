@@ -96,10 +96,10 @@ window.addEventListener("load", () => {
   const loader = document.getElementById("loading-screen");
   loader.classList.add("fade-out");
 
+  // Give the fade-out animation time to finish
   setTimeout(() => {
     loader.remove();
-    // Remove any style flicker
     document.documentElement.style.overflow = "auto";
     document.body.style.overflow = "auto";
-  }, 3500); // match your fade duration
+  }, 1000); // just for the fade-out animation only
 });
