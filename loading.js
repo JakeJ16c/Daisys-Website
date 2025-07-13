@@ -107,5 +107,5 @@ window.addEventListener("load", () => {
 
     document.documentElement.style.overflow = "auto";
     document.body.style.overflow = "auto";
-  }, 3500);
+  }, 3000);
 });
