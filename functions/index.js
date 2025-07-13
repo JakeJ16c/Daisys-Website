@@ -62,30 +62,40 @@ exports.notifyOnBasketUpdate = functions.firestore
     try {
       const snapshot = await db.collection('adminTokens').get();
       const tokens = snapshot.docs
-        .map(doc => doc.data())
-        .filter(data => data.categories?.basket !== false && data.token)
-        .map(data => data.token);
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .filter(data => data.categories?.basket !== false && data.token);
 
       if (!tokens.length) return null;
 
-      const userType = update.isGuest ? "A guest" : "A customer";
-      const sizeInfo = update.size && update.size.toLowerCase() !== "onesize" ? ` (Size: ${update.size})` : "";
+      const message = {
+        notification: {
+          title: "You're So Golden",
+          body: `${update.isGuest ? "A guest" : "A customer"} added ${update.qty || 1} ${update.name || 'a product'}${update.size && update.size.toLowerCase() !== 'onesize' ? ` (Size: ${update.size})` : ''} to their basket.`
+        },
+        data: {
+          category: "basket",
+          productId: update.productId || "",
+          productName: update.name || "",
+          timestamp: new Date().toISOString()
+        }
+      };
 
-      await Promise.all(tokens.map(token =>
-        messaging.send({
-          notification: {
-            title: "You're So Golden",
-            body: `${userType} added ${update.qty || 1} ${update.name || 'a product'}${sizeInfo} to their basket.`
-          },
-          data: {
-            category: "basket",
-            productId: update.productId || "",
-            productName: update.name || "",
-            timestamp: new Date().toISOString()
-          },
-          token
-        })
+      const sendResults = await Promise.all(tokens.map(t =>
+        messaging.send({ ...message, token: t.token })
+          .then(() => ({ success: true }))
+          .catch(err => ({ success: false, error: err, tokenId: t.id }))
       ));
+
+      // 🔥 Remove any invalid tokens
+      const toDelete = sendResults.filter(r =>
+        !r.success && r.error?.code === "messaging/registration-token-not-registered"
+      );
+
+      await Promise.all(toDelete.map(t => {
+        functions.logger.warn("🧹 Removing invalid token:", t.tokenId);
+        return db.collection('adminTokens').doc(t.tokenId).delete();
+      }));
+
     } catch (error) {
       functions.logger.error("❌ Basket notification error:", error);
     }
