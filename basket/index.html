@@ -10,7 +10,28 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/styles/styles.css">
   <link rel="stylesheet" href="/styles/responsive.css">
+  <style>
+    .continue-shopping-btn {
+  background-color: white;
+  border: 2px solid var(--electric-blue);
+  color: var(--electric-blue);
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
 
+.continue-shopping-btn:hover {
+  background-color: var(--electric-blue);
+  color: white;
+}
+  </style>
 </head>
 <body>
   <!-- Announcement + Header -->
@@ -34,7 +55,7 @@
   <div id="navigation-bar-container"></div>
 
 <main>
-  <button class="back-button continue-shopping-top" onclick="window.location.href='shop.html'">
+  <button class="continue-shopping-btn" onclick="window.location.href='shop.html'">
     ← Continue Shopping
   </button>
 
