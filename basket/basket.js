@@ -13,7 +13,7 @@ onAuthStateChanged(auth, (user) => {
 });
 
 async function loadFirestoreBasket(uid) {
-  const snapshot = await getDocs(collection(db, "users", uid, "basket"));
+  const snapshot = await getDocs(collection(db, "users", uid, "Basket"));
   const items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   renderBasket(items, true, uid);
 }
