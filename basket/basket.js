@@ -60,47 +60,97 @@ function renderBasket(items, isLoggedIn, uid = null) {
         <div style="font-weight: 600; font-size: 1rem; margin-bottom: 0.4rem;">${item.name}</div>
         ${item.size ? `<div style="font-size: 0.85rem; color: #666;">Size: ${item.size}</div>` : ""}
       </div>
-      <div style="font-weight: 600; min-width: 64px; text-align: right;">£${itemTotal.toFixed(2)}</div>
+      <div class="qty-price-wrapper" style="display: flex; align-items: center; gap: 0.75rem;">
+        <!-- quantityControls will be appended here -->
+        <div class="item-price" style="font-weight: 600; min-width: 64px; text-align: right;">£${itemTotal.toFixed(2)}</div>
+      </div>
       <button class="delete-btn" data-index="${index}" style="${delStyle}">×</button>
     `;
 
-    const qtyControls = document.createElement("div");
-    qtyControls.className = "qty-control";
-
-    const minus = document.createElement("button");
-    minus.className = "qty-minus";
-    minus.textContent = "−";
-    minus.addEventListener("click", () => {
+         
+      // 🔁 Clean pill-style quantity controls
+      const quantityControls = document.createElement("div");
+      quantityControls.style.display = "inline-flex";
+      quantityControls.style.alignItems = "center";
+      quantityControls.style.gap = "2px";
+      quantityControls.style.border = "1.75px solid black";
+      quantityControls.style.borderRadius = "6px";
+      quantityControls.style.fontFamily = "'Nunito Sans', sans-serif";
+      quantityControls.style.fontSize = "0.75rem";
+      quantityControls.style.fontWeight = "600";
+      quantityControls.style.backgroundColor = "#fff";
+      
+      const minus = document.createElement("button");
+      minus.textContent = "−";
+      minus.style.border = "none";
+      minus.style.background = "none";
+      minus.style.fontSize = "0.8rem";
+      minus.style.cursor = "pointer";
+      minus.style.fontWeight = "bold";
+      minus.style.padding = "3px 10px";
+      minus.style.borderTopLeftRadius = "4px";
+      minus.style.borderBottomLeftRadius = "4px";
+      minus.style.transition = "transform 0.2s ease";
+      minus.onmouseover = () => {
+        minus.style.transform = "scale(1.2)";
+        minus.style.background = "#FBB6C1";
+      };
+      minus.onmouseout = () => {
+        minus.style.transform = "scale(1)";
+        minus.style.background = "none";
+      };
+      minus.addEventListener("click", (e) => {
+      e.stopPropagation();
+    
       if (item.qty > 1) {
         item.qty--;
       } else {
         cart.splice(index, 1);
       }
-      localStorage.setItem("daisyCart", JSON.stringify(cart));
-      if (window.syncBasketToFirestore) window.syncBasketToFirestore(cart);
-      renderBasket();
+    
+      localStorage.setItem(cartKey, JSON.stringify(cart));
+      syncBasketToFirestore(cart);
     });
-
-    const qty = document.createElement("span");
-    qty.className = "qty-number";
-    qty.textContent = item.qty;
-
-    const plus = document.createElement("button");
-    plus.className = "qty-plus";
-    plus.textContent = "+";
-    plus.addEventListener("click", () => {
+      
+      const qty = document.createElement("span");
+      qty.textContent = item.qty;
+      qty.style.minWidth = "16px";
+      qty.style.textAlign = "center";
+      
+      const plus = document.createElement("button");
+      plus.textContent = "+";
+      plus.style.border = "none";
+      plus.style.background = "none";
+      plus.style.fontSize = "0.8rem";
+      plus.style.cursor = "pointer";
+      plus.style.fontWeight = "bold";
+      plus.style.padding = "3px 10px";
+      plus.style.borderTopRightRadius = "4px";
+      plus.style.borderBottomRightRadius = "4px";
+      plus.style.transition = "transform 0.2s ease";
+      plus.onmouseover = () => {
+        plus.style.transform = "scale(1.2)";
+        plus.style.background = "#CCE0FF";
+      };
+      plus.onmouseout = () => {
+        plus.style.transform = "scale(1)";
+        plus.style.background = "none";
+      };
+      plus.addEventListener("click", (e) => {
+      e.stopPropagation();
       item.qty++;
-      localStorage.setItem("daisyCart", JSON.stringify(cart));
-      if (window.syncBasketToFirestore) window.syncBasketToFirestore(cart);
-      renderBasket();
+    
+      localStorage.setItem(cartKey, JSON.stringify(cart));
+      syncBasketToFirestore(cart);
     });
+      
+      quantityControls.appendChild(minus);
+      quantityControls.appendChild(qty);
+      quantityControls.appendChild(plus);
 
-    qtyControls.appendChild(minus);
-    qtyControls.appendChild(qty);
-    qtyControls.appendChild(plus);
-
-    row.appendChild(qtyControls);
-
+    const wrapper = row.querySelector('.qty-price-wrapper');
+    wrapper.insertBefore(quantityControls, wrapper.firstChild);
+    
     basketContainer.appendChild(row);
   });
 
