@@ -1,9 +1,14 @@
+// ===========================
+// 🛒 Basket.js – Dynamic Basket Rendering
+// ===========================
+
 import { db, auth } from '../firebase.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
 import {
   doc, getDocs, collection, deleteDoc, setDoc
 } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
 
+// 👤 Wait for user login state, load correct basket source
 onAuthStateChanged(auth, (user) => {
   if (user) {
     loadFirestoreBasket(user.uid);
@@ -12,17 +17,20 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
+// 🔥 Load basket from Firestore (for logged in users)
 async function loadFirestoreBasket(uid) {
   const snapshot = await getDocs(collection(db, "users", uid, "Basket"));
   const items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   renderBasket(items, true, uid);
 }
 
+// 💾 Load basket from localStorage (for guests)
 function loadLocalBasket() {
   const items = JSON.parse(localStorage.getItem("daisyCart") || "[]");
   renderBasket(items, false);
 }
 
+// 🎨 Render all basket items and summary
 function renderBasket(items, isLoggedIn, uid = null) {
   const basketLeft = document.getElementById("basket-left");
   const emptyMsg = document.getElementById("basket-empty-message");
@@ -37,6 +45,7 @@ function renderBasket(items, isLoggedIn, uid = null) {
 
   emptyMsg.style.display = "none";
 
+  // Loop through basket items and inject rows
   items.forEach((item, index) => {
     const itemTotal = (item.price || 0) * (item.qty || 1);
     subtotal += itemTotal;
@@ -46,23 +55,23 @@ function renderBasket(items, isLoggedIn, uid = null) {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 1.2rem 0;
-      border-bottom: 1px solid #ccc;
+      padding: 1.4rem 0;
+      border-bottom: 1px solid #e3e3e3;
       gap: 1.2rem;
     `;
 
     row.innerHTML = `
-      <img src="${item.image}" alt="${item.name}" style="height: 60px; width: 60px; object-fit: cover; border-radius: 8px;">
+      <img src="${item.image}" alt="${item.name}" style="height: 64px; width: 64px; object-fit: cover; border-radius: 10px;">
       <div style="flex: 1;">
-        <div style="font-weight: 600; font-size: 1rem; margin-bottom: 4px;">${item.name}</div>
+        <div style="font-weight: 600; font-size: 1rem; margin-bottom: 0.4rem;">${item.name}</div>
         ${item.size ? `<div style="font-size: 0.85rem; color: #666;">Size: ${item.size}</div>` : ""}
-        <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.6rem; margin-top: 0.5rem;">
           <button class="qty-minus" data-index="${index}" style="${btnStyle}">−</button>
-          <span style="min-width: 24px; text-align: center;">${item.qty}</span>
+          <span style="min-width: 28px; text-align: center;">${item.qty}</span>
           <button class="qty-plus" data-index="${index}" style="${btnStyle}">+</button>
         </div>
       </div>
-      <div style="font-weight: 600; min-width: 60px; text-align: right;">£${itemTotal.toFixed(2)}</div>
+      <div style="font-weight: 600; min-width: 64px; text-align: right;">£${itemTotal.toFixed(2)}</div>
       <button class="delete-btn" data-index="${index}" style="${delStyle}">×</button>
     `;
 
@@ -71,17 +80,21 @@ function renderBasket(items, isLoggedIn, uid = null) {
 
   renderSummaryBox(subtotal, subtotal);
 
-  document.querySelectorAll(".qty-plus").forEach(btn => {
-    btn.addEventListener("click", e => handleQtyChange(e, items, isLoggedIn, uid, 1));
-  });
-  document.querySelectorAll(".qty-minus").forEach(btn => {
-    btn.addEventListener("click", e => handleQtyChange(e, items, isLoggedIn, uid, -1));
-  });
-  document.querySelectorAll(".delete-btn").forEach(btn => {
-    btn.addEventListener("click", e => handleDelete(e, items, isLoggedIn, uid));
-  });
+  // Attach event listeners after render
+  document.querySelectorAll(".qty-plus").forEach(btn =>
+    btn.addEventListener("click", e => handleQtyChange(e, items, isLoggedIn, uid, 1))
+  );
+
+  document.querySelectorAll(".qty-minus").forEach(btn =>
+    btn.addEventListener("click", e => handleQtyChange(e, items, isLoggedIn, uid, -1))
+  );
+
+  document.querySelectorAll(".delete-btn").forEach(btn =>
+    btn.addEventListener("click", e => handleDelete(e, items, isLoggedIn, uid))
+  );
 }
 
+// ❌ Handle item deletion
 async function handleDelete(e, items, isLoggedIn, uid) {
   const index = e.currentTarget.dataset.index;
   const item = items[index];
@@ -98,6 +111,7 @@ async function handleDelete(e, items, isLoggedIn, uid) {
   }
 }
 
+// 🔁 Handle quantity changes
 async function handleQtyChange(e, items, isLoggedIn, uid, delta) {
   const index = e.currentTarget.dataset.index;
   const item = items[index];
@@ -115,42 +129,44 @@ async function handleQtyChange(e, items, isLoggedIn, uid, delta) {
   }
 }
 
+// 📦 Render order summary box (right side)
 function renderSummaryBox(subtotal = 0, total = 0) {
   const container = document.getElementById("summary-container");
 
-  // Inject style once
+  // Inject summary styles once
   if (!document.getElementById("summary-styles")) {
     const style = document.createElement("style");
     style.id = "summary-styles";
     style.textContent = `
       .summary-box {
         background: white;
-        padding: 1.8rem;
-        border-radius: 16px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        padding: 2rem;
+        border-radius: 18px;
+        box-shadow: 0 6px 16px rgba(0,0,0,0.06);
         font-size: 0.95rem;
         min-width: 320px;
+        max-width: 400px;
         height: fit-content;
       }
       .summary-box h3 {
-        font-size: 1.3rem;
+        font-size: 1.4rem;
         margin-bottom: 1rem;
         color: var(--electric-blue);
       }
       .promo-code {
         display: flex;
-        gap: 1.5rem;
-        margin-bottom: 1rem;
+        gap: 1rem;
+        margin-bottom: 1.2rem;
       }
       .promo-code input {
         flex: 1;
-        padding: 0.5rem;
+        padding: 0.6rem;
         font-size: 0.95rem;
         border: 1px solid #ccc;
         border-radius: 6px;
       }
       .promo-code button {
-        padding: 0.5rem 1rem;
+        padding: 0.6rem 1rem;
         background: #236b27;
         color: white;
         border: none;
@@ -161,34 +177,39 @@ function renderSummaryBox(subtotal = 0, total = 0) {
       .total-line {
         display: flex;
         justify-content: space-between;
-        margin: 0.4rem 0;
+        margin: 0.5rem 0;
+        font-size: 0.96rem;
+      }
+      .final-total {
+        font-weight: 600;
+        font-size: 1.1rem;
       }
       .button-row {
         display: flex;
         flex-direction: column;
-        gap: 1rem;
-        margin-top: 1rem;
-        padding: 0 1.5rem;
+        gap: 1.2rem;
+        margin-top: 1.5rem;
+        padding: 0 1rem;
       }
       .summary-btn {
         background-color: black;
         color: white;
         border: none;
-        padding: 0.8rem;
-        border-radius: 8px;
+        padding: 1rem;
+        border-radius: 10px;
         cursor: pointer;
-        font-weight: 500;
+        font-weight: 600;
         font-family: 'Nunito Sans', sans-serif;
-        transition: 0.3s;
+        transition: background 0.3s ease;
       }
       .summary-btn:hover {
-        background-color: #68b2a8;
+        background-color: var(--electric-blue);
       }
     `;
     document.head.appendChild(style);
   }
 
-  // Inject the summary box
+  // Inject the summary box HTML
   container.innerHTML = `
     <div class="basket-summary">
       <div class="summary-box">
@@ -209,7 +230,7 @@ function renderSummaryBox(subtotal = 0, total = 0) {
     </div>
   `;
 
-  // Hook up checkout button
+  // 🎯 Launch Stripe checkout when clicked
   document.getElementById("checkoutBtn").addEventListener("click", () => {
     import("/checkout.js").then(({ initCheckout }) => {
       initCheckout({ mode: "cart" });
@@ -217,19 +238,20 @@ function renderSummaryBox(subtotal = 0, total = 0) {
   });
 }
 
-// === Inline Style Strings ===
+// === 💄 Inline Button Styles ===
 const btnStyle = `
-  padding: 2px 10px;
+  padding: 6px 12px;
   border: 1px solid #ccc;
-  border-radius: 4px;
-  font-weight: bold;
+  border-radius: 6px;
+  font-weight: 600;
   font-size: 1rem;
   background: white;
   cursor: pointer;
+  transition: all 0.2s ease;
 `;
 
 const delStyle = `
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   color: red;
   background: none;
   border: none;
