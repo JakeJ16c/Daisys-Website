@@ -53,11 +53,14 @@ export async function initCheckout({ mode = "cart", product = null } = {}) {
   document.body.appendChild(wrapper);
   document.body.style.overflow = "hidden";
 
-  document.getElementById("closeCheckout").onclick = () => {
-    wrapper.remove();
+  document.getElementById("closeCheckout").onclick = closeCheckout;
+  backdrop.onclick = closeCheckout;
+  
+  function closeCheckout() {
+    document.getElementById("checkout")?.remove();
     document.querySelector('.checkout-backdrop')?.remove();
     document.body.style.overflow = "";
-  };
+  }
 
   currentUser = await new Promise(res => onAuthStateChanged(auth, res));
   if (!currentUser) return document.getElementById("checkout-body").innerHTML = `<p>Please sign in to view your basket.</p>`;
