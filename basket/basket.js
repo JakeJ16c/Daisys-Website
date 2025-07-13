@@ -99,6 +99,8 @@ function renderBasket(items, isLoggedIn, uid = null) {
     qtyControls.appendChild(qty);
     qtyControls.appendChild(plus);
 
+    row.appendChild(qtyControls);
+
     basketContainer.appendChild(row);
   });
 
