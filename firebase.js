@@ -5,6 +5,7 @@ import { getFirestore } from "https://www.gstatic.com/firebasejs/11.8.1/firebase
 import { getStorage } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-storage.js"; // 
 import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-messaging.js";
 import { getFunctions } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-functions.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-analytics.js";
 
 // Your Firebase config (real values from your console)
 const firebaseConfig = {
@@ -23,6 +24,7 @@ const db = getFirestore(app);
 const storage = getStorage(app);
 const messaging = getMessaging(app);
 export const functions = getFunctions(app);
+const analytics = getAnalytics(app);
 
 // Export instances to use elsewhere
-export { app, auth, db, storage, messaging };
+export { app, auth, db, storage, messaging, analytics };
