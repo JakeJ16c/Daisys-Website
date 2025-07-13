@@ -69,8 +69,7 @@ function renderBasket(items, isLoggedIn, uid = null) {
     basketLeft.appendChild(row);
   });
 
-  document.getElementById("subtotal-display-summary").textContent = `£${subtotal.toFixed(2)}`;
-  document.getElementById("total-display-summary").textContent = `£${subtotal.toFixed(2)}`;
+  renderSummaryBox(subtotal, subtotal);
 
   document.querySelectorAll(".qty-plus").forEach(btn => {
     btn.addEventListener("click", e => handleQtyChange(e, items, isLoggedIn, uid, 1));
