@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="icon" href="favicon_circle.ico">
+  <link rel="icon" href="/favicon_circle.ico">
   <title>Your Basket - Golden By Daisy</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
@@ -276,7 +276,7 @@
       <a href="#"><i class="fas fa-phone"></i></a>
       <a href="#"><i class="fas fa-envelope"></i></a>
     </div>
-    <h1 class="header-title"><a href="index.html" class="logo-link">Golden By Daisy</a></h1>
+    <h1 class="header-title"><a href="/" class="logo-link">Golden By Daisy</a></h1>
     <div class="header-right">
       <a id="auth-icon" class="login-icon" href="#" title="User Menu"><i id="auth-icon-symbol" class="fas fa-user"></i></a>
     </div>
@@ -328,13 +328,13 @@
   <div id="footer-container"></div>
 
   <!-- Scripts -->
-  <script src="loading.js" defer></script>
-  <script src="layout/load-layout.js" type="module"></script>
-  <script type="module" src="user-toggle.js"></script>
-  <script type="module" src="account.js"></script>
-  <script type="module" src="admin-auth.js"></script>
-  <script type="module" src="basket-checkout.js"></script>
-  <script type="module" src="maintenance.js"></script>
+  <script src="/loading.js" defer></script>
+  <script src="/layout/load-layout.js" type="module"></script>
+  <script type="module" src="/user-toggle.js"></script>
+  <script type="module" src="/account.js"></script>
+  <script type="module" src="/admin-auth.js"></script>
+  <script type="module" src="/basket-checkout.js"></script>
+  <script type="module" src="/maintenance.js"></script>
   <script src="https://js.stripe.com/v3/"></script>
   <script type="module">
     import { initCheckout } from './checkout.js';
@@ -342,7 +342,6 @@
       initCheckout({ mode: "cart" }); // This will auto-load from Firestore basket
     });
   </script>
-
   
 </body>
 </html>
