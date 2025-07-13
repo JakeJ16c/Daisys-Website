@@ -51,7 +51,7 @@ export async function initCheckout({ mode = "cart", product = null } = {}) {
 
 
   document.body.appendChild(wrapper);
-  document.body.style.overflow = "hidden";
+  document.body.classList.add("checkout-open");
 
   document.getElementById("closeCheckout").onclick = closeCheckout;
   backdrop.onclick = closeCheckout;
@@ -59,7 +59,7 @@ export async function initCheckout({ mode = "cart", product = null } = {}) {
   function closeCheckout() {
     document.getElementById("checkout")?.remove();
     document.querySelector('.checkout-backdrop')?.remove();
-    document.body.style.overflow = "";
+    document.body.classList.remove("checkout-open");
   }
 
   currentUser = await new Promise(res => onAuthStateChanged(auth, res));
@@ -338,6 +338,10 @@ async function clearFirestoreBasket(uid) {
 function injectBaseStyles() {
   const style = document.createElement("style");
     style.textContent = `
+    body.checkout-open {
+      overflow: hidden !important;
+    }
+    
     #checkout {
       position: fixed;
       top: 0; right: 0;
