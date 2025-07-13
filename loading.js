@@ -92,20 +92,14 @@ document.head.appendChild(style);
 // Show loader immediately
 document.documentElement.style.overflow = "hidden"; // disable scroll
 
-// Handle logic
 window.addEventListener("load", () => {
   const loader = document.getElementById("loading-screen");
   loader.classList.add("fade-out");
 
   setTimeout(() => {
     loader.remove();
-    document.body.style.opacity = "0";
-    setTimeout(() => {
-      document.body.style.transition = "opacity 2s ease";
-      document.body.style.opacity = "1";
-    }, 0);
-
+    // Remove any style flicker
     document.documentElement.style.overflow = "auto";
     document.body.style.overflow = "auto";
-  }, 3000);
+  }, 3500); // match your fade duration
 });
