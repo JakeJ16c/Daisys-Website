@@ -59,15 +59,45 @@ function renderBasket(items, isLoggedIn, uid = null) {
       <div style="flex: 1;">
         <div style="font-weight: 600; font-size: 1rem; margin-bottom: 0.4rem;">${item.name}</div>
         ${item.size ? `<div style="font-size: 0.85rem; color: #666;">Size: ${item.size}</div>` : ""}
-        <div style="display: flex; align-items: center; gap: 0.6rem; margin-top: 0.5rem;">
-          <button class="qty-minus" data-index="${index}" style="${btnStyle}">−</button>
-          <span style="min-width: 28px; text-align: center;">${item.qty}</span>
-          <button class="qty-plus" data-index="${index}" style="${btnStyle}">+</button>
-        </div>
       </div>
       <div style="font-weight: 600; min-width: 64px; text-align: right;">£${itemTotal.toFixed(2)}</div>
       <button class="delete-btn" data-index="${index}" style="${delStyle}">×</button>
     `;
+
+    const qtyControls = document.createElement("div");
+    qtyControls.className = "qty-control";
+
+    const minus = document.createElement("button");
+    minus.className = "qty-minus";
+    minus.textContent = "−";
+    minus.addEventListener("click", () => {
+      if (item.qty > 1) {
+        item.qty--;
+      } else {
+        cart.splice(index, 1);
+      }
+      localStorage.setItem("daisyCart", JSON.stringify(cart));
+      if (window.syncBasketToFirestore) window.syncBasketToFirestore(cart);
+      renderBasket();
+    });
+
+    const qty = document.createElement("span");
+    qty.className = "qty-number";
+    qty.textContent = item.qty;
+
+    const plus = document.createElement("button");
+    plus.className = "qty-plus";
+    plus.textContent = "+";
+    plus.addEventListener("click", () => {
+      item.qty++;
+      localStorage.setItem("daisyCart", JSON.stringify(cart));
+      if (window.syncBasketToFirestore) window.syncBasketToFirestore(cart);
+      renderBasket();
+    });
+
+    qtyControls.appendChild(minus);
+    qtyControls.appendChild(qty);
+    qtyControls.appendChild(plus);
 
     basketContainer.appendChild(row);
   });
