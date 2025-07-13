@@ -277,9 +277,10 @@ function renderSummaryBox(subtotal = 0, total = 0) {
         color: white;
         border: none;
         padding: 0.75rem 1.25rem;
-        border-radius: 10px;
+        border-radius: 8px;
         cursor: pointer;
         font-weight: 600;
+        font-size: 16px;
         font-family: 'Nunito Sans', sans-serif;
         transition: background 0.3s ease;
       }
