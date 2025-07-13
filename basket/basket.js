@@ -349,7 +349,7 @@ function renderSummaryBox(subtotal = 0, total = 0) {
       </div>
 
       <div class="payment-icons">
-        <img src="/images/" alt="Visa" class="icon">
+        <img src="/images/visa.png" alt="Visa" class="icon">
       </div>
       
     </div>
