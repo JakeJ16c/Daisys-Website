@@ -11,25 +11,6 @@
   <link rel="stylesheet" href="/styles/styles.css">
   <link rel="stylesheet" href="/styles/responsive.css">
   <style>
-    :root {
-      --transition-time: 0.4s;
-    }
-
-    .basket-content {
-      max-width: 1200px;
-      margin: auto;
-      padding: 2rem;
-    }
-    
-    #basket-wrapper {
-      display: flex;
-      flex: 1;
-      justify-content: space-between;
-      gap: 2rem;
-      transition: transform var(--transition-time) ease-in-out;
-      width: 100%;
-    }
-
     .summary-box {
       background: white;
       padding: 1.8rem;
@@ -170,7 +151,6 @@
       display: block;
     }
     
-
     .section-summary {
       background: #f9f9f9;
       border: 1px solid #ddd;
@@ -196,15 +176,6 @@
       border-top: 1px solid #eee;
     }
 
-    .basket-item-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 2rem;
-      padding: 1.5rem 0;
-      border-bottom: 1px solid #ddd;
-    }
-
     .item-price {
       font-weight: bold;
       min-width: 70px;
@@ -215,24 +186,6 @@
     @media (max-width: 768px) {
       footer {
     display: none !important;
-  }
-
-    .basket-content {
-      padding: 0rem;
-    }
-  
-  #basket-wrapper {
-    flex-direction: column;
-    gap: 1rem;
-    transform: none !important;
-    transition: none;
-  }
-  
-  .basket-left {
-    order: 1;
-    margin: 1rem;
-    margin-top: 0;
-    padding-bottom: 5rem;
   }
   
 .basket-summary {
@@ -296,11 +249,8 @@
     <div class="basket-page">
       <div class="basket-content">
 
-          <!-- Sliding Basket Wrapper -->
-          <div id="basket-wrapper">
-            <div class="basket-left" id="basket-left">
-              <p id="basket-empty-message" style="display: none; text-align: center; margin: 3rem 0; font-size: 1.1rem; color: #666;">Your basket is empty.</p>
-            </div>
+          <div id="basket-left"></div>
+          <p id="basket-empty-message" style="display: none;">Your basket is empty</p>
             
             <div class="basket-summary">
               <div class="summary-box">
