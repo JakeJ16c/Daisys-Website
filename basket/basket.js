@@ -232,6 +232,7 @@ function renderSummaryBox(subtotal = 0, total = 0) {
       .summary-box {
         background: white;
         padding: 2rem;
+        padding-bottom: 1rem;
         border-radius: 18px;
         box-shadow: 0 6px 16px rgba(0,0,0,0.06);
         font-size: 0.95rem;
