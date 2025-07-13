@@ -220,6 +220,15 @@ function renderSummaryBox(subtotal = 0, total = 0) {
     const style = document.createElement("style");
     style.id = "summary-styles";
     style.textContent = `
+      .payment-icons {
+        margin-top: 1rem; 
+        text-align: center;
+      }
+      .icon {
+        height: 28px; 
+        margin: 0 5px;
+      }
+    
       .summary-box {
         background: white;
         padding: 2rem;
@@ -338,6 +347,11 @@ function renderSummaryBox(subtotal = 0, total = 0) {
       <div class="button-row">
         <button class="checkout-btn" id="checkoutBtn">Proceed to Checkout</button>
       </div>
+
+      <div class="payment-icons">
+        <img src="/images/" alt="Visa" class="icon">
+      </div>
+      
     </div>
   `;
 
