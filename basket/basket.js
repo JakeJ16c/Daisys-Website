@@ -1,12 +1,6 @@
-// ===========================
-// 🛒 Basket.js – Dynamic Basket Rendering
-// ===========================
-
 import { db, auth } from '../firebase.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
-import {
-  doc, getDocs, collection, deleteDoc, setDoc
-} from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+import { doc, getDocs, collection, deleteDoc, setDoc } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
 
 // 👤 Wait for user login state, load correct basket source
 onAuthStateChanged(auth, (user) => {
@@ -32,10 +26,10 @@ function loadLocalBasket() {
 
 // 🎨 Render all basket items and summary
 function renderBasket(items, isLoggedIn, uid = null) {
-  const basketLeft = document.getElementById("basket-left");
+  const basketContainer = document.getElementById("basket-items");
   const emptyMsg = document.getElementById("basket-empty-message");
 
-  basketLeft.innerHTML = "";
+  basketContainer.innerHTML = "";
   let subtotal = 0;
 
   if (!items.length) {
@@ -75,7 +69,7 @@ function renderBasket(items, isLoggedIn, uid = null) {
       <button class="delete-btn" data-index="${index}" style="${delStyle}">×</button>
     `;
 
-    basketLeft.appendChild(row);
+    basketContainer.appendChild(row);
   });
 
   renderSummaryBox(subtotal, subtotal);
@@ -100,8 +94,8 @@ async function handleDelete(e, items, isLoggedIn, uid) {
   const item = items[index];
 
   if (isLoggedIn) {
-    await deleteDoc(doc(db, "users", uid, "basket", item.id));
-    const snapshot = await getDocs(collection(db, "users", uid, "basket"));
+    await deleteDoc(doc(db, "users", uid, "Basket", item.id));
+    const snapshot = await getDocs(collection(db, "users", uid, "Basket"));
     const updated = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     renderBasket(updated, true, uid);
   } else {
@@ -118,8 +112,8 @@ async function handleQtyChange(e, items, isLoggedIn, uid, delta) {
   item.qty = Math.max(1, (item.qty || 1) + delta);
 
   if (isLoggedIn) {
-    await setDoc(doc(db, "users", uid, "basket", item.id), item);
-    const snapshot = await getDocs(collection(db, "users", uid, "basket"));
+    await setDoc(doc(db, "users", uid, "Basket", item.id), item);
+    const snapshot = await getDocs(collection(db, "users", uid, "Basket"));
     const updated = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     renderBasket(updated, true, uid);
   } else {
@@ -129,11 +123,11 @@ async function handleQtyChange(e, items, isLoggedIn, uid, delta) {
   }
 }
 
-// 📦 Render order summary box (right side)
+// 📦 Render order summary box
 function renderSummaryBox(subtotal = 0, total = 0) {
-  const container = document.getElementById("summary-container");
+  const container = document.getElementById("basket-summary");
 
-  // Inject summary styles once
+  // Inject styles if not yet added
   if (!document.getElementById("summary-styles")) {
     const style = document.createElement("style");
     style.id = "summary-styles";
@@ -209,28 +203,24 @@ function renderSummaryBox(subtotal = 0, total = 0) {
     document.head.appendChild(style);
   }
 
-  // Inject the summary box HTML
   container.innerHTML = `
-    <div class="basket-summary">
-      <div class="summary-box">
-        <h3>Order Summary</h3>
-        <div class="promo-code">
-          <input type="text" id="promo-code-input" placeholder="Promo Code">
-          <button id="apply-promo-btn">Apply</button>
-        </div>
-        <div class="totals">
-          <div class="total-line"><span>Subtotal:</span><span id="subtotal-display-summary">£${subtotal.toFixed(2)}</span></div>
-          <div class="total-line"><span>Shipping:</span><span>£0.00</span></div>
-          <div class="total-line final-total"><span>Total:</span><span id="total-display-summary">£${total.toFixed(2)}</span></div>
-        </div>
-        <div class="button-row">
-          <button class="summary-btn" id="checkoutBtn">Proceed to Checkout</button>
-        </div>
+    <div class="summary-box">
+      <h3>Order Summary</h3>
+      <div class="promo-code">
+        <input type="text" id="promo-code-input" placeholder="Promo Code">
+        <button id="apply-promo-btn">Apply</button>
+      </div>
+      <div class="totals">
+        <div class="total-line"><span>Subtotal:</span><span id="subtotal-display-summary">£${subtotal.toFixed(2)}</span></div>
+        <div class="total-line"><span>Shipping:</span><span>£0.00</span></div>
+        <div class="total-line final-total"><span>Total:</span><span id="total-display-summary">£${total.toFixed(2)}</span></div>
+      </div>
+      <div class="button-row">
+        <button class="summary-btn" id="checkoutBtn">Proceed to Checkout</button>
       </div>
     </div>
   `;
 
-  // 🎯 Launch Stripe checkout when clicked
   document.getElementById("checkoutBtn").addEventListener("click", () => {
     import("/checkout.js").then(({ initCheckout }) => {
       initCheckout({ mode: "cart" });
