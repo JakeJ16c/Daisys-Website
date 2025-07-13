@@ -306,6 +306,7 @@ function renderSummaryBox(subtotal = 0, total = 0) {
         .basket-layout {
           flex-direction: row;
           align-items: flex-start;
+          padding: 1rem 8rem;
         }
   
         #basket-items {
