@@ -58,7 +58,7 @@ function renderBasket(items, isLoggedIn, uid = null) {
       <img src="${item.image}" alt="${item.name}" style="height: 140px; width: 140px; object-fit: cover; border-radius: 10px;">
       <div style="flex: 1;">
         <div style="font-weight: 600; font-size: 1rem; margin-bottom: 0.4rem;">${item.name}</div>
-        ${item.size ? `<div style="font-size: 0.85rem; color: #666;">Size: ${item.size}</div>` : ""}
+        ${item.size && item.size !== "OneSize" ? `<div style="font-size: 0.85rem; color: #666;">Size: ${item.size}</div>` : ""}
       </div>
       <div class="qty-price-wrapper" style="
         display: flex;
