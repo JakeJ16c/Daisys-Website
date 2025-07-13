@@ -33,27 +33,22 @@
   </header>
   <div id="navigation-bar-container"></div>
 
-  <!-- Basket + Checkout Section -->
-  <main>
-    <button class="back-button continue-shopping-top" onclick="window.location.href='shop.html'">
-      ← Continue Shopping
-    </button>
-    
-    <div class="basket-page">
-      <div class="basket-content">
+<main>
+  <button class="back-button continue-shopping-top" onclick="window.location.href='shop.html'">
+    ← Continue Shopping
+  </button>
 
-          <div id="basket-left"></div>
-          <p id="basket-empty-message" style="display: none;">Your basket is empty</p>
+  <div class="basket-layout">
+    <!-- Basket Products -->
+    <div class="basket-items" id="basket-items"></div>
+    <p class="empty-message" id="basket-empty-message" style="display: none;">Your basket is empty</p>
 
-        <!-- Basket Summary will be injected here -->
-        <div id="summary-container"></div>
-            
-          </div>
-      </div>
+    <!-- Order Summary -->
+    <div class="basket-summary" id="basket-summary"></div>
+  </div>
+</main>
 
-  </main>
-
-  <div id="footer-container"></div>
+<div id="footer-container"></div>
 
   <!-- Scripts -->
   <script src="/loading.js" defer></script>
