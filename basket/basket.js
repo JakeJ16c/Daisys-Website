@@ -271,20 +271,19 @@ function renderSummaryBox(subtotal = 0, total = 0) {
         flex-direction: column;
         gap: 1.2rem;
         margin-top: 1.5rem;
-        padding: 0 1rem;
       }
-      .summary-btn {
+      .checkout-btn {
         background-color: black;
         color: white;
         border: none;
-        padding: 1rem;
+        padding: 0.75rem 1.25rem;
         border-radius: 10px;
         cursor: pointer;
         font-weight: 600;
         font-family: 'Nunito Sans', sans-serif;
         transition: background 0.3s ease;
       }
-      .summary-btn:hover {
+      .checkout-btn:hover {
         background-color: var(--electric-blue);
       }
     `;
@@ -335,7 +334,7 @@ function renderSummaryBox(subtotal = 0, total = 0) {
         <div class="total-line final-total"><span>Total:</span><span id="total-display-summary">£${total.toFixed(2)}</span></div>
       </div>
       <div class="button-row">
-        <button class="summary-btn" id="checkoutBtn">Proceed to Checkout</button>
+        <button class="checkout-btn" id="checkoutBtn">Proceed to Checkout</button>
       </div>
     </div>
   `;
