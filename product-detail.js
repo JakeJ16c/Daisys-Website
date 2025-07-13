@@ -215,6 +215,9 @@ async function loadProduct() {
     console.error("Error loading product:", error);
     document.querySelector('.product-container').innerHTML = '<p>Error loading product.</p>';
   }
+
+  setupAddToBasketListener();
+  
 }
 
 function updateStockUI(isOutOfStock) {
@@ -314,37 +317,44 @@ quantityControls.appendChild(plus);
 qtyContainer.appendChild(quantityControls);
 
 // Add to Basket
-document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("add-to-basket")?.addEventListener("click", () => {
-      const name = document.querySelector(".product-title").textContent;
-      const price = parseFloat(document.querySelector(".product-price").textContent.replace("£", ""));
-      const image = document.getElementById("product-image").src;
-      const sizeDropdown = document.getElementById("size-dropdown");
-      const selectedSize = sizeDropdown && sizeDropdown.value ? sizeDropdown.value : "OneSize";
+function setupAddToBasketListener() {
+  const addButton = document.getElementById("add-to-basket");
+  if (!addButton) {
+    console.warn("⛔️ Add to Basket button not found.");
+    return;
+  }
 
-      const cartKey = "daisyCart";
-      let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+  addButton.addEventListener("click", () => {
+    const name = document.querySelector(".product-title")?.textContent;
+    const price = parseFloat(document.querySelector(".product-price")?.textContent.replace("£", ""));
+    const image = document.getElementById("product-image")?.src || "";
+    const sizeDropdown = document.getElementById("size-dropdown");
+    const selectedSize = sizeDropdown && sizeDropdown.value ? sizeDropdown.value : "OneSize";
 
-      const existing = cart.find(item => item.id === productId && item.size === selectedSize);
-      if (existing) {
-        existing.qty += quantity;
-      } else {
-        cart.push({ id: productId, name, price, qty: quantity, image, size: selectedSize });
-      }
+    const cartKey = "daisyCart";
+    let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
 
-      localStorage.setItem(cartKey, JSON.stringify(cart));
+    const existing = cart.find(item => item.id === productId && item.size === selectedSize);
+    if (existing) {
+      existing.qty += quantity;
+    } else {
+      cart.push({ id: productId, name, price, qty: quantity, image, size: selectedSize });
+    }
 
-      if (typeof syncBasketToFirestore === "function") {
-        syncBasketToFirestore(cart);
-      }
+    localStorage.setItem(cartKey, JSON.stringify(cart));
+    if (typeof syncBasketToFirestore === "function") {
+      syncBasketToFirestore(cart);
+    }
 
-      logBasketActivity({ id: productId, name, qty: quantity, size: selectedSize });
-      document.getElementById("basket-preview")?.classList.remove("hidden");
-      if (typeof updateBasketPreview === "function") {
-        updateBasketPreview(true);
-      }
+    logBasketActivity({ id: productId, name, qty: quantity, size: selectedSize });
+    document.getElementById("basket-preview")?.classList.remove("hidden");
+    if (typeof updateBasketPreview === "function") {
+      updateBasketPreview(true);
+    }
+
+    console.log("🛒 Added to basket:", { productId, quantity });
   });
-});
+}
 
 function showApplePayButtonIfAvailable() {
   if (window.ApplePaySession && ApplePaySession.canMakePayments()) {
