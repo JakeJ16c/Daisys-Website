@@ -315,8 +315,7 @@ qtyContainer.appendChild(quantityControls);
 
 // Add to Basket
 document.addEventListener("DOMContentLoaded", () => {
-  document.addEventListener("click", (e) => {
-    if (e.target && e.target.classList.contains("add-to-basket")) {
+  document.getElementById("add-to-basket")?.addEventListener("click", () => {
       const name = document.querySelector(".product-title").textContent;
       const price = parseFloat(document.querySelector(".product-price").textContent.replace("£", ""));
       const image = document.getElementById("product-image").src;
@@ -344,7 +343,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (typeof updateBasketPreview === "function") {
         updateBasketPreview(true);
       }
-    }
   });
 });
 
