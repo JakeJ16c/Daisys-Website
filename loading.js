@@ -63,8 +63,8 @@ style.textContent = `
   }
   
   .spinner {
-    width: 70px;
-    height: 70px;
+    width: 75px;
+    height: 75px;
     border: 5px solid #ccc;
     border-top-color: #204ECF;
     border-radius: 50%;
