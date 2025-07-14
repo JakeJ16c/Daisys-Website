@@ -512,8 +512,18 @@ input:checked + .slider::before {
   background-color: #f1f1f1;
 }
 
-.form-control option,
 .form-control {
+    box-sizing: border-box;
+    font-size: 1rem;
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+    border: 1.5px solid #D7CDEB;
+    border-radius: 6px;
+    transition: border-color 0.3s ease;
+}
+
+.form-control option {
     box-sizing: border-box;
     font-size: 1rem;
     width: 100%;
