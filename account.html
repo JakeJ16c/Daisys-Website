@@ -676,10 +676,12 @@ input:checked + .slider::before {
         <button id="closeAddressModal" class="modal-close">&times;</button>
         <h3>Add New Address</h3>
 
+        <form id="addAddressForm">
+        
         <input type="text" id="address-search" placeholder="Start typing address..." autocomplete="off" />
         <ul id="address-suggestions" class="suggestion-list"></ul>
         
-        <form id="addAddressForm">
+        
           <select class="form-control" id="country-select">
             <option value="">Select a country</option>
           </select>
