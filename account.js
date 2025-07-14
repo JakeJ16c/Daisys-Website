@@ -195,7 +195,7 @@ async function submitNewAddress(e) {
   let street = document.getElementById("modal-street").value.trim();
   let city = document.getElementById("modal-city").value.trim();
   let county = document.getElementById("modal-county").value.trim();
-  let postcode = document.getElementById("modal-postcode").value.trim();
+  let postcode = document.getElementById("modal-postcode").value.trim().toUpperCase();;
 
   if (!houseNumber || !street || !city || !county || !postcode) {
     return alert("Please fill in all fields.");
@@ -445,6 +445,9 @@ async function handleSelectPrediction(prediction) {
     cityInput.value = data.city || '';
     countyInput.value = data.county || '';
     postcodeInput.value = data.postcode || '';
+    
+    // ✅ Clear the address search input
+    addressInput.value = '';
 
     console.log("📦 Autofilled from place ID:", data);
   } catch (err) {
