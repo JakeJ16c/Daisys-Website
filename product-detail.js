@@ -173,7 +173,7 @@ async function loadProduct() {
         if (qty > 0) {
           const option = document.createElement('option');
           option.value = size;
-          option.textContent = `${size} (${qty} available)`;
+          option.textContent = `${size}`;
           sizeDropdown.appendChild(option);
         }
       });
@@ -216,8 +216,7 @@ async function loadProduct() {
     document.querySelector('.product-container').innerHTML = '<p>Error loading product.</p>';
   }
 
-  setupAddToBasketListener();
-  
+  setupAddToBasketListener();  
 }
 
 function updateStockUI(isOutOfStock) {
