@@ -1,12 +1,6 @@
-// orders.js – Fetch and display paginated user orders
 import { auth, db } from '/firebase.js';
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
-import {
-  collection,
-  getDocs,
-  query,
-  where
-} from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+import { collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
 // Global variables for pagination
 let orders = [];
@@ -127,3 +121,49 @@ function renderPaginationControls() {
     pagination.appendChild(btn);
   }
 }
+
+const modal = document.getElementById('product-picker-modal');
+const productOptionsContainer = document.getElementById('product-options');
+
+// 🔘 Open modal on button click
+document.querySelectorAll('.leave-review-btn').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const orderId = btn.dataset.orderId;
+    const orderSnap = await getDoc(doc(db, "Orders", orderId));
+    if (!orderSnap.exists()) return;
+
+    const orderData = orderSnap.data();
+    const products = orderData.items || [];
+
+    productOptionsContainer.innerHTML = '';
+
+    products.forEach(product => {
+      const div = document.createElement('div');
+      div.classList.add('product-option');
+      div.innerHTML = `
+        <img src="${product.image}" alt="${product.name}">
+        <div>
+          <p><strong>${product.name}</strong></p>
+          <p>Size: ${product.size || 'N/A'}</p>
+        </div>
+      `;
+
+      div.addEventListener('click', () => {
+        const params = new URLSearchParams({
+          productId: product.productId,
+          orderId
+        });
+        window.location.href = `/review/?${params.toString()}`;
+      });
+
+      productOptionsContainer.appendChild(div);
+    });
+
+    modal.classList.remove('hidden');
+  });
+});
+
+// ❌ Close modal
+document.querySelector('.close-modal').addEventListener('click', () => {
+  modal.classList.add('hidden');
+});
