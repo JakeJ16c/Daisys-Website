@@ -13,7 +13,6 @@
 
   <!-- ========== Fonts, Icons & Styling ========== -->
   <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/styles/styles.css">
   <link rel="stylesheet" href="/styles/responsive.css">
@@ -275,16 +274,17 @@
         <div id="ordersGrid" class="orders-grid"></div>
         <div id="pagination" class="pagination-controls"></div>
       </div>
-    <!-- Product Picker Modal -->
-    <div id="product-picker-modal" class="hidden modal-overlay">
-      <div class="modal-content">
-        <h3>Select a product to review</h3>
-        <div id="product-options" class="product-options-list">
-          <!-- Dynamically filled with products -->
+    
+      <!-- Product Picker Modal -->
+      <div id="product-picker-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+          <h3>Select a product to review</h3>
+          <div id="product-options" class="product-options-list">
+            <!-- Dynamically filled with products -->
+          </div>
+          <button class="close-modal">Cancel</button>
         </div>
-        <button class="close-modal">Cancel</button>
       </div>
-    </div>
     
     </main>
 
