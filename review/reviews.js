@@ -7,9 +7,6 @@ const params = new URLSearchParams(window.location.search);
 const productId = params.get("productId");
 const orderId = params.get("orderId");
 
-// Set hidden inputs for form submission
-document.getElementById('product-id').value = productId || '';
-document.getElementById('order-id').value = orderId || '';
 
 async function loadProductInfo() {
   if (!productId || !orderId) return;
