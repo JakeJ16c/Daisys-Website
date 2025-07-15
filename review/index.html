@@ -56,9 +56,6 @@
       cursor: pointer;
     }
     .review-product-info {
-      position: absolute;
-      top: 2rem;
-      right: 2rem;
       background: #fff;
       border: 1px solid #ccc;
       padding: 1rem;
@@ -69,6 +66,21 @@
       flex-direction: column;
       align-items: center;
       text-align: center;
+    }
+
+    .review-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    .review-title {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: bold;
+      flex: 1;
     }
   </style>
 
@@ -111,15 +123,15 @@
 
   <main>
       <section class="review-form-section">
-        <h2>Leave a Review</h2>
-
-        <!-- Product Info Box -->
-        <div id="review-product-info" class="review-product-info">
-          <img id="review-product-image" src="placeholder.jpg" alt="Product" style="width: 100%; border-radius: 8px; margin-bottom: 0.5rem;" />
-          <p id="review-product-name" style="font-weight: 600;">Product Name</p>
-          <p id="review-product-size" style="font-size: 0.85rem; color: #777;">Size: -</p>
+        <div class="review-header-row">
+          <h2 class="review-title">Leave a Review</h2>
+        
+          <div id="review-product-info" class="review-product-info">
+            <img id="review-product-image" src="placeholder.jpg" alt="Product" style="width: 100%; border-radius: 8px; margin-bottom: 0.5rem;" />
+            <p id="review-product-name" style="font-weight: 600;">Product Name</p>
+            <p id="review-product-size" style="font-size: 0.85rem; color: #777;">Size: -</p>
+          </div>
         </div>
-
         
         <form id="review-form" enctype="multipart/form-data">
       
