@@ -185,6 +185,50 @@
     background-color: #4f46e5;
     color: white;
   }
+
+  .modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+}
+
+.product-options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.product-option {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.product-option img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 8px;
+}
   </style>
   
 </head>
@@ -225,11 +269,23 @@
   <div id="navigation-bar-container"></div>
 
   <main class="orders-page">
+    
       <div class="container" style="padding: 2rem;">
         <h2 style="text-align:center; margin-bottom: 2rem; margin-top: 0;">My Orders</h2>
         <div id="ordersGrid" class="orders-grid"></div>
         <div id="pagination" class="pagination-controls"></div>
       </div>
+    <!-- Product Picker Modal -->
+    <div id="product-picker-modal" class="hidden modal-overlay">
+      <div class="modal-content">
+        <h3>Select a product to review</h3>
+        <div id="product-options" class="product-options-list">
+          <!-- Dynamically filled with products -->
+        </div>
+        <button class="close-modal">Cancel</button>
+      </div>
+    </div>
+    
     </main>
 
 
