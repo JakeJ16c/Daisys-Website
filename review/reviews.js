@@ -17,7 +17,7 @@ async function loadProductInfo() {
     const productSnap = await getDoc(productRef);
     const productData = productSnap.exists() ? productSnap.data() : {};
 
-    const name = item.productName || "Unnamed Product";
+    const name = productData.name || "Unnamed Product";
     const image = Array.isArray(data.images) && data.images.length > 0
       ? data.images[0]
       : "favicon_circle.ico";
