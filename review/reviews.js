@@ -18,8 +18,8 @@ async function loadProductInfo() {
     const productData = productSnap.exists() ? productSnap.data() : {};
 
     const name = productData.name || "Unnamed Product";
-    const image = Array.isArray(data.images) && data.images.length > 0
-      ? data.images[0]
+    const image = Array.isArray(productData.images) && productData.images.length > 0
+      ? productData.images[0]
       : "favicon_circle.ico";
 
     // Inject into DOM
