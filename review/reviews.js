@@ -1,10 +1,6 @@
 import { auth, db, storage } from '/firebase.js';
 import { addDoc, collection, serverTimestamp } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
-import {
-  ref,
-  uploadBytes,
-  getDownloadURL
-} from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-storage.js';
+import { ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-storage.js';
 
 const starRating = document.getElementById('star-rating');
 const ratingInput = document.getElementById('rating');
