@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- ========== Basic Setup ========== -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Golden by Daisy - Handmade Beadwork & Fun Fashion Accessories">
+  <meta name="keywords" content="handmade beads, bead shop, golden by daisy, jewellery, accessories">
+  <meta name="author" content="Golden by Daisy">
+  <link rel="icon" type="image/x-icon" href="favicon_circle.ico">
+  <title>Golden By Daisy</title>
+
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ffffff">
+
+  <!-- ========== Fonts, Icons & Styling ========== -->
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles/styles.css">
+  <link rel="stylesheet" href="styles/responsive.css">
+  
+</head>
+<body>
+
+  <!-- Top Announcement -->
+  <div id="announcement-bar-container"></div>
+
+  <!-- Header Section -->
+  <header class="site-header">
+    <div class="header-left">
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-facebook-f"></i></a>
+      <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+      <a href="#"><i class="fas fa-envelope"></i></a>
+    </div>
+    <h1 class="header-title"><a href="index.html" class="logo-link">Golden By Daisy</a></h1>
+    <div class="header-right">
+      <a href="#cart" class="cart-icon"><i class="fas fa-basket-shopping"></i></a>
+      <a id="auth-icon" class="login-icon" href="#" title="User Menu">
+        <i id="auth-icon-symbol" class="fas fa-user"></i>
+      </a>
+
+</div>
+      <!-- Basket Dropdown -->
+      <div id="basket-preview"></div>
+
+    <!-- 👤 User Dropdown (dynamic) -->
+    <div id="logout-dropdown" class="hidden" style="position:absolute; right:1rem; top:4.2rem; background:white; border:1px solid #ccc; padding:1rem; border-radius:8px; z-index:1000; box-shadow:0 4px 12px rgba(0,0,0,0.1); min-width:160px;">
+      <div id="user-dropdown-content">
+        <!-- Content will be filled in by JS -->
+  </div>
+</div>
+
+  </header>
+
+  <!-- Navigation Bar -->
+  <div id="navigation-bar-container"></div>
+
+  <main>
+
+
+
+  </main>
+  
+  <!-- Footer -->
+  <div id="footer-container"></div>
+
+  </div>
+</div>
+
+  <!-- Loading Transition -->
+  <script src="loading.js" defer></script>
+
+  <!-- Load Page Layout -->
+  <script src="layout/load-layout.js" type="module"></script>
+
+  <!-- 'User' Toggle Btn -->
+  <script type="module" src="user-toggle.js"></script>
+
+  <!-- Basket Dropdown Btn -->
+  <script type="module" src="basket-dropdown.js"></script>
+  
+  <script type="module" src="firebase.js"></script>
+
+  <!-- Load Marquee Images -->
+  <script type="module" src="marquee.js"></script>
+
+  <!-- Admin Features -->
+  <script type="module" src="admin-auth.js"></script>
+
+  <!-- Import Products List -->
+  <script type="module" src="products.js"></script>
+
+  <!-- Maintenance Page If Toggled In Dashboard -->
+  <script type="module" src="maintenance.js"></script>
+
+  <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker
+        .register('sw.js')
+        .then(function (registration) {
+          console.log('✅ ServiceWorker registered: ', registration.scope);
+        })
+        .catch(function (error) {
+          console.error('❌ ServiceWorker registration failed: ', error);
+        });
+    });
+  }
+</script>
+
+<script type="module">
+  import { auth, db } from './firebase.js';
+  import { getDoc, doc } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+
+  async function enforceMaintenance() {
+    const statusRef = doc(db, "Settings", "siteStatus");
+    const snap = await getDoc(statusRef);
+
+    const maintenanceEnabled = snap.exists() && snap.data().siteMaintenance;
+
+    auth.onAuthStateChanged(user => {
+      const isAdmin = user && user.email === "youradmin@email.com"; // replace with your admin email
+
+      if (maintenanceEnabled && !isAdmin) {
+        window.location.href = "/maintenance.html";
+      }
+    });
+  }
+
+  enforceMaintenance();
+</script>
+
+  <!-- Cookie Banner -->
+<script src="cookie-banner/load-cookie-banner.js"></script>
+  
+</body>
+</html>
