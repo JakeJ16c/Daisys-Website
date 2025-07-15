@@ -141,13 +141,13 @@ function attachReviewListeners() {
       for (const product of products) {
         const productRef = doc(db, "Products", product.productId);
         const productSnap = await getDoc(productRef);
-      
+
         const productData = productSnap.exists() ? productSnap.data() : {};
         const productName = productData.name || "Unnamed Product";
         const productImage = Array.isArray(productData.images) && productData.images.length > 0
           ? productData.images[0]
           : "favicon_circle.ico";
-      
+
         const div = document.createElement('div');
         div.classList.add('product-option');
         div.innerHTML = `
@@ -157,7 +157,7 @@ function attachReviewListeners() {
             <p>Size: ${product.size || 'N/A'}</p>
           </div>
         `;
-      
+
         div.addEventListener('click', () => {
           const params = new URLSearchParams({
             productId: product.productId,
@@ -165,21 +165,11 @@ function attachReviewListeners() {
           });
           window.location.href = `/review/?${params.toString()}`;
         });
-      
+
         productOptionsContainer.appendChild(div);
       }
 
-        div.addEventListener('click', () => {
-          const params = new URLSearchParams({
-            productId: product.productId,
-            orderId
-          });
-          window.location.href = `/review/?${params.toString()}`;
-        });
-
-        productOptionsContainer.appendChild(div);
-      });
-
+      // ✅ Show modal AFTER products are rendered
       modal.classList.remove('hidden');
     });
   });
