@@ -1,6 +1,50 @@
 import { auth, db, storage } from '/firebase.js';
-import { addDoc, collection, serverTimestamp } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+import { addDoc, collection, serverTimestamp,getDoc, doc } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
 import { ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-storage.js';
+
+// Extract URL parameters
+const params = new URLSearchParams(window.location.search);
+const productId = params.get("productId");
+const orderId = params.get("orderId");
+
+// Set hidden inputs for form submission
+document.getElementById('product-id').value = productId || '';
+document.getElementById('order-id').value = orderId || '';
+
+async function loadProductInfo() {
+  if (!productId || !orderId) return;
+
+  try {
+    // Get product info
+    const productRef = doc(db, "Products", productId);
+    const productSnap = await getDoc(productRef);
+    const productData = productSnap.exists() ? productSnap.data() : {};
+
+    const name = productData.name || "Unnamed Product";
+    const image = Array.isArray(productData.images) && productData.images.length > 0
+      ? productData.images[0]
+      : "favicon_circle.ico";
+
+    // Inject into DOM
+    document.getElementById('product-name').textContent = name;
+    document.getElementById('product-image').src = image;
+
+    // Get size from order
+    const orderSnap = await getDoc(doc(db, "Orders", orderId));
+    if (orderSnap.exists()) {
+      const orderItems = orderSnap.data().items || [];
+      const match = orderItems.find(item => item.productId === productId);
+      if (match && match.size) {
+        document.getElementById('product-size').textContent = `Size: ${match.size}`;
+      }
+    }
+
+  } catch (err) {
+    console.error("Failed to load product info:", err);
+  }
+}
+
+loadProductInfo();
 
 const starRating = document.getElementById('star-rating');
 const ratingInput = document.getElementById('rating');
@@ -91,14 +135,4 @@ reviewForm.addEventListener('submit', async (e) => {
     console.error('Error submitting review:', err);
     alert('An error occurred while submitting your review. Please try again.');
   }
-});
-
-// === Auto-fill order/product from URL ===
-window.addEventListener('DOMContentLoaded', () => {
-  const params = new URLSearchParams(window.location.search);
-  const orderId = params.get('orderId');
-  const productId = params.get('productId');
-
-  if (orderId) document.getElementById('order-id').value = orderId;
-  if (productId) document.getElementById('product-id').value = productId;
 });
