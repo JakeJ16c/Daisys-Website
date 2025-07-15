@@ -142,9 +142,9 @@ function attachReviewListeners() {
         const div = document.createElement('div');
         div.classList.add('product-option');
         div.innerHTML = `
-          <img src="${product.image}" alt="${product.name}">
+          <img src="${img}" alt="${item.productName}">
           <div>
-            <p><strong>${product.name}</strong></p>
+            <p><strong>${item.productName}</strong></p>
             <p>Size: ${product.size || 'N/A'}</p>
           </div>
         `;
