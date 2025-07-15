@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <p>Order #${order.orderNumber || "N/A"}</p>
                 <p>£${parseFloat(order.finalTotal || 0).toFixed(2)}</p>
               </div>
-              <button class="review-btn" onclick="event.stopPropagation(); window.location.href='leave-review.html?orderId=${orderId}'">
+              <button class="review-btn leave-review-btn" data-order-id="${orderId}" onclick="event.stopPropagation();">
                 Leave a Review
               </button>
             </div>
@@ -99,6 +99,7 @@ function renderPage(page) {
     ordersGrid.innerHTML += order.html;
   });
 
+  attachReviewListeners();
   renderPaginationControls();
 }
 
@@ -122,48 +123,49 @@ function renderPaginationControls() {
   }
 }
 
-const modal = document.getElementById('product-picker-modal');
-const productOptionsContainer = document.getElementById('product-options');
+function attachReviewListeners() {
+  const modal = document.getElementById('product-picker-modal');
+  const productOptionsContainer = document.getElementById('product-options');
 
-// 🔘 Open modal on button click
-document.querySelectorAll('.leave-review-btn').forEach(btn => {
-  btn.addEventListener('click', async () => {
-    const orderId = btn.dataset.orderId;
-    const orderSnap = await getDoc(doc(db, "Orders", orderId));
-    if (!orderSnap.exists()) return;
+  document.querySelectorAll('.leave-review-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const orderId = btn.dataset.orderId;
+      const orderSnap = await getDoc(doc(db, "Orders", orderId));
+      if (!orderSnap.exists()) return;
 
-    const orderData = orderSnap.data();
-    const products = orderData.items || [];
+      const orderData = orderSnap.data();
+      const products = orderData.items || [];
 
-    productOptionsContainer.innerHTML = '';
+      productOptionsContainer.innerHTML = '';
 
-    products.forEach(product => {
-      const div = document.createElement('div');
-      div.classList.add('product-option');
-      div.innerHTML = `
-        <img src="${product.image}" alt="${product.name}">
-        <div>
-          <p><strong>${product.name}</strong></p>
-          <p>Size: ${product.size || 'N/A'}</p>
-        </div>
-      `;
+      products.forEach(product => {
+        const div = document.createElement('div');
+        div.classList.add('product-option');
+        div.innerHTML = `
+          <img src="${product.image}" alt="${product.name}">
+          <div>
+            <p><strong>${product.name}</strong></p>
+            <p>Size: ${product.size || 'N/A'}</p>
+          </div>
+        `;
 
-      div.addEventListener('click', () => {
-        const params = new URLSearchParams({
-          productId: product.productId,
-          orderId
+        div.addEventListener('click', () => {
+          const params = new URLSearchParams({
+            productId: product.productId,
+            orderId
+          });
+          window.location.href = `/review/?${params.toString()}`;
         });
-        window.location.href = `/review/?${params.toString()}`;
+
+        productOptionsContainer.appendChild(div);
       });
 
-      productOptionsContainer.appendChild(div);
+      modal.classList.remove('hidden');
     });
-
-    modal.classList.remove('hidden');
   });
-});
 
-// ❌ Close modal
-document.querySelector('.close-modal').addEventListener('click', () => {
-  modal.classList.add('hidden');
-});
+  // ✅ Close modal
+  document.querySelector('.close-modal').addEventListener('click', () => {
+    modal.classList.add('hidden');
+  });
+}
