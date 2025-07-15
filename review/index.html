@@ -94,37 +94,47 @@
   <div id="navigation-bar-container"></div>
 
   <main>
-
-  <section id="leave-review">
-    <h2>Leave a Review</h2>
-  
-    <div class="review-form-wrapper">
-      <div class="form-group">
-        <label for="rating">Rating:</label>
-        <div id="star-rating" class="star-rating">
-          <span data-value="1">&#9733;</span>
-          <span data-value="2">&#9733;</span>
-          <span data-value="3">&#9733;</span>
-          <span data-value="4">&#9733;</span>
-          <span data-value="5">&#9733;</span>
+      <section class="review-form-section">
+        <h2>Leave a Review</h2>
+        
+        <form id="review-form" enctype="multipart/form-data">
+      
+          <!-- Star Rating -->
+          <label for="rating">Your Rating</label>
+          <div class="star-rating" id="star-rating">
+            <i class="fas fa-star" data-value="1"></i>
+            <i class="fas fa-star" data-value="2"></i>
+            <i class="fas fa-star" data-value="3"></i>
+            <i class="fas fa-star" data-value="4"></i>
+            <i class="fas fa-star" data-value="5"></i>
+          </div>
+          <input type="hidden" id="rating" name="rating" required />
+      
+          <!-- Review Text -->
+          <label for="review-text">Your Review</label>
+          <textarea id="review-text" name="reviewText" rows="4" maxlength="500" required placeholder="Tell us about your experience..."></textarea>
+      
+          <!-- Name (Optional) -->
+          <label for="reviewer-name">Your Name (optional)</label>
+          <input type="text" id="reviewer-name" name="reviewerName" placeholder="e.g. Daisy">
+      
+          <!-- Image Upload (Optional) -->
+          <label for="review-images">Upload Images (optional)</label>
+          <input type="file" id="review-images" name="reviewImages" accept="image/*" multiple />
+          <div id="image-preview-container"></div>
+      
+          <!-- Order/Product Info (optional/hidden or prefilled) -->
+          <input type="hidden" id="order-id" name="orderId" />
+          <input type="hidden" id="product-id" name="productId" />
+      
+          <!-- Submit Button -->
+          <button type="submit" class="btn-submit-review">Submit Review</button>
+        </form>
+      
+        <div id="review-success-message" class="hidden">
+          <p>🎉 Thank you for your review!</p>
         </div>
-      </div>
-  
-      <div class="form-group">
-        <label for="review-text">Review:</label>
-        <textarea id="review-text" rows="4" placeholder="Write your review..."></textarea>
-      </div>
-  
-      <div class="form-group">
-        <label for="review-name">Your Name (optional):</label>
-        <input type="text" id="review-name" placeholder="e.g. Daisy or Anonymous">
-      </div>
-  
-      <div class="form-group">
-        <button id="submit-review">Submit Review</button>
-      </div>
-    </div>
-  </section>
+      </section>
 
   </main>
   
