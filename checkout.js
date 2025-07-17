@@ -97,7 +97,7 @@ async function renderCart() {
         <div class="item-details">
           <div class="item-name">${item.name}</div>
           ${item.size ? `<div class="item-size">Size: ${item.size}</div>` : ""}
-          <div class="item-qty-price">Qty: ${item.qty} × £${item.price.toFixed(2)} = <strong>£${line.toFixed(2)}</strong></div>
+          <div class="item-qty-price">£${item.price.toFixed(2)} = <strong>£${line.toFixed(2)}</strong></div>
         </div>
       </div>
     `;
@@ -163,10 +163,11 @@ async function renderCustomerAndAddress(container) {
         <input type="tel" id="phoneInput" class="form-input" placeholder="Optional">
       </div>
   
-      <div class="section-body open" id="address-info">
-        No address selected.
-        <br>
-        <button id="addAddressBtn" class="secondary-btn" style="margin-top: 0.75rem;">Add Address</button>
+      <div id="delivery-address-section">
+        <div class="address-cards-container" id="address-cards-container">
+          <!-- JS will render addresses here -->
+        </div>
+        <button id="add-address-btn">Add Address</button>
       </div>
       
     </div>
@@ -195,7 +196,62 @@ await new Promise(r => setTimeout(r, 0));
 document.getElementById("firstNameInput").value = data.firstName || "";
 document.getElementById("lastNameInput").value = data.lastName || "";
 document.getElementById("phoneInput").value = data.phone || "";
+await renderSavedAddresses();
 
+}
+
+async function renderSavedAddresses() {
+  const container = document.getElementById("address-cards-container");
+  container.innerHTML = "";
+
+  const snap = await getDocs(collection(db, "users", currentUser.uid, "addresses"));
+  if (snap.empty) {
+    container.innerHTML = `<p style="font-size: 0.9rem;">No saved addresses found.</p>`;
+    return;
+  }
+
+  snap.forEach(docSnap => {
+    const address = docSnap.data();
+    const id = docSnap.id;
+    const isSelected = address.isSelected;
+
+    const div = document.createElement("div");
+    div.className = `address-card${isSelected ? " selected" : ""}`;
+    div.dataset.id = id;
+    div.innerHTML = `
+      <div class="address-text">
+        ${address.line1 || ""}<br>
+        ${address.line2 || ""}<br>
+        ${address.city || ""}, ${address.postcode || ""}
+      </div>
+      <div class="card-actions">
+        <i class="fa fa-pen edit-address" title="Edit"></i>
+        <i class="fa fa-trash delete-address" title="Delete"></i>
+      </div>
+    `;
+
+    container.appendChild(div);
+
+    div.addEventListener("click", () => selectAddress(id));
+  });
+}
+
+async function selectAddress(id) {
+  const ref = doc(db, "users", currentUser.uid, "addresses", id);
+  const snap = await getDoc(ref);
+  if (!snap.exists()) return;
+
+  // Unselect all addresses
+  const all = await getDocs(collection(db, "users", currentUser.uid, "addresses"));
+  for (const d of all.docs) {
+    await updateDoc(doc(db, "users", currentUser.uid, "addresses", d.id), { isSelected: false });
+  }
+
+  // Mark selected one
+  await updateDoc(ref, { isSelected: true });
+
+  // Re-render the cards
+  await renderSavedAddresses();
 }
 
 // === PROMO CODE LOGIC ===
@@ -558,6 +614,45 @@ function injectBaseStyles() {
     @keyframes slideIn {
       from { right: -100%; }
       to { right: 0; }
+    }
+
+    .address-cards-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 1rem;
+    }
+    
+    .address-card {
+      border: 2px solid #ccc;
+      border-radius: 12px;
+      padding: 16px;
+      position: relative;
+      background: #fff;
+      transition: border-color 0.3s;
+    }
+    
+    .address-card.selected {
+      border-color: #204ECF;
+      box-shadow: 0 0 0 3px rgba(32, 78, 207, 0.2);
+    }
+    
+    .address-card .address-text {
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+    
+    .address-card .card-actions {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      display: flex;
+      gap: 10px;
+    }
+    
+    .address-card .card-actions i {
+      cursor: pointer;
+      color: #666;
     }
 
     @media (max-width: 768px) {
