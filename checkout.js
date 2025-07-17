@@ -85,26 +85,30 @@ async function renderCart() {
   container.innerHTML = "";
 
   let subtotal = 0;
+
   if (currentCart.length === 1) {
-      const item = currentCart[0];
-      const line = item.qty * item.price;
-      subtotal += line;
-      container.innerHTML += `
-        <div class="checkout-item">
-          <div class="item-img">
-            <img src="${item.image}" alt="${item.name}">
-            <div class="qty-badge">${item.qty}</div>
-          </div>
-          <div class="item-details">
-            <div class="item-name">${item.name}</div>
-            ${item.size ? `<div class="item-size">Size: ${item.size}</div>` : ""}
-            <div class="item-qty-price">£${item.price.toFixed(2)} = <strong>£${line.toFixed(2)}</strong></div>
-          </div>
+    // Single item: show preview
+    const item = currentCart[0];
+    const line = item.qty * item.price;
+    subtotal += line;
+
+    container.innerHTML += `
+      <div class="checkout-item">
+        <div class="item-img">
+          <img src="${item.image}" alt="${item.name}">
+          <div class="qty-badge">${item.qty}</div>
         </div>
-      `;
-    } else {
-      subtotal = currentCart.reduce((sum, item) => sum + item.qty * item.price, 0);
-    }
+        <div class="item-details">
+          <div class="item-name">${item.name}</div>
+          ${item.size ? `<div class="item-size">Size: ${item.size}</div>` : ""}
+          <div class="item-qty-price">£${item.price.toFixed(2)} = <strong>£${line.toFixed(2)}</strong></div>
+        </div>
+      </div>
+    `;
+  } else {
+    // Multiple items: skip preview, just calculate total
+    subtotal = currentCart.reduce((sum, item) => sum + item.qty * item.price, 0);
+  }
 
   discountAmount = activePromo
     ? (activePromo.type === "percentage"
@@ -115,7 +119,7 @@ async function renderCart() {
 
   await renderCustomerAndAddress(container);
   attachToggleListeners();
-  renderStripeForm();
+  renderStripeForm(); // Also shows summary and payment form
 }
 
 function attachToggleListeners() {
