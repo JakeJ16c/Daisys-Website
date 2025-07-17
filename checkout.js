@@ -401,8 +401,9 @@ function injectBaseStyles() {
     #checkout {
       position: fixed;
       top: 0; right: 0;
-      width: 100%;
-      max-width: 600px;
+      width: 35%;
+      margin: 5px;
+      border-radius: 8px;
       height: 100vh;
       background: #fff;
       z-index: 9999;
