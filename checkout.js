@@ -657,7 +657,11 @@ function injectBaseStyles() {
     }
 
     @media (max-width: 768px) {
-      #checkout { width: 100%; }
+      #checkout { 
+        width: 100%;
+        margin: 5px;
+        border-radius: 8px;
+      }
     }
   `;
   document.head.appendChild(style);
