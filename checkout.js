@@ -401,9 +401,7 @@ function injectBaseStyles() {
       font-size: 1.1rem;
       font-weight: 600;
       color: #204ECF;
-      margin: 2rem 0 1rem;
-      padding-bottom: 0.25rem;
-      border-bottom: 1px solid #e3e3e3;
+      padding-left: 1rem;
     }
     
     .checkout-subsection {
