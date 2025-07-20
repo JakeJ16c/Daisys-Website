@@ -39,7 +39,6 @@ export async function initCheckout({ mode = "cart", product = null } = {}) {
     <div class="checkout-panel">
       <button id="closeCheckout">&times;</button>
       <div class="checkout-content">
-        <h2>Secure Checkout</h2>
         <div id="checkout-body"><p class="loading-text">Loading...</p></div>
       </div>
     </div>
@@ -146,7 +145,7 @@ async function renderCustomerAndAddress(container) {
   container.innerHTML += `
   <div class="checkout-section">
     
-    <span class="section-label">Contact & Delivery Info</span>
+    <span class="section-label" style="padding: 1rem;">Contact & Delivery Info</span>
     
     <div class="checkout-subsection">
       <div class="form-row">
