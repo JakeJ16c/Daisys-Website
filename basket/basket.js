@@ -72,7 +72,7 @@ function renderBasket(items, isLoggedIn, uid = null) {
         <div class="item-price" style="font-weight: 600; min-width: 64px; text-align: right;">£${itemTotal.toFixed(2)}</div>
       </div>
       <button class="delete-btn" data-index="${index}" style="${delStyle}">
-        <i class="fa-regular fa-trash"></i>
+        <i class="fas fa-trash"></i>
       </button>
     `;
          
@@ -298,6 +298,16 @@ function renderSummaryBox(subtotal = 0, total = 0) {
       }
       .checkout-btn:hover {
         background-color: var(--electric-blue);
+      }
+      .delete-btn i {
+        font-size: 1.2rem;
+        color: #e74c3c;
+        transition: transform 0.2s ease, color 0.2s ease;
+      }
+      
+      .delete-btn:hover i {
+        color: #ff6b6b;
+        transform: scale(1.2);
       }
     `;
     document.head.appendChild(style);
