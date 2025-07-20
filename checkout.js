@@ -382,7 +382,7 @@ function injectBaseStyles() {
       top: 0; right: 0;
       width: 35%;
       margin: 5px;
-      border-radius: 8px;
+      border-radius: 6px;
       height: 100vh;
       background: #fff;
       z-index: 9999;
