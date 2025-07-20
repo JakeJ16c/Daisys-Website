@@ -144,6 +144,30 @@ async function renderCustomerAndAddress(container) {
   const name = `${data.firstName || ""} ${data.lastName || ""}`.trim();
 
   container.innerHTML += `
+  <div class="checkout-section">
+    <h3 class="checkout-subheading">Contact Information</h3>
+    <div class="checkout-subsection">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">First Name</label>
+          <input type="text" id="firstNameInput" class="form-input" placeholder="First Name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name</label>
+          <input type="text" id="lastNameInput" class="form-input" placeholder="Last Name">
+        </div>
+      </div>
+      <label class="form-label">Email</label>
+      <input type="email" id="emailInput" class="form-input" value="${currentUser.email}" disabled>
+
+      <label class="form-label">Phone Number</label>
+      <input type="tel" id="phoneInput" class="form-input" placeholder="Optional">
+    </div>
+  </div>
+`;
+
+  
+  container.innerHTML += `
     <div class="checkout-section">
       <div class="section-header" data-toggle="contact-info">
         <span class="section-label">Contact & Delivery Info</span>
