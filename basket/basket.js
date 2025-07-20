@@ -72,7 +72,7 @@ function renderBasket(items, isLoggedIn, uid = null) {
         <div class="item-price" style="font-weight: 600; min-width: 64px; text-align: right;">£${itemTotal.toFixed(2)}</div>
       </div>
       <button class="delete-btn" data-index="${index}" style="${delStyle}">
-        <i class="fas fa-trash"></i>
+        <i class="fa-regular fa-trash"></i>
       </button>
     `;
          
