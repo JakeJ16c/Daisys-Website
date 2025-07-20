@@ -405,7 +405,7 @@ function injectBaseStyles() {
     }
     
     .checkout-subsection {
-      padding: 1rem;
+      padding: 0rem 1rem;
       border-bottom: 1px solid #eee;
     }
 
