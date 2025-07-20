@@ -145,7 +145,11 @@ async function renderCustomerAndAddress(container) {
 
   container.innerHTML += `
   <div class="checkout-section">
-    <h3 class="checkout-subheading">Contact Information</h3>
+  
+    //<//h3 class="checkout-subheading">Contact Information</h3//>
+    
+    <span class="section-label">Contact & Delivery Info</span>
+    
     <div class="checkout-subsection">
       <div class="form-row">
         <div class="form-group">
@@ -166,60 +170,6 @@ async function renderCustomerAndAddress(container) {
   </div>
 `;
 
-  
-  container.innerHTML += `
-    <div class="checkout-section">
-      <div class="section-header" data-toggle="contact-info">
-        <span class="section-label">Contact & Delivery Info</span>
-        <span class="toggle-icon">-</span>
-      </div>
-      <div class="section-body open" id="contact-info">
-        <div class="form-row">
-        
-          <div class="form-group">
-            <label class="form-label">First Name</label>
-            <input type="text" id="firstNameInput" class="form-input" placeholder="First Name">
-          </div>
-          
-          <div class="form-group">
-            <label class="form-label">Last Name</label>
-            <input type="text" id="lastNameInput" class="form-input" placeholder="Last Name">
-          </div>
-        </div>
-      
-        <label class="form-label">Email</label>
-        <input type="email" id="emailInput" class="form-input" value="${currentUser.email}" disabled>
-      
-        <label class="form-label">Phone Number</label>
-        <input type="tel" id="phoneInput" class="form-input" placeholder="Optional">
-      </div>
-  
-      <div id="delivery-address-section">
-        <div class="address-cards-container" id="address-cards-container">
-          <!-- JS will render addresses here -->
-        </div>
-        <button id="add-address-btn">Add Address</button>
-      </div>
-      
-    </div>
-
-      <div class="checkout-section">
-    <div class="section-header" data-toggle="delivery-method">
-      <span class="section-label">Delivery Method</span>
-      <span class="toggle-icon">-</span>
-    </div>
-    <div class="section-body open" id="delivery-method">
-      <label style="display:block; margin-bottom: 0.5rem;">
-        <input type="radio" name="deliveryOption" value="standard" checked>
-        Standard (2–4 days) – £2.99
-      </label>
-      <label style="display:block;">
-        <input type="radio" name="deliveryOption" value="chooseDate">
-        Choose a Date – £4.99
-      </label>
-    </div>
-  </div>
-  `;
 
 // Wait for DOM to update
 await new Promise(r => setTimeout(r, 0));
@@ -444,6 +394,10 @@ function injectBaseStyles() {
       box-shadow: -2px 0 10px rgba(0,0,0,0.15);
       animation: slideIn 0.4s ease forwards;
       font-family: 'Nunito Sans', sans-serif;
+    }
+
+    .checkout-subsection {
+      padding: 1rem;
     }
 
     .checkout-backdrop {
