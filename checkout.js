@@ -140,42 +140,46 @@ function attachToggleListeners() {
 async function renderCustomerAndAddress(container) {
   const snap = await getDoc(doc(db, "users", currentUser.uid));
   const data = snap.exists() ? snap.data() : {};
-  const name = `${data.firstName || ""} ${data.lastName || ""}`.trim();
 
   container.innerHTML += `
-  <div class="checkout-section">
-    
-    <span class="section-label" style="padding: 1rem;">Contact & Delivery Info</span>
-    
-    <div class="checkout-subsection">
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">First Name</label>
-          <input type="text" id="firstNameInput" class="form-input" placeholder="First Name">
+    <div class="checkout-section">
+      <h3 class="checkout-subheading">Contact Information</h3>
+      <div class="checkout-subsection">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <input type="text" id="firstNameInput" class="form-input" placeholder="First Name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <input type="text" id="lastNameInput" class="form-input" placeholder="Last Name">
+          </div>
         </div>
-        <div class="form-group">
-          <label class="form-label">Last Name</label>
-          <input type="text" id="lastNameInput" class="form-input" placeholder="Last Name">
-        </div>
+
+        <label class="form-label">Email</label>
+        <input type="email" id="emailInput" class="form-input" value="${currentUser.email}" disabled>
+
+        <label class="form-label">Phone Number</label>
+        <input type="tel" id="phoneInput" class="form-input" placeholder="Optional">
       </div>
-      <label class="form-label">Email</label>
-      <input type="email" id="emailInput" class="form-input" value="${currentUser.email}" disabled>
-
-      <label class="form-label">Phone Number</label>
-      <input type="tel" id="phoneInput" class="form-input" placeholder="Optional">
     </div>
-  </div>
-`;
 
+    <div class="checkout-section">
+      <h3 class="checkout-subheading">Delivery Address</h3>
+      <div class="checkout-subsection" id="delivery-address-section">
+        <div class="address-cards-container" id="address-cards-container"></div>
+        <button id="add-address-btn" class="secondary-btn" style="margin-top: 1rem;">Add Address</button>
+      </div>
+    </div>
+  `;
 
-// Wait for DOM to update
-await new Promise(r => setTimeout(r, 0));
+  // Autofill
+  await new Promise(r => setTimeout(r, 0));
+  document.getElementById("firstNameInput").value = data.firstName || "";
+  document.getElementById("lastNameInput").value = data.lastName || "";
+  document.getElementById("phoneInput").value = data.phone || "";
 
-document.getElementById("firstNameInput").value = data.firstName || "";
-document.getElementById("lastNameInput").value = data.lastName || "";
-document.getElementById("phoneInput").value = data.phone || "";
-await renderSavedAddresses();
-
+  await renderSavedAddresses();
 }
 
 async function renderSavedAddresses() {
