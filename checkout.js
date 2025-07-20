@@ -145,8 +145,6 @@ async function renderCustomerAndAddress(container) {
 
   container.innerHTML += `
   <div class="checkout-section">
-  
-    //<//h3 class="checkout-subheading">Contact Information</h3//>
     
     <span class="section-label">Contact & Delivery Info</span>
     
@@ -396,8 +394,18 @@ function injectBaseStyles() {
       font-family: 'Nunito Sans', sans-serif;
     }
 
+    .checkout-subheading {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #204ECF;
+      margin: 2rem 0 1rem;
+      padding-bottom: 0.25rem;
+      border-bottom: 1px solid #e3e3e3;
+    }
+    
     .checkout-subsection {
       padding: 1rem;
+      border-bottom: 1px solid #eee;
     }
 
     .checkout-backdrop {
