@@ -71,7 +71,9 @@ function renderBasket(items, isLoggedIn, uid = null) {
         <!-- Quantity controls will be inserted here -->
         <div class="item-price" style="font-weight: 600; min-width: 64px; text-align: right;">£${itemTotal.toFixed(2)}</div>
       </div>
-      <button class="delete-btn" data-index="${index}" style="${delStyle}">×</button>
+      <button class="delete-btn" data-index="${index}" style="${delStyle}">
+        <i class="fas fa-trash"></i>
+      </button>
     `;
          
       // 🔁 Clean pill-style quantity controls
