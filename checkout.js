@@ -613,7 +613,7 @@ function injectBaseStyles() {
 
     .address-cards-container {
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       gap: 12px;
       margin-top: 1rem;
     }
