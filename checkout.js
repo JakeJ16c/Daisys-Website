@@ -519,8 +519,7 @@ function injectBaseStyles() {
     .form-label {
       display: block;
       margin-top: 1rem;
-      font-weight: 600;
-      font-size: 0.95rem;
+      font-size: 0.85rem;
       color: #333;
     }
     
