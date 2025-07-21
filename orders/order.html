@@ -231,9 +231,9 @@
     const div = document.createElement('div');
     div.className = 'item';
     div.innerHTML = `
-      <img src="${productMap[item.productName?.trim().toLowerCase()] || 'favicon_circle.ico'}" alt="${item.productName}" />
+      <img src="${productMap[item.productName?.trim().toLowerCase()] || 'favicon_circle.ico'}" alt="${item.name}" />
       <div class="item-details">
-        <strong>${item.productName}</strong><br>
+        <strong>${item.name}</strong><br>
         Size: ${item.size}<br>
         £${item.price.toFixed(2)} x ${item.qty}
       </div>
