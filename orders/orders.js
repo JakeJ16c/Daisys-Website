@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           .slice(0, 4)
           .map(item => {
             const img = productMap[item.productName?.trim().toLowerCase()] || 'favicon_circle.ico';
-            return `<img src="${img}" class="product-thumb" alt="${item.productName}">`;
+            return `<img src="${img}" class="product-thumb" alt="${item.name}">`;
           }).join("");
 
         const html = `
