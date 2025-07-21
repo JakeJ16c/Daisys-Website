@@ -231,8 +231,10 @@ async function loadProducts(paginate = false, direction = 'next') {
 // Render
 function renderProducts(products) {
   container.innerHTML = "";
+  const archivedContainer = document.getElementById("ArchivedproductsTableContainer");
+  archivedContainer.innerHTML = ""; // Clear previous archive list
 
-  // Inject Personalised Design Toggle Card
+  // Personalised toggle stays in active area only
   const toggleCard = document.createElement("div");
   toggleCard.className = "product-card";
   toggleCard.style.cssText = `
@@ -246,7 +248,7 @@ function renderProducts(products) {
     align-items: center;
     text-align: center;
   `;
-  
+
   toggleCard.innerHTML = `
     <img src="../IMG_8861.png" alt="Personalised Design" style="
       width: 100px; height: 100px; object-fit: cover;
@@ -258,28 +260,27 @@ function renderProducts(products) {
       <span class="slider round"></span>
     </label>
   `;
-  
-  // Add toggle logic after render
+
   (async () => {
-  const toggle = toggleCard.querySelector("#personalisedToggle");
-  const settingsRef = doc(db, "SiteSettings", "design");
+    const toggle = toggleCard.querySelector("#personalisedToggle");
+    const settingsRef = doc(db, "SiteSettings", "design");
 
-  try {
-    const snap = await getDoc(settingsRef);
-    if (snap.exists()) {
-      toggle.checked = snap.data().personalisedDesignEnabled ?? false;
+    try {
+      const snap = await getDoc(settingsRef);
+      if (snap.exists()) {
+        toggle.checked = snap.data().personalisedDesignEnabled ?? false;
+      }
+
+      toggle.addEventListener("change", async () => {
+        await setDoc(settingsRef, {
+          personalisedDesignEnabled: toggle.checked
+        }, { merge: true });
+      });
+    } catch (err) {
+      console.error("❌ Failed to load personalised toggle:", err);
     }
+  })();
 
-    toggle.addEventListener("change", async () => {
-      await setDoc(settingsRef, {
-        personalisedDesignEnabled: toggle.checked
-      }, { merge: true });
-    });
-  } catch (err) {
-    console.error("❌ Failed to load personalised toggle:", err);
-  }
-})();
-  
   container.appendChild(toggleCard);
 
   products.forEach(product => {
@@ -311,59 +312,72 @@ function renderProducts(products) {
         <button class="delete-btn" data-id="${product.id}" style="
           padding: 6px 12px; border-radius: 6px;
           background: #f87171; color: white; border: none;">Delete</button>
+        <button class="archive-btn" data-id="${product.id}" style="
+          padding: 6px 12px; border-radius: 6px;
+          background: #e0e0e0; color: black; border: none;">
+          ${product.archived ? 'Unarchive' : 'Archive'}
+        </button>
       </div>
     `;
 
-    const editBtn = card.querySelector('.edit-btn');
-      if (editBtn) {
-        editBtn.onclick = () => {
-          selectedProductId = product.id;
-          modalName.value = product.name || "";
-          modalPrice.value = product.price || "";
-          modalDescription.value = product.description || "";
-          uploadedImages = product.images || [];
-          imagePreviewContainer.innerHTML = "";
-          uploadedImages.forEach((url) => {
-            const img = document.createElement("img");
-            img.src = url;
-            img.style.cssText = "width:60px;height:60px;margin-right:8px;border-radius:6px;";
-            imagePreviewContainer.appendChild(img);
-          });
-          
-          // NEW: Toggle size UI
-          if (product.oneSizeOnly) {
-            document.getElementById("oneSizeYes").checked = true;
-            document.getElementById("oneSizeYes").dispatchEvent(new Event("change"));
-            modalStock.value = typeof product.stock === 'number' ? product.stock : "";
-          } else {
-            document.getElementById("oneSizeNo").checked = true;
-            document.getElementById("oneSizeNo").dispatchEvent(new Event("change"));
-            document.getElementById("dynamicSizeList").innerHTML = '';
-          
-            Object.entries(product.stock || {}).forEach(([size, qty]) => {
-              const row = document.createElement("div");
-              row.classList.add("form-group");
-              row.innerHTML = `
-                <label>Size ${size}</label>
-                <input type="number" name="stock_${size}" value="${qty}" placeholder="Qty" class="form-control" />
-              `;
-              document.getElementById("dynamicSizeList").appendChild(row);
-            });
-          } 
-          productModal.style.display = "flex";
-        };
+    // Attach edit logic
+    card.querySelector('.edit-btn').onclick = () => {
+      selectedProductId = product.id;
+      modalName.value = product.name || "";
+      modalPrice.value = product.price || "";
+      modalDescription.value = product.description || "";
+      uploadedImages = product.images || [];
+      imagePreviewContainer.innerHTML = "";
+      uploadedImages.forEach((url) => {
+        const img = document.createElement("img");
+        img.src = url;
+        img.style.cssText = "width:60px;height:60px;margin-right:8px;border-radius:6px;";
+        imagePreviewContainer.appendChild(img);
+      });
+
+      if (product.oneSizeOnly) {
+        oneSizeYes.checked = true;
+        oneSizeYes.dispatchEvent(new Event("change"));
+        modalStock.value = typeof product.stock === 'number' ? product.stock : "";
+      } else {
+        oneSizeNo.checked = true;
+        oneSizeNo.dispatchEvent(new Event("change"));
+        dynamicSizeList.innerHTML = '';
+        Object.entries(product.stock || {}).forEach(([size, qty]) => {
+          const row = document.createElement("div");
+          row.classList.add("form-group");
+          row.innerHTML = `
+            <label>Size ${size}</label>
+            <input type="number" name="stock_${size}" value="${qty}" placeholder="Qty" class="form-control" />
+          `;
+          dynamicSizeList.appendChild(row);
+        });
       }
 
-    const deleteBtn = card.querySelector('.delete-btn');
-      if (deleteBtn) {
-        deleteBtn.onclick = () => {
-          if (confirm("Delete this product?")) {
-            deleteDoc(doc(db, "Products", product.id)).then(loadProducts);
-          }
-        };
-      }
+      productModal.style.display = "flex";
+    };
 
-    container.appendChild(card);
+    // Attach delete logic
+    card.querySelector('.delete-btn').onclick = () => {
+      if (confirm("Delete this product?")) {
+        deleteDoc(doc(db, "Products", product.id)).then(loadProducts);
+      }
+    };
+
+    // NEW: Archive/Unarchive toggle
+    card.querySelector('.archive-btn').onclick = async () => {
+      await updateDoc(doc(db, "Products", product.id), {
+        archived: !product.archived
+      });
+      loadProducts();
+    };
+
+    // Append card to correct container
+    if (product.archived) {
+      archivedContainer.appendChild(card);
+    } else {
+      container.appendChild(card);
+    }
   });
 }
 
