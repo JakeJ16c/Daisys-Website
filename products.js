@@ -1,5 +1,5 @@
 import { db } from './firebase.js';
-import { getDocs, collection, addDoc, serverTimestamp, doc, setDoc, deleteDoc, getDoc } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+import { getDocs, collection, addDoc, serverTimestamp, doc, setDoc, deleteDoc, getDoc, query, where } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
 import { auth } from "./firebase.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 
@@ -42,7 +42,9 @@ if (personalisedEnabled) {
   productCards.push(pinnedCard);
 }
 
-  const querySnapshot = await getDocs(collection(db, "Products"));
+  const productsRef = collection(db, "Products");
+  const q = query(productsRef, where("archived", "==", false));
+  const querySnapshot = await getDocs(q);
 
   for (const docSnap of querySnapshot.docs) {
     const data = docSnap.data();
