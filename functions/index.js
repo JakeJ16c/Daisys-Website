@@ -28,7 +28,7 @@ exports.notifyOnNewOrder = functions.firestore
 
       if (!tokens.length) return null;
 
-      const itemSummary = order.items.map(item => `${item.qty} ${item.productName}`).join(', ');
+      const itemSummary = order.items.map(item => `${item.qty} ${item.name}`).join(', ');
       const totalAmount = `£${(order.finalTotal || 0).toFixed(2)}`;
 
       await Promise.all(tokens.map(token =>
