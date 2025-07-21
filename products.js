@@ -42,13 +42,14 @@ if (personalisedEnabled) {
   productCards.push(pinnedCard);
 }
 
-  const productsRef = collection(db, "Products");
-  const q = query(productsRef, where("archived", "==", false));
-  const querySnapshot = await getDocs(q);
+  const querySnapshot = await getDocs(collection(db, "Products"));
 
   for (const docSnap of querySnapshot.docs) {
     const data = docSnap.data();
     const docId = docSnap.id;
+  
+    // ✅ Skip if archived === true
+    if (data.archived === true) continue;
 
     const productCard = document.createElement("div");
     productCard.className = "product-card";
