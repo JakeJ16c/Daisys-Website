@@ -293,30 +293,36 @@ function renderProducts(products) {
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
       padding: 16px;
       display: flex;
-      flex-direction: column;
       align-items: center;
-      text-align: center;
+      justify-content: space-between;
+      text-align: left;
     `;
 
     card.innerHTML = `
-      <img src="${product.images?.[0] || '../icon-512.png'}" alt="${product.name}" style="
-        width: 100px; height: 100px; object-fit: cover;
-        border-radius: 50%; margin-bottom: 12px;">
-      <h3 style="font-size: 1.1rem; margin: 8px 0;">${product.name}</h3>
-      <p style="margin: 4px 0;"><strong>£${Number(product.price).toFixed(2)}</strong></p>
-      <p style="margin: 4px 0; color: #777;">Stock: ${typeof product.stock === 'object' ? Object.values(product.stock).reduce((a,b)=>a+b,0) : product.stock ?? 0}</p>
-      <div style="margin-top: 10px; display: flex; gap: 10px;">
-        <button class="edit-btn" data-id="${product.id}" style="
-          padding: 6px 12px; border-radius: 6px;
-          background: #204ECF; color: white; border: none;">Edit</button>
-        <button class="delete-btn" data-id="${product.id}" style="
-          padding: 6px 12px; border-radius: 6px;
-          background: #f87171; color: white; border: none;">Delete</button>
-        <button class="archive-btn" data-id="${product.id}" style="
-          padding: 6px 12px; border-radius: 6px;
-          background: #e0e0e0; color: black; border: none;">
-          ${product.archived ? 'Unarchive' : 'Archive'}
-        </button>
+      <div style="display: flex; align-items: center; width: 100%;">
+        <img src="${product.images?.[0] || '../icon-512.png'}" alt="${product.name}" style="
+          width: 80px; height: 80px; object-fit: cover;
+          border-radius: 12px; margin-right: 16px; flex-shrink: 0;">
+        
+        <div style="flex-grow: 1;">
+          <h3 style="margin: 0; font-size: 1.1rem;">${product.name}</h3>
+          <p style="margin: 4px 0;"><strong>£${Number(product.price).toFixed(2)}</strong></p>
+          <p style="margin: 4px 0; color: #777;">Stock: ${typeof product.stock === 'object' ? Object.values(product.stock).reduce((a,b)=>a+b,0) : product.stock ?? 0}</p>
+        </div>
+    
+        <div style="display: flex; gap: 8px;">
+          <button class="edit-btn" data-id="${product.id}" style="
+            padding: 6px 10px; border-radius: 6px;
+            background: #204ECF; color: white; border: none;">Edit</button>
+          <button class="delete-btn" data-id="${product.id}" style="
+            padding: 6px 10px; border-radius: 6px;
+            background: #f87171; color: white; border: none;">Delete</button>
+          <button class="archive-btn" data-id="${product.id}" style="
+            padding: 6px 10px; border-radius: 6px;
+            background: #e0e0e0; color: black; border: none;">
+            ${product.archived ? 'Unarchive' : 'Archive'}
+          </button>
+        </div>
       </div>
     `;
 
