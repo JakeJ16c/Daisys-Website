@@ -705,6 +705,42 @@ input:checked + .slider {
 input:checked + .slider:before {
   transform: translateX(22px);
 }
+
+@media (max-width: 768px) {
+  .product-card {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+  .product-card img {
+    margin: 0 auto 12px !important;
+  }
+
+  .product-card > div:first-child {
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  .product-card h3,
+  .product-card p {
+    margin: 4px 0 !important;
+  }
+
+  .product-card .edit-btn,
+  .product-card .delete-btn,
+  .product-card .archive-btn {
+    padding: 6px 12px;
+    margin: 4px;
+  }
+
+  .product-card div[style*="display: flex; gap: 8px;"] {
+    justify-content: center !important;
+    flex-wrap: wrap;
+    width: 100%;
+    margin-top: 8px;
+  }
+}
   </style>
 </head>
 <body>
