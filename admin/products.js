@@ -1,3 +1,11 @@
+// admin/products.js – Full Product Management UI with Category dropdown + “Add new…”
+// =====================================================================================
+// NEW: Adds a Category <select> with a bottom option “+ Add new category…”
+// - Adds helpers ensureCategorySelect(), loadCategoryOptions(), onCategoryChange()
+// - Persists categories in Firestore collection "Categories" (doc id = slug)
+// - Restores previous selection if user cancels
+// =====================================================================================
+
 import { auth, db } from '../firebase.js';
 import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
 import {
@@ -31,10 +39,12 @@ let imageUpload = null;
 const imageUploadInput = document.getElementById("imageUpload");
 const imagePreviewContainer = document.getElementById("imagePreviewContainer");
 
-// ---- NEW: optional pre-existing <select id="modalCategory"> support
+// ---- Category dropdown support
 const modalCategory = document.getElementById("modalCategory"); // if present in HTML
 let categorySelectEl = modalCategory;                           // will be set/created
 let allCategories = [];                                         // cache after load
+let lastSelectedCategory = "";                                  // restore on cancel
+let categoryChangeBound = false;                                // bind once
 
 const storage = getStorage();
 
@@ -93,28 +103,21 @@ if (nextPageBtn) nextPageBtn.onclick = () => {
   loadProducts(true, 'next');
 };
 
-// ---- NEW: helpers for Category dropdown -----------------------------------------
-
-/**
- * Ensure there is a <select> element to choose category.
- * If you already added <select id="modalCategory"> in HTML, we use it.
- * Otherwise we inject one right after a suitable anchor in the modal.
- */
+// =======================
+// Category dropdown helpers
+// =======================
 async function ensureCategorySelect() {
   if (categorySelectEl) return;
 
-  // Create the <select>
   categorySelectEl = document.createElement("select");
   categorySelectEl.id = "modalCategory";
   categorySelectEl.className = "form-control";
 
-  // Optional label for clearer UX
   const label = document.createElement("label");
   label.textContent = "Category";
   label.style.display = "block";
   label.style.marginTop = "12px";
 
-  // Try to place next to a known anchor or fallback to the top of the modal body
   const anchor =
     document.querySelector("#productModal [data-category-anchor]") ||
     document.querySelector("#productModal .form-group") ||
@@ -125,10 +128,6 @@ async function ensureCategorySelect() {
   anchor.insertAdjacentElement("afterend", label);
 }
 
-/**
- * Load category list from Firestore "Categories" collection (field: name).
- * If not available, infer from currentProducts. Last resort: sensible defaults.
- */
 async function loadCategoryOptions() {
   await ensureCategorySelect();
 
@@ -143,21 +142,71 @@ async function loadCategoryOptions() {
     console.warn("Categories collection not found – will fallback to inferred set.");
   }
 
-  // Fallback: infer from currentProducts already loaded in memory
   if (allCategories.length === 0 && Array.isArray(currentProducts)) {
     const s = new Set();
     currentProducts.forEach(p => { if (p?.category) s.add(p.category); });
     allCategories = Array.from(s);
   }
 
-  // Last resort defaults
   if (allCategories.length === 0) {
     allCategories = ["T-Shirts", "Bracelets", "Necklaces", "Rings", "Accessories"];
   }
 
-  categorySelectEl.innerHTML =
+  const baseOptions =
     `<option value="">Select category…</option>` +
-    allCategories.map(c => `<option value="${c}">${c}</option>`).join("");
+    allCategories.map(c => `<option value="${c}">${c}</option>`).join("") +
+    `<option value="__add_new__">+ Add new category…</option>`;  // NEW
+
+  categorySelectEl.innerHTML = baseOptions;
+
+  // restore previous selection if any
+  if (lastSelectedCategory) {
+    const exists = allCategories.some(c => c === lastSelectedCategory);
+    categorySelectEl.value = exists ? lastSelectedCategory : "";
+  }
+
+  if (!categoryChangeBound) {
+    categorySelectEl.addEventListener("change", onCategoryChange);
+    categoryChangeBound = true;
+  }
+}
+
+async function onCategoryChange(e) {
+  if (e.target.value !== "__add_new__") {
+    lastSelectedCategory = e.target.value || "";
+    return;
+  }
+
+  const entered = (prompt("Enter a new category name:") || "").trim();
+  if (!entered) {
+    categorySelectEl.value = lastSelectedCategory || "";
+    return;
+  }
+
+  const newName = entered.replace(/\s+/g, " ").trim();
+  const already = allCategories.find(c => c.toLowerCase() === newName.toLowerCase());
+  if (already) {
+    lastSelectedCategory = already;
+    categorySelectEl.value = already;
+    return;
+  }
+
+  try {
+    const slug = newName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+    await setDoc(doc(db, "Categories", slug), {
+      name: newName,
+      createdAt: new Date()
+    });
+
+    allCategories.push(newName);
+    await loadCategoryOptions();
+    categorySelectEl.value = newName;
+    lastSelectedCategory = newName;
+  } catch (err) {
+    console.error("Failed to add category:", err);
+    alert("Could not add category. Please try again.");
+    categorySelectEl.value = lastSelectedCategory || "";
+  }
 }
 
 // -----------------------------------------------------------------------------
@@ -172,9 +221,9 @@ if (addProductBtn) {
     uploadedImages = [];
     imagePreviewContainer.innerHTML = "";
 
-    // NEW: prepare category dropdown for "Add"
     await loadCategoryOptions();
     if (categorySelectEl) categorySelectEl.value = "";
+    lastSelectedCategory = ""; // NEW
 
     productModal.style.display = "flex";
   };
@@ -215,7 +264,7 @@ if (saveProductChanges) {
       oneSizeOnly: oneSize,
       description: modalDescription.value.trim(),
       images: uploadedImages,
-      category: (categorySelectEl?.value || "").trim(),   // NEW: save category
+      category: (categorySelectEl?.value || "").trim(),   // NEW
       updatedAt: new Date()
     };
 
@@ -223,7 +272,6 @@ if (saveProductChanges) {
       alert("Please fill all required fields.");
       return;
     }
-    // NEW: require category selection
     if (!data.category) {
       alert("Please choose a category.");
       return;
@@ -324,7 +372,7 @@ async function loadProducts(paginate = false, direction = 'next') {
     );
   }
 
-  // NEW: refresh category list after loading products (improves fallback inference)
+  // refresh categories (improves fallback inference)
   try { await loadCategoryOptions(); } catch (_) {}
 
   renderProducts(currentProducts);
@@ -338,7 +386,7 @@ function renderProducts(products) {
   const archivedContainer = document.getElementById("ArchivedproductsTableContainer");
   if (archivedContainer) archivedContainer.innerHTML = ""; // Clear previous archive list
 
-  // Personalised toggle stays in active area only
+  // Personalised toggle card
   const toggleCard = document.createElement("div");
   toggleCard.className = "product-card";
   toggleCard.style.cssText = `
@@ -431,7 +479,7 @@ function renderProducts(products) {
       </div>
     `;
 
-    // Attach edit logic
+    // Edit
     card.querySelector('.edit-btn').onclick = async () => {
       selectedProductId = product.id;
       modalName.value = product.name || "";
@@ -446,9 +494,9 @@ function renderProducts(products) {
         imagePreviewContainer.appendChild(img);
       });
 
-      // NEW: Make sure category dropdown exists and is populated, then pre-select
       await loadCategoryOptions();
       if (categorySelectEl) categorySelectEl.value = product.category || "";
+      lastSelectedCategory = product.category || ""; // NEW
 
       if (product.oneSizeOnly) {
         oneSizeYes.checked = true;
@@ -472,14 +520,14 @@ function renderProducts(products) {
       productModal.style.display = "flex";
     };
 
-    // Attach delete logic
+    // Delete
     card.querySelector('.delete-btn').onclick = () => {
       if (confirm("Delete this product?")) {
         deleteDoc(doc(db, "Products", product.id)).then(loadProducts);
       }
     };
 
-    // Archive/Unarchive toggle
+    // Archive/Unarchive
     card.querySelector('.archive-btn').onclick = async () => {
       await updateDoc(doc(db, "Products", product.id), {
         archived: !product.archived
@@ -487,7 +535,6 @@ function renderProducts(products) {
       loadProducts();
     };
 
-    // Append card to correct container
     const archivedContainer = document.getElementById("ArchivedproductsTableContainer");
     if (product.archived && archivedContainer) {
       archivedContainer.appendChild(card);
