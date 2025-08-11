@@ -1,9 +1,8 @@
-// admin/products.js – Full Product Management UI with Category dropdown + “Add new…”
+// admin/products.js – Product Management UI with typeable Category combobox
 // =====================================================================================
-// NEW: Adds a Category <select> with a bottom option “+ Add new category…”
-// - Adds helpers ensureCategorySelect(), loadCategoryOptions(), onCategoryChange()
-// - Persists categories in Firestore collection "Categories" (doc id = slug)
-// - Restores previous selection if user cancels
+// NEW: Replaces <select> with an <input list="..."> + <datalist> so you can type
+//      a category or choose one. On Save, if it's new, it is created in Firestore
+//      under collection "Categories" (doc id = slug).
 // =====================================================================================
 
 import { auth, db } from '../firebase.js';
@@ -39,12 +38,15 @@ let imageUpload = null;
 const imageUploadInput = document.getElementById("imageUpload");
 const imagePreviewContainer = document.getElementById("imagePreviewContainer");
 
-// ---- Category dropdown support
-const modalCategory = document.getElementById("modalCategory"); // if present in HTML
-let categorySelectEl = modalCategory;                           // will be set/created
-let allCategories = [];                                         // cache after load
-let lastSelectedCategory = "";                                  // restore on cancel
-let categoryChangeBound = false;                                // bind once
+// ---- Category combobox support (INPUT + DATALIST)
+// If you already added these in HTML, we'll use them; otherwise we inject:
+//   <label>Category</label>
+//   <input id="modalCategoryInput" list="categoryOptions" class="form-control" />
+//   <datalist id="categoryOptions"></datalist>
+let categoryInputEl = document.getElementById("modalCategoryInput");
+let categoryDatalistEl = document.getElementById("categoryOptions");
+let allCategories = [];
+let lastSelectedCategory = "";
 
 const storage = getStorage();
 
@@ -104,34 +106,51 @@ if (nextPageBtn) nextPageBtn.onclick = () => {
 };
 
 // =======================
-// Category dropdown helpers
+// Category combobox helpers
 // =======================
-async function ensureCategorySelect() {
-  if (categorySelectEl) return;
+async function ensureCategoryCombo() {
+  if (categoryInputEl && categoryDatalistEl) return;
 
-  categorySelectEl = document.createElement("select");
-  categorySelectEl.id = "modalCategory";
-  categorySelectEl.className = "form-control";
-
+  // create label
   const label = document.createElement("label");
   label.textContent = "Category";
   label.style.display = "block";
   label.style.marginTop = "12px";
 
+  // create input
+  categoryInputEl = document.createElement("input");
+  categoryInputEl.type = "text";
+  categoryInputEl.id = "modalCategoryInput";
+  categoryInputEl.setAttribute("list", "categoryOptions");
+  categoryInputEl.className = "form-control";
+  categoryInputEl.placeholder = "Start typing…";
+
+  // create datalist
+  categoryDatalistEl = document.createElement("datalist");
+  categoryDatalistEl.id = "categoryOptions";
+
+  // place them in the modal
   const anchor =
     document.querySelector("#productModal [data-category-anchor]") ||
     document.querySelector("#productModal .form-group") ||
     document.querySelector("#productModal .modal-content") ||
     productModal;
 
-  anchor.insertAdjacentElement("afterend", categorySelectEl);
+  anchor.insertAdjacentElement("afterend", categoryDatalistEl);
+  anchor.insertAdjacentElement("afterend", categoryInputEl);
   anchor.insertAdjacentElement("afterend", label);
+
+  // track last typed/selected value
+  categoryInputEl.addEventListener("input", () => {
+    lastSelectedCategory = categoryInputEl.value.trim();
+  });
 }
 
 async function loadCategoryOptions() {
-  await ensureCategorySelect();
+  await ensureCategoryCombo();
 
   allCategories = [];
+  // Try Firestore "Categories"
   try {
     const catsSnap = await getDocs(collection(db, "Categories"));
     catsSnap.forEach(d => {
@@ -139,74 +158,46 @@ async function loadCategoryOptions() {
       if (n) allCategories.push(n);
     });
   } catch (e) {
-    console.warn("Categories collection not found – will fallback to inferred set.");
+    console.warn("Categories collection not found – falling back.");
   }
 
+  // Fallback: infer from current products
   if (allCategories.length === 0 && Array.isArray(currentProducts)) {
     const s = new Set();
     currentProducts.forEach(p => { if (p?.category) s.add(p.category); });
     allCategories = Array.from(s);
   }
 
+  // Last resort defaults
   if (allCategories.length === 0) {
     allCategories = ["T-Shirts", "Bracelets", "Necklaces", "Rings", "Accessories"];
   }
 
-  const baseOptions =
-    `<option value="">Select category…</option>` +
-    allCategories.map(c => `<option value="${c}">${c}</option>`).join("") +
-    `<option value="__add_new__">+ Add new category…</option>`;  // NEW
-
-  categorySelectEl.innerHTML = baseOptions;
-
-  // restore previous selection if any
-  if (lastSelectedCategory) {
-    const exists = allCategories.some(c => c === lastSelectedCategory);
-    categorySelectEl.value = exists ? lastSelectedCategory : "";
-  }
-
-  if (!categoryChangeBound) {
-    categorySelectEl.addEventListener("change", onCategoryChange);
-    categoryChangeBound = true;
-  }
+  // Populate datalist
+  categoryDatalistEl.innerHTML = allCategories
+    .map(c => `<option value="${c}"></option>`)
+    .join("");
 }
 
-async function onCategoryChange(e) {
-  if (e.target.value !== "__add_new__") {
-    lastSelectedCategory = e.target.value || "";
-    return;
-  }
+// Create slug for category doc id
+function slugify(str) {
+  return str.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+}
 
-  const entered = (prompt("Enter a new category name:") || "").trim();
-  if (!entered) {
-    categorySelectEl.value = lastSelectedCategory || "";
-    return;
-  }
+// Ensure category exists in Firestore; create if missing
+async function ensureCategoryInFirestore(name) {
+  const exists = allCategories.some(c => c.toLowerCase() === name.toLowerCase());
+  if (exists) return; // nothing to do
 
-  const newName = entered.replace(/\s+/g, " ").trim();
-  const already = allCategories.find(c => c.toLowerCase() === newName.toLowerCase());
-  if (already) {
-    lastSelectedCategory = already;
-    categorySelectEl.value = already;
-    return;
-  }
+  const slug = slugify(name);
+  await setDoc(doc(db, "Categories", slug), {
+    name,
+    createdAt: new Date()
+  });
 
-  try {
-    const slug = newName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
-    await setDoc(doc(db, "Categories", slug), {
-      name: newName,
-      createdAt: new Date()
-    });
-
-    allCategories.push(newName);
-    await loadCategoryOptions();
-    categorySelectEl.value = newName;
-    lastSelectedCategory = newName;
-  } catch (err) {
-    console.error("Failed to add category:", err);
-    alert("Could not add category. Please try again.");
-    categorySelectEl.value = lastSelectedCategory || "";
-  }
+  // Update local cache and datalist
+  allCategories.push(name);
+  categoryDatalistEl.insertAdjacentHTML("beforeend", `<option value="${name}"></option>`);
 }
 
 // -----------------------------------------------------------------------------
@@ -222,8 +213,8 @@ if (addProductBtn) {
     imagePreviewContainer.innerHTML = "";
 
     await loadCategoryOptions();
-    if (categorySelectEl) categorySelectEl.value = "";
-    lastSelectedCategory = ""; // NEW
+    categoryInputEl.value = "";
+    lastSelectedCategory = "";
 
     productModal.style.display = "flex";
   };
@@ -257,6 +248,8 @@ if (saveProductChanges) {
           return stockObj;
         })();
 
+    const typedCategory = (categoryInputEl?.value || "").trim();
+
     const data = {
       name: modalName.value.trim(),
       price: parseFloat(modalPrice.value),
@@ -264,7 +257,7 @@ if (saveProductChanges) {
       oneSizeOnly: oneSize,
       description: modalDescription.value.trim(),
       images: uploadedImages,
-      category: (categorySelectEl?.value || "").trim(),   // NEW
+      category: typedCategory,           // typeable value
       updatedAt: new Date()
     };
 
@@ -273,7 +266,7 @@ if (saveProductChanges) {
       return;
     }
     if (!data.category) {
-      alert("Please choose a category.");
+      alert("Please choose or type a category.");
       return;
     }
     if (!oneSize && Object.keys(data.stock).length === 0) {
@@ -282,6 +275,9 @@ if (saveProductChanges) {
     }
 
     try {
+      // If it's a new category, create it first
+      await ensureCategoryInFirestore(data.category);
+
       if (selectedProductId) {
         await updateDoc(doc(db, "Products", selectedProductId), data);
       } else {
@@ -495,8 +491,8 @@ function renderProducts(products) {
       });
 
       await loadCategoryOptions();
-      if (categorySelectEl) categorySelectEl.value = product.category || "";
-      lastSelectedCategory = product.category || ""; // NEW
+      categoryInputEl.value = product.category || "";
+      lastSelectedCategory = product.category || "";
 
       if (product.oneSizeOnly) {
         oneSizeYes.checked = true;
