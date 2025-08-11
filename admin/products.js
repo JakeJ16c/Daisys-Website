@@ -1,10 +1,23 @@
-// admin/products.js – Full Product Management UI with Add + Image Upload + Description
+// admin/products.js – Full Product Management UI with Add + Image Upload + Description + Category dropdown
+// =====================================================================================
+// CHANGES: Added dropdown support for product.category (Firestore "Categories" or inferred)
+// - NEW helpers: ensureCategorySelect(), loadCategoryOptions()
+// - Modal open (Add/Edit): loadCategoryOptions() + set categorySelectEl.value
+// - Save: include `category` validation + field
+// Annotations are marked with  // NEW  or  // CHANGED
+// =====================================================================================
+
 import { auth, db } from '../firebase.js';
 import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
-import { collection, getDocs, doc, getDoc, setDoc, addDoc, deleteDoc, updateDoc, query, orderBy, limit, startAfter, endBefore, limitToLast} from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
+import {
+  collection, getDocs, doc, getDoc, setDoc, addDoc, deleteDoc, updateDoc,
+  query, orderBy, limit, startAfter, endBefore, limitToLast
+} from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-storage.js';
 
+// =======================
 // DOM elements
+// =======================
 const container = document.getElementById("productsTableContainer");
 const productSearch = document.getElementById("productSearch");
 const sortOrder = document.getElementById("sortOrder");
@@ -27,9 +40,16 @@ let imageUpload = null;
 const imageUploadInput = document.getElementById("imageUpload");
 const imagePreviewContainer = document.getElementById("imagePreviewContainer");
 
+// ---- NEW: optional pre-existing <select id="modalCategory"> support
+const modalCategory = document.getElementById("modalCategory"); // if present in HTML
+let categorySelectEl = modalCategory;                           // will be set/created
+let allCategories = [];                                         // cache after load
+
 const storage = getStorage();
 
+// =======================
 // State
+// =======================
 let currentProducts = [];
 let lastVisible = null;
 let firstVisible = null;
@@ -40,13 +60,17 @@ let currentSort = "newest";
 let selectedProductId = null;
 let uploadedImages = [];
 
+// =======================
 // Auth check
+// =======================
 onAuthStateChanged(auth, user => {
   if (!user) location.href = "login.html";
   else loadProducts();
 });
 
+// =======================
 // UI Listeners
+// =======================
 if (logoutBtn) logoutBtn.onclick = async () => {
   await signOut(auth);
   location.href = "login.html";
@@ -78,8 +102,78 @@ if (nextPageBtn) nextPageBtn.onclick = () => {
   loadProducts(true, 'next');
 };
 
+// ---- NEW: helpers for Category dropdown -----------------------------------------
+
+/**
+ * Ensure there is a <select> element to choose category.
+ * If you already added <select id="modalCategory"> in HTML, we use it.
+ * Otherwise we inject one right after a suitable anchor in the modal.
+ */
+async function ensureCategorySelect() {
+  if (categorySelectEl) return;
+
+  // Create the <select>
+  categorySelectEl = document.createElement("select");
+  categorySelectEl.id = "modalCategory";
+  categorySelectEl.className = "form-control";
+  categorySelectEl.style.marginTop = "8px";
+
+  // Optional label for clearer UX
+  const label = document.createElement("label");
+  label.textContent = "Category";
+  label.style.display = "block";
+  label.style.marginTop = "12px";
+
+  // Try to place next to a known anchor or fallback to the top of the modal body
+  const anchor =
+    document.querySelector("#productModal [data-category-anchor]") ||
+    document.querySelector("#productModal .form-group") ||
+    document.querySelector("#productModal .modal-content") ||
+    productModal;
+
+  anchor.insertAdjacentElement("afterend", categorySelectEl);
+  anchor.insertAdjacentElement("afterend", label);
+}
+
+/**
+ * Load category list from Firestore "Categories" collection (field: name).
+ * If not available, infer from currentProducts. Last resort: sensible defaults.
+ */
+async function loadCategoryOptions() {
+  await ensureCategorySelect();
+
+  allCategories = [];
+  try {
+    const catsSnap = await getDocs(collection(db, "Categories"));
+    catsSnap.forEach(d => {
+      const n = (d.data()?.name || "").trim();
+      if (n) allCategories.push(n);
+    });
+  } catch (e) {
+    console.warn("Categories collection not found – will fallback to inferred set.");
+  }
+
+  // Fallback: infer from currentProducts already loaded in memory
+  if (allCategories.length === 0 && Array.isArray(currentProducts)) {
+    const s = new Set();
+    currentProducts.forEach(p => { if (p?.category) s.add(p.category); });
+    allCategories = Array.from(s);
+  }
+
+  // Last resort defaults
+  if (allCategories.length === 0) {
+    allCategories = ["T-Shirts", "Bracelets", "Necklaces", "Rings", "Accessories"];
+  }
+
+  categorySelectEl.innerHTML =
+    `<option value="">Select category…</option>` +
+    allCategories.map(c => `<option value="${c}">${c}</option>`).join("");
+}
+
+// -----------------------------------------------------------------------------
+
 if (addProductBtn) {
-  addProductBtn.onclick = () => {
+  addProductBtn.onclick = async () => {
     selectedProductId = null;
     modalName.value = "";
     modalPrice.value = "";
@@ -87,6 +181,11 @@ if (addProductBtn) {
     modalDescription.value = "";
     uploadedImages = [];
     imagePreviewContainer.innerHTML = "";
+
+    // NEW: prepare category dropdown for "Add"
+    await loadCategoryOptions();
+    if (categorySelectEl) categorySelectEl.value = "";
+
     productModal.style.display = "flex";
   };
 }
@@ -126,11 +225,17 @@ if (saveProductChanges) {
       oneSizeOnly: oneSize,
       description: modalDescription.value.trim(),
       images: uploadedImages,
+      category: (categorySelectEl?.value || "").trim(),   // NEW: save category
       updatedAt: new Date()
     };
 
     if (!data.name || isNaN(data.price)) {
       alert("Please fill all required fields.");
+      return;
+    }
+    // NEW: require category selection
+    if (!data.category) {
+      alert("Please choose a category.");
       return;
     }
     if (!oneSize && Object.keys(data.stock).length === 0) {
@@ -153,7 +258,9 @@ if (saveProductChanges) {
   };
 }
 
+// =======================
 // Handle Image Upload
+// =======================
 imageUploadInput?.addEventListener("change", async (e) => {
   const files = Array.from(e.target.files);
   for (const file of files) {
@@ -171,7 +278,9 @@ imageUploadInput?.addEventListener("change", async (e) => {
   e.target.value = "";
 });
 
+// =======================
 // Load Products
+// =======================
 async function loadProducts(paginate = false, direction = 'next') {
   container.innerHTML = '<div class="loading-spinner"><div class="spinner"></div></div>';
 
@@ -214,9 +323,9 @@ async function loadProducts(paginate = false, direction = 'next') {
   prevPageBtn.disabled = currentPage === 1;
   nextPageBtn.disabled = snap.docs.length < pageSize;
 
-  currentProducts = snap.docs.map(doc => ({
-    id: doc.id,
-    ...doc.data()
+  currentProducts = snap.docs.map(d => ({
+    id: d.id,
+    ...d.data()
   }));
 
   if (currentSearch) {
@@ -225,14 +334,19 @@ async function loadProducts(paginate = false, direction = 'next') {
     );
   }
 
+  // NEW: refresh category list after loading products (improves fallback inference)
+  try { await loadCategoryOptions(); } catch (_) {}
+
   renderProducts(currentProducts);
 }
 
+// =======================
 // Render
+// =======================
 function renderProducts(products) {
   container.innerHTML = "";
   const archivedContainer = document.getElementById("ArchivedproductsTableContainer");
-  archivedContainer.innerHTML = ""; // Clear previous archive list
+  if (archivedContainer) archivedContainer.innerHTML = ""; // Clear previous archive list
 
   // Personalised toggle stays in active area only
   const toggleCard = document.createElement("div");
@@ -308,6 +422,7 @@ function renderProducts(products) {
           <h3 style="margin: 0; font-size: 1.1rem;">${product.name}</h3>
           <p style="margin: 4px 0;"><strong>£${Number(product.price).toFixed(2)}</strong></p>
           <p style="margin: 4px 0; color: #777;">Stock: ${typeof product.stock === 'object' ? Object.values(product.stock).reduce((a,b)=>a+b,0) : product.stock ?? 0}</p>
+          ${product.category ? `<p style="margin: 2px 0; color:#555;">Category: ${product.category}</p>` : ""}
         </div>
     
         <div style="display: flex; gap: 8px;">
@@ -327,7 +442,7 @@ function renderProducts(products) {
     `;
 
     // Attach edit logic
-    card.querySelector('.edit-btn').onclick = () => {
+    card.querySelector('.edit-btn').onclick = async () => {
       selectedProductId = product.id;
       modalName.value = product.name || "";
       modalPrice.value = product.price || "";
@@ -340,6 +455,10 @@ function renderProducts(products) {
         img.style.cssText = "width:60px;height:60px;margin-right:8px;border-radius:6px;";
         imagePreviewContainer.appendChild(img);
       });
+
+      // NEW: Make sure category dropdown exists and is populated, then pre-select
+      await loadCategoryOptions();
+      if (categorySelectEl) categorySelectEl.value = product.category || "";
 
       if (product.oneSizeOnly) {
         oneSizeYes.checked = true;
@@ -370,7 +489,7 @@ function renderProducts(products) {
       }
     };
 
-    // NEW: Archive/Unarchive toggle
+    // Archive/Unarchive toggle
     card.querySelector('.archive-btn').onclick = async () => {
       await updateDoc(doc(db, "Products", product.id), {
         archived: !product.archived
@@ -379,7 +498,8 @@ function renderProducts(products) {
     };
 
     // Append card to correct container
-    if (product.archived) {
+    const archivedContainer = document.getElementById("ArchivedproductsTableContainer");
+    if (product.archived && archivedContainer) {
       archivedContainer.appendChild(card);
     } else {
       container.appendChild(card);
@@ -387,6 +507,9 @@ function renderProducts(products) {
   });
 }
 
+// =======================
+// Utils
+// =======================
 function debounce(fn, wait) {
   let timeout;
   return (...args) => {
