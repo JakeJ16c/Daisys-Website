@@ -1,12 +1,3 @@
-// admin/products.js – Full Product Management UI with Add + Image Upload + Description + Category dropdown
-// =====================================================================================
-// CHANGES: Added dropdown support for product.category (Firestore "Categories" or inferred)
-// - NEW helpers: ensureCategorySelect(), loadCategoryOptions()
-// - Modal open (Add/Edit): loadCategoryOptions() + set categorySelectEl.value
-// - Save: include `category` validation + field
-// Annotations are marked with  // NEW  or  // CHANGED
-// =====================================================================================
-
 import { auth, db } from '../firebase.js';
 import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
 import {
@@ -116,7 +107,6 @@ async function ensureCategorySelect() {
   categorySelectEl = document.createElement("select");
   categorySelectEl.id = "modalCategory";
   categorySelectEl.className = "form-control";
-  categorySelectEl.style.marginTop = "8px";
 
   // Optional label for clearer UX
   const label = document.createElement("label");
