@@ -1,9 +1,7 @@
-// admin/products.js – Product Management UI with typeable Category combobox
-// =====================================================================================
-// NEW: Replaces <select> with an <input list="..."> + <datalist> so you can type
-//      a category or choose one. On Save, if it's new, it is created in Firestore
-//      under collection "Categories" (doc id = slug).
-// =====================================================================================
+// admin/products.js – Product Management UI
+// Category = typeable combobox (+ auto-create in Firestore)
+// Design   = typeable combobox inside a styled "box" (+ auto-create in Firestore)
+// ------------------------------------------------------------------------------
 
 import { auth, db } from '../firebase.js';
 import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js';
@@ -38,15 +36,18 @@ let imageUpload = null;
 const imageUploadInput = document.getElementById("imageUpload");
 const imagePreviewContainer = document.getElementById("imagePreviewContainer");
 
-// ---- Category combobox support (INPUT + DATALIST)
-// If you already added these in HTML, we'll use them; otherwise we inject:
-//   <label>Category</label>
-//   <input id="modalCategoryInput" list="categoryOptions" class="form-control" />
-//   <datalist id="categoryOptions"></datalist>
+// ==== Category combobox (input + datalist) ====
 let categoryInputEl = document.getElementById("modalCategoryInput");
 let categoryDatalistEl = document.getElementById("categoryOptions");
 let allCategories = [];
 let lastSelectedCategory = "";
+
+// ==== Design combobox (boxed) ====
+let designBoxEl = document.getElementById("designBox");            // optional if you add in HTML
+let designInputEl = document.getElementById("modalDesignInput");   // optional if you add in HTML
+let designDatalistEl = document.getElementById("designOptions");   // optional if you add in HTML
+let allDesigns = [];
+let lastSelectedDesign = "";
 
 const storage = getStorage();
 
@@ -106,18 +107,16 @@ if (nextPageBtn) nextPageBtn.onclick = () => {
 };
 
 // =======================
-// Category combobox helpers
+// Helpers – Category combobox
 // =======================
 async function ensureCategoryCombo() {
   if (categoryInputEl && categoryDatalistEl) return;
 
-  // create label
   const label = document.createElement("label");
   label.textContent = "Category";
   label.style.display = "block";
   label.style.marginTop = "12px";
 
-  // create input
   categoryInputEl = document.createElement("input");
   categoryInputEl.type = "text";
   categoryInputEl.id = "modalCategoryInput";
@@ -125,11 +124,9 @@ async function ensureCategoryCombo() {
   categoryInputEl.className = "form-control";
   categoryInputEl.placeholder = "Start typing…";
 
-  // create datalist
   categoryDatalistEl = document.createElement("datalist");
   categoryDatalistEl.id = "categoryOptions";
 
-  // place them in the modal
   const anchor =
     document.querySelector("#productModal [data-category-anchor]") ||
     document.querySelector("#productModal .form-group") ||
@@ -140,7 +137,6 @@ async function ensureCategoryCombo() {
   anchor.insertAdjacentElement("afterend", categoryInputEl);
   anchor.insertAdjacentElement("afterend", label);
 
-  // track last typed/selected value
   categoryInputEl.addEventListener("input", () => {
     lastSelectedCategory = categoryInputEl.value.trim();
   });
@@ -150,58 +146,136 @@ async function loadCategoryOptions() {
   await ensureCategoryCombo();
 
   allCategories = [];
-  // Try Firestore "Categories"
   try {
     const catsSnap = await getDocs(collection(db, "Categories"));
     catsSnap.forEach(d => {
       const n = (d.data()?.name || "").trim();
       if (n) allCategories.push(n);
     });
-  } catch (e) {
-    console.warn("Categories collection not found – falling back.");
-  }
+  } catch (_) {}
 
-  // Fallback: infer from current products
   if (allCategories.length === 0 && Array.isArray(currentProducts)) {
     const s = new Set();
     currentProducts.forEach(p => { if (p?.category) s.add(p.category); });
     allCategories = Array.from(s);
   }
 
-  // Last resort defaults
   if (allCategories.length === 0) {
     allCategories = ["T-Shirts", "Bracelets", "Necklaces", "Rings", "Accessories"];
   }
 
-  // Populate datalist
-  categoryDatalistEl.innerHTML = allCategories
-    .map(c => `<option value="${c}"></option>`)
-    .join("");
+  categoryDatalistEl.innerHTML = allCategories.map(c => `<option value="${c}"></option>`).join("");
 }
 
-// Create slug for category doc id
 function slugify(str) {
   return str.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 }
 
-// Ensure category exists in Firestore; create if missing
 async function ensureCategoryInFirestore(name) {
   const exists = allCategories.some(c => c.toLowerCase() === name.toLowerCase());
-  if (exists) return; // nothing to do
+  if (exists) return;
 
   const slug = slugify(name);
-  await setDoc(doc(db, "Categories", slug), {
-    name,
-    createdAt: new Date()
-  });
-
-  // Update local cache and datalist
+  await setDoc(doc(db, "Categories", slug), { name, createdAt: new Date() });
   allCategories.push(name);
   categoryDatalistEl.insertAdjacentHTML("beforeend", `<option value="${name}"></option>`);
 }
 
-// -----------------------------------------------------------------------------
+// =======================
+// Helpers – Design combobox (boxed)
+// =======================
+async function ensureDesignComboBox() {
+  // Create once
+  if (designBoxEl && designInputEl && designDatalistEl) return;
 
+  // Wrapper box (styled to look like a card/field)
+  designBoxEl = document.createElement("div");
+  designBoxEl.id = "designBox";
+  designBoxEl.style.cssText = `
+    border: 1.5px dashed #d9d9e3;
+    background: #fafafa;
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-top: 8px;
+  `;
+
+  const label = document.createElement("label");
+  label.textContent = "Select Design";
+  label.style.display = "block";
+  label.style.marginTop = "14px";
+
+  // Input + datalist
+  designInputEl = document.createElement("input");
+  designInputEl.type = "text";
+  designInputEl.id = "modalDesignInput";
+  designInputEl.setAttribute("list", "designOptions");
+  designInputEl.className = "form-control";
+  designInputEl.placeholder = "Type to search or create…";
+  designInputEl.style.background = "white";
+
+  designDatalistEl = document.createElement("datalist");
+  designDatalistEl.id = "designOptions";
+
+  // Insert into modal (preferably near the old Select Design area)
+  const anchor =
+    document.querySelector("#productModal [data-design-anchor]") ||
+    document.querySelector("#productModal .form-group") ||
+    document.querySelector("#productModal .modal-content") ||
+    productModal;
+
+  // order: label, box; inside box: input + datalist
+  anchor.insertAdjacentElement("afterend", designBoxEl);
+  anchor.insertAdjacentElement("afterend", label);
+  designBoxEl.appendChild(designInputEl);
+  designBoxEl.appendChild(designDatalistEl);
+
+  // small hover effect
+  designBoxEl.addEventListener("mouseenter", () => {
+    designBoxEl.style.borderColor = "#c7c7d1";
+  });
+  designBoxEl.addEventListener("mouseleave", () => {
+    designBoxEl.style.borderColor = "#d9d9e3";
+  });
+
+  designInputEl.addEventListener("input", () => {
+    lastSelectedDesign = designInputEl.value.trim();
+  });
+}
+
+async function loadDesignOptions() {
+  await ensureDesignComboBox();
+
+  allDesigns = [];
+  try {
+    const desSnap = await getDocs(collection(db, "Designs"));
+    desSnap.forEach(d => {
+      const n = (d.data()?.name || "").trim();
+      if (n) allDesigns.push(n);
+    });
+  } catch (_) {}
+
+  // Fallback: infer from current products
+  if (allDesigns.length === 0 && Array.isArray(currentProducts)) {
+    const s = new Set();
+    currentProducts.forEach(p => { if (p?.design) s.add(p.design); });
+    allDesigns = Array.from(s);
+  }
+
+  designDatalistEl.innerHTML = allDesigns.map(n => `<option value="${n}"></option>`).join("");
+}
+
+async function ensureDesignInFirestore(name) {
+  const exists = allDesigns.some(d => d.toLowerCase() === name.toLowerCase());
+  if (exists) return;
+  const slug = slugify(name);
+  await setDoc(doc(db, "Designs", slug), { name, createdAt: new Date() });
+  allDesigns.push(name);
+  designDatalistEl.insertAdjacentHTML("beforeend", `<option value="${name}"></option>`);
+}
+
+// -----------------------------------------------------------------------------
+// Add Product
+// -----------------------------------------------------------------------------
 if (addProductBtn) {
   addProductBtn.onclick = async () => {
     selectedProductId = null;
@@ -213,25 +287,24 @@ if (addProductBtn) {
     imagePreviewContainer.innerHTML = "";
 
     await loadCategoryOptions();
+    await loadDesignOptions();
+
     categoryInputEl.value = "";
+    designInputEl.value = "";
     lastSelectedCategory = "";
+    lastSelectedDesign = "";
 
     productModal.style.display = "flex";
   };
 }
 
+// Close / click outside
 if (closeProductModal) {
-  closeProductModal.onclick = () => {
-    productModal.style.display = "none";
-  };
+  closeProductModal.onclick = () => { productModal.style.display = "none"; };
 }
+window.addEventListener("click", e => { if (e.target === productModal) productModal.style.display = "none"; });
 
-window.addEventListener("click", e => {
-  if (e.target === productModal) {
-    productModal.style.display = "none";
-  }
-});
-
+// Save
 if (saveProductChanges) {
   saveProductChanges.onclick = async () => {
     const oneSize = oneSizeYes.checked;
@@ -249,6 +322,7 @@ if (saveProductChanges) {
         })();
 
     const typedCategory = (categoryInputEl?.value || "").trim();
+    const typedDesign = (designInputEl?.value || "").trim();
 
     const data = {
       name: modalName.value.trim(),
@@ -257,7 +331,8 @@ if (saveProductChanges) {
       oneSizeOnly: oneSize,
       description: modalDescription.value.trim(),
       images: uploadedImages,
-      category: typedCategory,           // typeable value
+      category: typedCategory,
+      design: typedDesign,                // NEW
       updatedAt: new Date()
     };
 
@@ -266,7 +341,11 @@ if (saveProductChanges) {
       return;
     }
     if (!data.category) {
-      alert("Please choose or type a category.");
+      alert("Please choose/type a category.");
+      return;
+    }
+    if (!data.design) {
+      alert("Please choose/type a design.");
       return;
     }
     if (!oneSize && Object.keys(data.stock).length === 0) {
@@ -275,8 +354,9 @@ if (saveProductChanges) {
     }
 
     try {
-      // If it's a new category, create it first
+      // ensure new lookups exist
       await ensureCategoryInFirestore(data.category);
+      await ensureDesignInFirestore(data.design);
 
       if (selectedProductId) {
         await updateDoc(doc(db, "Products", selectedProductId), data);
@@ -357,10 +437,7 @@ async function loadProducts(paginate = false, direction = 'next') {
   prevPageBtn.disabled = currentPage === 1;
   nextPageBtn.disabled = snap.docs.length < pageSize;
 
-  currentProducts = snap.docs.map(d => ({
-    id: d.id,
-    ...d.data()
-  }));
+  currentProducts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
   if (currentSearch) {
     currentProducts = currentProducts.filter(p =>
@@ -368,8 +445,9 @@ async function loadProducts(paginate = false, direction = 'next') {
     );
   }
 
-  // refresh categories (improves fallback inference)
+  // refresh both lookups (for fallback inference)
   try { await loadCategoryOptions(); } catch (_) {}
+  try { await loadDesignOptions(); } catch (_) {}
 
   renderProducts(currentProducts);
 }
@@ -380,7 +458,7 @@ async function loadProducts(paginate = false, direction = 'next') {
 function renderProducts(products) {
   container.innerHTML = "";
   const archivedContainer = document.getElementById("ArchivedproductsTableContainer");
-  if (archivedContainer) archivedContainer.innerHTML = ""; // Clear previous archive list
+  if (archivedContainer) archivedContainer.innerHTML = "";
 
   // Personalised toggle card
   const toggleCard = document.createElement("div");
@@ -396,7 +474,6 @@ function renderProducts(products) {
     align-items: center;
     text-align: center;
   `;
-
   toggleCard.innerHTML = `
     <img src="../IMG_8861.png" alt="Personalised Design" style="
       width: 100px; height: 100px; object-fit: cover;
@@ -408,27 +485,17 @@ function renderProducts(products) {
       <span class="slider round"></span>
     </label>
   `;
-
   (async () => {
     const toggle = toggleCard.querySelector("#personalisedToggle");
     const settingsRef = doc(db, "SiteSettings", "design");
-
     try {
       const snap = await getDoc(settingsRef);
-      if (snap.exists()) {
-        toggle.checked = snap.data().personalisedDesignEnabled ?? false;
-      }
-
+      if (snap.exists()) toggle.checked = snap.data().personalisedDesignEnabled ?? false;
       toggle.addEventListener("change", async () => {
-        await setDoc(settingsRef, {
-          personalisedDesignEnabled: toggle.checked
-        }, { merge: true });
+        await setDoc(settingsRef, { personalisedDesignEnabled: toggle.checked }, { merge: true });
       });
-    } catch (err) {
-      console.error("❌ Failed to load personalised toggle:", err);
-    }
+    } catch (err) { console.error("❌ Failed to load personalised toggle:", err); }
   })();
-
   container.appendChild(toggleCard);
 
   products.forEach(product => {
@@ -451,36 +518,30 @@ function renderProducts(products) {
         <img src="${product.images?.[0] || '../icon-512.png'}" alt="${product.name}" style="
           width: 80px; height: 80px; object-fit: cover;
           border-radius: 12px; margin-right: 16px; flex-shrink: 0;">
-        
         <div style="flex-grow: 1;">
           <h3 style="margin: 0; font-size: 1.1rem;">${product.name}</h3>
           <p style="margin: 4px 0;"><strong>£${Number(product.price).toFixed(2)}</strong></p>
           <p style="margin: 4px 0; color: #777;">Stock: ${typeof product.stock === 'object' ? Object.values(product.stock).reduce((a,b)=>a+b,0) : product.stock ?? 0}</p>
           ${product.category ? `<p style="margin: 2px 0; color:#555;">Category: ${product.category}</p>` : ""}
+          ${product.design ? `<p style="margin: 2px 0; color:#555;">Design: ${product.design}</p>` : ""}
         </div>
-    
         <div style="display: flex; gap: 8px;">
-          <button class="edit-btn" data-id="${product.id}" style="
-            padding: 6px 10px; border-radius: 6px;
-            background: #204ECF; color: white; border: none;">Edit</button>
-          <button class="delete-btn" data-id="${product.id}" style="
-            padding: 6px 10px; border-radius: 6px;
-            background: #f87171; color: white; border: none;">Delete</button>
-          <button class="archive-btn" data-id="${product.id}" style="
-            padding: 6px 10px; border-radius: 6px;
-            background: #e0e0e0; color: black; border: none;">
+          <button class="edit-btn" data-id="${product.id}" style="padding:6px 10px;border-radius:6px;background:#204ECF;color:white;border:none;">Edit</button>
+          <button class="delete-btn" data-id="${product.id}" style="padding:6px 10px;border-radius:6px;background:#f87171;color:white;border:none;">Delete</button>
+          <button class="archive-btn" data-id="${product.id}" style="padding:6px 10px;border-radius:6px;background:#e0e0e0;color:black;border:none;">
             ${product.archived ? 'Unarchive' : 'Archive'}
           </button>
         </div>
       </div>
     `;
 
-    // Edit
+    // Edit button
     card.querySelector('.edit-btn').onclick = async () => {
       selectedProductId = product.id;
       modalName.value = product.name || "";
       modalPrice.value = product.price || "";
       modalDescription.value = product.description || "";
+
       uploadedImages = product.images || [];
       imagePreviewContainer.innerHTML = "";
       uploadedImages.forEach((url) => {
@@ -491,8 +552,12 @@ function renderProducts(products) {
       });
 
       await loadCategoryOptions();
+      await loadDesignOptions();
+
       categoryInputEl.value = product.category || "";
+      designInputEl.value = product.design || "";
       lastSelectedCategory = product.category || "";
+      lastSelectedDesign = product.design || "";
 
       if (product.oneSizeOnly) {
         oneSizeYes.checked = true;
@@ -525,13 +590,10 @@ function renderProducts(products) {
 
     // Archive/Unarchive
     card.querySelector('.archive-btn').onclick = async () => {
-      await updateDoc(doc(db, "Products", product.id), {
-        archived: !product.archived
-      });
+      await updateDoc(doc(db, "Products", product.id), { archived: !product.archived });
       loadProducts();
     };
 
-    const archivedContainer = document.getElementById("ArchivedproductsTableContainer");
     if (product.archived && archivedContainer) {
       archivedContainer.appendChild(card);
     } else {
