@@ -43,11 +43,12 @@ let allCategories = [];
 let lastSelectedCategory = "";
 
 // ==== Design combobox (boxed) ====
-let designBoxEl = document.getElementById("designBox");            // optional if you add in HTML
-let designInputEl = document.getElementById("modalDesignInput");   // optional if you add in HTML
-let designDatalistEl = document.getElementById("designOptions");   // optional if you add in HTML
+let designBoxEl = document.getElementById("designBox");
+let designInputEl = document.getElementById("modalDesignInput");
+let designDatalistEl = document.getElementById("designOptions");
 let allDesigns = [];
 let lastSelectedDesign = "";
+const DESIGN_DATALIST_ID = "adminDesignOptions"; // single unique datalist id
 
 const storage = getStorage();
 
@@ -133,6 +134,7 @@ async function ensureCategoryCombo() {
     document.querySelector("#productModal .modal-content") ||
     productModal;
 
+  // Insert (label first, then input, then datalist just after input is also fine)
   anchor.insertAdjacentElement("afterend", categoryDatalistEl);
   anchor.insertAdjacentElement("afterend", categoryInputEl);
   anchor.insertAdjacentElement("afterend", label);
@@ -182,13 +184,35 @@ async function ensureCategoryInFirestore(name) {
 }
 
 // =======================
-// Helpers – Design combobox (boxed)
+// Helpers – Design combobox (boxed)  *** FIXED ***
 // =======================
 async function ensureDesignComboBox() {
-  // Create once
-  if (designBoxEl && designInputEl && designDatalistEl) return;
+  // If already created and correctly wired, stop
+  if (designInputEl && document.getElementById(DESIGN_DATALIST_ID) && designInputEl.getAttribute("list") === DESIGN_DATALIST_ID) {
+    designDatalistEl = document.getElementById(DESIGN_DATALIST_ID);
+    return;
+  }
 
-  // Wrapper box (styled to look like a card/field)
+  const anchor =
+    document.querySelector("#productModal [data-design-anchor]") ||
+    document.querySelector("#productModal .form-group") ||
+    document.querySelector("#productModal .modal-content") ||
+    productModal;
+
+  // Remove any previous injected label/box pair to avoid duplicates
+  const maybeBox = anchor.nextElementSibling && anchor.nextElementSibling.id === "designBox"
+    ? anchor.nextElementSibling : null;
+  const maybeLabel = maybeBox && maybeBox.previousElementSibling && maybeBox.previousElementSibling.dataset?.designLabel === "1"
+    ? maybeBox.previousElementSibling : null;
+  if (maybeBox) maybeBox.remove();
+  if (maybeLabel) maybeLabel.remove();
+
+  const label = document.createElement("label");
+  label.textContent = "Select Design";
+  label.dataset.designLabel = "1";
+  label.style.display = "block";
+  label.style.marginTop = "14px";
+
   designBoxEl = document.createElement("div");
   designBoxEl.id = "designBox";
   designBoxEl.style.cssText = `
@@ -199,43 +223,33 @@ async function ensureDesignComboBox() {
     margin-top: 8px;
   `;
 
-  const label = document.createElement("label");
-  label.textContent = "Select Design";
-  label.style.display = "block";
-  label.style.marginTop = "14px";
-
-  // Input + datalist
   designInputEl = document.createElement("input");
   designInputEl.type = "text";
   designInputEl.id = "modalDesignInput";
-  designInputEl.setAttribute("list", "designOptions");
+  designInputEl.setAttribute("list", DESIGN_DATALIST_ID);
+  designInputEl.autocomplete = "off";     // prevent Chrome autofill overlay
+  designInputEl.spellcheck = false;
   designInputEl.className = "form-control";
   designInputEl.placeholder = "Type to search or create…";
   designInputEl.style.background = "white";
 
-  designDatalistEl = document.createElement("datalist");
-  designDatalistEl.id = "designOptions";
+  // Create or reuse the single datalist
+  designDatalistEl = document.getElementById(DESIGN_DATALIST_ID);
+  if (!designDatalistEl) {
+    designDatalistEl = document.createElement("datalist");
+    designDatalistEl.id = DESIGN_DATALIST_ID;
+  } else {
+    designDatalistEl.innerHTML = "";
+  }
 
-  // Insert into modal (preferably near the old Select Design area)
-  const anchor =
-    document.querySelector("#productModal [data-design-anchor]") ||
-    document.querySelector("#productModal .form-group") ||
-    document.querySelector("#productModal .modal-content") ||
-    productModal;
-
-  // order: label, box; inside box: input + datalist
+  // Insert in this order: label -> box; inside box: input + datalist
   anchor.insertAdjacentElement("afterend", designBoxEl);
   anchor.insertAdjacentElement("afterend", label);
   designBoxEl.appendChild(designInputEl);
   designBoxEl.appendChild(designDatalistEl);
 
-  // small hover effect
-  designBoxEl.addEventListener("mouseenter", () => {
-    designBoxEl.style.borderColor = "#c7c7d1";
-  });
-  designBoxEl.addEventListener("mouseleave", () => {
-    designBoxEl.style.borderColor = "#d9d9e3";
-  });
+  designBoxEl.addEventListener("mouseenter", () => (designBoxEl.style.borderColor = "#c7c7d1"));
+  designBoxEl.addEventListener("mouseleave", () => (designBoxEl.style.borderColor = "#d9d9e3"));
 
   designInputEl.addEventListener("input", () => {
     lastSelectedDesign = designInputEl.value.trim();
@@ -261,7 +275,10 @@ async function loadDesignOptions() {
     allDesigns = Array.from(s);
   }
 
-  designDatalistEl.innerHTML = allDesigns.map(n => `<option value="${n}"></option>`).join("");
+  designDatalistEl.innerHTML = allDesigns
+    .sort((a, b) => a.localeCompare(b))
+    .map(n => `<option value="${n}"></option>`)
+    .join("");
 }
 
 async function ensureDesignInFirestore(name) {
@@ -270,7 +287,9 @@ async function ensureDesignInFirestore(name) {
   const slug = slugify(name);
   await setDoc(doc(db, "Designs", slug), { name, createdAt: new Date() });
   allDesigns.push(name);
-  designDatalistEl.insertAdjacentHTML("beforeend", `<option value="${name}"></option>`);
+  if (designDatalistEl) {
+    designDatalistEl.insertAdjacentHTML("beforeend", `<option value="${name}"></option>`);
+  }
 }
 
 // -----------------------------------------------------------------------------
@@ -289,10 +308,10 @@ if (addProductBtn) {
     await loadCategoryOptions();
     await loadDesignOptions();
 
-    categoryInputEl.value = "";
-    designInputEl.value = "";
+    if (categoryInputEl) categoryInputEl.value = "";
+    if (designInputEl)   designInputEl.value   = "";
     lastSelectedCategory = "";
-    lastSelectedDesign = "";
+    lastSelectedDesign   = "";
 
     productModal.style.display = "flex";
   };
@@ -332,7 +351,7 @@ if (saveProductChanges) {
       description: modalDescription.value.trim(),
       images: uploadedImages,
       category: typedCategory,
-      design: typedDesign,                // NEW
+      design: typedDesign,
       updatedAt: new Date()
     };
 
@@ -354,7 +373,6 @@ if (saveProductChanges) {
     }
 
     try {
-      // ensure new lookups exist
       await ensureCategoryInFirestore(data.category);
       await ensureDesignInFirestore(data.design);
 
@@ -554,10 +572,10 @@ function renderProducts(products) {
       await loadCategoryOptions();
       await loadDesignOptions();
 
-      categoryInputEl.value = product.category || "";
-      designInputEl.value = product.design || "";
-      lastSelectedCategory = product.category || "";
-      lastSelectedDesign = product.design || "";
+      if (categoryInputEl) categoryInputEl.value = product.category || "";
+      if (designInputEl)   designInputEl.value   = product.design   || "";
+      lastSelectedCategory = categoryInputEl?.value || "";
+      lastSelectedDesign   = designInputEl?.value   || "";
 
       if (product.oneSizeOnly) {
         oneSizeYes.checked = true;
